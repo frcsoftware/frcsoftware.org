@@ -1,6 +1,6 @@
-# FRCDesign.org
+# FRCSoftware.org
 
-A community-driven learning course and resource hub for FRC Design and CAD, using Onshape. Built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
+A community-driven learning course and resource hub for FRC software. Built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
 
 ## Project Structure
 
@@ -304,8 +304,8 @@ For multiple images, use the Slides component instead.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/frcdesign/FRCDesign.org.git
-   cd FRCDesign.org
+   git clone https://github.com/frcsoftware/frcsoftware.github.io.git
+   cd frcsoftware.github.io
    ```
 
 2. **Install dependencies**
@@ -353,10 +353,9 @@ To deploy:
 
 ## Contributing
 
-See the [Contribution Guide](/contribution/methodsofcontributing/) on the website for details on how to contribute to FRCDesign.org.
+See the [Contribution Guide](/contribution/methodsofcontributing/) on the website for details on how to contribute to FRCSoftware.org.
 
 ## Links
 
-- [FRCDesign.org](https://frcdesign.org)
-- [GitHub Repository](https://github.com/frcdesign/FRCDesign.org)
-- [Discord Server](https://discord.gg/frcdesign)
+- [FRCSoftware.org](https://frcsoftware.github.io/)
+- [GitHub Repository](https://github.com/frcsoftware/frcsoftware.github.io)

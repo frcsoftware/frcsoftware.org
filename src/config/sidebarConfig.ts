@@ -514,7 +514,7 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
           label: 'CAD Resources',
           collapsed: true,
           items: [
-            { label: 'FRCDesignLib', slug: 'resources/frcdesignlib' },
+            { label: 'FRCSoftwareLib', slug: 'resources/frcsoftwarelib' },
             { label: 'KrayonCAD', slug: 'resources/krayoncad' },
             { label: 'Featurescript List', slug: 'resources/featurescripts' },
             { label: 'Featurescript Help', slug: 'resources/featurescript-help' },
@@ -560,7 +560,7 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
           label: 'CAD Resources',
           collapsed: true,
           items: [
-            { label: 'FRCDesignLib', slug: 'resources/frcdesignlib' },
+            { label: 'FRCSoftwareLib', slug: 'resources/frcsoftwarelib' },
             { label: 'KrayonCAD', slug: 'resources/krayoncad' },
             { label: 'Featurescript List', slug: 'resources/featurescripts' },
             { label: 'Featurescript Help', slug: 'resources/featurescript-help' },

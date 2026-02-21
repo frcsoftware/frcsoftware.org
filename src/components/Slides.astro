@@ -37,6 +37,8 @@
  * </Slides>
  */
 import { Image } from 'astro:assets';
+import { mdiChevronLeft, mdiChevronRight, mdiClose } from '@mdi/js';
+import MdiIcon from './MdiIcon.astro';
 
 // Import all images from both locations for optimization (exclude GIFs - they can exceed pixel limits)
 const contentImages = import.meta.glob<{ default: ImageMetadata }>('/src/content/docs/**/img/**/*.{webp,png,jpg,jpeg}', { eager: true });
@@ -310,15 +312,11 @@ const slideId = `slides-${Math.random().toString(36).substr(2, 9)}`;
       </div>
 
       <button class="slides-nav slides-prev" aria-label="Previous slide">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
+        <MdiIcon path={mdiChevronLeft} size={24} />
       </button>
 
       <button class="slides-nav slides-next" aria-label="Next slide">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
+        <MdiIcon path={mdiChevronRight} size={24} />
       </button>
     </div>
 
@@ -341,26 +339,19 @@ const slideId = `slides-${Math.random().toString(36).substr(2, 9)}`;
 
   <div class="lightbox" aria-hidden="true">
     <button class="lightbox-close" aria-label="Close lightbox">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
+      <MdiIcon path={mdiClose} size={24} />
     </button>
 
     <div class="lightbox-content">
       <div class="lightbox-media-container">
         <button class="lightbox-nav lightbox-prev" aria-label="Previous slide">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
+          <MdiIcon path={mdiChevronLeft} size={24} />
         </button>
 
         <div class="lightbox-media"></div>
 
         <button class="lightbox-nav lightbox-next" aria-label="Next slide">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+          <MdiIcon path={mdiChevronRight} size={24} />
         </button>
       </div>
 

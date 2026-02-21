@@ -1,4 +1,6 @@
 ---
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import MdiIcon from '../components/MdiIcon.astro';
 import { getPrevNextLinks } from '../config/sidebarConfig';
 
 const pathname = Astro.url.pathname;
@@ -9,9 +11,7 @@ const { prev, next } = getPrevNextLinks(pathname);
   <div class="pagination-links" dir="ltr">
     {prev && (
       <a href={prev.href} rel="prev" class="pagination-link prev-link">
-        <svg aria-hidden="true" class="pagination-arrow" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
+        <MdiIcon class="pagination-arrow" path={mdiChevronLeft} size={24} />
         <span>
           <span class="pagination-label">Previous</span>
           <span class="pagination-title">{prev.label}</span>
@@ -24,9 +24,7 @@ const { prev, next } = getPrevNextLinks(pathname);
           <span class="pagination-label">Next</span>
           <span class="pagination-title">{next.label}</span>
         </span>
-        <svg aria-hidden="true" class="pagination-arrow" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
-        </svg>
+        <MdiIcon class="pagination-arrow" path={mdiChevronRight} size={24} />
       </a>
     )}
   </div>

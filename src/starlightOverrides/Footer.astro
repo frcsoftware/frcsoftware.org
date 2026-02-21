@@ -1,7 +1,6 @@
 ---
-import fabworksBlack from '../assets/footer/fabworks-black.svg';
-import fabworksWhite from '../assets/footer/fabworks-white.svg';
-import wcpLogo from '../assets/footer/wcp.svg';
+import { mdiGithub } from '@mdi/js';
+import MdiIcon from '../components/MdiIcon.astro';
 import Pagination from 'virtual:starlight/components/Pagination';
 ---
 
@@ -12,51 +11,16 @@ import Pagination from 'virtual:starlight/components/Pagination';
   </div>
 
   <div class="site-footer-inner">
-    <!-- Sponsors -->
-    <div class="footer-sponsors">
-      <p class="footer-powered-label">FRCDesign.org is sponsored by:</p>
-
-      <div class="footer-sponsor-row">
-        <!-- WCP logo / link -->
-        <a
-          href="https://wcproducts.com/"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="West Coast Products"
-          class="footer-logo-link"
-        >
-          <img
-            src={wcpLogo.src}
-            alt="West Coast Products"
-            class="footer-logo footer-logo-wcp"
-            loading="lazy"
-          />
-        </a>
-
-        <span class="footer-sponsor-separator" aria-hidden="true"></span>
-
-        <!-- Fabworks logo / link -->
-        <a
-          href="https://go.fabworks.com/frcdesign"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Fabworks"
-          class="footer-logo-link"
-        >
-          <img
-            src={fabworksBlack.src}
-            alt="Fabworks"
-            class="footer-logo fabworks-logo fabworks-logo-light"
-            loading="lazy"
-          />
-          <img
-            src={fabworksWhite.src}
-            alt="Fabworks"
-            class="footer-logo fabworks-logo fabworks-logo-dark"
-            loading="lazy"
-          />
-        </a>
-      </div>
+    <div class="footer-startup-status">
+      <a
+        href="https://github.com/frcsoftware/frcsoftware.github.io"
+        class="footer-github-link"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Open FRCSoftware.org on GitHub"
+      >
+        <MdiIcon class="footer-github-icon" path={mdiGithub} size={28} />
+      </a>
     </div>
   </div>
 </footer>
@@ -88,66 +52,43 @@ import Pagination from 'virtual:starlight/components/Pagination';
     border-top: 1px solid var(--sl-color-gray-6);
   }
 
-  /* Sponsors section */
-
-  .footer-sponsors {
+  .footer-startup-status {
     text-align: center;
   }
 
   .footer-powered-label {
     margin: 0 0 0.75rem;
-    font-size: 0.95rem;      /* bumped up a bit */
+    font-size: 0.95rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--sl-color-gray-2);
   }
 
-  .footer-sponsor-row {
-    display: inline-flex;
-    align-items: center;
-    gap: 1.25rem;
+  .footer-subtext {
+    margin: 0;
+    color: var(--sl-color-gray-3);
   }
 
-  .footer-logo {
-    height: 32px;
-    width: auto;
+  .footer-github-link {
+    margin-top: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .footer-github-link:hover,
+  .footer-github-link:focus-visible {
+    color: var(--sl-color-white);
+  }
+
+  .footer-github-icon {
+    width: 28px;
+    height: 28px;
     display: block;
-    filter: grayscale(0.15);
-  }
-
-  /* WCP 50% bigger */
-  .footer-logo-wcp {
-    height: 54px;
-  }
-
-  .footer-logo-link {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .footer-sponsor-separator {
-    width: 1px;
-    height: 40px;
-    background: var(--sl-color-gray-7);
-    display: inline-block;
-  }
-
-  /* Light vs dark Fabworks logo */
-  .fabworks-logo-light {
-    display: inline-block;
-  }
-
-  .fabworks-logo-dark {
-    display: none;
-  }
-
-  :global(html[data-theme='dark']) .site-footer .fabworks-logo-light {
-    display: none;
-  }
-
-  :global(html[data-theme='dark']) .site-footer .fabworks-logo-dark {
-    display: inline-block;
   }
 
   @media (max-width: 768px) {
@@ -155,12 +96,5 @@ import Pagination from 'virtual:starlight/components/Pagination';
       padding: 0 1.25rem;
     }
 
-    .footer-sponsor-row {
-      gap: 1rem;
-    }
-
-    .footer-sponsor-separator {
-      height: 32px;
-    }
   }
 </style>

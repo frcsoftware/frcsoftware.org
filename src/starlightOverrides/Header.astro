@@ -1,10 +1,8 @@
 ---
 import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
 import Search from "@astrojs/starlight/components/Search.astro";
-
-import ThemeLightIcon from "../assets/header/theme-light.svg";
-import ThemeLightFilledIcon from "../assets/header/theme-light-filled.svg";
-import GitIcon from "../assets/header/git-white.svg";
+import { mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js';
+import MdiIcon from '../components/MdiIcon.astro';
 
 import { getSidebarForPath, type SidebarItem, type SidebarSection } from "../config/sidebarConfig";
 
@@ -110,24 +108,14 @@ for (const section of sidebarSections) {
               data-theme-toggle
               aria-label="Toggle dark / light theme"
             >
-              <ThemeLightIcon class="theme-icon theme-icon-outline" />
-              <ThemeLightFilledIcon class="theme-icon theme-icon-filled" />
+              <MdiIcon class="theme-icon theme-icon-outline" path={mdiWeatherNight} size={26} />
+              <MdiIcon class="theme-icon theme-icon-filled" path={mdiWhiteBalanceSunny} size={26} />
             </button>
           </div>
 
           <div class="search-wrapper">
             <Search {...props} />
           </div>
-
-          <a
-            href="https://github.com/frcdesign/FRCDesign.org"
-            class="github-link-header"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Open FRCDesign.org on GitHub"
-          >
-            <GitIcon class="github-icon" />
-          </a>
         </div>
       </div>
     </div>
@@ -185,7 +173,7 @@ for (const section of sidebarSections) {
             // Group with children
             html += `<details class="mobile-sidebar-group" ${depth === 0 ? 'open' : ''}>
               <summary class="mobile-sidebar-group-title" style="padding-left: ${indent}px;">
-                <svg class="mobile-sidebar-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg class="mobile-sidebar-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10,6L8.59,7.41L13.17,12L8.59,16.59L10,18L16,12L10,6Z" /></svg>
                 ${item.label}
               </summary>
               <div class="mobile-sidebar-group-content">
@@ -221,10 +209,7 @@ for (const section of sidebarSections) {
         lightbox.className = 'global-image-lightbox';
         lightbox.innerHTML = `
           <button class="global-lightbox-close" aria-label="Close lightbox">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
           </button>
           <div class="global-lightbox-content">
             <img class="global-lightbox-image" src="" alt="">
@@ -532,29 +517,6 @@ for (const section of sidebarSections) {
     display: none !important;
   }
 
-  .github-link-header {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
-    text-decoration: none;
-  }
-
-  .github-link-header:hover,
-  .github-link-header:focus-visible {
-    background: rgba(255, 255, 255, 0.28);
-    outline: none;
-  }
-
-  .github-link-header .github-icon {
-    width: 24px;
-    height: 24px;
-    display: block;
-  }
-
   /* --- NAVIGATION BAR --- */
   .navigation-bar {
     background: var(--sl-color-bg-nav, #1a1a1a);
@@ -721,10 +683,6 @@ for (const section of sidebarSections) {
       flex: 1 1 auto;
       min-width: 0;
       max-width: 200px;
-    }
-
-    .github-link-header {
-      display: none;
     }
 
     .navigation-bar {

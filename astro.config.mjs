@@ -18,8 +18,7 @@ export default defineConfig({
     starlight({
       title: 'FRCSoftware.org',
       logo: {
-        src: './src/assets/universal/book.svg',
-        alt: 'FRCSoftware.org logo',
+        src: './src/assets/universal/file-code.svg',
       },
       customCss: [
         './src/styles/global.css',

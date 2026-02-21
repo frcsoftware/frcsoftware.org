@@ -1,4 +1,6 @@
 ---
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import MdiIcon from '../components/MdiIcon.astro';
 import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
 import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
 import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
@@ -81,9 +83,7 @@ const sidebarData = convertSections(sidebarSections, pathname);
         <div class="sidebar-section-header">
           <h2 class="sidebar-section-title">{section.label}</h2>
           <button class="sidebar-collapse-toggle" aria-label="Toggle sidebar" data-sidebar-toggle>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+            <MdiIcon path={mdiChevronLeft} size={20} />
           </button>
         </div>
       ) : (
@@ -98,9 +98,7 @@ const sidebarData = convertSections(sidebarSections, pathname);
 
 <div class="sidebar-collapsed-toggle-wrapper">
   <button class="sidebar-collapse-toggle" aria-label="Toggle sidebar" data-sidebar-toggle-collapsed>
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="9 18 15 12 9 6"></polyline>
-    </svg>
+    <MdiIcon path={mdiChevronRight} size={20} />
   </button>
 </div>
 

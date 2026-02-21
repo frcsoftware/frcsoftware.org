@@ -1,5 +1,5 @@
 {
-  "name": "frcdesign-starlight",
+  "name": "frcsoftware-starlight",
   "type": "module",
   "version": "0.0.1",
   "packageManager": "pnpm@10.16.0",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@astrojs/starlight": "^0.37.0",
+    "@mdi/js": "^7.4.47",
     "astro": "^5.6.1",
     "sharp": "^0.34.2",
     "unist-util-visit": "^5.1.0"

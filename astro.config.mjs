@@ -5,15 +5,9 @@ import remarkCenter from './src/plugins/remark-center';
 import remarkFigure from './src/plugins/remark-figure';
 import remarkImageAttributes from './src/plugins/remark-image-attributes';
 
-import cloudflare from '@astrojs/cloudflare';
-
 export default defineConfig({
+  site: 'https://frcsoftware.github.io',
   prefetch: true,
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/compile',
-    },
-  },
 
   markdown: {
     remarkPlugins: [remarkCenter, remarkFigure, remarkGlossary, remarkImageAttributes],
@@ -45,6 +39,4 @@ export default defineConfig({
       // This allows different sidebars per top-level navigation section
     }),
   ],
-
-  adapter: cloudflare(),
 });

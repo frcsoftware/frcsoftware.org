@@ -14,8 +14,6 @@ pnpm-debug.log*
 
 # bun stuff
 bun.lock
-package.json
-package-lock.json
 
 # environment variables
 .env
@@ -24,3 +22,5 @@ package-lock.json
 
 # macOS-specific files
 .DS_Store
+
+.vscode

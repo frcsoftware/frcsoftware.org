@@ -310,12 +310,12 @@ For multiple images, use the Slides component instead.
 
 2. **Install dependencies**
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start the development server**
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 4. **Open in browser**
@@ -328,24 +328,28 @@ For multiple images, use the Slides component instead.
 
 ### Verify Installation
 
-To check your Node.js and npm versions:
+To check your Node.js and pnpm versions:
 ```bash
 node --version   # Should be 18.x or higher
-npm --version    # Should be 9.x or higher
+pnpm --version   # Should be 10.x or higher
 ```
 
 ## Commands
 
 | Command           | Action                                       |
 | :---------------- | :------------------------------------------- |
-| `npm install`     | Install dependencies                         |
-| `npm run dev`     | Start local dev server at `localhost:4321`   |
-| `npm run build`   | Build production site to `./dist/`           |
-| `npm run preview` | Preview build locally before deploying       |
+| `pnpm install`    | Install dependencies                         |
+| `pnpm dev`        | Start local dev server at `localhost:4321`   |
+| `pnpm build`      | Build production site to `./dist/`           |
+| `pnpm preview`    | Preview build locally before deploying       |
 
 ## Deployment
 
-This site is configured for deployment on Cloudflare Pages using the `@astrojs/cloudflare` adapter.
+This site is configured for deployment on GitHub Pages using the workflow in `.github/workflows/deploy.yml`.
+
+To deploy:
+1. Enable GitHub Pages in repository settings and set the source to **GitHub Actions**.
+2. Push to `main` (or run the workflow manually from the Actions tab).
 
 ## Contributing
 

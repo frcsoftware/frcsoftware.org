@@ -1,0 +1,79 @@
+@startmindmap
+* Home page
+** Getting started
+*** Download git
+*** Download WPILib VS Code
+** Java/git
+*** Module 0: Repo setup
+**** Fork starter repo
+**** Clone locally
+**** Configure name/email
+**** Run tests or app
+**** Exercise: verify build output
+**** Git: git status, git log --oneline
+*** Module 1: Variables + commits
+**** Java: variables, types, input/output
+**** Exercise: implement score tracker
+***** Add Score class
+***** Print running total
+**** Git: stage + commit
+***** git add
+***** git commit -m "Add score tracker"
+*** Module 2: Conditionals + branches
+**** Java: if/else, boolean logic
+**** Exercise: decision helper
+***** Add isReadyToScore()
+***** Add unit test
+**** Git: branch workflow
+***** git switch -c feature/decision
+***** git push -u origin feature/decision
+***** git switch main
+***** git pull
+*** Module 3: Loops + merge
+**** Java: for/while, collections intro
+**** Exercise: process match log
+***** Parse list of events
+***** Count scoring cycles
+**** Git: merge or rebase
+***** git merge feature/decision
+***** Resolve conflicts
+*** Module 4: Debugging + bisect
+**** Java: breakpoints, step over/into
+**** Exercise: fix a regression
+***** Failing test added in repo
+***** Identify bad commit
+**** Git: bisect
+***** git bisect start
+***** git bisect bad
+***** git bisect good <hash>
+***** git bisect reset
+*** Module 5: Remote sync
+**** Git: push, pull, fetch
+**** Exercise: sync upstream
+***** Add upstream remote
+***** git fetch upstream
+***** git merge upstream/main
+** Command Based
+*** What is a command
+*** What is a subsystem
+*** What is: robot, robotcontainer, constants
+*** Motor
+**** REVLib
+**** Phoenix
+*** Programming 2025 Kitbot
+**** Programming Drive Train
+***** Setting up 4 "motors"
+***** Setting up the configs
+***** Making the Inline command
+**** Programming Coral Mech
+***** Setting up a "motor"
+***** Setting up the config
+***** Making Inline Commands
+***** Button binding
+****** Drive
+****** Score
+** Debugging FRC Code
+** linting/CI
+** debugging
+** PID (intro)
+@endmindmap

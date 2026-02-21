@@ -1,0 +1,124 @@
+---
+title: ContentFigure Test Page
+description: Test page for the ContentFigure component
+---
+
+import ContentFigure from '../../components/ContentFigure.astro';
+
+## ContentFigure Component Examples
+
+This page demonstrates the various features of the `ContentFigure` component.
+
+---
+
+### Basic Image (Full Width, Centered)
+
+<ContentFigure src="./best-practices/img/assembly.webp" alt="Assembly example" />
+
+---
+
+### Image with Caption
+
+<ContentFigure src="./best-practices/img/elevatorAssembly.webp" alt="Elevator assembly">
+  This is an **elevator assembly** with *markdown* support in the caption
+</ContentFigure>
+
+---
+
+### Image with Width Control (60%)
+
+<ContentFigure src="./best-practices/img/part-studio.webp" alt="Part studio" width="60%">
+  Part studio at 60% width
+</ContentFigure>
+
+---
+
+### Image with Default Border
+
+<ContentFigure src="./best-practices/img/subassembly.webp" alt="Subassembly" width="70%" border>
+  Image with the default thick border (5px solid)
+</ContentFigure>
+
+---
+
+### Image with Custom Border Style
+
+<ContentFigure src="./best-practices/img/organized-part-studio.webp" alt="Organized part studio" width="60%" border="3px dashed var(--sl-color-accent)">
+  Custom dashed accent-colored border
+</ContentFigure>
+
+---
+
+### Image with Custom Border (Red)
+
+<ContentFigure src="./best-practices/img/docsetup2.webp" alt="Document setup" width="50%" border="4px solid red">
+  Custom 4px solid red border
+</ContentFigure>
+
+---
+
+## Alignment Examples
+
+### Left-Aligned Image (50%)
+
+<ContentFigure src="./best-practices/img/tube-plug.webp" alt="Tube plug" width="50%" align="left">
+  Left-aligned image at 50% width
+</ContentFigure>
+
+---
+
+### Right-Aligned Image (50%)
+
+<ContentFigure src="./best-practices/img/simplest-crush.webp" alt="Simplest crush" width="50%" align="right">
+  Right-aligned image at 50% width
+</ContentFigure>
+
+---
+
+### Center-Aligned Image (Default)
+
+<ContentFigure src="./best-practices/img/originCubeFeature.webp" alt="Origin cube" width="50%" align="center">
+  Centered image (default alignment)
+</ContentFigure>
+
+---
+
+## YouTube Video Examples
+
+### YouTube Video (Centered)
+
+<ContentFigure src="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+  A YouTube video embedded using ContentFigure
+</ContentFigure>
+
+---
+
+### YouTube Video with Width (70%)
+
+<ContentFigure src="https://youtu.be/dQw4w9WgXcQ" width="70%">
+  YouTube video at 70% width using short URL format
+</ContentFigure>
+
+---
+
+### YouTube Video with Border
+
+<ContentFigure src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" width="80%" border>
+  YouTube video with default border
+</ContentFigure>
+
+---
+
+### YouTube Video Left-Aligned
+
+<ContentFigure src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" width="60%" align="left">
+  Left-aligned YouTube video
+</ContentFigure>
+
+---
+
+### Caption with Links
+
+<ContentFigure src="./best-practices/img/docsetup3.webp" alt="Document setup" width="70%">
+  Learn more about document setup in the [best practices](/best-practices/) section
+</ContentFigure>

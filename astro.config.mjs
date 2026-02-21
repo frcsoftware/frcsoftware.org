@@ -1,0 +1,50 @@
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+import remarkGlossary from './src/plugins/remark-glossary';
+import remarkCenter from './src/plugins/remark-center';
+import remarkFigure from './src/plugins/remark-figure';
+import remarkImageAttributes from './src/plugins/remark-image-attributes';
+
+import cloudflare from '@astrojs/cloudflare';
+
+export default defineConfig({
+  prefetch: true,
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/compile',
+    },
+  },
+
+  markdown: {
+    remarkPlugins: [remarkCenter, remarkFigure, remarkGlossary, remarkImageAttributes],
+    rehypePlugins: [],
+  },
+
+  integrations: [
+    starlight({
+      title: 'FRCSoftware.org',
+      logo: {
+        src: './src/assets/universal/book.svg',
+        alt: 'FRCSoftware.org logo',
+      },
+      customCss: [
+        './src/styles/global.css',
+      ],
+      components: {
+        Header: './src/starlightOverrides/Header.astro',
+        Footer: './src/starlightOverrides/Footer.astro',
+        Sidebar: './src/starlightOverrides/Sidebar.astro',
+        Pagination: './src/starlightOverrides/Pagination.astro',
+        Hero: './src/starlightOverrides/Hero.astro',
+        TableOfContents: './src/starlightOverrides/TableOfContents.astro',
+      },
+      // TOC is disabled globally but can be enabled per-directory in src/config/tocConfig.ts
+      // or per-page via frontmatter (tableOfContents: true)
+      tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
+      // Sidebar configuration is now managed in src/config/sidebarConfig.ts
+      // This allows different sidebars per top-level navigation section
+    }),
+  ],
+
+  adapter: cloudflare(),
+});

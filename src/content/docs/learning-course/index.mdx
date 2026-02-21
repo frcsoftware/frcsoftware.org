@@ -1,0 +1,229 @@
+---
+title: FRC Design Learning Course
+description: A guided curriculum through learning Onshape applied to robot design fundamentals
+tableOfContents: false
+---
+
+import Aside from '../../../components/Aside.astro';
+import ContentImage from '../../../components/ContentImage.astro';
+
+Welcome to the design learning course, the main purpose and content of the website! Keep in mind that it's always a work in progress, so if you find any issues or have difficulty understanding something, please [give us feedback](https://forms.gle/dQ6w6RXJa6vSmcpw7)!
+
+The purpose of the course is to take you from zero to being able to model a full robot. The content focuses on FRC-relevant features and tools, using engaging projects that not only introduce new CAD skills and practice old ones but also introduce engineering concepts. These projects gradually get less guided as you progress.
+
+<Aside type="tip">
+Despite how it looks, Onshape is quite different in its fundamentals from other CAD software. When starting the course, go to the relevant course setup page and continue through the course from there. **You will struggle with later stages** if you skip sections or exercises. If you consider yourself somewhat experienced, you will be able to do the early work very fast and probably still learn something; there's no reason to skip.
+</Aside>
+
+<Aside type="caution">
+Before starting, remember to take a look at the [Website Feature Guide](/feature-guide/) to gain an understanding of the different features used throughout the learning course!
+</Aside>
+
+---
+
+<div class="course-section course-section-right">
+  <div class="course-section-content">
+    <h3 class="course-section-title"><a href="/learning-course/course-setup/new-to-cad/">Course Setup</a></h3>
+    <ul>
+      <li>Three different starting points depending on your background</li>
+      <li>The <a href="/learning-course/course-setup/new-to-cad/">New to CAD</a> page briefly introduces CAD software</li>
+      <li>The <a href="/learning-course/course-setup/new-to-onshape/account-setup/">New to Onshape</a> section helps get you set up with Onshape</li>
+      <li>The <a href="/learning-course/course-setup/required-course-tools/part-library/">Required Course Tools</a> section is required for everyone and helps you add the required tools for the course</li>
+    </ul>
+  </div>
+  <div class="course-section-image">
+    <ContentImage src="./img/signup-1.webp" alt="Course Setup" />
+  </div>
+</div>
+
+---
+
+<div class="course-section course-section-left">
+  <div class="course-section-image">
+    <ContentImage src="./img/exercise2-assy.webp" alt="Stage 1" />
+  </div>
+  <div class="course-section-content">
+    <h3 class="course-section-title"><a href="/learning-course/stage1/1a/section1-setup/">Stage 1</a></h3>
+    <ul>
+      <li>Learn the fundamentals of sketching, part design, multi-part modeling, and assemblies through Onshape Learning Courses and FRC-relevant exercises</li>
+      <li>Learn about power transmission and modeling gearboxes</li>
+      <li>Model a swerve drivebase</li>
+      <li>Start learning top-down design workflow for FRC</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+<div class="course-section course-section-right">
+  <div class="course-section-content">
+    <h3 class="course-section-title"><a href="/learning-course/stage2/2a/introduction/">Stage 2</a></h3>
+    <ul>
+      <li>Learn about common mechanisms in FRC and model them</li>
+      <li>Practice CAD skills until you're significantly more comfortable with Onshape</li>
+      <li>Learn engineering concepts and mechanism design</li>
+      <li>Learn layout sketches for different mechanisms</li>
+    </ul>
+  </div>
+  <div class="course-section-image">
+    <ContentImage src="./img/intake-top-level.webp" alt="Stage 2" />
+  </div>
+</div>
+
+---
+
+<div class="course-section course-section-left">
+  <div class="course-section-image">
+    <ContentImage src="./img/1778-2024-MS.webp" alt="Stage 3" />
+  </div>
+  <div class="course-section-content">
+    <h3 class="course-section-title"><a href="/learning-course/stage3/3a/introduction/">Stage 3</a> <span class="under-construction">(Under Construction)</span></h3>
+    <ul>
+      <li>Practice full robot main layout sketches</li>
+      <li>Replicate simple robots</li>
+      <li>Practicing top-down workflow and integration</li>
+    </ul>
+  </div>
+</div>
+
+---
+
+<div class="course-section course-section-noimage">
+  <div class="course-section-content">
+    <h3 class="course-section-title"><a href="/learning-course/stage4/">Stage 4</a> <span class="under-construction">(Under Construction)</span></h3>
+    <ul>
+      <li>Master mechanism design</li>
+      <li>Practice integration and workflow</li>
+      <li>Master practices that optimize load time and make collaboration easier</li>
+      <li>Study game history</li>
+      <li>Learn strategic design</li>
+      <li>Make more robots and mechanisms and get review and feedback</li>
+    </ul>
+  </div>
+</div>
+
+<style>
+{`
+  .course-section {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin: 1.5rem 0;
+  }
+
+  .course-section-right {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .course-section-left {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .course-section-noimage {
+    flex-direction: row;
+  }
+
+  .course-section-content {
+    flex: 1;
+    max-width: 550px;
+  }
+
+  .course-section-image {
+    flex: 0 0 auto;
+    max-width: 280px;
+  }
+
+  .course-section-image img {
+    width: 100%;
+    border-radius: 8px;
+  }
+
+  .course-section-title {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: var(--sl-color-purple);
+  }
+
+  .course-section-title a {
+    color: var(--sl-color-purple);
+    text-decoration: none;
+  }
+
+  .course-section-title a:hover {
+    text-decoration: underline;
+  }
+
+  .under-construction {
+    color: var(--sl-color-purple);
+    font-weight: normal;
+  }
+
+  .course-section ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .course-section li {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Right-aligned content (image on right) */
+  .course-section-right .course-section-content ul {
+    list-style: disc;
+  }
+
+  /* Left-aligned content (image on left) - bullets on right side */
+  .course-section-left .course-section-content {
+    text-align: right;
+  }
+
+  .course-section-left .course-section-content ul {
+    list-style: none;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .course-section-left .course-section-content li {
+    position: relative;
+    padding-right: 1rem;
+  }
+
+  .course-section-left .course-section-content li::after {
+    content: '•';
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: var(--sl-color-text);
+  }
+
+  @media (max-width: 768px) {
+    .course-section {
+      flex-direction: column !important;
+    }
+
+    .course-section-image {
+      max-width: 100%;
+      order: -1;
+    }
+
+    .course-section-left .course-section-content {
+      text-align: left;
+    }
+
+    .course-section-left .course-section-content ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+
+    .course-section-left .course-section-content li {
+      padding-right: 0;
+    }
+
+    .course-section-left .course-section-content li::after {
+      display: none;
+    }
+  }
+`}
+</style>

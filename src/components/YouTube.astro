@@ -1,0 +1,101 @@
+---
+/**
+ * YouTube component - Embed YouTube videos with consistent styling
+ *
+ * Usage in MDX:
+ * <YouTube id="VIDEO_ID" />
+ * <YouTube id="VIDEO_ID">Optional caption text with **markdown** support</YouTube>
+ * <YouTube url="https://www.youtube.com/watch?v=VIDEO_ID">Caption here</YouTube>
+ * <YouTube url="https://youtu.be/VIDEO_ID" />
+ */
+
+interface Props {
+  id?: string;
+  url?: string;
+}
+
+const { id, url } = Astro.props;
+
+// Get caption from slot content
+const rawCaption = await Astro.slots.render('default') || '';
+const caption = rawCaption.replace(/<\/?p>/g, '').trim();
+
+// Extract video ID from URL if provided
+function extractVideoId(videoUrl: string): string {
+  // YouTube watch URL
+  if (videoUrl.includes('youtube.com/watch')) {
+    const urlObj = new URL(videoUrl);
+    return urlObj.searchParams.get('v') || '';
+  }
+  // YouTube short URL
+  if (videoUrl.includes('youtu.be/')) {
+    return videoUrl.split('youtu.be/')[1]?.split(/[?#]/)[0] || '';
+  }
+  // YouTube embed URL
+  if (videoUrl.includes('youtube.com/embed/')) {
+    return videoUrl.split('youtube.com/embed/')[1]?.split(/[?#]/)[0] || '';
+  }
+  return videoUrl;
+}
+
+const videoId = id || (url ? extractVideoId(url) : '');
+const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080`;
+---
+
+<div class="youtube-container">
+  <div class="youtube-wrapper">
+    <iframe
+      src={embedUrl}
+      title="YouTube video"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+      loading="lazy"
+    ></iframe>
+  </div>
+  {caption && <p class="youtube-caption" set:html={caption} />}
+</div>
+
+<style>
+  .youtube-container {
+    width: 100%;
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .youtube-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--sl-color-gray-6);
+  }
+
+  .youtube-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0.5rem;
+  }
+
+  .youtube-caption {
+    font-family: 'Inter', system-ui, sans-serif;
+    text-align: center;
+    margin: 1rem 0 0 0;
+    color: var(--sl-color-gray-2);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    max-width: 800px;
+  }
+
+  .youtube-caption :global(*) {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+</style>

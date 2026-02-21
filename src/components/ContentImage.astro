@@ -1,0 +1,85 @@
+---
+/**
+ * ContentImage component - Optimized image component for MDX content
+ *
+ * Usage in MDX:
+ * <ContentImage src="../img/folder/image.webp" alt="Description" width="60%" />
+ * <ContentImage src="/best-practices/image.webp" alt="Description" width="60%" />
+ *
+ * This component automatically loads images from src/content/docs/...img/ folders
+ * or src/assets/content/ and applies Astro's image optimization.
+ * Falls back to regular img tag if image not found.
+ */
+import { Image } from 'astro:assets';
+
+// Import all images from both locations for optimization (exclude GIFs - they can exceed pixel limits)
+const contentImages = import.meta.glob<{ default: ImageMetadata }>('/src/content/docs/**/img/**/*.{webp,png,jpg,jpeg}', { eager: true });
+const assetImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/content/**/*.{webp,png,jpg,jpeg}', { eager: true });
+
+// Merge both image sources
+const allImages = { ...contentImages, ...assetImages };
+
+interface Props {
+  src: string;
+  alt?: string;
+  width?: string;
+  style?: string;
+  class?: string;
+}
+
+const { src, alt = '', width, style, class: className } = Astro.props;
+
+// Helper to get optimized image from path
+function getOptimizedImage(srcPath: string): ImageMetadata | null {
+  // Try relative path first (for ../img/... style paths)
+  // Look for the image in content/docs img folders
+  for (const [key, value] of Object.entries(allImages)) {
+    if (key.endsWith(srcPath.replace(/^\.\.\//, '').replace(/^\.\//, ''))) {
+      return value.default;
+    }
+    // Also try matching just the filename and relative structure
+    const normalizedSrc = srcPath.replace(/^\.\.\//, '').replace(/^\.\//, '');
+    if (key.includes(normalizedSrc)) {
+      return value.default;
+    }
+  }
+
+  // Try absolute path style (for /folder/image.webp)
+  const assetPath = `/src/assets/content${srcPath}`;
+  const imageModule = allImages[assetPath];
+  if (imageModule?.default) {
+    return imageModule.default;
+  }
+
+  return null;
+}
+
+const optimizedImage = getOptimizedImage(src);
+
+// Build inline style string
+let inlineStyle = style || '';
+if (width) {
+  // If width doesn't include a unit, assume percentage for backwards compatibility
+  const widthValue = width.includes('%') || width.includes('px') || width.includes('rem') || width.includes('em')
+    ? width
+    : width;
+  inlineStyle = inlineStyle ? `${inlineStyle}; max-width: ${widthValue}` : `max-width: ${widthValue}`;
+}
+---
+
+{optimizedImage ? (
+  <Image
+    src={optimizedImage}
+    alt={alt}
+    style={inlineStyle || undefined}
+    class={className}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    style={inlineStyle || undefined}
+    class={className}
+    loading="lazy"
+  />
+)}

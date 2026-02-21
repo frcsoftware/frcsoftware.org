@@ -1,0 +1,213 @@
+---
+/**
+ * ContentFigure component - Image or YouTube video with optional caption, border, and width control
+ *
+ * Usage in MDX:
+ *
+ * Images:
+ * <ContentFigure src="../img/folder/image.webp" alt="Description">
+ *   Optional **markdown** caption here
+ * </ContentFigure>
+ *
+ * <ContentFigure src="../img/folder/image.webp" alt="Description" width="60%" border>
+ *   Caption with *italic* and [links](url)
+ * </ContentFigure>
+ *
+ * <ContentFigure src="../img/folder/image.webp" alt="Description" border="2px dashed red">
+ *   Custom border style
+ * </ContentFigure>
+ *
+ * <ContentFigure src="../img/folder/image.webp" alt="Description" align="left" width="50%">
+ *   Left-aligned image
+ * </ContentFigure>
+ *
+ * YouTube videos:
+ * <ContentFigure src="https://www.youtube.com/watch?v=VIDEO_ID">
+ *   Video caption here
+ * </ContentFigure>
+ *
+ * <ContentFigure src="https://youtu.be/VIDEO_ID" width="80%">
+ *   Caption with **markdown** support
+ * </ContentFigure>
+ *
+ * Props:
+ * - src: Image path (relative or absolute) OR YouTube URL
+ * - alt: Alt text for accessibility (images only)
+ * - width: Width of the figure (e.g., "60%", "400px") - defaults to 100%
+ * - border: Add a border (boolean for default style, or string for custom CSS border)
+ * - align: Alignment of the figure ("left", "center", "right") - defaults to "center"
+ */
+import { Image } from 'astro:assets';
+
+// Import all images from both locations for optimization (exclude GIFs)
+const contentImages = import.meta.glob<{ default: ImageMetadata }>('/src/content/docs/**/img/**/*.{webp,png,jpg,jpeg}', { eager: true });
+const assetImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/content/**/*.{webp,png,jpg,jpeg}', { eager: true });
+
+// Merge both image sources
+const allImages = { ...contentImages, ...assetImages };
+
+interface Props {
+  src: string;
+  alt?: string;
+  width?: string;
+  border?: boolean | string;
+  align?: 'left' | 'center' | 'right';
+  class?: string;
+}
+
+const { src, alt = '', width = '100%', border = false, align = 'center', class: className } = Astro.props;
+
+// Determine border style
+const hasBorder = Boolean(border);
+const borderStyle = typeof border === 'string' ? border : '5px solid var(--sl-color-gray-5)';
+
+// Determine margin based on alignment (no vertical margin)
+const marginLeft = align === 'right' ? 'auto' : '0';
+const marginRight = align === 'left' ? 'auto' : '0';
+const marginStyle = align === 'center' ? '0 auto' : `0 ${marginRight} 0 ${marginLeft}`;
+
+// Check if src is a YouTube URL
+function isYouTubeUrl(url: string): boolean {
+  return url.includes('youtube.com') || url.includes('youtu.be');
+}
+
+// Extract video ID from YouTube URL
+function extractVideoId(videoUrl: string): string {
+  // YouTube watch URL
+  if (videoUrl.includes('youtube.com/watch')) {
+    const urlObj = new URL(videoUrl);
+    return urlObj.searchParams.get('v') || '';
+  }
+  // YouTube short URL
+  if (videoUrl.includes('youtu.be/')) {
+    return videoUrl.split('youtu.be/')[1]?.split(/[?#]/)[0] || '';
+  }
+  // YouTube embed URL
+  if (videoUrl.includes('youtube.com/embed/')) {
+    return videoUrl.split('youtube.com/embed/')[1]?.split(/[?#]/)[0] || '';
+  }
+  return videoUrl;
+}
+
+// Helper to get optimized image from path
+function getOptimizedImage(srcPath: string): ImageMetadata | null {
+  // Try relative path first (for ../img/... style paths)
+  for (const [key, value] of Object.entries(allImages)) {
+    if (key.endsWith(srcPath.replace(/^\.\.\//, '').replace(/^\.\//, ''))) {
+      return value.default;
+    }
+    // Also try matching just the filename and relative structure
+    const normalizedSrc = srcPath.replace(/^\.\.\//, '').replace(/^\.\//, '');
+    if (key.includes(normalizedSrc)) {
+      return value.default;
+    }
+  }
+
+  // Try absolute path style (for /folder/image.webp)
+  const assetPath = `/src/assets/content${srcPath}`;
+  const imageModule = allImages[assetPath];
+  if (imageModule?.default) {
+    return imageModule.default;
+  }
+
+  return null;
+}
+
+const isVideo = isYouTubeUrl(src);
+const videoId = isVideo ? extractVideoId(src) : '';
+const embedUrl = isVideo ? `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080` : '';
+const optimizedImage = !isVideo ? getOptimizedImage(src) : null;
+const hasCaption = Astro.slots.has('default');
+---
+
+<figure class:list={['content-figure', className]} style={`max-width: ${width}; margin: ${marginStyle};`}>
+  {isVideo ? (
+    <div class:list={['content-figure-video']} style={hasBorder ? `border: ${borderStyle};` : undefined}>
+      <iframe
+        src={embedUrl}
+        title="YouTube video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+    </div>
+  ) : (
+    <div class:list={['content-figure-image']} style={hasBorder ? `border: ${borderStyle};` : undefined}>
+      {optimizedImage ? (
+        <Image
+          src={optimizedImage}
+          alt={alt}
+          class="figure-img"
+        />
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          class="figure-img"
+          loading="lazy"
+        />
+      )}
+    </div>
+  )}
+  {hasCaption && (
+    <figcaption class="content-figure-caption">
+      <slot />
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .content-figure {
+    display: block;
+  }
+
+  /* Image styles */
+  .content-figure-image {
+    display: block;
+    line-height: 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .content-figure-image .figure-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+  }
+
+  /* Video styles */
+  .content-figure-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--sl-color-gray-6);
+  }
+
+  .content-figure-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Caption styles - matches Slides component */
+  .content-figure-caption {
+    font-family: 'Inter', system-ui, sans-serif;
+    text-align: center;
+    color: var(--sl-color-gray-2);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin: 0;
+    padding: 1rem 1rem 0.5rem;
+  }
+
+  .content-figure-caption :global(*) {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+</style>

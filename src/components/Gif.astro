@@ -1,0 +1,107 @@
+---
+/**
+ * Gif component - Display animated WebM videos or WebP animations with consistent styling
+ *
+ * Usage in MDX:
+ * <Gif src="/path/to/animation.webm" />
+ * <Gif src="/path/to/animation.webm" center />
+ * <Gif src="/path/to/animation.webm" center scale="60%">Caption text here</Gif>
+ * <Gif src="/path/to/animation.webp" scale="80%" />
+ *
+ * Props:
+ * - src (required): Path to the animation file (.webm or .webp)
+ * - center: Centers the animation (default: false)
+ * - scale: Sets the max-width (e.g., "60%", "80%", "400px")
+ * - alt: Alt text for accessibility (default: "")
+ */
+
+interface Props {
+  src: string;
+  center?: boolean;
+  scale?: string;
+  alt?: string;
+}
+
+const { src, center = false, scale, alt = '' } = Astro.props;
+
+// Get caption from slot content
+const rawCaption = await Astro.slots.render('default') || '';
+const caption = rawCaption.replace(/<\/?p>/g, '').trim();
+
+// Determine if this is a video or image format
+const isVideo = src.endsWith('.webm') || src.endsWith('.mp4');
+
+// Build wrapper classes
+const wrapperClasses = ['gif-container'];
+if (center) wrapperClasses.push('gif-centered');
+if (caption) wrapperClasses.push('gif-with-caption');
+
+// Build media styles
+const mediaStyles = scale ? `max-width: ${scale};` : '';
+---
+
+<figure class={wrapperClasses.join(' ')}>
+  {isVideo ? (
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      style={mediaStyles}
+      aria-label={alt}
+    >
+      <source src={src} type="video/webm" />
+      Your browser does not support the video tag.
+    </video>
+  ) : (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      style={mediaStyles}
+    />
+  )}
+  {caption && <figcaption set:html={caption} />}
+</figure>
+
+<style>
+  .gif-container {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gif-container.gif-centered {
+    align-items: center;
+  }
+
+  .gif-container video,
+  .gif-container img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+  }
+
+  .gif-container.gif-centered video,
+  .gif-container.gif-centered img {
+    margin: 0 auto;
+  }
+
+  .gif-container figcaption {
+    font-family: 'Inter', system-ui, sans-serif;
+    margin-top: 0.75rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .gif-container.gif-centered figcaption {
+    text-align: center;
+  }
+
+  .gif-container figcaption :global(*) {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+</style>

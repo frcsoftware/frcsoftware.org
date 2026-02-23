@@ -6,7 +6,7 @@ import remarkFigure from './src/plugins/remark-figure';
 import remarkImageAttributes from './src/plugins/remark-image-attributes';
 
 export default defineConfig({
-  site: 'https://frcsoftware.github.io',
+  site: 'https://frcsoftware.org',
   prefetch: true,
 
   markdown: {
@@ -17,8 +17,32 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'FRCSoftware.org',
+      favicon: '/favicon.svg',
+      head: [
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: 'https://frcsoftware.org/favicon.svg',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image:alt',
+            content: 'FRCSoftware.org logo icon',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:description',
+            content: 'The comprehensive learning guide for FRC programming',
+          },
+        },
+      ],
       logo: {
-        src: './src/assets/universal/file-code-white.svg',
+        src: './src/assets/universal/favicon-white.svg',
       },
       customCss: [
         './src/styles/global.css',

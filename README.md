@@ -357,5 +357,5 @@ See the [Contribution Guide](/contribution/methodsofcontributing/) on the websit
 
 ## Links
 
-- [FRCSoftware.org](https://frcsoftware.github.io/)
+- [FRCSoftware.org](https://frcsoftware.org/)
 - [GitHub Repository](https://github.com/frcsoftware/frcsoftware.github.io)

@@ -26,6 +26,7 @@ jobs:
         uses: withastro/action@v5
 
   deploy:
+    if: github.ref == 'refs/heads/main' && github.repository == 'frcsoftware/frcsoftware.org'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

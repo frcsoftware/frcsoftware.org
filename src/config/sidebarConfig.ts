@@ -60,7 +60,6 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
         { label: 'Intro to Programmming', slug: 'getting-started/intro-to-prog' },
         { label: 'Required Tools', slug: 'getting-started/required-tools' },
         { label: 'VS Code Overview', slug: 'getting-started/vscode-overview' },
-        { label: 'AdvantageScope Overview', slug: 'getting-started/ascope-overview' },
         { label: 'Forking and Cloning', slug: 'getting-started/forking-and-cloning' },
       ],
     },

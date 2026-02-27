@@ -4,20 +4,23 @@
  *
  * Usage in MDX:
  *
- * Images:
- * <ContentFigure src="../img/folder/image.webp" alt="Description">
- *   Optional **markdown** caption here
- * </ContentFigure>
+ * Images (with glob import - recommended for unique filenames):
+ * export const images = import.meta.glob('./img/*.webp', { eager: true, import: 'default' });
+ * <ContentFigure src={images['./img/image.webp']} alt="Description" />
  *
- * <ContentFigure src="../img/folder/image.webp" alt="Description" width="60%" border>
+ * Images (string path - uses loose matching):
+ * <ContentFigure src="./img/image.webp" alt="Description" />
+ *
+ * With options:
+ * <ContentFigure src={images['./img/image.webp']} alt="Description" width="60%" border>
  *   Caption with *italic* and [links](url)
  * </ContentFigure>
  *
- * <ContentFigure src="../img/folder/image.webp" alt="Description" border="2px dashed red">
+ * <ContentFigure src={images['./img/image.webp']} alt="Description" border="2px dashed red">
  *   Custom border style
  * </ContentFigure>
  *
- * <ContentFigure src="../img/folder/image.webp" alt="Description" align="left" width="50%">
+ * <ContentFigure src={images['./img/image.webp']} alt="Description" align="left" width="50%">
  *   Left-aligned image
  * </ContentFigure>
  *
@@ -31,7 +34,7 @@
  * </ContentFigure>
  *
  * Props:
- * - src: Image path (relative or absolute) OR YouTube URL
+ * - src: ImageMetadata (from glob import), image path string, or YouTube URL
  * - alt: Alt text for accessibility (images only)
  * - width: Width of the figure (e.g., "60%", "400px") - defaults to 100%
  * - border: Add a border (boolean for default style, or string for custom CSS border)
@@ -47,7 +50,7 @@ const assetImages = import.meta.glob<{ default: ImageMetadata }>('/src/assets/co
 const allImages = { ...contentImages, ...assetImages };
 
 interface Props {
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
   width?: string;
   border?: boolean | string;
@@ -56,6 +59,9 @@ interface Props {
 }
 
 const { src, alt = '', width = '100%', border = false, align = 'center', class: className } = Astro.props;
+
+// Check if src is already an ImageMetadata object (from glob import)
+const isImageMetadata = typeof src === 'object' && src !== null && 'src' in src;
 
 // Determine border style
 const hasBorder = Boolean(border);
@@ -66,9 +72,10 @@ const marginLeft = align === 'right' ? 'auto' : '0';
 const marginRight = align === 'left' ? 'auto' : '0';
 const marginStyle = align === 'center' ? '0 auto' : `0 ${marginRight} 0 ${marginLeft}`;
 
-// Check if src is a YouTube URL
-function isYouTubeUrl(url: string): boolean {
-  return url.includes('youtube.com') || url.includes('youtu.be');
+// Check if src is a YouTube URL (only for string sources)
+function isYouTubeUrl(source: string | ImageMetadata): boolean {
+  if (typeof source !== 'string') return false;
+  return source.includes('youtube.com') || source.includes('youtu.be');
 }
 
 // Check if src is a local/remote video file URL
@@ -122,7 +129,19 @@ const isYouTubeVideo = isYouTubeUrl(src);
 const isLocalVideo = !isYouTubeVideo && isVideoFile(src);
 const videoId = isYouTubeVideo ? extractVideoId(src) : '';
 const embedUrl = isYouTubeVideo ? `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080` : '';
-const optimizedImage = !isYouTubeVideo && !isLocalVideo ? getOptimizedImage(src) : null;
+
+// Determine the image source - either already ImageMetadata, or resolve from string path
+let optimizedImage: ImageMetadata | null = null;
+if (!isYouTubeVideo && !isLocalVideo) {
+  if (isImageMetadata) {
+    // Already an ImageMetadata object from glob import
+    optimizedImage = src as ImageMetadata;
+  } else if (typeof src === 'string') {
+    // Try to resolve string path
+    optimizedImage = getOptimizedImage(src);
+  }
+}
+
 const hasCaption = Astro.slots.has('default');
 ---
 
@@ -162,7 +181,7 @@ const hasCaption = Astro.slots.has('default');
         />
       ) : (
         <img
-          src={src}
+          src={typeof src === 'string' ? src : ''}
           alt={alt}
           class="figure-img"
           loading="lazy"

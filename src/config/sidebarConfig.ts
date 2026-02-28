@@ -52,16 +52,29 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
     },
   ],
 
-  // Resources section (content lives at /resources but navbar says "Other Resources")
-  '/resources': [
+  // Getting Started section
+  '/getting-started': [
     {
-      label: 'Resources',
+      label: 'Getting Started',
       items: [
-        { label: 'Overview', slug: 'resources' },
-        { label: 'Glossary', slug: 'resources/glossary' },
+        { label: 'Intro to Programmming', slug: 'getting-started/intro-to-prog' },
+        { label: 'Required Tools', slug: 'getting-started/required-tools' },
+        { label: 'VS Code Overview', slug: 'getting-started/vscode-overview' },
+        { label: 'Forking and Cloning', slug: 'getting-started/forking-and-cloning' },
       ],
     },
   ],
+
+  // Resources section (content lives at /resources but navbar says "Other Resources")
+  // '/resources': [
+  //   {
+  //     label: 'Resources',
+  //     items: [
+  //       { label: 'Overview', slug: 'resources' },
+  //       { label: 'Glossary', slug: 'resources/glossary' },
+  //     ],
+  //   },
+  // ],
 };
 
 /**

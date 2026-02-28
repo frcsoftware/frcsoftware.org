@@ -78,6 +78,11 @@ function isYouTubeUrl(source: string | ImageMetadata): boolean {
   return source.includes('youtube.com') || source.includes('youtu.be');
 }
 
+// Check if src is a local/remote video file URL
+function isVideoFile(url: string): boolean {
+  return /\.(webm|mp4|ogg)(\?|#|$)/i.test(url);
+}
+
 // Extract video ID from YouTube URL
 function extractVideoId(videoUrl: string): string {
   // YouTube watch URL
@@ -120,13 +125,14 @@ function getOptimizedImage(srcPath: string): ImageMetadata | null {
   return null;
 }
 
-const isVideo = isYouTubeUrl(src);
-const videoId = isVideo && typeof src === 'string' ? extractVideoId(src) : '';
-const embedUrl = isVideo ? `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080` : '';
+const isYouTubeVideo = isYouTubeUrl(src);
+const isLocalVideo = !isYouTubeVideo && isVideoFile(src);
+const videoId = isYouTubeVideo ? extractVideoId(src) : '';
+const embedUrl = isYouTubeVideo ? `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080` : '';
 
 // Determine the image source - either already ImageMetadata, or resolve from string path
 let optimizedImage: ImageMetadata | null = null;
-if (!isVideo) {
+if (!isYouTubeVideo && !isLocalVideo) {
   if (isImageMetadata) {
     // Already an ImageMetadata object from glob import
     optimizedImage = src as ImageMetadata;
@@ -140,7 +146,7 @@ const hasCaption = Astro.slots.has('default');
 ---
 
 <figure class:list={['content-figure', className]} style={`max-width: ${width}; margin: ${marginStyle};`}>
-  {isVideo ? (
+  {isYouTubeVideo ? (
     <div class:list={['content-figure-video']} style={hasBorder ? `border: ${borderStyle};` : undefined}>
       <iframe
         src={embedUrl}
@@ -150,6 +156,20 @@ const hasCaption = Astro.slots.has('default');
         allowfullscreen
         loading="lazy"
       ></iframe>
+    </div>
+  ) : isLocalVideo ? (
+    <div class:list={['content-figure-video']} style={hasBorder ? `border: ${borderStyle};` : undefined}>
+      <video
+        src={src}
+        controls
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+      >
+        Your browser does not support the video tag.
+      </video>
     </div>
   ) : (
     <div class:list={['content-figure-image']} style={hasBorder ? `border: ${borderStyle};` : undefined}>
@@ -213,6 +233,19 @@ const hasCaption = Astro.slots.has('default');
     width: 100%;
     height: 100%;
     border: none;
+  }
+
+  .content-figure-video video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block;
+    object-fit: contain;
+    object-position: center;
   }
 
   /* Caption styles - matches Slides component */

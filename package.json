@@ -11,10 +11,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.37.0",
+    "@astrojs/starlight": "^0.37.6",
     "@mdi/js": "^7.4.47",
-    "astro": "^5.6.1",
-    "sharp": "^0.34.2",
+    "astro": "^5.18.0",
+    "sharp": "^0.34.5",
     "unist-util-visit": "^5.1.0"
   }
 }

@@ -93,8 +93,8 @@
     text-align: center;
 }
 
-.sl-markdown-content figure img,
-.sl-markdown-content figure video {
+.sl-markdown-content figure:not(.content-figure) img,
+.sl-markdown-content figure:not(.content-figure) video {
     max-width: 100%;
     max-height: 50vh;
     width: auto !important;

@@ -1,0 +1,52 @@
+---
+title: Stage 1A Vocabulary
+description: An overview of important vocabulary that is used in Stage 1A
+prev: ../stage-overview
+next: false
+---
+
+Before programming your first robot, there are some electrical and hardware terms that are important to go over.
+
+<Aside type="tip">Open this page in a new tab to use as a reference! </Aside>
+
+## Drivetrain
+
+A drivetrain describes the mechanism used to make a robot drive.
+In FRC, there are many different types of drivetrains.
+The drivetrain that we will be programming in this stage is called a tank drive.
+
+For programming kitbot's drivetrain, we will be using the `DifferentialDrive` object which describes the drivetrain.
+We will also be using the `ArcadeDrive` method which tells the motors to drive so that when using a controller (such as an xbox controller),
+the joystick's y axis drives the robot forward and backwards, and the joystick's x axis controls the rotation.
+
+## Motor Controller
+
+Motor controllers are the electronic interfaces which control the speed and direction of the motor.
+When writing code to control a motor, you are writing code to control the motor's motor controller.
+In Stage 1a, you will use either the SPARK MAX or the TalonFX.
+
+### SPARK MAX
+
+A SPARK MAX is the motor controller that belongs to the REV ecosystem.
+REV is a vendor that has electronic and hardware for FIRST teams.
+SPARK MAXes are mainly used to control NEO motors, but may also control brushless motors from other vendors, or even brushed motors.
+
+### TalonFX
+
+The TalonFX is the primary motor controller used for the CTRE ecosystem.
+CTRE is a vendor for FRC that specializes in electronics for FIRST teams.
+It is used to control motors such as a Kraken motor.
+Unlike the SPARK MAX, the TalonFX is built into the motor.
+
+## Systemcore
+
+Systemcore is the main processor for robot code.
+It can be thought of as the "brain" of the robot.
+
+## CAN
+
+CAN stands for Controller Area Network, and is used to communicate with motor controllers and other devices on the robot.
+CAN communication typically uses twisted pairs of yellow and green cables.
+For stage 1a, CAN is used to communicate with motor controllers.
+A **CAN Bus** describes a chain of devices connected together by a single pair of CAN wires.
+A CAN bus starts at the Systemcore, connects with any number of devices, and typically ends at the [Power Distribution Hub](https://docs.revrobotics.com/ion-control/pdh/overview).

@@ -99,6 +99,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     label: 'Stage 1A Introduction',
                                     slug: 'learning-course/stage1/stage1a/stage-overview',
                                 },
+                                {
+                                    label: 'Stage 1A Vocabulary',
+                                    slug: 'learning-course/stage1/stage1a/1a-vocabulary',
+                                },
                                 // {
                                 //     label: 'TBD',
                                 //     slug: 'stage-1a-commands/the-command-body',

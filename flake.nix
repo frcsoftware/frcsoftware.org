@@ -1,5 +1,5 @@
 {
-  description = "A flake to provide dev shells";
+  description = "A flake to provide a dev environment for FRC/FTC Software development";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";

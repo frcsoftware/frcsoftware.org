@@ -2,7 +2,7 @@
   description = "A flake to provide a dev environment for FRC/FTC Software development";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixpkgs-unstable";
   };
 
   outputs = inputs: {

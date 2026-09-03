@@ -8,10 +8,14 @@ description: Best practices for Git
 A commit is a saved state of your repository.
 You should make a commit every time you complete a task (e.g. `Add per-path auto choosers`, `Fix joystick inputs inversion`, `Tune chassis heading PID gains`).
 This helps keep track of when new code is added.
-When you add changes through smaller, focused commits, you can isolate when a bug is introduced and easily roll back to a working state
+When you add changes through smaller, focused commits, you can isolate when a bug is introduced and easily roll back to a working state.
+See [this article](https://www.freshconsulting.com/insights/blog/atomic-commits/) on atomic commits for more information.
+
 Writing descriptive commit messages make it easy to see exactly what changed.
-While diffs can only show what changed in code, commit messages can also communicate the context about a change and explain the why.
+Avoid focusing on how you made the change (that's what the diff is for).
+Instead highlight the what and why.
 By convention, commit messages are concise, begin with a capital letter, don't use punctuation, and are in the imperative mood.
+If you want to include more information in a commit message, consider using the commit body.
 
 Compare the following examples of good vs bad commit messages:
 
@@ -21,15 +25,8 @@ Compare the following examples of good vs bad commit messages:
 | Use the imperative mood: "Refactor swerve drive logic"                                  | Are past tense, lowercase, or punctuated: "refactored swerve drive logic." |
 | Specific and provide context: "Fix swerve drive limiter bug for reliable drive control" | Are vague: "Fix bug" or "WIP"                                              |
 
-See this specification on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) to learn about standardized conventions for writing commit messages.
-
-<Aside type="tip">
-Commit early and commit often.
-
-</Aside>
-
-For advanced users, the command line offers more capabilities.
-[GitHub Desktop](https://docs.github.com/en/desktop/managing-commits) presents a simpler way to manage commits, using checkboxes to select files to commit, a text box for commit messages, and a button to create a commit.
+For more on writing good commit messages, see [this article](https://cbea.ms/git-commit/).
+Standardized specifications such as [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) are also good ways to keep commit messages organized.
 
 ## Branches
 
@@ -56,16 +53,22 @@ It is a good practice to push to your branch frequently to back up your work in 
 Creating a new repository for different major projects or new seasons is a helpful way to keep track of projects.
 Repositories should have names that represent the purpose of its code, like "2026-rebuilt", "2026-kitbot", and "2026-offseason-turret".
 
-## Additional Information
+## Clients
 
-An in-depth tutorial can be found at the official [git website](https://git-scm.com/docs/gittutorial).
+A Git client provides an interface for interacting with a Git repository.
 
-A guide for correcting common mistakes can be found at the [git flight rules repository](https://github.com/k88hudson/git-flight-rules/blob/master/README.md).
+For new Git users, [GitHub Desktop](https://docs.github.com/en/desktop) is recommended because it presents a simple, graphical way to manage a Git repository.
+Creating a commit is as easy as selecting files, writing the commit message in a text box, and clicking a button.
 
-[GitHub Desktop](https://docs.github.com/en/desktop) is an alternative to command line or web browser interactions with GitHub.
-With GitHub Desktop, you can perform Git commands through a graphical user interface.
-It's a good resource for teams who are new to programming and may not have a lot of Git support or experience on the team, especially rookie teams.
-While GitHub Desktop offers it's own simplified ways of using Git and GitHub, the information mentioned in this section can still apply.
+[Source control in VSCode](https://code.visualstudio.com/docs/sourcecontrol/overview) also offers a simple interface for Git.
 
-[Source control in VS Code](https://code.visualstudio.com/docs/sourcecontrol/overview) also offers a GUI for integrated source code management.
-It lets you run Git commands from the command palette.
+[lazygit](https://github.com/jesseduffield/lazygit) is an intermediate option that retains much of the power of Git's command-line interface while being intuitive to use.
+
+Git's command-line interface is the most raw and powerful Git client.
+However, it may be difficult to learn.
+
+## Additional Resources
+
+An in-depth tutorial can be found at the official [Git website](https://git-scm.com/docs/gittutorial).
+
+A guide for correcting common mistakes can be found at the [Git flight rules repository](https://github.com/k88hudson/git-flight-rules/blob/master/README.md).

@@ -9,41 +9,33 @@ codeRegionSources:
 
 ## Syntax
 
-As you start programming, you might make a mistake or make a typo.
-When that happens, your code will have a red line under it.
-This is because Java has rules called syntax.
-Syntax is a set of rules that have to be followed so that the computer can understand and run your code.
-It’s important to pay attention to the syntax!
-If your code has a red line under it, first check whether the syntax is correct.
-This can be done by researching online or by comparing your code with examples.
-
-You can also learn what’s wrong with your code when you put the cursor over the section of the code with the red line and read what the error message is.
-Error messages will not tell you exactly what's wrong with your code.
-If you’re unsure on what the error message means, you can look it up to get additional context.
-
-<Slides>
-![Slide 1](/learning-course/stage0/java-fundamentals/ErrorExample1.webp) An example of a syntax error (note the squiggly line)
-
-![Slide 2](/learning-course/stage0/java-fundamentals/ErrorExample2.webp) An example of a syntax error popup
-
-</Slides>
+Syntax is the basic set of rules that all programs in a language must follow.
+It's similar to writing.
+In writing, the first word in a sentence has to start with a uppercase letter or all sentence need in a period.
+Java's syntax is very specific, there are different rules for how certain lines of code are written.
+Syntax errors are the most common sorts of errors.
+Whenever the syntax is mentioned, pay attention closely.
 
 ## Variables
 
 Variables are containers that are used to store information in a program.
 This could be a variable that holds the temperature or a variable that holds the speed of the motor.
 
-Variable declarations have the following syntax:
+To make a variable, there are 5 parts:
 
-{/* rli:ignore */}
+1. Data type
+2. Name of the variable
+3. Equals sign
+4. Value
+5. Semi-colon
 
-```java
-Datatype name = value;
-```
+### Data Types
 
 Data types refer to the type of value that our variable has.
-It helps tell our program more information about our variables such as what type of information it holds and how it can be used.
-Data types can include numbers, characters, or a string of words.
+It tells our program more information about our variables such as what type of information it holds and how it can be used.
+Unlike many programming languages like Python, in Java, every variable must have a type.
+This makes your programs more reliable, because the compiler will prevent you from using the wrong type with an error.
+
 Some example data types that are commonly used in FRC programming are:
 
 - int: Integer numbers that are positive or negative.
@@ -56,16 +48,22 @@ Some example data types that are commonly used in FRC programming are:
 - String: Holds a sequence of characters.
   Denoted by double quotes (").
   Example: “Hello World”
-- char: Holds a single character.
-  Denoted by single quotes (').
-  Example: 'A'
 
-The name of your variable can be almost anything you want, but it should be easy to read and make sense to others who may be reading your code.
-One major exception is spaces, which are forbidden in variable names.
-Instead, you should write variables in what's known as camel case (`frontLeftDrive`).
-Upper snake case (`FRONT_LEFT_DRIVE`) should be used instead for constants, which we will learn about later in the course.
-Variable names can have numbers at any point except for the first character.
-(`motor2` is a valid name, `2motor` is not).
+<Aside type="note">
+    When creating a String, make sure the S is capitalized! `string robotName =
+    "Plunk"` will throw an error but `String robotName = "Plunk"` will not.
+</Aside>
+
+### Name
+
+In Java, variable names may only consist of letters, numbers and underscores `_`, but variable names cannot start with a number.
+The name of the variable can be whatever you want, however, we recommend making them descriptive and easy to read.
+This will make it much easier for you to understand your own code and for others to help you.
+
+One common variable naming style is camel case, where each word is capitalized except the first.
+For example, `frontLeftDrive`, `currentTemperature`, and `targetPosition` are all camel case.
+Another common variable naming style is upper snake case, where each word is capitalized and an underscore is used in between each word.
+For example: `BACK_LEFT_DRIVE`, and `GEAR_RATIO` are in upper snake case.
 
 <Aside type="note">
 Java is a case-sensitive programming language!
@@ -75,14 +73,15 @@ Even though it’s spelled the same, if your variable name is MotorID then you t
 
 </Aside>
 
+### Semi-colons
+
 In Java, semi-colons `;` are similar to a period in a sentence.
 It is what tells the compiler when a statement ends.
-Semi-colons are used commonly in programming and aren’t only for creating variables.
-We will see more examples of this later in the course.
+In most cases, not having a semi-colon at the end of a line will cause an error.
 
-In FRC, variables can be used to hold information about the robot and its different mechanisms.
-The example below shows 3 variables that were used for a climber mechanism, `CLIMBER_ID` is an integer that holds the motor controller ID number which is 51.
-`UP_POSITION` is a double that holds the value -33.5 and `DOWN_POSITION` is a double that holds the value 0.
+### Example
+
+Taking what we learned, the following are four variables that each use a different data type.
 
 ```java #variables
 
@@ -105,8 +104,10 @@ A print statement in Java looks like:
 
 ```
 
-What the print statement does is take information inside the parentheses, in the previous example, it’s “hello!”, and prints it out to the terminal screen.
-When using a print statement, the text that we want to print out goes inside the parentheses and is in quotes.
+The print statement uses information given inside the parentheses, in the previous example, it’s the String “hello!”, and prints it out to the terminal screen.
+When using a print statement to output text, you have to surround the text with quotes, to indicate that you want to work with that text literally.
+A print statement without the quotes will instead interpret the text a variable name and attempt to print the data stored by that variable.
+This may cause an error if you intended to print out the text literally since the text is likely not an existing variable.
 However, if we are printing out the value of a variable, then we do not need quotes, as shown below.
 
 ```java #printVariable
@@ -117,6 +118,9 @@ However, if we are printing out the value of a variable, then we do not need quo
 
 When programming, we use comments to write notes that explain what the code does.
 This helps make the code more readable for others because if they are unsure of what your code does, they can read your comments.
+Writing comments can also help you!
+Leaving comments that explain what code does can be helpful when trying to understand what your code does and when debugging.
+
 Comments are ignored by the compiler, which also means that you can use comments to prevent code from running.
 In Java, there are two types of comments: single-line comments and multi-line comments.
 
@@ -147,6 +151,24 @@ For example, this is a comment with two lines of text.
 ```java #multiLineComment
 
 ```
+
+### Writing Comments
+
+It's best to use comments to explain what the code is trying to do with words, rather then just restating the code.
+For example, this is a useful comment because it explains what the purpose is and how it accomplishes the task.
+
+```java #goodComment
+
+```
+
+This is not a useful comment because it doesn't tell the reader what the purpose of the code is.
+It just restates the code.
+
+```java #badComment
+
+```
+
+There's no need to use comments for every line of code, but if something might be confusing to someone else later (or even yourself), leave a comment!
 
 ## Java Fundamentals Exercise
 

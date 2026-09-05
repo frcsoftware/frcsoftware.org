@@ -5,6 +5,7 @@ import remarkPresetLintRecommended from 'remark-preset-lint-recommended';
 import remarkNoInlineCodeFences from './src/plugins/remark-no-inline-code-fences.mjs';
 import remarkNoHtmlLinks from './src/plugins/remark-no-html-links.mjs';
 import remarkLintNoDeadUrls from 'remark-lint-no-dead-urls';
+import remarkForceRootRelative from './src/plugins/remark-force-root-relative.mjs';
 import remarkLintNoLiteralUrls from 'remark-lint-no-literal-urls';
 
 export default {
@@ -33,5 +34,6 @@ export default {
                   },
               ]
             : () => undefined,
+        remarkForceRootRelative,
     ],
 };

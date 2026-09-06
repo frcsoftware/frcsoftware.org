@@ -1,0 +1,191 @@
+---
+title: Debugging
+description: An Intro to Debugging
+prev: learning-course/stage0/conditionals
+next: false
+codeRegionSources:
+    default: stage0/snippets/src/Debugging.java
+---
+
+When completing the Exercise for Java Fundamentals, you probably ran into errors and then fixed them.
+This means that you did some debugging!
+Debugging is the process of finding those problems, often called bugs, in our code then fixing them.
+This section will go over how to figure out what the problems are and how to solve them.
+
+<Aside type="note" title="Did you know?">
+    Using the word "bug" to refer to an error in a program was popularized by Grace Hopper, an American computer scientist.
+    While her and her team was working on the Mark II computer, they were able to trace an error to month that was stuck 
+    in the computer. 
+    They put the month in their notebook with the note "First actual case of bug being found".
+
+</Aside>
+
+## Interpreting a Stacktrace
+
+When an error happens, VS Code will tell you in the code itself or in the terminal.
+When the code runs and there is an error, a message will appear in the terminal.
+This message is called a **stacktrace**.
+A stacktrace traces or identifies the spot in the program where the error happened.
+This can have a lot of useful information about the type of error and how you can fix in.
+
+# Types of Errors
+
+There's a few different types of errors that you can run into when writing code.
+Let's take a look!
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Timing</th>
+            <th>Symptoms</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Syntax Error</td>
+            <td>Compile time</td>
+            <td>The compiler will display an error message</td>
+        </tr>
+        <tr>
+            <td>Runtime Error</td>
+            <td>Run time</td>
+            <td>The program will display an error message</td>
+        </tr>
+        <tr>
+            <td>Logic Error</td>
+            <td>Run time</td>
+            <td>The code will run but not function as intended</td>
+        </tr>
+    </tbody>
+</table>
+
+## Syntax Error
+
+Before the program runs, there's a program called a compiler that takes all the code you wrote and turns it into instructions a machine will understand.
+When there is an error with the syntax, the compiler will show an error.
+VS Code shows these errors by putting a red line under the part of code that it thinks is wrong,
+just like a typo in Google Docs.
+
+This error is called a **syntax error** because these errors occur when you mess up the syntax of a language.
+We say this error happens at compile time because it happens when the compiler is translating the code,
+before it ever actually runs.
+
+<Aside type="note">
+    When programming, a yellow line might appear under a part of code. Most of
+    the time, this is not an error. It's a warning and it typically does not
+    affect the output of the code. The warning is just there to say that the
+    code is not being used.
+</Aside>
+
+For instance, the following code would generate a syntax error:
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError1.webp"
+    alt=" int number = 4; Systme.out.println(number); // <- System is misspelled!"
+    width="600px"
+    height="800px"
+/>
+
+Misspelling variable names is another form of syntax errors.
+The following code would also generate a syntax error
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError2.webp"
+    alt=" int number = 4; System.out.println(numer); // <- number is misspelled!"
+    width="600px"
+    height="800px"
+/>
+
+If you notice that the code has the red line under it, put the cursor over that line of code.
+VS Code will give more information about the error.
+Let's look back at the previous misspelled variable name example,
+when putting the cursor over the error, it reads `numer cannot be resolved to a variable`.
+This means it's looking for a variable called "numer" but it can't find it.
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError3.webp"
+    alt=" int number = 4; System.out.println(numer); // <- number is misspelled! with numer cannot be resolved to a variable, on the top"
+    width="600px"
+    height="800px"
+/>
+
+Sometimes, errors are too subtle for the compiler to notice immediately, and it blames the wrong part of the code
+with a confusing error message.
+When this happens, look closely at the code, it's syntax, and try to find what went wrong.
+
+## Runtime Error
+
+The code might look like it has no errors, but when the code runs, an error appears.
+When this happens, it's a runtime error.
+Runtime errors are errors that can only be found when the program is running.
+One common types of runtime error is dividing by zero.
+
+Let's look at an example.
+{/* rli:ignore */}
+
+```java
+    int answer = 10 / 0;
+    System.out.println(answer);
+```
+
+The example looks like it should run.
+However, if the code was to run, it would give a runtime error for Diving by zero.
+The compiler would give an error similar to `Exception in thread "main" java.lang.ArithmeticException: / by zero at main.main(main.java:5)`
+By reading the error message, it's clear that the error is a divide by 0 error.
+This happens in `int answer = 10/0;` because it's diving by zero.
+One way to fix this error would be to swap the 10 and 0.
+
+<Aside type="Tip">
+    Runtime errors will tell you what line the error is on.
+    For example, `Exception in thread "main" java.lang.ArithmeticException: / by zero at main.main(main.java:5)`
+    has `(main.java:5)`.
+    That means the error is on line 5.
+
+</Aside>
+
+## Logic Error
+
+There will be times when the code runs, has no errors but it doesn't give the desired output.
+Typically, this does not mean that your syntax was wrong.
+Most of the time, the instructions or the logic in your code isn't correct.
+This means that the code could have wrong conditions, formulas, or operators.
+
+Computers don't know what we are expecting them to do.
+They only know what we told them.
+If the instructions given are wrong, then the output will be wrong too.
+
+Let's look at simple example
+
+```java #logicError1
+
+```
+
+This example finds the area of a rectangle.
+The width is 2 and the height is 5.
+If this code was to be ran, it would print out `Area of the rectangle is 7`, but that isn't right.
+The area should be 10.
+The code runs with no errors, so why it the code doing the math wrong?
+When trying to find the area of a rectangle, the equation for the area is width times height.
+In the code, it isn't multiplying the width and height, it adds the two.
+Therefore, changing the addition sign to a multiplication sign will fix the issue and it should print out `Area of the rectangle is 10`.
+This is a simple example of a logic issue.
+The code ran with no errors but, it was given the wrong operator.
+
+Finding logical errors in code can mean taking time to read through your code and make sure what it does matches up with what you want your code to do.
+Adding `System.out.println();` can also help break down what the code is doing at different spots in the program.
+
+## Helpful Tips
+
+Errors will always appear in code, but there are things to do to help avoid errors appear as often.
+
+- Check for typos in your variable names or in the code.
+- Look out for missing semi-colons and make sure the syntax is correct.
+- Use variable names that match their meaning.
+- Create the variable first, don't use variables that have not been made yet.
+
+When there is an error, read through the error message carefully.
+If you're stuck, use online resources!
+Looking up an error can help point you to the right direction on how to fix it.
+
+- For some, changing VS Code to be in a more accessible font (i.e Comic Sans) can be helpful in reading code to find or avoid errors.

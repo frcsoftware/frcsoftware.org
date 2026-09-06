@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-node scripts/post-checkout.mjs "$1" "$2" "$3"

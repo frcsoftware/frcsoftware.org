@@ -1,5 +1,0 @@
-if git diff --name-only @{u}..HEAD | grep -q '\.astro$'; then
-    astro check --minimumFailingSeverity warning
-else
-    tsc --noEmit
-fi

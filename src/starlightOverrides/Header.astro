@@ -208,6 +208,91 @@ const { hasSidebar } = Astro.locals.starlightRoute;
     })();
 </script>
 
+<script is:inline>
+    (() => {
+        const storageKey = 'starlight-theme';
+
+        const getStoredTheme = () => {
+            try {
+                return localStorage.getItem(storageKey);
+            } catch {
+                return null;
+            }
+        };
+        const setStoredTheme = (/** @type {'light' | 'dark'} */ value) => {
+            try {
+                localStorage.setItem(storageKey, value);
+            } catch {
+                /* ignore */
+            }
+        };
+
+        const applyTheme = (
+            /** @type {'light' | string} */ theme,
+            store = false,
+        ) => {
+            const html = document.documentElement;
+            const normalized = theme === 'light' ? 'light' : 'dark';
+
+            html.dataset.theme = normalized;
+            // Only persist an explicit user choice. Browser-derived themes must
+            // stay un-stored so the site keeps following the OS/browser setting.
+            if (store) setStoredTheme(normalized);
+            // @ts-expect-error javascript...
+            if (window.StarlightThemeProvider?.updatePickers) {
+                // @ts-expect-error javascript...
+                window.StarlightThemeProvider.updatePickers(normalized);
+            }
+        };
+
+        const colorScheme = window.matchMedia('(prefers-color-scheme: light)');
+        const getPreferredTheme = () =>
+            colorScheme.matches ? 'light' : 'dark';
+
+        const init = () => {
+            const stored = getStoredTheme();
+            const explicit =
+                stored === 'light' || stored === 'dark' ? stored : null;
+
+            applyTheme(explicit || getPreferredTheme());
+
+            // Follow OS/browser changes unless the user has explicitly chosen a theme.
+            const onSchemeChange = () => {
+                const stored = getStoredTheme();
+                if (stored !== 'light' && stored !== 'dark') {
+                    applyTheme(getPreferredTheme());
+                }
+            };
+            if (!explicit) {
+                if (typeof colorScheme.addEventListener === 'function') {
+                    colorScheme.addEventListener('change', onSchemeChange);
+                } else if (typeof colorScheme.addListener === 'function') {
+                    colorScheme.addListener(onSchemeChange);
+                }
+            }
+
+            document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const current =
+                        document.documentElement.dataset.theme ||
+                        getPreferredTheme();
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    applyTheme(next, true);
+                });
+            });
+        };
+
+        if (
+            document.readyState === 'complete' ||
+            document.readyState === 'interactive'
+        ) {
+            init();
+        } else {
+            document.addEventListener('DOMContentLoaded', init);
+        }
+    })();
+</script>
+
 <style>
     /* Override the parent .header styles from Starlight */
     :global(.header) {

@@ -40,7 +40,7 @@ export const sidebarTopics = [
         label: 'Resources',
         id: 'resources',
         link: '/resources/overview/',
-        icon: 'folder',
+        icon: 'document',
         items: sidebarSections['/resources']![0]!.items.map(convertItem),
     },
     {

@@ -462,3 +462,22 @@ export function getPrevNextLinks(pathname: string): {
         next,
     };
 }
+
+export function getSidebarLinkLabel(
+    pathname: string,
+    href: string,
+): string | null {
+    const sections = getSidebarForPath(pathname);
+
+    const allLinks: { label: string; href: string }[] = [];
+
+    for (const section of sections) {
+        allLinks.push(...flattenSidebarItems(section.items));
+    }
+
+    const normalizedHref = href.endsWith('/') ? href : href + '/';
+
+    const link = allLinks.find((link) => link.href === normalizedHref);
+
+    return link?.label ?? null;
+}

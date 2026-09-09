@@ -7,7 +7,7 @@ const { names } = Astro.props;
 ---
 
 <ul class="contributor-pills">
-    {names.map((name) => <li set:html={name} />)}
+    {names.map((name) => <li>{name}</li>)}
 </ul>
 
 <style>

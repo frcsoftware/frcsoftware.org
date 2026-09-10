@@ -32,14 +32,12 @@ import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 public class Robot extends OpModeRobot {
 
   // [DriveMotorsLeft]
-  private final int leftLeaderID = 0;
-  public TalonFX leftLeader = new TalonFX(leftLeaderID, CANBus.systemcore(0));
+  private TalonFX leftLeader = new TalonFX(0, CANBus.systemcore(0));
   private TalonFX leftFollower = new TalonFX(1, CANBus.systemcore(0));
   // [/DriveMotorsLeft]
 
   // [DriveMotorsRight]
-  private final int rightLeaderID = 2;
-  public TalonFX rightLeader = new TalonFX(rightLeaderID, CANBus.systemcore(0));
+  private TalonFX rightLeader = new TalonFX(2, CANBus.systemcore(0));
   private TalonFX rightFollower = new TalonFX(3, CANBus.systemcore(0));
   // [/DriveMotorsRight]
 
@@ -88,7 +86,7 @@ public class Robot extends OpModeRobot {
     leftLeader.getConfigurator().apply(leftConfig);
     leftFollower.getConfigurator().apply(leftConfig);
 
-    leftFollower.setControl(new Follower(leftLeaderID, MotorAlignmentValue.Aligned));
+    leftFollower.setControl(new Follower(leftLeader.getDeviceID(), MotorAlignmentValue.Aligned));
     // [/MotorConfigLeft]
 
     // [MotorConfig]
@@ -97,7 +95,7 @@ public class Robot extends OpModeRobot {
     rightLeader.getConfigurator().apply(rightConfig);
     rightFollower.getConfigurator().apply(rightConfig);
 
-    rightFollower.setControl(new Follower(rightLeaderID, MotorAlignmentValue.Aligned));
+    rightFollower.setControl(new Follower(rightLeader.getDeviceID(), MotorAlignmentValue.Aligned));
     // [/MotorConfig]
   }
 

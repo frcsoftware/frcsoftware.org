@@ -56,10 +56,6 @@ This is how the motor controller objects for the left motors will look.
         ```java {ctreRobot}#DriveMotorsLeft
         ```
 
-For the CTRE code, the CAN ID of the leader motors are stored as a variable since they will be used later on to tell the follower which motor controller to follow.
-This helps prevent errors by ensuring a single source of truth for the correct CAN ID.
-Additionally, CTRE uses a CANBus object to store the CANBus instead of just an integer.
-
     </TabItem>
     <TabItem label = "REV">
         ```java {revRobot}#DriveMotorsLeft
@@ -173,7 +169,9 @@ It's important to remember that settings only get changed when the configuration
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label = "CTRE">
-        For CTRE Motor Controllers, becoming a follower is a `ControlRequest` instead of a configuration.
+        For CTRE Motor Controllers, following a different motor controller is a `ControlRequest` instead of a configuration.
+        `leaderMotor.getDeviceID()` is used to get the CAN Id to follow so their is a single source of truth.
+        The helps prevent errors because if the leader CAN Id ever changes, the code only needs to be updated in one spot.
 
         ```java {ctreRobot}#MotorConfigLeft
         ```
@@ -181,7 +179,7 @@ It's important to remember that settings only get changed when the configuration
     </TabItem>
     <TabItem label = "REV">
         For REV Motor Controllers, becoming a follower is a configuration so the follower setting gets changed before being applied to the follower motor using the leader motor as the function parameter.
-        This must happen after the configuration is applied to the Leader so the motor controller doesn't want to follow itself.
+        This must happen after the configuration is applied to the Leader so the Leading motor controller doesn't want to follow itself.
         `ResetMode.kResetSafeParameters` gets to tell the motor controller to reset all unchanged configurations to their default value.
         This prevents old configurations from being left on the controller.
         `PersistMode.kPersistParameters` is used so the configuration gets saved on the motor control so it persists even after power is removed.
@@ -330,10 +328,10 @@ By extending `PeriodicOpMode` these classes gain a few useful functions that are
 Two blank `PeriodicOpMode`s, `MyTeleop.java` and `MyAuto.java` are provided under the `opmode` folder.
 
 To control the robot with joysticks a Teleop OpMode needs to be created that periodically gives the `DifferentialDrive` instance new values from the controller.
-First a instance of `NiDsXboxController` needs to be created.
+First a instance of `XboxController` needs to be created.
 This class has functions that provide the state of different buttons on the controller.
 Multiple controllers can be used at once so the Driver Station gives each a slot.
-The index provided in the constructor tells the `NiDsXboxController`which slot to listen too.
+The index provided in the constructor tells the `XboxController`which slot to listen too.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.framework.RobotBase;
 
 public class IntakeLauncher implements Mechanism {
   private final TalonFX motor = new TalonFX(4, CANBus.systemcore(0));
@@ -63,6 +64,8 @@ public class IntakeLauncher implements Mechanism {
   }
 
   public void periodic() {
-    sim.periodic();
+    if (RobotBase.isSimulation()) {
+      sim.periodic();
+    }
   }
 }

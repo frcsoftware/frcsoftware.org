@@ -6,15 +6,18 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import first.robot.simulation.ClawSim;
+import first.robot.simulation.CoralSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
+import org.wpilib.hardware.discrete.DigitalInput;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
 public class Claw implements Mechanism {
     private final TalonFX motor;
+    private final DigitalInput sensor;
 
     private final ClawSim sim;
 
@@ -28,6 +31,7 @@ public class Claw implements Mechanism {
 
     public Claw() {
         motor = new TalonFX(23, CANBus.systemcore(2));
+        sensor = new DigitalInput(1);
 
         sim = new ClawSim(motor);
 
@@ -51,6 +55,8 @@ public class Claw implements Mechanism {
         Telemetry.log("Claw/Stator Current", statorCurrentSignal.getValueAsDouble());
         Telemetry.log("Claw/Supply Current", supplyCurrentSignal.getValueAsDouble());
         Telemetry.log("Claw/Active Commands", getRunningCommands().toString());
+
+        Telemetry.log("Claw/Has Coral", sensor.get());
     }
 
     /**
@@ -61,5 +67,9 @@ public class Claw implements Mechanism {
         return run((coro) -> {
             motor.setControl(voltageRequest.withOutput(voltage));
         }).named("Set Voltage: " + voltage + "V");
+    }
+
+    public boolean hasCoral() {
+        return sensor.get();
     }
 }

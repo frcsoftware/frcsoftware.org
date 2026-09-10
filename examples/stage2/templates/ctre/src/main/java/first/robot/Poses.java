@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Poses {
 
-    public static final Pose2d BLUE_REEF_A = new Pose2d(FieldConstants.BLUE_REEF_CENTER.plus(new Translation2d(1.4, -0.164309)), Rotation2d.ZERO);
+    public static final Pose2d BLUE_REEF_A = new Pose2d(FieldConstants.BLUE_REEF_CENTER.plus(new Translation2d(1.43, -0.164309)), Rotation2d.ZERO);
     public static final Pose2d BLUE_REEF_B = FieldConstants.mirrorY(BLUE_REEF_A);
     public static final Pose2d BLUE_REEF_C = BLUE_REEF_A.rotateAround(FieldConstants.BLUE_REEF_CENTER, Rotation2d.fromDegrees(60));
     public static final Pose2d BLUE_REEF_D = BLUE_REEF_B.rotateAround(FieldConstants.BLUE_REEF_CENTER, Rotation2d.fromDegrees(60));

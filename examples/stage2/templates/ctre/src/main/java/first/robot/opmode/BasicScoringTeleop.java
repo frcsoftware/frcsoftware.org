@@ -8,6 +8,7 @@ import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.Drive;
 import first.robot.mechanisms.Drive.AutoAlignCommand;
+import first.robot.mechanisms.Superstructure;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.button.CommandGamepad;
 import org.wpilib.command3.button.CommandNiDsXboxController;
@@ -34,14 +35,14 @@ public class BasicScoringTeleop extends PeriodicOpMode {
 
     controller.a().whileTrue(Command.noRequirements((coro) -> {
         coro.fork(new AutoAlignCommand(robot.drive, Poses.BLUE_REEF_A.transformBy(Poses.REEF_PREALIGN_TRANSFORM)).withRunningContinuously(true));
-        coro.await(robot.superstructure.setPosition(1, 1));
+        coro.await(robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
 
 
         AutoAlignCommand finalAlign = new AutoAlignCommand(robot.drive, Poses.BLUE_REEF_A).withRunningContinuously(true);
         coro.fork(finalAlign);
         coro.waitUntil(finalAlign::atPosition);
 
-        coro.fork(robot.superstructure.setPosition(0.5, 0.5));
+        coro.fork(robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
         coro.wait(Seconds.of(0.25));
         coro.await(robot.claw.setVoltage(-6));
     }).named("AutoAlign and Score"));

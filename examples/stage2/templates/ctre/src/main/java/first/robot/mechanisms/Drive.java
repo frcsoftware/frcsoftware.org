@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.*;
 import org.wpilib.command3.*;
 import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.command3.button.CommandXboxController;
+import org.wpilib.driverstation.DriverStationDisplay;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.geometry.Pose2d;
@@ -21,8 +22,13 @@ import org.wpilib.math.kinematics.SwerveModulePosition;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
+import org.wpilib.system.Timer;
 import org.wpilib.telemetry.Telemetry;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -39,7 +45,9 @@ public class Drive implements Mechanism {
     private final double DRIVE_LENGTH = Units.inchesToMeters(22.729228);
 
     private static final double MAX_VELOCITY = Units.feetToMeters(14.9);
-    private static final double MAX_ACCELERATION = Units.feetToMeters(8);
+    private static final double MAX_ACCELERATION = 5;
+
+    private Pose2d currentPose = new Pose2d();
 
     public Drive() {
         constants = new SwerveDrivetrainConstants().withCANBusName("can_s0").withPigeon2Id(4);
@@ -57,12 +65,15 @@ public class Drive implements Mechanism {
                         .withKP(100).withKI(0).withKD(0.5)
                         .withKS(0.1).withKV(2.49).withKA(0)
                         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
+//                .withDriveMotorGains(new Slot0Configs()
+//                        .withKP(8).withKD(0)
+//                        .withKS(0.2))
                 .withDriveMotorGains(new Slot0Configs()
-                        .withKP(8).withKD(0)
-                        .withKS(0.2))
+                        .withKP(0.3).withKI(0).withKD(0)
+                        .withKS(0.2).withKV(0.125))
 //                .withDriveMotorGains(new Slot0Configs()
 //                        .withKP(0.3).withKI(0).withKD(0)
-//                        .withKS(0.2).withKV(0.13))
+//                        .withKS(0.1498).withKV(3.16356))
                 .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
                 .withSlipCurrent(Amps.of(45))
@@ -98,7 +109,9 @@ public class Drive implements Mechanism {
         swerve.updateSimState(1.0/50.0/5.0, 12);
         swerve.updateSimState(1.0/50.0/5.0, 12);
 
-        Telemetry.log("Drive/Pose", getPose());
+        currentPose = swerve.getState().Pose;
+
+        Telemetry.log("Drive/Pose", currentPose);
 
         var modules = swerve.getModules();
         SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
@@ -117,7 +130,8 @@ public class Drive implements Mechanism {
      * @return the current pose of the drivetrain
      */
     public Pose2d getPose() {
-        return swerve.getState().Pose;
+//        return swerve.getState().Pose;
+        return currentPose;
     }
 
     /**
@@ -163,7 +177,7 @@ public class Drive implements Mechanism {
 
         private final Drive drive;
 
-        private final SwerveRequest.ApplyFieldVelocity swerveRequest = new SwerveRequest.ApplyFieldVelocity();;
+        private final SwerveRequest.ApplyFieldVelocity swerveRequest = new SwerveRequest.ApplyFieldVelocity().withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
 
         private Pose2d targetPose = new Pose2d();
         private Supplier<Pose2d> poseSupplier = () -> {return new Pose2d();};
@@ -208,6 +222,9 @@ public class Drive implements Mechanism {
 
             headingController.reset(drive.getHeading().getRadians(), drive.getVelocity().omega);
 
+            Translation2d lastVelocityVector = new Translation2d(drive.getVelocity().vx, drive.getVelocity().vy);
+            Translation2d lastRealVelocity = new Translation2d(drive.getVelocity().vx, drive.getVelocity().vy);
+
             while (runContinuously || !atPosition()) {
                 var currentPose = drive.getPose();
 
@@ -233,7 +250,7 @@ public class Drive implements Mechanism {
 //
 //                double maxDistanceForCurrentSpeed = (Math.pow(targetVelocity,2) - Math.pow(velocityTowardsTarget,2)) / (2 * -accelerationLimit);
 
-                double velocityForDistance = Math.pow(targetVelocity,2) - 2*-accelerationLimit*distanceToEnd;
+                double velocityForDistance = Math.sqrt(Math.pow(targetVelocity,2) - 2*-accelerationLimit*distanceToEnd);
 
                 Telemetry.log("Drive/AutoAlign/Velocity for Distance", velocityForDistance);
 
@@ -243,7 +260,7 @@ public class Drive implements Mechanism {
 
                 Translation2d velocities = vectorToTarget.div(distanceToEnd).times(velocityToTarget);
 
-
+                lastVelocityVector = MathUtil.slewRateLimit(lastVelocityVector, velocities, 0.02, accelerationLimit);
 
                 double omega = 0;
 
@@ -251,7 +268,7 @@ public class Drive implements Mechanism {
                     omega = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
                 }
 
-                ChassisVelocities chassisVelocities = new ChassisVelocities(velocities.getX(), velocities.getY(), omega);
+                ChassisVelocities chassisVelocities = new ChassisVelocities(lastVelocityVector.getX(), lastVelocityVector.getY(), omega);
 
                 Telemetry.log("Drive/DesiredVelocity", chassisVelocities);
 

@@ -10,7 +10,7 @@ public class FieldConstants {
     public static final double fieldWidth = Fields.FRC_2025_REEFSCAPE_WELDED.width;
     public static final double fieldLength = Fields.FRC_2025_REEFSCAPE_WELDED.length;
 
-    public static final Translation2d BLUE_REEF_CENTER = new Translation2d(4.263, 0);
+    public static final Translation2d BLUE_REEF_CENTER = new Translation2d(4.284788, 0);
     public static final Translation2d RED_REEF_CENTER = mirrorX(BLUE_REEF_CENTER);
 
 
@@ -24,7 +24,7 @@ public class FieldConstants {
     }
 
     public static Pose2d mirrorX(Pose2d pose) {
-        return new Pose2d(mirrorX(pose.getTranslation()), Rotation2d.CCW_PI_2.minus(pose.getRotation()));
+        return new Pose2d(mirrorX(pose.getTranslation()), Rotation2d.PI.minus(pose.getRotation()));
     }
 
     public static Translation2d mirrorY(Translation2d translation) {

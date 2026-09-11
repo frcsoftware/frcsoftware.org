@@ -150,7 +150,7 @@ Next, settings can be changed from their default by calling various functions on
 For the left motors, the invert setting will be `true` for REV code and `Clockwise_Positive` for CTRE code.
 This will cause the motors to spin in a direction that would drive the robot forward when a positive input is given.
 Since the motors on the right side of the drivetrain are facing the opposite direction they would cause the wheels try and drive the robot backwards when given a positive input if they were configured the same way.
-Instead they should be configured with an invert setting of `false` or `Counter_Clockwise_Positive` so they also drive the robot forward when given a positive input.
+Instead they should be configured with an invert setting of `false` or `CounterClockwise_Positive` so they also drive the robot forward when given a positive input.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">

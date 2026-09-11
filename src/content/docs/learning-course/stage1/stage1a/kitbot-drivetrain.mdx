@@ -248,7 +248,7 @@ An instance of `DifferentialDrive` should be created under where the motor contr
 Notice how the `DifferentialDrive` constructor takes the form `DifferentialDrive(DoubleConsumer leftMotor, DoubleConsumer rightMotor)`.
 When created the `DifferentialDrive` is asking for a `DoubleConsumer` that it can use to drive the left and right motors.
 A `Consumer` is simply a function that takes something as an input so a `DoubleConsumer` is a function that takes a double as an input when called.
-The `motorController:setThrottle` syntax is used to proved the `DifferentialDrive` instance with the motor controllers `setThrottle()` function.
+The `motorController::setThrottle` syntax is used to proved the `DifferentialDrive` instance with the motor controllers `setThrottle()` function.
 This function commands the motor to run a percentage of their maximum speed, also known as duty cycle, with an input from -1.0 to 1.0.
 This allows the `DifferentialDrive` instance to call the provided motors controller's `setThrottle()` functions with the correct duty cycle when provided with input from the joysticks.
 

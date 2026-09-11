@@ -87,7 +87,7 @@ export const glossaryTerms: GlossaryTerm[] = [
     {
         term: 'CI',
         definition:
-            'Continuous Integration: A software development practice where developers frequently merge code changes into a shared repository, triggering automated builds and tests to ensures the codebase remains stable',
+            'Continuous Integration: A software development practice where developers frequently merge code changes into a shared repository, triggering automated builds and tests to ensure the codebase remains stable',
     },
     {
         term: 'WPILib',

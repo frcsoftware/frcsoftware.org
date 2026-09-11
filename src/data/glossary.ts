@@ -14,7 +14,7 @@
 export interface GlossaryTerm {
     /**
      * The word/abbreviation to match (case-insensitive)
-     * @example "SystemCore"
+     * @example "Systemcore"
      */
     term: string;
     /**
@@ -44,19 +44,19 @@ export const glossaryTerms: GlossaryTerm[] = [
         definition: 'Motor controller for CTRE motors',
     },
     {
-        term: 'SystemCore',
+        term: 'Systemcore',
         definition: 'Main processor for robot code, contains various IO',
     },
     {
         term: 'CAN',
         definition:
-            'Controller Area Network: typically yellow and green cable used to communicate with motor controllers and sensors, can be run in various topographies instead of each cable needing to connect to SystemCore',
+            'Controller Area Network: typically yellow and green cable used to communicate with motor controllers and sensors, can be run in various topographies instead of each cable needing to connect to Systemcore',
         caseSensitive: true,
     },
     {
         term: 'PWM',
         definition:
-            'Pulse Width Modulation: A communication spec used to communicate with motor controllers and sensors, needs to connect back to SystemCore',
+            'Pulse Width Modulation: A communication spec used to communicate with motor controllers and sensors, needs to connect back to Systemcore',
     },
     {
         term: 'Main Breaker',

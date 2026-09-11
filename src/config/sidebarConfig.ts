@@ -108,6 +108,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     slug: 'learning-course/stage1/stage1a/stage-overview',
                                 },
                                 {
+                                    label: 'Getting Started',
+                                    slug: 'learning-course/stage1/stage1a/getting-started',
+                                },
+                                {
                                     label: 'Kitbot Drivetrain',
                                     slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
                                 },

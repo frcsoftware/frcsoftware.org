@@ -2,122 +2,15 @@
 title: Stage 1A Overview
 description: An overview of Stage 1A
 prev: ../stage-overview
-next: kitbot-drivetrain
+next: getting-started
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
 import YouTube from '@components/YouTube.astro';
 
 Welcome to Stage 1A!
-Before we can start programming, we have to fork and clone the relevant repository:
-
-- If your team primarily uses REV electronics (such as SPARK MAX motor controllers), clone [the REV template](https://github.com/frcsoftware/Stage1-Template-REV).
-- If your team primarily uses CTRE electronics (such as Kraken motors), clone [the CTRE template](https://github.com/frcsoftware/Stage1-Template-CTRE).
-
-<Aside type="tip">
-    If you forgot how to fork and clone a repository, read over [the Forking and
-    Cloning guide](/learning-course/getting-started/forking-and-cloning/).
-</Aside>
-
-Now, before we get into the depths of the robot code, it's useful to look at a high-level overview of the contents of a
-typical WPILib project.
-As your code gets more advanced, you'll see more folders and files appear, but they're all controlled
-by the same basic components.
-
-### Stage 1A Template Structure
-
-{/* prettier-ignore */}
-<FileTree>
-- src
-    - main
-        - java
-            - first
-                - robot
-                    - opmode
-                        - MyAuto.java
-                        - MyTeleop.java
-                    - simulation
-                        - DrivetrainSim.java
-                        - SingleFlywheelSim.java
-                    - Robot.java
-                - Main.java
-</FileTree>
-
-You'll notice that we're skipping a lot of files here, because you don't have to edit those.
-What's great about using a framework like WPILib is that it automatically generates these files when you create a new project, so you can get started coding quicker.
-The other folders, like `src/main/deploy/` for example, will come in handy as your robot code becomes more advanced.
-Thus, the only files shown in the structure tree are the ones directly responsible for controlling what our kitbot will do.
-
-<Aside type="note">
-    For those who have programmed in FRC before, WPILib is currently undergoing
-    a massive rewrite for the 2027 version, especially with regards to OpModes
-    and Commands V3, so some files and components may be completely new!
-</Aside>
-
-### `Main.java`
-
-The first file to take note of is the `Main.java` file; this is the entrypoint for any Java project in real life.
-Its contents are pretty short and sweet (comments and package declaration removed for brevity):
-
-```java stage1/snippets/Main.java#main
-
-```
-
-You can see that all the `Main.java` file is doing is, quite literally, starting up the robot,
-so there's no reason to edit this file.
-
-<Aside type="note">
-    Notice that the names of all Java files in the project follow PascalCase,
-    where the first letter of every word is capitalized. This is a convention
-    you should follow throughout your code.
-</Aside>
-
-### `Robot.java`
-
-But what is that one line in `Main.java` doing?
-{/* rli:ignore */}
-
-```java
-RobotBase.startRobot(first.robot.Robot::new);
-```
-
-It seems to be "starting" an instance of the `first.robot.Robot` class, and if we go to that class file, we end up at `Robot.java`.
-This is the core of your robot code, where:
-
-- your subsystems are defined
-- shared behavior is defined
-- your debugging data is logged (telemetry).
-
-<Aside type="note">
-    For prior FRC programmers, you might have noticed a `RobotContainer.java`
-    file is missing. This file is not used with the Commands v3 framework.
-</Aside>
-
-We'll go through this file, as well as all of the functionalities, more in detail later.
-
-### `opmode/`
-
-This folder contains all the OpModes that your robot will run.
-An OpMode is a class that controls the behavior of your robot during a specific robot mode (autonomous, teleop, and utility).
-You can have multiple OpModes per robot mode, and they are selected on the Driver Station to tell the robot which one to run.
-This allows you to have different autonomous routines for different situations,
-or multiple teleop routines for different drivers.
-OpModes use the `Robot` class to access the robot's subsystems and other shared behavior.
-
-<Aside type="note">
-    Prior FRC programmers may have used `SendableChooser` to register different
-    autonomous routines. OpModes replace `SendableChooser`, as they are
-    integrated into the Driver Station and registered automatically.
-</Aside>
-
-### `simulation/`
-
-These are the files that control simulation of the robot, allowing you to test code without actually having a physical robot in front of you.
-We've set this up for you already; you'll just have to set up the simulation software yourself, which we'll cover at the end of Stage 1A.
-
-### The 2026 Kitbot
-
-But what is all this code actually going to control?
+This stage will use your Java knowledge to write code to control a robot.
+What robot?
 Well, the answer is the 2026 FIRST Robotics Competition kitbot, the best starting point
 for new FRC teams, as well as the simplest robot to get fully working.
 You can watch the below video to learn more about what functionalities the kitbot has.
@@ -126,10 +19,14 @@ We'll explain the kitbot more in depth in the next section.
 
 <YouTube url="https://www.youtube.com/watch?v=nTmZXOgHntM" />
 
-And that's all you need to know to get started!
-The rest of Stage 1A will cover how to get from the template code to a working kitbot.
+## Stage 1a Goals
+
+At the end of Stage 1A, you will have wrote your first robot code and see Kitbot drive using simulation.
+Your code will control the robot's driving, and scoring mechanisms as well run an autonomous routine.
 
 This stage will cover the following topics:
 
-- [Programming the Kitbot Drivetrain](/learning-course/stage1/stage1a/kitbot-drivetrain/)
-- [Simulating the Kitbot Drivetrain](/learning-course/stage1/stage1a/drivetrain-sim/)
+- [Kitbot Drivetrain](/learning-course/stage1/stage1a/kitbot-drivetrain)
+- [Drivetrain Simulation](/learning-course/stage1/stage1a/drivetrain-sim)
+- [Simple Auto](/learning-course/stage1/stage1a/simple-auto)
+- [Additional Motors](/learning-course/stage1/stage1a/kitbot-additional-motors)

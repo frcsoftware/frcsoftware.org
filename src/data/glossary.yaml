@@ -39,7 +39,7 @@ Limit Switch:
     definition: >-
         Type of sensor that triggers when physically or magnetically hit.
         Can be used to trigger actions on a rising or falling edge, or check
-        state of a mechanism
+        the state of a mechanism
 
 Throughbore Encoder:
     definition: >-
@@ -64,7 +64,7 @@ CI:
     definition: >-
         Continuous Integration: A software development practice where developers
         frequently merge code changes into a shared repository, triggering
-        automated builds and tests to ensures the codebase remains stable
+        automated builds and tests to ensure the codebase remains stable
 
 WPILib:
     definition: >-

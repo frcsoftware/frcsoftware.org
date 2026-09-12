@@ -22,8 +22,8 @@
                 }
             ],
             "axisCount": 5,
-            "buttonCount": 6,
-            "buttonKeys": [563, -1, -1, -1, 550, 562],
+            "buttonCount": 11,
+            "buttonKeys": [563, -1, -1, -1, -1, -1, -1, -1, -1, 550, 562],
             "povConfig": [
                 {
                     "keyDown": 614,

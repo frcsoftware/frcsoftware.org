@@ -38,14 +38,14 @@ public class SingleFlywheelSim {
   /** Creates the physics sim for the intake launcher. */
   public static SingleFlywheelSim forIntakeLauncher(TalonFX talonMotor) {
     var sim = new SingleFlywheelSim(talonMotor, "IntakeLauncher");
-    FuelSim.intakeLauncherSpeedSupplier = sim.flywheelSim::getAngularVelocity;
+    FuelSim.intakeLauncherVoltsSupplier = sim.flywheelSim::getInputVoltage;
     return sim;
   }
 
   /** Creates the physics sim for the feeder. */
   public static SingleFlywheelSim forFeeder(TalonFX talonMotor) {
     var sim = new SingleFlywheelSim(talonMotor, "Feeder");
-    FuelSim.feederSpeedSupplier = sim.flywheelSim::getAngularVelocity;
+    FuelSim.feederVoltsSupplier = sim.flywheelSim::getInputVoltage;
     return sim;
   }
 

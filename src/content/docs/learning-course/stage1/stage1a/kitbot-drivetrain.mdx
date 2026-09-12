@@ -65,6 +65,9 @@ Additionally, CTRE uses a CANBus object to store the CANBus instead of just an i
         ```java {revRobot}#DriveMotorsLeft
         ```
 
+        REV uses a `CANPort` enum to specify which of SystemCore's CANBuses the device is connected too.
+        This enum is a field in the `CANPort` class.
+
 Since the Spark Max can control both brushed and brushless motors it's necessary to specify the type as `MotorType.kBrushless` for motors like a NEO and `MotorType.kBrushed` for motors like a CIM.
 
 When writing code for a real robot, make sure your motor type is set correctly!

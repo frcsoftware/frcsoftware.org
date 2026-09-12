@@ -244,6 +244,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                             label: 'Stage 1B',
                             slug: 'educators-guide/stage1/stage1b',
                         },
+                        {
+                            label: 'Stage 1C',
+                            slug: 'educators-guide/stage1/stage1c',
+                        },
                     ],
                 },
                 { label: 'Stage 2', slug: 'educators-guide/stage2' },

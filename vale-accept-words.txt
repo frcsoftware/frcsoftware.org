@@ -1,0 +1,91 @@
+# Words accepted by the Vale spellchecker, on top of the en_US dictionary.
+#
+# Words under [case-insensitive] are accepted in any casing; words under
+# [case-sensitive] must appear exactly as written here, and Vale reports any
+# other casing as an error. Put a term under [case-sensitive] only when its
+# casing carries meaning (a product, vendor or API name such as `REVLib`).
+#
+# A case-sensitive word whose lowercase form is an ordinary English word is
+# accepted in any casing anyway, since enforcing casing would flag normal prose.
+#
+# A term that also deserves a tooltip definition on the docs site belongs in
+# src/data/glossary.yaml instead, which has its own `caseSensitive` flag.
+#
+# One word per line, sorted alphabetically within each section. Lines starting
+# with # are ignored. Run `pnpm vale:setup` after editing.
+
+[case-insensitive]
+Assignees
+Ctrl
+FRCSoftware
+Futureproofing
+Kauailabs
+Redux
+Sith
+Spotbugs
+# Kept case-insensitive: the route slug `vscode-overview` appears in page
+# frontmatter (prev/next), which Vale scans, so exact casing would flag it.
+VSCode
+accelerometer
+adblocker
+brushless
+checkboxes
+codebase
+codebases
+drivetrain
+dropdown
+dropdowns
+entrypoint
+feedforward
+fiducial
+filepaths
+formatter
+formatters
+frontmatter
+gamepad
+getter
+getters
+inlining
+kitbot
+kitbots
+linter
+odometry
+opmode
+opmodes
+outtake
+pnpm
+potentiometers
+preloaded
+rebase
+reselect
+roadmap
+roadmaps
+squoosh
+src
+subfolders
+subteam
+supersection
+teleop
+teleoperated
+toolsuite
+tradeoffs
+typecheck
+usecase
+waypoint
+waypoints
+webm
+webpage
+
+[case-sensitive]
+CANBus
+CANivore
+CTRE
+ESLint
+Gradle
+IMUs
+Kraken
+Lumyn
+REVLib
+Studica
+Swyft
+onTrue

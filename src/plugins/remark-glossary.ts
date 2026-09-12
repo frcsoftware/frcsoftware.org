@@ -1,20 +1,22 @@
+import { readFileSync } from 'node:fs';
 import { visit, SKIP } from 'unist-util-visit';
+import { parse } from 'yaml';
 import type { Root, RootContent, Text } from 'mdast';
 import type { VFile } from 'vfile';
 import type { MdxJsxTextElement } from 'mdast-util-mdx-jsx';
 
-import { glossaryTerms } from '../data/glossary';
+const glossary = parse(
+    readFileSync(new URL('../data/glossary.yaml', import.meta.url), 'utf-8'),
+) as Record<string, { definition: string; caseSensitive?: boolean }>;
 
-const sortedTerms = [...glossaryTerms].sort(
-    (a, b) => b.term.length - a.term.length,
+const sortedTerms = Object.entries(glossary).sort(
+    ([a], [b]) => b.length - a.length,
 );
 
 const pattern = new RegExp(
     `(?<![\\p{L}\\p{N}_])(${sortedTerms
-        .map((t) =>
-            t.caseSensitive
-                ? `(?-i:${escapeRegex(t.term)})`
-                : escapeRegex(t.term),
+        .map(([term, { caseSensitive }]) =>
+            caseSensitive ? `(?-i:${escapeRegex(term)})` : escapeRegex(term),
         )
         .join('|')})(?![\\p{L}\\p{N}_])`,
     'giu',

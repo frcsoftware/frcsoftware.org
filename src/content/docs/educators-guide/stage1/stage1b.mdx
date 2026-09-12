@@ -3,4 +3,51 @@ title: 'Stage 1B: Introduction to Command-Based Programming'
 description: An overview of Stage 1B for educators
 ---
 
-<Aside type="wip">This page hasn't been written yet.</Aside>
+Stage 1B introduces command-based programming.
+Students refactor their Stage 1A kitbot code into `Command`s, `Trigger`s, and `Mechanism`s, learn code structure and supplier-based input, and write basic autonomous routines using IMU feedback.
+
+## Commands v3 and the 2027 Framework
+
+This stage uses commands v3, which differs in syntax compared to commands v2 (the predominant commands framework used
+from 2020-2026).
+Commands V3 uses coroutine-based command bodies rather than chaining `Commands.run()` and `Commands.runOnce()` blocks together.
+
+As such, it is highly recommended for educators to finish Stage 1B themselves before teaching it
+to students.
+
+Students and educators should also consult the [commands v3 API documentation](https://github.wpilib.org/allwpilib/docs/2027/java/org/wpilib/command3/package-summary.html)
+for more information.
+
+## Still a Kitbot
+
+The exercises reuse the Stage 1A kitbot hardware, motors, and templates.
+Emphasize to students that the physical robot has not changed; the goal is learning software architecture.
+
+## Learning Objectives
+
+By the end of Stage 1B, students should be able to:
+
+- Explain the roles of `Command`s, `Trigger`s, `Mechanism`s, and the `Scheduler`.
+- Encapsulate hardware within `Mechanism` classes that expose commands and define default commands.
+- Bind controller buttons and axes to commands using `Trigger`s and `DoubleSupplier`s for live input.
+- Compose commands using sequencing, timeouts, and conditions.
+- Implement simple autonomous routines, including turning to an angle using IMU feedback.
+
+## Common Issues to Watch Out For
+
+- Using `onTrue` (single trigger) when continuous held behavior (`whileTrue`) is needed.
+- Leaving mechanisms without default commands, causing motors to stay at their last commanded value.
+- Omitting `mechanism.periodic()` or drivetrain simulation calls in `Robot.java`.
+- Invoking hardware calls directly inside mechanism methods rather than returning a `Command`.
+- Confusing awaiting a sub-command (`coroutine.await(Command)`) with delaying execution (`coroutine.wait(Time)`).
+- Scheduling commands inside constructors instead of `start()`, or leaving leftover template files like `MyAuto.java`.
+
+## Tips for Success
+
+- **Model before syntax**: Clarify command/trigger/mechanism relationships before writing code.
+- **Keep Stage 1A code handy**: Reference previous working configurations so the focus stays on architectural refactoring.
+- **Debug with print statements**: At this point in the course, point users to using `System.out.println`
+  for rudimentary logging.
+  Stage 1C will teach users about the `Telemetry` API, which is highly recommended over
+  basic print statements.
+- **Use hints progressively**: Encourage students to attempt exercises before opening hint accordions and snippets.

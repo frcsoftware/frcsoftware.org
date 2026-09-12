@@ -21,8 +21,8 @@ Additionally both game pieces and your robot are in a known position allowing fo
 You also need to coordinate your autonomous routine with your alliance partners so it is important to have multiple routines and the ability to adjust them.
 
 An autonomous routine is simply an OpMode that gets run during the autonomous portion of the match.
-When writing an OpMode that will be run during the autonomous mode, there is an `@Autonomous` annotation that is added above the class definition.
-This annotation tells the driverstation to place the OpMode under the autonomous selector.
+When writing an OpMode that will be run during the autonomous mode, there is an `@Autonomous` annotation that is added directly before the class definition.
+This annotation tells the Driver Station to place the OpMode under the autonomous selector.
 This OpMode will use a `Timer` to base its behavior off of the time elapsed from the beginning of the autonomous period.
 Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions
 
@@ -67,7 +67,7 @@ If `hasElapsed(4)` instead returns false, then less than four seconds must have 
 
 # Running Your Auto
 
-To test the auto routine, start the simulation, and connect Advantage Scope.
+To test the auto routine, start the simulation, and connect AdvantageScope.
 Then, select autonomous mode and `MyAuto` OpMode in the Sim GUI.
 Now when the robot is enabled the auto should run.
 

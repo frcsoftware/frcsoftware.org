@@ -17,7 +17,7 @@ import ContentImage from '@components/ContentImage.astro';
 # Drivetrain
 
 <ContentFigure
-    width="300px"
+    width="650px"
     alt="Drivetrain"
     src="/learning-course/stage1/stage1a/kitbotDrivetrain.webp"
 />
@@ -39,7 +39,7 @@ When creating a motor controller object, the physical motor controller's CAN ID 
 CAN Bus refers to which of the 5 Systemcore CAN ports, or which CANivore, the device is plugged into.
 CAN ID is an integer that each CAN device is configured to have.
 All devices on a given CAN Bus must have a unique ID.
-Using the combination of CAN Bus and CAN ID SystemCore can give commands to the correct motor controller.
+Using the combination of CAN Bus and CAN ID Systemcore can give commands to the correct motor controller.
 
 For this exercise the motor controllers will have the IDs:
 
@@ -150,7 +150,7 @@ Next, settings can be changed from their default by calling various functions on
 For the left motors, the invert setting will be `true` for REV code and `Clockwise_Positive` for CTRE code.
 This will cause the motors to spin in a direction that would drive the robot forward when a positive input is given.
 Since the motors on the right side of the drivetrain are facing the opposite direction they would cause the wheels try and drive the robot backwards when given a positive input if they were configured the same way.
-Instead they should be configured with an invert setting of `false` or `Counter_Clockwise_Positive` so they also drive the robot forward when given a positive input.
+Instead they should be configured with an invert setting of `false` or `CounterClockwise_Positive` so they also drive the robot forward when given a positive input.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">
@@ -184,7 +184,7 @@ It's important to remember that settings only get changed when the configuration
         This must happen after the configuration is applied to the Leader so the motor controller doesn't want to follow itself.
         `ResetMode.kResetSafeParameters` gets to tell the motor controller to reset all unchanged configurations to their default value.
         This prevents old configurations from being left on the controller.
-        `PersistMode.kPersistParameters` is used so the configuration gets saved on the motor control so it persists even after power is removed.
+        `PersistMode.kPersistParameters` is used so the configuration gets saved on the motor controller so it persists even after power is removed.
 
         ```java {revRobot}#MotorConfigLeft
         ```
@@ -225,7 +225,7 @@ Remember that some of the configurations may be different.
 
 While there are several ways to control a tank drive, this stage will be using arcade drive.
 Arcade drive uses the y-axis of a joystick to control how fast the robot drives forward or backward while the x-axis controls how fast the robot rotates clockwise or counter clockwise.
-WPIlib provides a class to convert joystick inputs into commands for the motors to follow called `DifferentialDrive`.
+WPILib provides a class to convert joystick inputs into commands for the motors to follow called `DifferentialDrive`.
 
 An instance of `DifferentialDrive` should be created under where the motor controllers were declared.
 
@@ -248,8 +248,8 @@ An instance of `DifferentialDrive` should be created under where the motor contr
 Notice how the `DifferentialDrive` constructor takes the form `DifferentialDrive(DoubleConsumer leftMotor, DoubleConsumer rightMotor)`.
 When created the `DifferentialDrive` is asking for a `DoubleConsumer` that it can use to drive the left and right motors.
 A `Consumer` is simply a function that takes something as an input so a `DoubleConsumer` is a function that takes a double as an input when called.
-The `motorController:setThrottle` syntax is used to proved the `DifferentialDrive` instance with the motor controllers `setThrottle()` function.
-This function commands the motor to run a percentage of their maximum speed, also known as duty cycle, with an input from -1.0 to 1.0.
+The `motorController::setThrottle` syntax is used to provide the `DifferentialDrive` instance with the motor controllers `setThrottle()` function.
+This function commands the motor to run a percentage of its maximum speed, also known as duty cycle, with an input from -1.0 to 1.0.
 This allows the `DifferentialDrive` instance to call the provided motors controller's `setThrottle()` functions with the correct duty cycle when provided with input from the joysticks.
 
 <Aside type="note">
@@ -260,7 +260,7 @@ This allows the `DifferentialDrive` instance to call the provided motors control
 
 # IMU
 
-An IMU, Inertial Measurement Unit, is a sensor that allows the robot to accurately track its 3d rotation (roll, pitch, and yaw) as it moves around the field.
+An IMU, Inertial Measurement Unit, is a sensor that allows the robot to accurately track its 3D rotation (roll, pitch, and yaw) as it moves around the field.
 While there are several vendors that sell very accurate IMUs, this stage will make use of Systemcore's built in IMU.
 An instance of Systemcore's IMU should be created beneath the `differentialDrive`.
 
@@ -316,10 +316,10 @@ By now your `Robot` class in `Robot.java` should look like this and VS code shou
 
 # OpModes
 
-`OpMode`s are a class that registers itself with the driverstation providing a name and robot mode (autonomous, teleop, or utility).
-This allows the robot to run different code based on what is selected on the driverstation.
+`OpMode`s are a class that registers itself with the Driver Station providing a name and robot mode (autonomous, teleop, or utility).
+This allows the robot to run different code based on what is selected on the Driver Station.
 This stage will use classes that extend `PeriodicOpMode.`
-By extending `PeriodicOpMode` these classes gain a few useful functions that are only called when the OpMode is selected on the driverstation.
+By extending `PeriodicOpMode` these classes gain a few useful functions that are only called when the OpMode is selected on the Driver Station.
 
 - `start()` is called once when the robot transitions from disabled to enabled.
 - `periodic()` is called repeatedly when the robot is enabled.
@@ -330,10 +330,10 @@ By extending `PeriodicOpMode` these classes gain a few useful functions that are
 Two blank `PeriodicOpMode`s, `MyTeleop.java` and `MyAuto.java` are provided under the `opmode` folder.
 
 To control the robot with joysticks a Teleop OpMode needs to be created that periodically gives the `DifferentialDrive` instance new values from the controller.
-First a instance of `NiDsXboxController` needs to be created.
+First an instance of `XboxController` needs to be created.
 This class has functions that provide the state of different buttons on the controller.
-Multiple controllers can be used at once so the driverstation gives each a slot.
-The index provided in the constructor tells the `NiDsXboxController`which slot to listen too.
+Multiple controllers can be used at once so the Driver Station gives each a slot.
+The index provided in the constructor tells the `XboxController` which slot to listen to.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">
@@ -357,9 +357,9 @@ The index provided in the constructor tells the `NiDsXboxController`which slot t
     index.
 </Aside>
 
-Next, the `periodic()` method inside of `MyTeleop.java' will be used to continually update the `DifferentialDrive`index through the`arcadeDrive`function.
-The`MyTeleop`class has the`Robot`class as a parameter in its constructor.
-This allows the Opmode to access the methods and fields of the`Robot` class.
+Next, the `periodic()` method inside of `MyTeleop.java` will be used to continually update the `DifferentialDrive` through the `arcadeDrive` function.
+The `MyTeleop` class has the `Robot` class as a parameter in its constructor.
+This allows the Opmode to access the methods and fields of the `Robot` class.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">

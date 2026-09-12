@@ -6,7 +6,7 @@
 package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.driverstation.NiDsXboxController;
+import org.wpilib.driverstation.XboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
@@ -15,7 +15,7 @@ import org.wpilib.opmode.Teleop;
 public class MyTeleop extends PeriodicOpMode {
   private final Robot robot;
   // [Controller]
-  private final NiDsXboxController xboxController = new NiDsXboxController(0);
+  private final XboxController xboxController = new XboxController(0);
 
   // [/Controller]
 

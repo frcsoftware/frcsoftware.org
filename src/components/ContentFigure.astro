@@ -39,6 +39,7 @@
  * - width: Width of the figure (e.g., "60%", "400px") - defaults to 100%
  * - border: Add a border (boolean for default style, or string for custom CSS border)
  * - align: Alignment of the figure ("left", "center", "right") - defaults to "center"
+ * - autoplay: Whether local video files autoplay on load (boolean) - defaults to false
  */
 import { Image } from 'astro:assets';
 
@@ -62,6 +63,7 @@ interface Props {
     border?: boolean | string;
     align?: 'left' | 'center' | 'right';
     class?: string;
+    autoplay?: boolean;
 }
 
 const {
@@ -71,6 +73,7 @@ const {
     border = false,
     align = 'center',
     class: className,
+    autoplay = false,
 } = Astro.props;
 
 // Check if src is already an ImageMetadata object (from glob import)
@@ -193,7 +196,7 @@ const hasCaption = Astro.slots.has('default');
                 <video
                     src={src as string}
                     controls
-                    autoplay
+                    autoplay={autoplay}
                     loop
                     muted
                     playsinline

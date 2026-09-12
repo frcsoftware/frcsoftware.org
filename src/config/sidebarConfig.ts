@@ -108,6 +108,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     slug: 'learning-course/stage1/stage1a/stage-overview',
                                 },
                                 {
+                                    label: 'Getting Started',
+                                    slug: 'learning-course/stage1/stage1a/getting-started',
+                                },
+                                {
                                     label: 'Kitbot Drivetrain',
                                     slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
                                 },
@@ -174,6 +178,26 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     slug: 'learning-course/stage1/stage1b/spot-the-error-pt2',
                                 },
                             ],
+                        },
+                        {
+                            label: 'Stage 1C: Control and Telemetry',
+                            collapsed: true,
+                            items: [
+                                {
+                                    label: 'Stage 1C Introduction',
+                                    slug: 'learning-course/stage1/stage1c/stage-overview',
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Stage 2',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 2 Overview',
+                            slug: 'learning-course/stage2/stage-overview',
                         },
                     ],
                 },
@@ -249,10 +273,11 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
         {
             label: 'Resources',
             items: [
-                { label: 'Overview', slug: 'resources' },
-                { label: 'Documentation', slug: 'resources/docs' },
-                { label: 'Examples', slug: 'resources/examples' },
+                { label: 'Overview', slug: 'resources/overview' },
                 { label: 'Glossary', slug: 'resources/glossary' },
+                { label: 'Documentation', slug: 'resources/docs' },
+                { label: 'Hardware', slug: 'resources/hardware-intro' },
+                { label: 'Examples', slug: 'resources/examples' },
             ],
         },
     ],
@@ -269,6 +294,82 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                 { label: 'Style Guide', slug: 'contribution/styleguide' },
                 { label: 'Contributors', slug: 'contribution/contributors' },
                 { label: 'Roadmap', slug: 'contribution/roadmap' },
+            ],
+        },
+    ],
+
+    // Getting Started section
+    '/getting-started': [
+        {
+            label: 'Getting Started',
+            items: [
+                {
+                    label: 'Website Feature Guide',
+                    slug: 'learning-course/getting-started/website-feature-guide',
+                },
+                {
+                    label: 'Required Tools',
+                    slug: 'learning-course/getting-started/required-tools',
+                },
+                {
+                    label: 'VS Code Overview',
+                    slug: 'learning-course/getting-started/vscode-overview',
+                },
+                {
+                    label: 'Forking and Cloning',
+                    slug: 'learning-course/getting-started/forking-and-cloning',
+                },
+                {
+                    label: 'Intro to Java',
+                    slug: 'learning-course/stage0/stage-overview',
+                },
+            ],
+        },
+    ],
+
+    // Intro To Java section
+    '/intro-to-java': [
+        {
+            label: 'Intro to Java',
+            items: [
+                {
+                    label: 'Stage Overview',
+                    slug: 'learning-course/stage0/stage-overview',
+                },
+                {
+                    label: 'Java fundamentals',
+                    slug: 'learning-course/stage0/java-fundamentals',
+                },
+                {
+                    label: 'operators',
+                    slug: 'learning-course/stage0/operators',
+                },
+            ],
+        },
+    ],
+
+    // Resources section (content lives at /resources but navbar says "Other Resources")
+    '/resources': [
+        {
+            label: 'Resources',
+            items: [
+                { label: 'Overview', slug: 'resources/overview' },
+                {
+                    label: 'Examples',
+                    slug: 'resources/examples',
+                },
+                {
+                    label: 'Glossary',
+                    slug: 'resources/glossary',
+                },
+                {
+                    label: 'Hardware',
+                    slug: 'resources/hardware-intro',
+                },
+                {
+                    label: 'Documentation',
+                    slug: 'resources/docs',
+                },
             ],
         },
     ],
@@ -356,4 +457,23 @@ export function getPrevNextLinks(pathname: string): {
         prev,
         next,
     };
+}
+
+export function getSidebarLinkLabel(
+    pathname: string,
+    href: string,
+): string | null {
+    const sections = getSidebarForPath(pathname);
+
+    const allLinks: { label: string; href: string }[] = [];
+
+    for (const section of sections) {
+        allLinks.push(...flattenSidebarItems(section.items));
+    }
+
+    const normalizedHref = href.endsWith('/') ? href : href + '/';
+
+    const link = allLinks.find((link) => link.href === normalizedHref);
+
+    return link?.label ?? null;
 }

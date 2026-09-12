@@ -1,0 +1,44 @@
+---
+/**
+ * Renders every entry in the `glossary` content collection, alphabetically.
+ *
+ * Usage:
+ * <GlossaryList />
+ */
+
+import { getCollection } from 'astro:content';
+
+const terms = (await getCollection('glossary')).sort((a, b) =>
+    a.id.toLowerCase().localeCompare(b.id.toLowerCase()),
+);
+---
+
+<dl class="glossary-list">
+    {
+        terms.map(({ id, data }) => (
+            <div class="glossary-entry">
+                <dt id={id.toLowerCase().replace(/\s+/g, '-')}>{id}</dt>
+                <dd>{data.definition}</dd>
+            </div>
+        ))
+    }
+</dl>
+
+<style>
+    .glossary-list {
+        margin: 0;
+    }
+
+    .glossary-entry + .glossary-entry {
+        margin-top: 1.5rem;
+    }
+
+    dt {
+        font-weight: 600;
+        color: var(--sl-color-white);
+    }
+
+    dd {
+        margin: 0.25rem 0 0;
+    }
+</style>

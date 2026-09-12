@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id "com.diffplug.spotless" version "8.0.0"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs(['src'])
+        }
+    }
+}
+
+def solutionFiles = fileTree('src') { include '**/*.java' }.files
+def runnableFiles = solutionFiles.findAll { it.text.contains('void main(') }
+def solutionRunTasks = runnableFiles.collect { src ->
+    def className = src.name - '.java'
+    tasks.register("run${className}", JavaExec) {
+        dependsOn 'compileJava'
+        classpath = sourceSets.main.output
+        mainClass = className
+    }
+}
+
+tasks.register('runSolutions') {
+    dependsOn solutionRunTasks
+}
+
+spotless {
+    java {
+        target fileTree('.') { include '**/*.java' }
+        licenseHeaderFile(rootProject.file('../../gradle/LICENSE_HEADER'), "^(?!/\\*|\\s*\\*)")
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn 'spotlessJavaCheck'
+}
+
+tasks.named('check') {
+    dependsOn 'runSolutions'
+}

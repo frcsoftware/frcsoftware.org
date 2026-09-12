@@ -7,6 +7,7 @@ import {
     mdiFolder,
     mdiSchool,
     mdiWrench,
+    mdiSourceBranch,
 } from '@mdi/js';
 import MdiIcon from './MdiIcon.astro';
 
@@ -14,7 +15,14 @@ interface Props {
     title: string;
     href: string;
     description: string;
-    icon: 'book' | 'graduation' | 'wrench' | 'gears' | 'check' | 'folder';
+    icon:
+        | 'book'
+        | 'graduation'
+        | 'wrench'
+        | 'gears'
+        | 'check'
+        | 'folder'
+        | 'sourcebranch';
 }
 
 const { title, href, description, icon } = Astro.props;
@@ -26,6 +34,7 @@ const iconPaths = {
     gears: mdiCog,
     check: mdiCheckCircleOutline,
     folder: mdiFolder,
+    sourcebranch: mdiSourceBranch,
 };
 ---
 

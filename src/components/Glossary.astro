@@ -3,11 +3,11 @@
  * Glossary term component - Shows a term with dotted underline and hover tooltip
  *
  * Usage:
- * <Glossary term="COTS" /> - Uses definition from glossary.ts
+ * <Glossary term="COTS" /> - Uses definition from glossary.yaml
  * <Glossary term="Custom">Custom definition here</Glossary>
  */
 
-import { getGlossaryTerm } from '../data/glossary';
+import { getCollection } from 'astro:content';
 
 interface Props {
     term: string;
@@ -15,10 +15,14 @@ interface Props {
 
 const { term } = Astro.props;
 
-const glossaryEntry = getGlossaryTerm(term);
+const glossaryEntry = (await getCollection('glossary')).find(
+    (entry) => entry.id.toLowerCase() === term.trim().toLowerCase(),
+);
 const slotContent = await Astro.slots.render('default');
 const definition =
-    slotContent?.trim() || glossaryEntry?.definition || 'Definition not found';
+    slotContent?.trim() ||
+    glossaryEntry?.data.definition ||
+    'Definition not found';
 ---
 
 <span class="glossary-term" data-tooltip={definition}>{term.trim()}</span>

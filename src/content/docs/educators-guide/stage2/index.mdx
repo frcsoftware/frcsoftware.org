@@ -3,4 +3,108 @@ title: Stage 2 Overview
 description: An overview of Stage 2 for educators
 ---
 
-<Aside type="wip">This page hasn't been written yet.</Aside>
+<Aside type="wip">Stage 2 is still in development!</Aside>
+
+Stage 2 builds on the foundational skills from Stage 1 and applies them to a complex robot.
+This stage extends skills on PID, introduces feedforwards, introduces tunables, extends skills on commands, introduces state machines, and introduces good code structure.
+
+Stage 2 works with team 4322 Clockwork's 2025 offseason robot MIDTIDE.
+
+<ContentFigure
+    width="400px"
+    alt="MIDTIDE"
+    src="/learning-course/stage2/midtide.webp"
+/>
+
+Students will start from a basic program, containing only some simulation backend, drivetrain code, and a couple other utilities and build the capability for the robot to score coral in a highly automated fashion.
+Automation will include automated alignment (provided) and scoring, automated control of the intake/indexer, and an automated handoff between the indexer and claw.
+Additionally, basic collision avoidance within the superstructure will be developed to showcase the capabilities of command composition.
+
+One lesson that students will learn practically throughout the entire stage is how to effectively reuse code.
+Much of the code written in the later substages (particularly, the indexer and intake, but even in the arm) will be able to be copied from previous code that the student has written.
+This is by design, both to reduce the workload and to teach that most FRC robots have very similar mechanisms, where the differences are in what you do with those mechanisms.
+This also provides valuable practice on some of the most important skills taught in Stage 2, allowing students to use them in different contexts.
+
+Stage 2 is a long stage.
+It is expected that it will take students longer than it took them to do Stages 0 and 1 combined to complete Stage 2, due to the amount of code that has to be written and the number of concepts introduced.
+As such, adequate time should be left for Stage 2 to be completed.
+However, even if Stage 2 can't be fully completed, completing even the first substage or two will provide valuable skills that are useful in-season, so it is recommended for students to complete whatever they can, even if they won't be able to finish by kickoff or your deadline.
+
+<Aside type="note">
+    Stage 2 doesn't cover any concepts of programming a swerve drive, vision, or
+    pose estimation. These concepts aren't something that "every programmer on
+    your team should know", which is the focus of Stage 2.
+</Aside>
+
+## Stage Structure
+
+### Stage 2A: Elevator
+
+In this stage, students will program MIDTIDE's elevator and an associated tuning/testing opmode.
+Core objectives include:
+
+- Introducing feedforward control, specifically for elevators
+- Extending knowledge of PID control
+- Introducing Tunables and utilizing them for PID tuning
+
+### Stage 2B: Arm
+
+In this stage, students will extend the knowledge introduced in Stage 2A to program MIDTIDE's arm and associated opmode.
+Students will also create a basic superstructure Mechanism and use Tunables to create a setpoint tuning opmode.
+Core objectives include:
+
+- Introducing arm feedforward control
+- More practice on PID and feedforward control
+- Understanding the basic concept of a superstructure and how it relates to code structure and purpose
+- Using Tunables to add convenience features
+
+### Stage 2C: Claw
+
+In this stage, students will create MIDTIDE's claw.
+Core objectives include:
+
+- Gaining confident to create a Mechanism with little guidance
+- Using a DigitalInput to create a sensor for a game piece
+
+### Stage 2D: Basic Teleops
+
+In this stage, students will build a series of basic teleop opmodes allow MIDTIDE to score coral on the reef in a limited manner.
+This stage will not feature MIDTIDE being able to score coral on any branch, but will limit it to a few locations, as that functionality will come with more advanced teleop opmodes.
+Core objectives include:
+
+- Utilizing command composition to create automated actions in a teleop context
+- Iterating upon a command to improve it
+- Implementing a target selection feature
+
+### Stage 2E: Indexer and Intake - Implementing Simulation
+
+In this stage, students will program both the indexer and intake for MIDTIDE.
+These mechanisms are nearly clones of the claw and arm, respectively, with the key exception that students will now be implementing simulation on their own.
+Simulation is the primary focus of this substage, and students are encouraged to reference or copy the code they already wrote for the claw and arm to focus their effort on the new content.
+Core objectives include:
+
+- An introduction to physics simulation in WPILib
+- An introduction to vendor simulation APIs
+- Implementing flywheel and arm simulations
+- Utilizing and referencing existing code to make future work easier
+
+### Stage 2F: State Machine Teleop
+
+In this stage, students will create an advanced teleop utilizing the commands v3 state machine API.
+This will allow MIDTIDE to automatically intake and index coral, utilizing sensor inputs, automatically hand off the coral, and to score on levels 2-4 of the reef.
+Core objectives include:
+
+- Introducing state machines and the commands v3 state machine API
+- Creating intuitive driver controls
+- Using state machines for automation
+- When to choose a command or a state machine to implement different components of automation
+
+### Stage 2G: Basic Collision Avoidance
+
+In this stage, students will utilize the superstructure mechanism created in Stage 2B to implement collision avoidance for the arm and intake.
+This will allow MIDTIDE's arm and elevator to reach a greater range of positions without colliding with the base of the robot.
+Core objectives include:
+
+- Introducing collision avoidance and basic strategies, a recurring challenge in FRC
+- Utilizing commands to implement collision avoidance
+- Showcase advanced capabilities of command composition

@@ -1,8 +1,8 @@
 plugins {
     id "java"
     id "application"
-    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-7"
     id "com.diffplug.spotless" version "8.0.0"
+    id "org.wpilib.GradleRIO" version "2027.0.0-alpha-7"
 }
 
 java {
@@ -117,16 +117,6 @@ spotless {
         toggleOffOn()
         googleJavaFormat()
         removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    groovyGradle {
-        target fileTree('.') {
-            include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        greclipse()
-        indentWithSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }

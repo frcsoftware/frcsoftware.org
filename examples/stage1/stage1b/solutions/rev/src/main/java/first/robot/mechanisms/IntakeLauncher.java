@@ -12,9 +12,10 @@ import com.revrobotics.spark.SparkMax;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.hardware.bus.CANPort;
 
 public class IntakeLauncher implements Mechanism {
-  private final SparkMax motor = new SparkMax(0, 4, MotorType.kBrushless);
+  private final SparkMax motor = new SparkMax(CANPort.CAN_S0, 4, MotorType.kBrushless);
   private final SingleFlywheelSim sim = SingleFlywheelSim.forIntakeLauncher(motor);
 
   public IntakeLauncher() {

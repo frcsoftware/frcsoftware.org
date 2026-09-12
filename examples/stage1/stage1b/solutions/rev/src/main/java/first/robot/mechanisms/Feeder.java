@@ -10,9 +10,10 @@ import com.revrobotics.spark.SparkMax;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.hardware.bus.CANPort;
 
 public class Feeder implements Mechanism {
-  private final SparkMax motor = new SparkMax(0, 5, MotorType.kBrushless);
+  private final SparkMax motor = new SparkMax(CANPort.CAN_S0, 5, MotorType.kBrushless);
   private final SingleFlywheelSim sim = SingleFlywheelSim.forFeeder(motor);
 
   public Feeder() {

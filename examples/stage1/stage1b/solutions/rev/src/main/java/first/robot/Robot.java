@@ -8,6 +8,7 @@ package first.robot;
 import first.robot.mechanisms.Drivetrain;
 import first.robot.mechanisms.Feeder;
 import first.robot.mechanisms.IntakeLauncher;
+import first.robot.simulation.FuelSim;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.framework.OpModeRobot;
 
@@ -32,5 +33,6 @@ public class Robot extends OpModeRobot {
     drivetrain.periodic();
     intakeLauncher.periodic();
     feeder.periodic();
+    FuelSim.update();
   }
 }

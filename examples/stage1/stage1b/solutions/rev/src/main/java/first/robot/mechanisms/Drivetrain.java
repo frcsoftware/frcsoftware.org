@@ -15,14 +15,15 @@ import java.util.function.DoubleSupplier;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.drive.DifferentialDrive;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
 public class Drivetrain implements Mechanism {
-  private final SparkMax leftLeader = new SparkMax(0, 0, MotorType.kBrushless);
-  private final SparkMax leftFollower = new SparkMax(0, 1, MotorType.kBrushless);
-  private final SparkMax rightLeader = new SparkMax(0, 2, MotorType.kBrushless);
-  private final SparkMax rightFollower = new SparkMax(0, 3, MotorType.kBrushless);
+  private final SparkMax leftLeader = new SparkMax(CANPort.CAN_S0, 0, MotorType.kBrushless);
+  private final SparkMax leftFollower = new SparkMax(CANPort.CAN_S0, 1, MotorType.kBrushless);
+  private final SparkMax rightLeader = new SparkMax(CANPort.CAN_S0, 2, MotorType.kBrushless);
+  private final SparkMax rightFollower = new SparkMax(CANPort.CAN_S0, 3, MotorType.kBrushless);
 
   private final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
   private final DifferentialDrive differentialDrive =

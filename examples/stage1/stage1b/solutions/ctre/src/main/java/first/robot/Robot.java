@@ -32,6 +32,6 @@ public class Robot extends OpModeRobot {
     drivetrain.periodic();
     intakeLauncher.periodic();
     feeder.periodic();
-    FuelSim.update();
+    FuelSim.periodic();
   }
 }

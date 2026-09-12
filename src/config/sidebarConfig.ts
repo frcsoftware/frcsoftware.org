@@ -286,10 +286,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
             label: 'Resources',
             items: [
                 { label: 'Overview', slug: 'resources/overview' },
-                { label: 'Glossary', slug: 'resources/glossary' },
                 { label: 'Documentation', slug: 'resources/docs' },
                 { label: 'Hardware', slug: 'resources/hardware-intro' },
                 { label: 'Examples', slug: 'resources/examples' },
+                { label: 'Glossary', slug: 'resources/glossary' },
             ],
         },
     ],
@@ -371,16 +371,16 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                     slug: 'resources/examples',
                 },
                 {
-                    label: 'Glossary',
-                    slug: 'resources/glossary',
+                    label: 'Documentation',
+                    slug: 'resources/docs',
                 },
                 {
                     label: 'Hardware',
                     slug: 'resources/hardware-intro',
                 },
                 {
-                    label: 'Documentation',
-                    slug: 'resources/docs',
+                    label: 'Glossary',
+                    slug: 'resources/glossary',
                 },
             ],
         },

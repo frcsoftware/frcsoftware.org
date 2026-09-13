@@ -325,6 +325,8 @@ For multiple images, use the Slides component instead.
 - **Git**: Download from [git-scm.com](https://git-scm.com/)
 - A code editor (e.g., [VS Code](https://code.visualstudio.com/))
 
+If you use nix, run `nix develop` to get all the dependencies you need.
+
 ### Setup Instructions
 
 1. **Clone the repository**

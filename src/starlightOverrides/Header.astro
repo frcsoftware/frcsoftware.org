@@ -238,9 +238,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             // Only persist an explicit user choice. Browser-derived themes must
             // stay un-stored so the site keeps following the OS/browser setting.
             if (store) setStoredTheme(normalized);
-            // @ts-expect-error javascript...
             if (window.StarlightThemeProvider?.updatePickers) {
-                // @ts-expect-error javascript...
                 window.StarlightThemeProvider.updatePickers(normalized);
             }
         };

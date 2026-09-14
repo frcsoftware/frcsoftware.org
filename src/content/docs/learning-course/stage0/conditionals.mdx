@@ -8,9 +8,9 @@ codeRegionSources:
 ---
 
 In everyday life, we make decisions based on different situations.
-Such as "If we are hungry, then we get a snack" or "If we are tired, we go to bed".
-Often in code, we want our program to do something similar and make different decisions based on different situations.
-When programming a robot, one example could be "If the timer starts, drive the robot for 5 seconds then stop when the timer reached 15 seconds.
+For example, "If we are hungry, then we get a snack" or "If we are tired, then we go to bed."
+Robots often need to make different decisions depending on the situation.
+For example, "If the timer starts, drive the robot for 5 seconds" or "If the timer is 0, stop driving."
 To add decisions to our code, we use conditionals.
 
 This section will cover three types of conditionals which are:
@@ -26,14 +26,9 @@ This section will cover three types of conditionals which are:
     conditional.](https://www.w3schools.com/java/java_switch.asp)
 </Aside>
 
-Like we mentioned earlier in [Java Fundamentals](/learning-course/stage0/java-fundamentals/), all programming languages have syntax that needs to be followed.
-One part of syntax is keywords.
-As a reminder, a keyword is a reserved word that the compiler uses to run the code.
-In Java, we use the following keywords for conditionals: `if`, `else if`, `else`
-
 ## if
 
-An `if` statement is a basic conditional.
+An `if` statement runs code only if a specified condition is true.
 The syntax for an `if` statement is as follows:
 
 ```java #ifSyntax
@@ -48,8 +43,7 @@ Let's break down what this means:
 - `{` an open curly braces is used to denote the opening of the conditional
 - `}` a closed curly braces is used to denote the end of the conditional
 
-The code in between the opening and closing curly braces are called a "code block".
-A code block a sequence of code that is enclosed in curly braces.
+The code in between the opening and closing curly braces is called a "code block".
 
 <Aside type="tip">
     All conditionals follow a very similar syntax. They all start with a
@@ -60,20 +54,9 @@ A code block a sequence of code that is enclosed in curly braces.
 `if` statements can make decisions based on the `condition` inside the parentheses.
 If `condition` is true, the code inside the `if` block will run.
 If `condition` is false, the code inside the `if` block will be skipped.
-This is also described in the flowchart below
-
-<ContentFigure
-    src="/learning-course/stage0/conditionals/ifstatement.webp"
-    width="400px"
-    height="800px"
-/>
 
 Now let's look at an example.
-In this example, pretend that we have a robot with a distance sensor on it.
-A distance sensor detects and reports how far or how close the robot is to an object.
-We want our robot's drivetrain motors to keep spinning until the robot is 10cm away from an object.
-Our robot is currently 6cm away.
-Looking at the example below, what should happen?
+In this example, this code will only tell the drivetrain to move forward when distance is smaller then 10.
 
 ```java #ifExample
 
@@ -100,15 +83,8 @@ The syntax for an else statement is as follows:
 Here's how this works: if the`if` statement's condition is `true`, then the code inside will run.
 If the `if` statement's condition is `false`, the `if` block will be skipped, and the code inside the `else` block will run.
 
-This is also described in the flowchart below
-
-<ContentFigure
-    src="/learning-course/stage0/conditionals/else.webp"
-    width="600px"
-    height="800px"
-/>
-
-In this example, we now have an `else` statement that sets the motor speed to 0 if `distance` is greater than 20. Since our `distance` is set to 21, what would the code print out?
+In this example, we now have an `else` statement that sets the motor speed to 0 if `distance` is not less than 10.
+Since our `distance` is set to 21, what would the code print out?
 
 ```java #elseExample
 
@@ -120,10 +96,8 @@ The `else` runs and it prints out "Motors are not spinning", and the motors are 
 
 ## else if
 
-Sometimes we want our code to have specific logic for multiple cases.
-Often we want the robot to slow down as it approaches its target.
-Let's say we want the robot to drive at half speed when it's 5cm away from its target.
-This can be done by adding an `else if` statement.
+`if` and `else` lets you choose between two options, but what if you wanted to choose between even more options?
+`else if` statements let you choose between as many conditions as you like.
 
 The syntax for an `else if` statement goes as follows:
 
@@ -139,13 +113,6 @@ If `conditionA` is true then the code inside the `if` block will run.
 If `conditionA` if false, then it will go to the `else if` statement.
 If `conditionB` is true, the code inside the `else if` block will run.
 If `conditionB` if false, then it will exit the statement and none of the code will run.
-This is also described in the flowchart below
-
-<ContentFigure
-    src="/learning-course/stage0/conditionals/elseif.webp"
-    width="700px"
-    height="800px"
-/>
 
 In the example, we now have an `else if` statement that sets the motor to half speed if the distance from an object is less than 10cm.
 Our `distance` is now 15cm.

@@ -149,7 +149,7 @@ Then, do the following:
 
 ### Task 6: Drive Back then Shoot Autonomous
 
-Driving back and shooting is a common auto found in the 2026 game, rebuilt.
+Driving back and shooting is a common auto found in the 2026 game, REBUILT.
 At the start
 of auto, the drive team would line up the kitbot to the wall of the scoring location.
 The kitbot would then drive backwards, and finally shoot the preloaded balls.
@@ -188,7 +188,24 @@ Then, in the `start()` method of the OpMode, schedule the `autoCommand()` we jus
     of another command.
 </details>
 
-# Solution
+# Running everything in sim
+
+Just like in stage 1A, you can press `W` to drive forward, `S` to drive backward,
+`A` and `D` to rotate, `E` to intake and `R` to outtake.
+
+Shooting is still mapped to the `Q` button; however, you now have to hold the button down
+for >2 seconds before a shooting animation appears.
+Commands V3 has made it easier
+for us to program a "spinup" sequence, where the launcher can get up to speed for 2 secs
+before balls are serialized through it.
+
+<Aside type="note">
+    For instructions on how to setup sim, see
+    [here](/learning-course/stage1/stage1a/drivetrain-sim/#simulating-code) and
+    [here](/learning-course/stage1/stage1a/kitbot-additional-motors/#3d-sim).
+</Aside>
+
+# Solutions
 
 The solutions to this stage can be found below:
 [CTRE](https://github.com/frcsoftware/Stage1B-Solution-CTRE)

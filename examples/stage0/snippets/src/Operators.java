@@ -10,11 +10,6 @@ int answer3 = 10 - 3;
 // [/variables]
 
 void main() {
-    // [multiplication]
-    int magicNumber = 6;
-    System.out.println(magicNumber * 2);
-    // [/multiplication]
-
     // [increments]
     int x = 6;
     int y = 7;
@@ -50,4 +45,17 @@ void main() {
     System.out.println(fiveIsGreaterThanThree || nineIsLessThanTwo);
     System.out.println(!fiveIsGreaterThanThree);
     // [/logical]
+
+
+    // [math1]
+    int e = 0;
+    int f = 2;
+    System.out.println(e = f + 10); // prints 12
+    // [/math1]
+
+    // [math2]
+    int magicNumber = 6;
+    System.out.println(magicNumber * 2); // prints 12
+    // [/math2]
+
 }

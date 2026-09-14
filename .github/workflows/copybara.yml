@@ -28,6 +28,7 @@ jobs:
                     - stage1a_ctre_solution
                     - stage1_rev_template
                     - stage1_ctre_template
+                    - stage1b_rev_solution
                     - stage1b_ctre_solution
 
         steps:

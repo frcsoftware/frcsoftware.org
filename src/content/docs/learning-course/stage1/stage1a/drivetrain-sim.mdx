@@ -1,8 +1,8 @@
 ---
 title: Kitbot Drivetrain Simulation
 description: Writing the code to simulate the kitbot drivetrain
-prev: kitbot-drivetrain
-next: false
+prev: learning-course/stage1/stage1a/kitbot-drivetrain
+next: /learning-course/stage1/stage1a/simple-auto
 codeRegionSources:
     ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
     revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
@@ -47,7 +47,7 @@ The class will then publish the new drivetrain position and additional motor dat
 # Periodic Methods
 
 Robot code needs to be run in a loop so that it can continually make new commands to motor controllers based on new controller and sensor input.
-To accomplish this Periodic Methods are provided in the `Robot` class and `OpMode` classes.
+To accomplish this, Periodic Methods are provided in the `Robot` class and `OpMode` classes.
 Periodic methods get called every 20ms by default, causing any code placed inside of them to be run 50 times per second.
 OpModeRobot has additional periodic methods that only run during specific robot states.
 For example, the `teleopPeriodic()` function will only be called when teleop mode is selected on the Driver Station.

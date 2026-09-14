@@ -1,98 +1,129 @@
 ---
 title: VS Code Overview
 description: Overview of the VS Code program and interface for using WPILib.
-prev: learning-course/learning-course/getting-started/required-tools
-next: learning-course/learning-course/getting-started/forking-and-cloning
+prev: learning-course/getting-started/required-tools
+next: learning-course/getting-started/forking-and-cloning
 ---
 
 ## What Is VS Code
 
 Visual Studio Code (VS Code) is a free and open source code editor created by Microsoft.
 It's available on Windows, macOS, and Linux and can support virtually every programming language through available extensions on its Extension Marketplace.
-Some main features include IntelliSense which is a code completion tool and it allows for you to quickly look at documentation for a specific command.
 It also has integrated Git support which lets you stage, commit, push, pull, and view diffs from the Source Control panel without leaving the editor.
 
----
+In a previous page, you installed the WPILib tools which included WPILib VS Code.
+In FRC, this is the VS Code that you want to use.
+WPILib VS Code is installed with the other WPILib tools and is it's own separate application.
+If you've installed VS Code before, make sure to use the WPILib specific one to program your robot.
+
+WPILib VS Code has a different icon than regular VS Code.
+As shown in the photo, the WPILib VS Code has the WPILib logo while VS Code is the blue logo.
+
+<ContentFigure
+    width="200px"
+    height="200px"
+    alt="VS Code interface"
+    src="/learning-course/getting-started/vscode-overview/wpilib-vscode.webp"
+/>
 
 ## Welcome Screen
 
+When you first open up WPILib VS Code, you are greeted with a welcome screen that has a few options.
+From here you can select "File" and the file menu will appear.
+Many options are available, but the main ones are:
+
+1. `New file`
+2. `Open file`
+3. `Open folder`
+
 <ContentFigure
-    width="564"
-    height="300"
-    alt="VS Code welcome screen (credit: WPILib docs)"
-    src="/learning-course/getting-started/vscode-overview/IMG_0156.webp"
+    width="564px"
+    height="300px"
+    alt="VS Code welcome page with the file dropdown shown"
+    src="/learning-course/getting-started/vscode-overview/welcomescreen.webp"
 />
 
-When you first open up VS Code, you are greeted with a welcome screen that has a few options.
-It lets you quickly customize settings and also lets you watch some tutorial videos.
-It also has options to create a file, open a file, open a project, and clone a Git repository.
+<Aside type="note">
+    When opening a new folder, VS Code will have a message that asks "Do you
+    trust the authors of the files in this folder?" For this website, you can
+    click "Yes, I trust the authors".
+</Aside>
 
----
+<Aside type="caution">
+    When creating a new robot project, do not save it to the OneDrive! Creating
+    new projects on OneDrive is not supported.
+</Aside>
 
 ## Navigating the Interface
 
 VS Code's layout is categorized into a few key regions:
 
-- The **Activity Bar** which is in the far left, consists of vertical icons which can be used to switch between the major views (Explorer, Search, Source Control, Run & Debug, Extensions).
-- Next, the **Side Bar** which is next to the activity bar shows details for the selected view (for example: file tree in Explorer).
-- After that, the **Editor** is the center area.
-  The editor is star of the show and it is where you can view and edit files.
-- Next, the **Panel** is at the bottom of the screen.
-  It has four main views, which are the Terminal, Problems, Output, and Debug Console.
-- Finally, the **Command Palette** is accessed through `Ctrl+Shift+P` / `Cmd+Shift+P` and it allows for you to search and run any command in VS Code.
+1. **Activity Bar** which is at the far left, consists of vertical icons which can be used to switch between the major views (Explorer, Search, Source Control, Run & Debug, Extensions).
+2. **Side Bar** which is next to the activity bar shows details for the selected view (for example: file tree in Explorer).
+3. **Panel** is at the bottom of the screen.
+   It has four main views, which are the Terminal, Problems, Output, and Debug Console.
+4. **Editor** is the center area.
+   The editor is star of the show and it is where you can view and edit files.
+5. **Command Palette** is accessed through `Ctrl+Shift+P` / `Cmd+Shift+P` and it allows for you to search and run any command in VS Code.
 
 <ContentFigure
-    width="564"
-    height="300"
+    width="564px"
+    height="300px"
     alt="VS Code interface"
-    src="/learning-course/getting-started/vscode-overview/IMG_0157.webp"
+    src="/learning-course/getting-started/vscode-overview/vscode-explained.webp"
 />
 
-**Useful keyboard shortcuts:**
+### WPILib Command Palette
+
+One key feature of WPILib VS Code is the commands available that are specific to FRC, such as **Build** which lets you compile the robot code and check for errors on-device,
+**Deploy** which builds the code and sends it over the network connection with the robot to Systemcore, and **Simulate** which lets you test code on your computer using the built in simulation tools.
+These commands are available through the Command Palette.
+
+<ContentFigure
+    width="564px"
+    height="300px"
+    alt="WPILib Commands Palette"
+    src="/learning-course/getting-started/vscode-overview/commandpalette.webp"
+/>
+
+## Saving and Opening Files
+
+### Opening Files
+
+- Open a single file: `File > Open File...` or `Ctrl+O` / `Cmd+O`
+- Open a folder/project: `File > Open Folder...` or `Ctrl+K Ctrl+O` / `Cmd+K Cmd+O`
+- Quickly open a file: `Ctrl+P` / `Cmd+P`, then start typing the filename
+- Reopen a recently closed file: `Ctrl+Shift+T` / `Cmd+Shift+T`
+
+### Saving Files
+
+- Save current file: `Ctrl+S` / `Cmd+S`
+- Save as (new name/location): `Ctrl+Shift+S` / `Cmd+Shift+S`
+- Save all open files: `Ctrl+K S` / `Cmd+K S`
+
+<Aside type="tip">**Auto Save** can be enabled via `File > Auto Save` which saves your work automatically after a pause, making it way harder to lose your work. </Aside>
+
+A dot on a file's tab indicates **unsaved changes**.
+The dot will disappear and turn into an "X" (close icon) once the file is saved.
+
+<ContentFigure
+    width="600px"
+    height="600px"
+    alt="Left side shows the file DriveTrain.java with a dot next to the name, right side shows the same file with an X next to the name instead."
+    src="/learning-course/getting-started/vscode-overview/savedunsaved.webp"
+/>
+
+## Keyboard shortcuts
+
+VS Code has many useful keyboard shortcuts.
+
+- [Window keyboard shortcuts](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf)
+- [macOS keyboard shortcuts](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf)
+
+However, the most useful ones are:
 
 - `Ctrl+P` / `Cmd+P` is Quick Open which allows you to open any file by name
 - `Ctrl+Shift+P` / `Cmd+Shift+P` opens the Command Palette
 - `` Ctrl+` `` allows you to quickly open and close the integrated terminal
 - `Ctrl+B` / `Cmd+B` allows you to toggle sidebar visibility
 - `Ctrl+Tab` allows for you switch between the open editors
-
----
-
-## Saving and Opening Files
-
-### Opening Files
-
-- **Open a single file:** `File > Open File...` or `Ctrl+O` / `Cmd+O`
-- **Open a folder/project:** `File > Open Folder...` or `Ctrl+K Ctrl+O` / `Cmd+K Cmd+O`
-- **Quickly open a file:** `Ctrl+P` / `Cmd+P`, then start typing the filename
-- **Reopen a recently closed file:** `Ctrl+Shift+T` / `Cmd+Shift+T`
-
-### Saving Files
-
-- **Save current file:** `Ctrl+S` / `Cmd+S`
-- **Save as (new name/location):** `Ctrl+Shift+S` / `Cmd+Shift+S`
-- **Save all open files:** `Ctrl+K S` / `Cmd+K S`
-
-<Aside type="tip">**Auto Save:** can be enabled via `File > Auto Save` which saves your work automatically after a pause, making it way harder to lose your work. </Aside>
-
-A dot on a file's tab indicates **unsaved changes**; it turns into an "X" (close icon) once the file is saved.
-
----
-
-## WPILib VS Code
-
-For FRC, you use a separate version of VS Code developed by WPILib which is part of the WPILib installer.
-If you already have VS Code installed on your computer, the WPILib VS Code installs separately with the WPILib extension already installed and some settings changed.
-
-### WPILib Commands
-
-One key feature of WPILib VS Code and the WPILib extension is the commands available that are specific to FRC, such as **Build** which lets you compile the robot code and check for errors on-device, and **Deploy** which builds the code and sends it over the network connection with the robot to Systemcore.
-
-<ContentFigure
-    width="564"
-    height="300"
-    alt="WPILib Commands"
-    src="/learning-course/getting-started/vscode-overview/IMG_0155.webp"
-/>
-
-To access the WPILib commands, which are shows in the large red box on the screenshot, you can either open the command palette using the keyboard shortcut `Ctrl+Shift+P` / `Cmd+Shift+P`, or by clicking the WPILib logo in the top right corner, where the arrow is pointing to on the screenshot.

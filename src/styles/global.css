@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* ==========================================================================
    Root Variables
@@ -10,7 +10,7 @@
     --sl-nav-height: 5.5rem !important;
 
     /* Typography */
-    --sl-font: 'Inter', system-ui, sans-serif !important;
+    --sl-font: 'Noto Sans', system-ui, sans-serif !important;
     --sl-text-body: 0.875rem !important;
     --sl-line-height: 1.7 !important;
 

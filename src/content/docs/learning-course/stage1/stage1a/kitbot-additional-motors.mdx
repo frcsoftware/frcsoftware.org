@@ -1,8 +1,8 @@
 ---
 title: Kitbot Additional Motors
 description: Programming the remaining kitbot motors
-prev: simple-auto
-next: false
+prev: learning-course/stage1/stage1a/simple-auto
+next: learning-course/stage1/stage1b/stage-overview
 codeRegionSources:
     ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
     revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
@@ -119,8 +119,8 @@ To make the simulated motor controllers update, the `SingleFlywheelSim` instance
 # Fuel Sim
 
 If the code was to be simulated at this point, the motors could be controlled using keyboard inputs and the resulting motor speeds could be viewed with a graph inside of AdvantageScope.
-While this is a functional solution, it can be made more interesting by taking advantage of AdvantageScope's 3d tab.
-AdvantageScope's 3d tab displays robots and game pieces inside of a game field using data published from the robot code.
+While this is a functional solution, it can be made more interesting by taking advantage of AdvantageScope's 3D tab.
+AdvantageScope's 3D tab displays robots and game pieces inside of a game field using data published from the robot code.
 The `FuelSim` class provides simulation data for fuel game pieces to be visualized entering and exiting the robot.
 References to the IntakeLauncher and Feeder motors are given to the `FuelSim` class when the `SingleFlywheelSim` instances are created.
 
@@ -226,7 +226,7 @@ This will outtake the fuel.
 
 </Tabs>
 
-When none of the previous button are pressed the IntakeLauncher should have a throttle of 0.0 while the Feeder motor should have a throttle of 0.0.
+When none of the previous buttons are pressed the IntakeLauncher should have a throttle of 0.0 while the Feeder motor should have a throttle of 0.0.
 This will stop the motors.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
@@ -250,10 +250,10 @@ This will stop the motors.
 The process for testing the new motors in teleop is very similar to the process used to test the drivetrain.
 Holding the "E" key will cause the robot to intake, "Q" will cause the robot to launch.
 and "R" will cause the robot to outtake.
-Instead of looking at the 2D Field tab in Advantage Scope, use the Line Graph tab to view data from the motors.
+Instead of looking at the 2D Field tab in AdvantageScope, use the Line Graph tab to view data from the motors.
 The voltage applied from the motor controllers to their motors can be viewed on the left axis while the right axis shows the motors' velocities.
 
-Video showing line 2d graph running goes here.
+Video showing line 2D graph running goes here.
 
 <ContentFigure
     width="650px"
@@ -261,8 +261,10 @@ Video showing line 2d graph running goes here.
     src="/learning-course/stage1/stage1a/LineGraph.webm"
 />
 
+# 3d Sim
+
 The 3D Field tab will show a 3D rendering of the kitbot, fuel, and game field.
-As the robot preforms different actions the fuel should appear or disappear to show these actions.
+As the robot performs different actions the fuel should appear or disappear to show these actions.
 You should also still be able to move using the WASD keys.
 
 <ContentFigure

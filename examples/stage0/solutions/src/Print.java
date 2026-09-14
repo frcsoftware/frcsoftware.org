@@ -17,7 +17,7 @@ void main() {
     System.out.println("It knows this because it knows where it isn't.");
 
     // Define a variable `pi` that is equal to 3.14159.
-    // HINT: Make sure to pick the correct datatypes.
+    // HINT: Make sure to pick the correct data types.
     double pi = 3.14159;
     // Define an variable `g` that is equal to 10.
     int g = 10;
@@ -25,13 +25,7 @@ void main() {
     String mode = "autonomous";
 
     // Now, print all three variables in the **same** print statement,
-    // separated by spaces. You can do this by passing in the three variables, and
-    // "adding" an empty string (" ") in between each pair, as if you were adding
-    // two numbers together, using the `+` operator. Ex. [pi + " " + g].
-    // Java recognizes that one of the items being added is a string, and
-    // converts the items on either side to a string before combining everything.
-    // This method of combining strings via the `+` operator is known as string
-    // concatenation.
+    // separated by spaces.
     System.out.println(pi + " " + g + " " + mode);
 
     // Now, change pi to equal 3.142857 (a slightly incorrect approximation of pi
@@ -42,7 +36,7 @@ void main() {
     // Create a variable `degrees` of type `double` and assign it a value of
     // 360. Then, print the variable to observe type narrowing behavior
     // (it prints 360.0 with a decimal part, instead of just 360, since the
-    // variable uses a dataype with decimal parts).
+    // variable uses a data type with decimal parts).
     double degrees = 360;
     System.out.println(degrees);
 }

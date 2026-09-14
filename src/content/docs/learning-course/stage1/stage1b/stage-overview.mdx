@@ -29,3 +29,20 @@ This stage will cover the following topics:
 - [Suppliers in Command-Based](/learning-course/stage1/stage1b/suppliers-in-command-based/)
 - [Exercise: Kitbot Rewrite, Pt 2](/learning-course/stage1/stage1b/command-based-kitbot-pt2/)
 - [Bonus: Spot the Error, Pt 2](/learning-course/stage1/stage1b/spot-the-error-pt2/)
+
+<Aside type="note">
+    Why commands v3? <br />
+    <br /> If you're an experienced programmer, you likely know about or have
+    used commands v2 in the past. Commands v3 is a major change from commands
+    v2, changing the internals of the scheduler to run on Java's continuations
+    API. This much of the boilerplate code commands v2 necessitated to be
+    removed and makes writing commands more akin to writing regular Java code.{' '}
+    <br />
+    <br /> Commands v3 also brings many improvements related to commands
+    requiring mechanisms, allowing triggers to be scoped to an opmode or
+    command, and a new state machine API. For all of these reasons, commands v3
+    was chosen for this course, as its authors believe that commands v3 offers a
+    significantly better and simpler user experience compared to commands v2,
+    enabling users to write the same functionality in a much simpler and easier
+    way.
+</Aside>

@@ -78,7 +78,7 @@ by the same basic components.
 </FileTree>
 
 You'll notice that we're skipping a lot of files here, because you don't have to edit those.
-What's great about using a framework like WPILib is that it automatically generates these files when you create a new project, so you can get started coding quicker.
+What's great about using a framework like WPILib is that it automatically generates these files when you create a new project, so you can get started coding faster.
 The other folders, like `src/main/deploy/` for example, will come in handy as your robot code becomes more advanced.
 Thus, the only files shown in the structure tree are the ones directly responsible for controlling what our kitbot will do.
 
@@ -91,7 +91,8 @@ Thus, the only files shown in the structure tree are the ones directly responsib
 ### `Main.java`
 
 The first file to take note of is the `Main.java` file; this is the entrypoint for any Java project in real life.
-Its contents are pretty short and sweet (comments and package declaration removed for brevity):
+Its contents are pretty short and sweet.
+Comments and package declaration removed for brevity so your `Main.java` will look different.
 
 ```java stage1/snippets/Main.java#main
 
@@ -118,7 +119,7 @@ RobotBase.startRobot(first.robot.Robot::new);
 It seems to be "starting" an instance of the `first.robot.Robot` class, and if we go to that class file, we end up at `Robot.java`.
 This is the core of your robot code, where:
 
-- your subsystems are defined
+- your mechanisms are defined
 - shared behavior is defined
 - your debugging data is logged (telemetry).
 
@@ -136,7 +137,7 @@ An OpMode is a class that controls the behavior of your robot during a specific 
 You can have multiple OpModes per robot mode, and they are selected on the Driver Station to tell the robot which one to run.
 This allows you to have different autonomous routines for different situations,
 or multiple teleop routines for different drivers.
-OpModes use the `Robot` class to access the robot's subsystems and other shared behavior.
+OpModes use the `Robot` class to access the robot's mechanisms and other shared behavior.
 
 <Aside type="note">
     Prior FRC programmers may have used `SendableChooser` to register different
@@ -146,5 +147,5 @@ OpModes use the `Robot` class to access the robot's subsystems and other shared 
 
 ### `simulation/`
 
-These are the files that control simulation of the robot, allowing you to test code without actually having a physical robot in front of you.
+These are the files that control simulating the robot, allowing you to test code without actually having a physical robot in front of you.
 We've set this up for you already; you'll just have to set up the simulation software yourself, which we'll cover at the end of Stage 1A.

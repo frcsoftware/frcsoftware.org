@@ -22,10 +22,21 @@ import ContentImage from '@components/ContentImage.astro';
     src="/learning-course/stage1/stage1a/kitbotDrivetrain.webp"
 />
 
-The kitbot uses a four motor tank drive meaning the left and right sides are driven independently by two motors each.
-This allows
-the robot to move similar to a tank by driving the left and right sides at different speeds.
+The kitbot uses a four motor tank drive.
+A tank drive is a type of drive train where left and right sides are driven independently by two motors each.
+This allows the robot to move similar to a tank by driving the left and right sides at different speeds.
 For this stage, the four drivetrain motors will be referred to as `leftLeader`, `leftFollower`, `rightLeader`, `rightFollower`.
+
+# Systemcore
+
+Systemcore is the main processor for robot code.
+It can be thought of as the "brain" of the robot.
+
+<ContentFigure
+    width="650px"
+    alt="Drivetrain"
+    src="/learning-course/stage1/stage1a/systemcore.webp"
+/>
 
 # Motor Controllers
 
@@ -100,7 +111,7 @@ Now try creating the right motor controllers on your own.
 
 # Motor Controller Configuration
 
-Motor Controllers have many settings that can be changed such as IDs, motor
+Motor controllers have many settings that can be changed such as IDs, motor
 types, and limits.
 Vendors provide
 software, such as REV's [REV Hardware Client 2](https://docs.revrobotics.com/rev-hardware-client-2) and CTRE's [Phoenix Tuner X](https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/index.html), to run

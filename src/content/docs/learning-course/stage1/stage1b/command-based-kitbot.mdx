@@ -160,6 +160,7 @@ to allow for simulation to work:
 ```
 
 This code creates a `SingleFlywheelSim` object named `sim` that simulates the feeder by representing it as a single spinning flywheel, then updates the simulation in `sim.periodic()`.
+The code checks if it is being simulated before updating the sim so the simulation code is not run when the robot is real.
 
 ### Task 3: The IntakeLauncher Mechanism
 

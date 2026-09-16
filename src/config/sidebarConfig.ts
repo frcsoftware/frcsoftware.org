@@ -62,6 +62,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                             slug: 'learning-course/stage0/java-fundamentals',
                         },
                         {
+                            label: 'Debugging',
+                            slug: 'learning-course/stage0/debugging',
+                        },
+                        {
                             label: 'Operators',
                             slug: 'learning-course/stage0/operators',
                         },
@@ -88,6 +92,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                         {
                             label: 'Interfaces, Generics, and Lists',
                             slug: 'learning-course/stage0/interfaces-lists',
+                        },
+                        {
+                            label: 'Additional Resources',
+                            slug: 'learning-course/stage0/additional-resources',
                         },
                         {
                             label: 'Stage 0 Wrap-Up',
@@ -244,6 +252,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                             label: 'Stage 1B',
                             slug: 'educators-guide/stage1/stage1b',
                         },
+                        {
+                            label: 'Stage 1C',
+                            slug: 'educators-guide/stage1/stage1c',
+                        },
                     ],
                 },
                 { label: 'Stage 2', slug: 'educators-guide/stage2' },
@@ -286,10 +298,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
             label: 'Resources',
             items: [
                 { label: 'Overview', slug: 'resources/overview' },
-                { label: 'Glossary', slug: 'resources/glossary' },
                 { label: 'Documentation', slug: 'resources/docs' },
                 { label: 'Hardware', slug: 'resources/hardware-intro' },
                 { label: 'Examples', slug: 'resources/examples' },
+                { label: 'Glossary', slug: 'resources/glossary' },
             ],
         },
     ],
@@ -371,16 +383,16 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                     slug: 'resources/examples',
                 },
                 {
-                    label: 'Glossary',
-                    slug: 'resources/glossary',
+                    label: 'Documentation',
+                    slug: 'resources/docs',
                 },
                 {
                     label: 'Hardware',
                     slug: 'resources/hardware-intro',
                 },
                 {
-                    label: 'Documentation',
-                    slug: 'resources/docs',
+                    label: 'Glossary',
+                    slug: 'resources/glossary',
                 },
             ],
         },

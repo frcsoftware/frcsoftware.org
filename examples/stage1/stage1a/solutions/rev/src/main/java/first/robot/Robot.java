@@ -32,12 +32,12 @@ import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 public class Robot extends OpModeRobot {
 
   // [DriveMotorsLeft]
-  private SparkMax leftLeader = new SparkMax(CANPort.CAN_S0, 0, MotorType.kBrushless);
-  private SparkMax leftFollower = new SparkMax(CANPort.CAN_S0, 1, MotorType.kBrushless);
+  private final SparkMax leftLeader = new SparkMax(CANPort.CAN_S0, 0, MotorType.kBrushless);
+  private final SparkMax leftFollower = new SparkMax(CANPort.CAN_S0, 1, MotorType.kBrushless);
   // [/DriveMotorsLeft]
   // [DriveMotorsRight]
-  private SparkMax rightLeader = new SparkMax(CANPort.CAN_S0, 2, MotorType.kBrushless);
-  private SparkMax rightFollower = new SparkMax(CANPort.CAN_S0, 3, MotorType.kBrushless);
+  private final SparkMax rightLeader = new SparkMax(CANPort.CAN_S0, 2, MotorType.kBrushless);
+  private final SparkMax rightFollower = new SparkMax(CANPort.CAN_S0, 3, MotorType.kBrushless);
   // [/DriveMotorsRight]
 
   // [DrivetrainInstance]
@@ -46,25 +46,26 @@ public class Robot extends OpModeRobot {
   // [/DrivetrainInstance]
 
   // [IMU]
-  private OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
+  private final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
   // [/IMU]
   // [/RobotTop]
 
   // [DrivetrainSim]
-  private DrivetrainSim drivetrainSim = new DrivetrainSim(leftLeader, rightLeader);
+  private final DrivetrainSim drivetrainSim = new DrivetrainSim(leftLeader, rightLeader);
   // [/DrivetrainSim]
   // [/RobotWithSimPart1]
 
   // [AdditionalMotors]
-  public SparkMax intakeLauncher = new SparkMax(CANPort.CAN_S0, 4, MotorType.kBrushless);
-  public SparkMax feeder = new SparkMax(CANPort.CAN_S0, 5, MotorType.kBrushless);
+  public final SparkMax intakeLauncher = new SparkMax(CANPort.CAN_S0, 4, MotorType.kBrushless);
+  public final SparkMax feeder = new SparkMax(CANPort.CAN_S0, 5, MotorType.kBrushless);
   // [/AdditionalMotors]
 
   // [IntakeLauncherSim]
-  private SingleFlywheelSim intakeLauncherSim = SingleFlywheelSim.forIntakeLauncher(intakeLauncher);
+  private final SingleFlywheelSim intakeLauncherSim =
+      SingleFlywheelSim.forIntakeLauncher(intakeLauncher);
   // [/IntakeLauncherSim]
   // [FeederSim]
-  private SingleFlywheelSim feederSim = SingleFlywheelSim.forFeeder(feeder);
+  private final SingleFlywheelSim feederSim = SingleFlywheelSim.forFeeder(feeder);
 
   // [/FeederSim]
 
@@ -76,7 +77,7 @@ public class Robot extends OpModeRobot {
    */
   public Robot() {
     // [MotorConfigCreationLeft]
-    var leftConfig = new SparkMaxConfig();
+    SparkMaxConfig leftConfig = new SparkMaxConfig();
     // [/MotorConfigCreationLeft]
     // [MotorConfigSetLeft]
     leftConfig.inverted(true);
@@ -91,7 +92,7 @@ public class Robot extends OpModeRobot {
     // [/MotorConfigLeft]
 
     // [MotorConfig]
-    var rightConfig = new SparkMaxConfig();
+    SparkMaxConfig rightConfig = new SparkMaxConfig();
     rightConfig.inverted(false);
     rightLeader.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

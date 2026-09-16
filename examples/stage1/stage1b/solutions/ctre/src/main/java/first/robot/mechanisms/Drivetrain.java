@@ -16,6 +16,7 @@ import java.util.function.DoubleSupplier;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.drive.DifferentialDrive;
+import org.wpilib.framework.RobotBase;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
@@ -69,6 +70,8 @@ public class Drivetrain implements Mechanism {
   }
 
   public void periodic() {
-    drivetrainSim.periodic();
+    if (RobotBase.isSimulation()) {
+      drivetrainSim.periodic();
+    }
   }
 }

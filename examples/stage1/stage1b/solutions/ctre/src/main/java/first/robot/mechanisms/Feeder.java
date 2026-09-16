@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.framework.RobotBase;
 
 public class Feeder implements Mechanism {
   private final TalonFX motor = new TalonFX(5, CANBus.systemcore(0));
@@ -60,6 +61,8 @@ public class Feeder implements Mechanism {
   }
 
   public void periodic() {
-    sim.periodic();
+    if (RobotBase.isSimulation()) {
+      sim.periodic();
+    }
   }
 }

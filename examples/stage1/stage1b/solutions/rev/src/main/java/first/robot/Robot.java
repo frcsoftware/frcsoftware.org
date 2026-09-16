@@ -11,6 +11,7 @@ import first.robot.mechanisms.IntakeLauncher;
 import first.robot.simulation.FuelSim;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.framework.OpModeRobot;
+import org.wpilib.framework.RobotBase;
 
 /**
  * The methods in this class are called automatically as described in the OpModeRobot documentation.
@@ -33,6 +34,8 @@ public class Robot extends OpModeRobot {
     drivetrain.periodic();
     intakeLauncher.periodic();
     feeder.periodic();
-    FuelSim.periodic();
+    if (RobotBase.isSimulation()) {
+      FuelSim.periodic();
+    }
   }
 }

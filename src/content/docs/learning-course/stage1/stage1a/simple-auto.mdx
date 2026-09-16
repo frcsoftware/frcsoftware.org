@@ -25,8 +25,47 @@ When writing an OpMode that will be run during the autonomous mode, there is an 
 This annotation tells the Driver Station to place the OpMode under the autonomous selector.
 This OpMode will use a `Timer` to base its behavior off of the time elapsed from the beginning of the autonomous period.
 Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions
-
 The code for the auto will be added to the `MyAuto.java` file inside the opmode folder.
+
+To write a time based auto, a `Timer` must be created to keep track of how long the auto has run.
+Inside the `MyAuto` class, construct a `Timer` instance.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#TimerInit
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#TimerInit
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+With the code as it is now, this timer will keep track of the time since the autonomous was selected in the driver station.
+However, the timer needs to keep track of the time since the robot is enabled.
+This can be accomplished using the timer's `restart()` function, which resets the timer to zero, inside of the OpMode's `start()` function.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#TimerRestart
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#TimerRestart
+        ```
+
+    </TabItem>
+
+</Tabs>
+
 The goal of the auto is to drive forward at half speed for four seconds then stop.
 The `Timer` class has the `hasElapsed(double seconds)` function which returns true if the specified amount of time has passed.
 This function can be periodically checked as the condition to an if statement to stop the robot after four seconds

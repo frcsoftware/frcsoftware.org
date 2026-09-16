@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.framework.RobotBase;
 import org.wpilib.hardware.bus.CANPort;
 
 public class IntakeLauncher implements Mechanism {
@@ -64,6 +65,8 @@ public class IntakeLauncher implements Mechanism {
   }
 
   public void periodic() {
-    sim.periodic();
+    if (RobotBase.isSimulation()) {
+      sim.periodic();
+    }
   }
 }

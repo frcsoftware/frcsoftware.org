@@ -21,9 +21,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                             type="button"
                             class="mobile-menu-toggle"
                             aria-label="Toggle navigation menu"
-                            aria-expanded="false"
-                            aria-controls="starlight__sidebar"
-                            data-mobile-menu-toggle
+                            popovertarget="starlight__sidebar"
                         >
                             <span class="hamburger-line" />
                             <span class="hamburger-line" />
@@ -166,45 +164,6 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             document.addEventListener('DOMContentLoaded', initImageLightbox);
         }
         document.addEventListener('astro:page-load', initImageLightbox);
-    })();
-</script>
-
-<script is:inline>
-    (() => {
-        const initMobileMenuToggle = () => {
-            const toggle = document.querySelector('[data-mobile-menu-toggle]');
-            const nativeButton = document.querySelector(
-                'starlight-menu-button',
-            );
-            const nativeInnerButton = nativeButton?.querySelector('button');
-
-            if (!toggle || !nativeButton || !nativeInnerButton) return;
-
-            toggle.addEventListener('click', () => nativeInnerButton.click());
-
-            const syncExpanded = () => {
-                toggle.setAttribute(
-                    'aria-expanded',
-                    nativeButton.getAttribute('aria-expanded') || 'false',
-                );
-            };
-
-            syncExpanded();
-            new MutationObserver(syncExpanded).observe(nativeButton, {
-                attributes: true,
-                attributeFilter: ['aria-expanded'],
-            });
-        };
-
-        if (
-            document.readyState === 'complete' ||
-            document.readyState === 'interactive'
-        ) {
-            initMobileMenuToggle();
-        } else {
-            document.addEventListener('DOMContentLoaded', initMobileMenuToggle);
-        }
-        document.addEventListener('astro:page-load', initMobileMenuToggle);
     })();
 </script>
 
@@ -502,18 +461,24 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             bottom: 11px;
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(1) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(1) {
             top: 50%;
             margin-top: -1.5px;
             transform: rotate(45deg);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(2) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(2) {
             opacity: 0;
             transform: scale(0);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(3) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(3) {
             bottom: auto;
             top: 50%;
             margin-top: -1.5px;

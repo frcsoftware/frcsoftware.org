@@ -73,10 +73,8 @@ body {
     overscroll-behavior-y: none;
 }
 
-@media (max-width: 50rem) {
-    starlight-menu-button {
-        display: none !important;
-    }
+.sl-menu-button {
+    display: none !important;
 }
 
 /* ==========================================================================

@@ -39,9 +39,9 @@ export const sidebarTopics = [
     {
         label: 'Resources',
         id: 'resources',
-        link: '/resources/docs/',
+        link: '/resources/overview/',
         icon: 'document',
-        items: sidebarSections['/other-resources']![0]!.items.map(convertItem),
+        items: sidebarSections['/resources']![0]!.items.map(convertItem),
     },
     {
         label: 'Contribution',

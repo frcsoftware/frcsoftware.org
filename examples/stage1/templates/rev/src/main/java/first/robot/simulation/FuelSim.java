@@ -23,10 +23,7 @@ public class FuelSim {
     OUTTAKE
   }
 
-  private static final double SHOT_DT = 0.1,
-      SHOT_VELOCITY_X = -2,
-      SHOT_VELOCITY_Z = 5.5,
-      SPEED_EPSILON = 20;
+  private static final double SHOT_DT = 0.1, SHOT_VELOCITY_X = -2, SHOT_VELOCITY_Z = 5.5;
   private static final Transform3d
       FIRST_ROW_POSE = new Transform3d(-0.22, 0, 0.35, Rotation3d.ZERO),
       SECOND_ROW_POSE = new Transform3d(-0.08, 0, 0.3, Rotation3d.ZERO),
@@ -45,16 +42,16 @@ public class FuelSim {
   private static double rowsOfFuel = 0;
 
   /** A supplier that fetches the velocity of the feeder. */
-  static DoubleSupplier feederSpeedSupplier = () -> 0;
+  static DoubleSupplier feederVoltsSupplier = () -> 0;
 
   /** A supplier that fetches the velocity of the intake. */
-  static DoubleSupplier intakeLauncherSpeedSupplier = () -> 0;
+  static DoubleSupplier intakeLauncherVoltsSupplier = () -> 0;
 
   /** A supplier that fetches the robot pose. */
   static Supplier<Pose2d> robotPoseSupplier = () -> Pose2d.ZERO;
 
   /** Updates the fuel sim. */
-  public static void update() {
+  public static void periodic() {
     updateMode();
     updateVisualization();
   }
@@ -85,14 +82,14 @@ public class FuelSim {
   }
 
   private static void updateMode() {
-    double intakeLauncherSpeed = intakeLauncherSpeedSupplier.getAsDouble();
-    double feederSpeed = feederSpeedSupplier.getAsDouble();
+    double intakeLauncherVolts = intakeLauncherVoltsSupplier.getAsDouble();
+    double feederVolts = feederVoltsSupplier.getAsDouble();
     isPaused = false;
-    if (intakeLauncherSpeed > SPEED_EPSILON && feederSpeed > SPEED_EPSILON) {
+    if (intakeLauncherVolts > 0 && feederVolts > 0) {
       mode = Mode.SHOOT;
-    } else if (intakeLauncherSpeed < SPEED_EPSILON && feederSpeed > SPEED_EPSILON) {
+    } else if (intakeLauncherVolts < 0 && feederVolts > 0) {
       mode = Mode.OUTTAKE;
-    } else if (intakeLauncherSpeed > SPEED_EPSILON && feederSpeed < SPEED_EPSILON) {
+    } else if (intakeLauncherVolts > 0 && feederVolts < 0) {
       mode = Mode.INTAKE;
     } else {
       isPaused = true;

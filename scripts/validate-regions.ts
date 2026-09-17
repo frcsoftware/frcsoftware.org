@@ -11,7 +11,7 @@ const START_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[(\w+)\]\s*$/;
 const END_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[\/(\w+)\]\s*$/;
 const CODEBLOCK_RE = /^\s*```(?:\w+)?\s*(?:\{(\w+)\}|(\S*))?#(\w+)/;
 
-const FRONTMATTER_RE = /^---\n([\s\S]*?)\n---/;
+const FRONTMATTER_RE = /^---(?:\n|\r\n)([\s\S]*?)(?:\n|\r\n)---/;
 const CODE_REGION_SOURCES_KEY_RE = /^codeRegionSources:\s*$/;
 const CODE_REGION_SOURCE_ENTRY_RE = /^\s+([\w-]+):\s*(.+?)\s*$/;
 

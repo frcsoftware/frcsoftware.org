@@ -2,7 +2,6 @@
     "name": "frcsoftware-starlight",
     "type": "module",
     "version": "0.0.1",
-    "packageManager": "pnpm@11.24.0",
     "engines": {
         "node": ">=24.0.0"
     },
@@ -11,6 +10,11 @@
             "name": "node",
             "version": "^24.0.0",
             "onFail": "warn"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": "~12.3.0",
+            "onFail": "download"
         }
     },
     "scripts": {
@@ -32,12 +36,12 @@
         "prepare": "husky"
     },
     "dependencies": {
-        "@astrojs/markdown-remark": "^7.2.4",
-        "@astrojs/starlight": "^0.41.10",
+        "@astrojs/markdown-remark": "^7.3.0",
+        "@astrojs/starlight": "^0.42.0",
         "@mdi/js": "^7.4.47",
-        "astro": "^7.2.9",
+        "astro": "^7.3.1",
         "sharp": "^0.35.4",
-        "starlight-sidebar-topics": "^0.8.0",
+        "starlight-sidebar-topics": "^0.9.0",
         "starlight-sidebar-topics-dropdown": "^0.6.0",
         "unist-util-visit": "^5.1.0",
         "yaml": "^2.9.0"
@@ -45,17 +49,18 @@
     "devDependencies": {
         "@astrojs/check": "^0.9.10",
         "@eslint/js": "^10.0.1",
-        "@types/estree": "^1.0.9",
-        "@types/mdast": "^4.0.4",
-        "@types/node": "^26.4.0",
         "@frcsoftware/vale": "3.19.0",
+        "@types/estree": "^1.0.9",
+        "@types/hast": "^3.0.5",
+        "@types/mdast": "^4.0.4",
+        "@types/node": "^26.5.0",
         "astro-eslint-parser": "^3.1.0",
-        "eslint": "^10.9.1",
+        "eslint": "^10.10.0",
         "eslint-plugin-astro": "^3.1.0",
         "fast-glob": "^3.3.3",
-        "globals": "^17.11.0",
+        "globals": "^17.12.0",
         "husky": "^9.1.7",
-        "lint-staged": "^17.4.1",
+        "lint-staged": "^17.5.0",
         "mdast-util-mdx": "^3.0.0",
         "mdast-util-mdx-jsx": "^3.2.0",
         "mdx2vast": "^0.5.0",
@@ -72,7 +77,7 @@
         "starlight-links-validator": "^0.25.3",
         "tsx": "^4.23.13",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.68.0",
+        "typescript-eslint": "^8.70.0",
         "vfile": "^6.0.3"
     }
 }

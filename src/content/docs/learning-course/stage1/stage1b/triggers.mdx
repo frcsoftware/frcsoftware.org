@@ -35,7 +35,7 @@ Triggers can schedule commands in two ways:
 
 2. `trigger.whileTrue(Command)`: Identical to onTrue, but cancels the running command when the trigger becomes inactive again.
    If `teleopEnabledTrigger.onTrue(...)` was changed to `teleopEnabledTrigger.whileTrue(...)`, disabling teleop mode
-   on the driver station will cancel the `runAtThrottle` command mid-run.
+   on the Driver Station will cancel the `runAtThrottle` command mid-run.
 
 <Aside type="note">
     You can bind multiple commands to the same trigger! 

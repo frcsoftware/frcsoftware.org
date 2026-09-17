@@ -2,9 +2,3 @@ allowBuilds:
     esbuild: true
     '@frcsoftware/vale': true
     workerd: true
-minimumReleaseAgeExclude:
-    - miniflare@5.20260831.0-alpha
-    - '@frcsoftware/vale@3.19.0'
-    - wrangler@4.128.0
-overrides:
-    'satteri': '^0.10.5'

@@ -11,7 +11,7 @@ codeRegionSources:
 
 Syntax is the basic set of rules that all programs in a language must follow.
 It's similar to writing.
-In writing, the first word in a sentence has to start with a uppercase letter or all sentence need in a period.
+In writing, the first word in a sentence must start with an uppercase letter and all sentences should end with a period.
 Java's syntax is very specific, there are different rules for how certain lines of code are written.
 Syntax errors are the most common sorts of errors.
 Whenever the syntax is mentioned, pay attention closely.
@@ -19,9 +19,9 @@ Whenever the syntax is mentioned, pay attention closely.
 ## Variables
 
 Variables are containers that are used to store information in a program.
-This could be a variable that holds the temperature or a variable that holds the speed of the motor.
+A variable might hold the temperature or it might hold the speed of the motor.
 
-To make a variable, there are 5 parts:
+To declare a variable, there are 5 parts:
 
 1. Data type
 2. Name of the variable
@@ -38,46 +38,46 @@ This makes your programs more reliable and helps prevent some common errors beca
 
 Some example data types that are commonly used in FRC programming are:
 
-- int: Integer numbers that are positive or negative.
-  int only allows numbers without decimals.
-  Example: 12
-- double: Numbers that are positive or negative.
-  Unlike int, double allows decimals.
-  Example: 34.1
-- boolean: Either `true` or `false`.
-- String: Holds a sequence of characters.
+- `int`: Integer numbers that are positive or negative.
+  `int` only allows numbers without decimals.
+  Example: `12`
+- `double`: Numbers that are positive or negative.
+  Unlike `int`, `double` allows decimals.
+  Example: `34.1`
+- `boolean`: Either `true` or `false`.
+- `String`: Holds a sequence of characters.
   Denoted by double quotes (").
-  Example: “Hello World”
+  Example: `“Hello World”`
 
 <Aside type="note">
     When creating a String, make sure the S is capitalized! `string robotName =
-    "Plunk"` will throw an error but `String robotName = "Plunk"` will not.
+    "Plunk";` will throw an error but `String robotName = "Plunk";` will not.
 </Aside>
 
 ### Name
 
 In Java, variable names may only consist of letters, numbers, and underscores (`_`), but variable names cannot start with a number.
-The name of the variable can be whatever you want, however, we recommend making them descriptive and easy to read.
+The name of the variable can be whatever you want.
+However, we recommend making them descriptive and easy to read.
 This will make it much easier for you to understand your own code and for others to help you.
 
 One common variable naming style is camel case, where each word is capitalized except the first.
 For example, `frontLeftDrive`, `currentTemperature`, and `targetPosition` are all camel case.
-Another common variable naming style is upper snake case, where each word is capitalized and an underscore is used in between each word.
+Another common variable naming style is upper snake case, where each word is capitalized and an underscore is used between each word.
 For example: `BACK_LEFT_DRIVE`, and `GEAR_RATIO` are in upper snake case.
 
 When programming a robot, camel case is commonly used for creating variables.
-Upper snake case is used for constants which are variables that are defined once and are not changed.
+Upper snake case is used for constants, which are variables that are defined once and are not changed.
 
 <Aside type="note">
 Java is a case-sensitive programming language!
 This means that uppercase and lowercase letters are treated as being two different things.
-For example: MotorID is different from motorID.
-Even though it’s spelled the same, if your variable name is MotorID then you try to reference it again but spell it as motorID, Java will see the two as different, and your code will get an error.
+For example: `MotorID` is different from `motorID`.
+Even though it’s spelled the same, if your variable name is `MotorID` then you try to reference it but spell it as `motorID`, Java will see the two as different, and the compiler will throw an error.
 
 </Aside>
 
-Creating variable names can be fun, but the names should be
-As mentioned, we recommend making them descriptive and easy to read
+Creating variable names can be fun, but the names should be descriptive and easy to read.
 
 Using an intake motor as an example, here are some bad and good variable names:
 
@@ -92,42 +92,42 @@ Using an intake motor as an example, here are some bad and good variable names:
         <tr>
             <tr>
                 <td>
-                    `F` Avoid short or one letter variable names. It's not
+                    `f` Avoid short or one letter variable names. It's not
                     descriptive and doesn't make it clear what the variable is
-                    for.{' '}
+                    for.
                 </td>
                 <td>
-                    `FrontLeftMotor` Clearly describes what the variable name is
+                    `frontLeftMotor` Clearly describes what the variable name is
                     for and it's easy to read.
                 </td>
             </tr>
             <td>
-                `Bingo` Avoid using random words. It makes it hard to know what
-                the variable is for.{' '}
+                `bingo` Avoid using random words. It makes it hard to know what
+                the variable is for.
             </td>
             <td>
-                `BackLeftMotor` The variable name is easy to read and it's
+                `backLeftMotor` The variable name is easy to read and it's
                 descriptive.
             </td>
         </tr>
         <tr>
             <td>
-                `Motor` Robots have many motors. It's not clear what the motor
+                `motor` Robots have many motors. It's not clear what the motor
                 is used for.
             </td>
             <td>
-                `IntakeMotor` Adding a mechanism name makes it clear that the
+                `intakeMotor` Adding a mechanism name makes it clear that the
                 motor belongs to the intake.
             </td>
         </tr>
         <tr>
             <td>
-                `IntakeMotorForTheTopIntakeRoller` This is too descriptive and
+                `intakeMotorForTheTopIntakeRoller` This is too descriptive and
                 the name is too long, which makes it hard to read.
             </td>
             <td>
-                `IntakeTopMotor` The variable name is shorter but it's easy to
-                know what the variable is for.{' '}
+                `intakeTopMotor` The variable name is shorter but it's easy to
+                know what the variable is for.
             </td>
         </tr>
     </tbody>
@@ -137,6 +137,8 @@ Using an intake motor as an example, here are some bad and good variable names:
 
 In Java, semi-colons `;` are similar to a period in a sentence.
 It is what tells the compiler when a statement ends.
+Java does not have what we call "significant whitespace".
+That is, whitespace such as new lines, spaces, and indentation do not affect how your code is executed.
 In most cases, not having a semi-colon at the end of a line will cause an error.
 
 ### Example
@@ -164,7 +166,8 @@ A print statement in Java looks like:
 
 ```
 
-The print statement uses information given inside the parentheses, in the previous example, it’s the String “hello!”, and prints it out to the terminal screen.
+The print statement uses information given inside the parentheses.
+In the previous example, the String `“hello!”` is printed out to the terminal screen.
 When using a print statement to output text, you have to surround the text with quotes, to indicate that you want to work with that text literally.
 A print statement without the quotes will instead interpret the text as a variable name and attempt to print the data stored by that variable.
 This may cause an error if you intended to print out the text literally since the text is likely not an existing variable.
@@ -185,11 +188,11 @@ Let's look at an example:
 
 `speed` is set equal to 1, this will print out `Left Motor Speed 1`.
 Notice the space between `Speed` and the `"`.
-This is done to make the print out easy to read.
+This is done to make the text easy to read.
 `System.out.println("Left Motor Speed" + speed);` would print out `Left Motor Speed1` which isn't easy to read.
 
 This can also be done using many variables.
-Using an empty string, `" "`, a space can be added in between variables in a print statement.
+A space can be added between variables using a string literal with the desired spacing.
 Let's look at another example:
 
 ```java #stringConcatenation2
@@ -201,10 +204,9 @@ Java recognizes that one of the items being added is a string, and converts the 
 
 ## Comments
 
-When programming, we use comments to write notes that explain what the code does.
-This helps make the code more readable for others because if they are unsure of what your code does, they can read your comments.
-Writing comments can also help you!
-Leaving comments that explain what code does can be helpful when trying to understand what your code does and when debugging.
+When programming, we use comments to document, or explain what the code does.
+This helps others make sense of the code's intent.
+Writing comments can also help you to remember why you wrote the documented code!
 
 Comments are ignored by the compiler, which also means that you can use comments to prevent code from running.
 In Java, there are two types of comments: single-line comments and multi-line comments.
@@ -212,13 +214,13 @@ In Java, there are two types of comments: single-line comments and multi-line co
 ### Single-line Comments
 
 Single line comments begin with `//` and mark the rest of the line as being a comment.
-For example, the code below leaves the note of "This prints out Hello World." preceding the print statement
+For example, the code below is documented as to what it achieves.
 
 ```java #singleLineComment
 
 ```
 
-You will also see comments placed at the end of a line like the following
+You might also see documenting comments placed at the end of a line
 
 ```java #inlineComment
 
@@ -229,9 +231,8 @@ Whether you put your comments preceding or alongside code is up to you and what 
 
 ### Multi-line Comments
 
-Multi-line Comments start with `/*` and end with `*/` The text or code that is in between the two will turn into comments.
+Multi-line Comments start with `/*` and end with `*/` The text or code that is in between the two will be treated as comments.
 Multi-line Comments are commonly used when you have many lines of text or need to turn a large amount of code into a comment.
-For example, this is a comment with two lines of text.
 
 ```java #multiLineComment
 
@@ -240,7 +241,7 @@ For example, this is a comment with two lines of text.
 ### Writing Comments
 
 It's best to use comments to explain what the code is trying to do with words, rather then just restating the code.
-For example, this is a useful comment because it explains what the purpose is and how it accomplishes the task.
+For example, this is a useful comment because it explains the code's purpose and how it accomplishes the task.
 
 ```java #goodComment
 
@@ -253,7 +254,7 @@ It just restates the code.
 
 ```
 
-There's no need to use comments for every line of code, but if something might be confusing to someone else later (or even yourself), leave a comment!
+There's no need to use comments for every line of code, but if something might be confusing or ambiguous to someone else (or even yourself), leave a comment!
 
 ## Java Fundamentals Exercise
 

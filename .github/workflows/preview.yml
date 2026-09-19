@@ -88,7 +88,7 @@ jobs:
                       // wrangler lists each newly uploaded asset as "+ /some/path/index.html"
                       const uploaded = (process.env.WRANGLER_OUTPUT || '')
                           .split('\n')
-                          .map(line => line.replace(/\[[0-9;]*m/g, '').trim())
+                          .map(line => line.replace(/\x1b\[[0-9;]*m/g, '').trim())
                           .map(line => /^\+\s+(\/\S*)$/.exec(line)?.[1])
                           .filter(path => path && path.endsWith('.html'));
 

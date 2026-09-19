@@ -68,6 +68,10 @@ This is how the motor controller objects for the left motors will look.
         ```java {ctreRobot}#DriveMotorsLeft
         ```
 
+        CTRE uses a `CANBus` that is constructed with a `CANPort enum to specify which of Systemcore's CANBuses the device is connected too.
+        This enum is a field in the `CANPort` class and only CAN_S0 through CAN_S4 will ever be used since Systemcore only has five CAN Busses.
+
+
     </TabItem>
     <TabItem label = "REV">
         ```java {revRobot}#DriveMotorsLeft

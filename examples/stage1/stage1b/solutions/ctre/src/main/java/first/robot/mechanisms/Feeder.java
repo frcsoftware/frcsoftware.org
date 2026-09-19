@@ -11,9 +11,10 @@ import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.framework.RobotBase;
+import org.wpilib.hardware.bus.CANPort;
 
 public class Feeder implements Mechanism {
-  private final TalonFX motor = new TalonFX(5, CANBus.systemcore(0));
+  private final TalonFX motor = new TalonFX(5, new CANBus(CANPort.CAN_S0));
   private final SingleFlywheelSim sim = SingleFlywheelSim.forFeeder(motor);
 
   public Feeder() {

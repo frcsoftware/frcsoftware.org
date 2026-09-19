@@ -16,6 +16,7 @@ import first.robot.simulation.FuelSim;
 import first.robot.simulation.SingleFlywheelSim;
 import org.wpilib.drive.DifferentialDrive;
 import org.wpilib.framework.OpModeRobot;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
@@ -32,13 +33,13 @@ import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 public class Robot extends OpModeRobot {
 
   // [DriveMotorsLeft]
-  private final TalonFX leftLeader = new TalonFX(0, CANBus.systemcore(0));
-  private final TalonFX leftFollower = new TalonFX(1, CANBus.systemcore(0));
+  private final TalonFX leftLeader = new TalonFX(0, new CANBus(CANPort.CAN_S0));
+  private final TalonFX leftFollower = new TalonFX(1, new CANBus(CANPort.CAN_S0));
   // [/DriveMotorsLeft]
 
   // [DriveMotorsRight]
-  private final TalonFX rightLeader = new TalonFX(2, CANBus.systemcore(0));
-  private final TalonFX rightFollower = new TalonFX(3, CANBus.systemcore(0));
+  private final TalonFX rightLeader = new TalonFX(2, new CANBus(CANPort.CAN_S0));
+  private final TalonFX rightFollower = new TalonFX(3, new CANBus(CANPort.CAN_S0));
   // [/DriveMotorsRight]
 
   // [DrivetrainInstance]
@@ -57,8 +58,8 @@ public class Robot extends OpModeRobot {
   // [/RobotWithSimPart1]
 
   // [AdditionalMotors]
-  public final TalonFX intakeLauncher = new TalonFX(4, CANBus.systemcore(0));
-  public final TalonFX feeder = new TalonFX(5, CANBus.systemcore(0));
+  public final TalonFX intakeLauncher = new TalonFX(4, new CANBus(CANPort.CAN_S0));
+  public final TalonFX feeder = new TalonFX(5, new CANBus(CANPort.CAN_S0));
   // [/AdditionalMotors]
 
   // [IntakeLauncherSim]

@@ -16,7 +16,7 @@ void main() {
 
     //Create an double array named `motorSpeeds` that holds the values
     // 0.1, 0.2, 0.3, 0.4, 0.5, Then print out the length of the
-    // motorSpeeds array 
-  
+    // motorSpeeds array
+
 
 }

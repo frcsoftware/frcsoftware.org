@@ -46,6 +46,13 @@ Inside the `MyAuto` class, construct a `Timer` instance.
 
 </Tabs>
 
+<Aside type="note">
+    When adding in `Timer`, there will be an error. This error is an import
+    error and can be fixed through quick fix. When using quickfix, there will
+    usually be many options. For `Timer`, select `import
+    org.wpilib.system.Timer;`
+</Aside>
+
 With the code as it is now, this timer will keep track of the time since the autonomous was selected in the driver station.
 However, the timer needs to keep track of the time since the robot is enabled.
 This can be accomplished using the timer's `restart()` function, which resets the timer to zero, inside of the OpMode's `start()` function.

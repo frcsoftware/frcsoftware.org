@@ -1,8 +1,6 @@
 ---
 title: Kitbot Drivetrain
 description: Programming the kitbot drivetrain
-prev: stage-overview
-next: drivetrain-sim
 codeRegionSources:
     ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
     revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
@@ -67,6 +65,10 @@ This is how the motor controller objects for the left motors will look.
     <TabItem label = "CTRE">
         ```java {ctreRobot}#DriveMotorsLeft
         ```
+
+        CTRE uses a `CANBus` that is constructed with a `CANPort enum to specify which of Systemcore's CANBuses the device is connected too.
+        This enum is a field in the `CANPort` class and only CAN_S0 through CAN_S4 will ever be used since Systemcore only has five CAN Busses.
+
 
     </TabItem>
     <TabItem label = "REV">

@@ -100,6 +100,7 @@ class Triggers {
       new Trigger(() -> teleopEnabled()).onTrue(intake.runAtThrottle(0.5));
     }
   }
+
   // [/teleopEnabledRobot]
 
   Command myAutonomousCommand() {

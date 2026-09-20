@@ -17,15 +17,16 @@ import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.drive.DifferentialDrive;
 import org.wpilib.framework.RobotBase;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
 public class Drivetrain implements Mechanism {
   private static final int leftLeaderID = 0, rightLeaderID = 2;
-  private final TalonFX leftLeader = new TalonFX(leftLeaderID, CANBus.systemcore(0));
-  private final TalonFX leftFollower = new TalonFX(1, CANBus.systemcore(0));
-  private final TalonFX rightLeader = new TalonFX(rightLeaderID, CANBus.systemcore(0));
-  private final TalonFX rightFollower = new TalonFX(3, CANBus.systemcore(0));
+  private final TalonFX leftLeader = new TalonFX(leftLeaderID, new CANBus(CANPort.CAN_S0));
+  private final TalonFX leftFollower = new TalonFX(1, new CANBus(CANPort.CAN_S0));
+  private final TalonFX rightLeader = new TalonFX(rightLeaderID, new CANBus(CANPort.CAN_S0));
+  private final TalonFX rightFollower = new TalonFX(3, new CANBus(CANPort.CAN_S0));
 
   private final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
   private final DifferentialDrive differentialDrive =

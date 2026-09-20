@@ -17,10 +17,11 @@ Drivetrain drivetrain = new Drivetrain();
 
 void main() {
   
-    // First, create a new integer variable named calibrationTime
+    // First, set calibrationTime to 0
     // Below, create a while loop that checks if calibrationTime is less than 5
     // if that is true, print "Calibrating", then increase calibrationTime by one
     // when calibrationTime is no longer less than 5, print "Done!"
+    int calibrationTime;
 
 
 

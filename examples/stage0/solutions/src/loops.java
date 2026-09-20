@@ -46,7 +46,6 @@ void main() {
     for (int timer = 15; timer >= 0; timer--){
         if (timer <= 0 ){
             drivetrain.setThrottle(0);
-
         } else if (timer <= 15 ){
             drivetrain.setThrottle(1);
         }

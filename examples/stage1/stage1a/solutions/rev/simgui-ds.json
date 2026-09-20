@@ -1,5 +1,5 @@
 {
-  "Keyboard 0 Settings": {"window": {"visible": true}},
+  "Keyboard 0 Settings": {"window": {"visible": false}},
   "keyboardJoysticks": [{
     "axisConfig": [{}, {
       "decKey": 568,

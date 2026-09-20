@@ -32,7 +32,7 @@ void main() {
     // equal to 22 divided by 7). Then, print the value of `pi` again.
     pi = 3.142857;
     System.out.println(pi);
-    
+
     // Create a variable `degrees` of type `double` and assign it a value of
     // 360. Then, print the variable to observe type narrowing behavior
     // (it prints 360.0 with a decimal part, instead of just 360, since the

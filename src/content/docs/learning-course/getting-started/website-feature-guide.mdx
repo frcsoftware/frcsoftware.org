@@ -3,6 +3,9 @@ title: Website Feature Guide
 description: Learn about the features of FRC Software to navigate the content effectively
 ---
 
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
 Before you start learning, there are several features across the website that, if missed, will make it hard to go through the lessons effectively.
 The following features are shown with examples to help you gain a quick understanding of them before you make your way through the website.
 
@@ -23,6 +26,16 @@ The following features are shown with examples to help you gain a quick understa
         <p>You will find hints or answers to questions here.</p>
     </div>
 </details>
+
+FRCSoftware focuses on two different ways of writing code based on different motors.
+In later stages, tabs will be used to accommodate for the differences.
+To see code based on REV motors, click on the REV tab.
+To see code based on CTRE motors, click on the CTRE tab.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">Code for CTRE will be here</TabItem>
+    <TabItem label="REV">Code for REV will be here</TabItem>
+</Tabs>
 
 ### Call-Outs
 

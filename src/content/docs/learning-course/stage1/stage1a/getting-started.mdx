@@ -6,50 +6,64 @@ next: kitbot-drivetrain
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
+import ContentRow from '@components/ContentRow.astro';
+import ContentRowCaption from '@components/ContentRow.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
 
-Before we can start programming, we have to fork and clone the relevant repository.
+Before we can start programming, we have to get the code set up.
+FRCSoftware focuses two types of vendors: REV and CTRE.
+
+<ContentRow>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/ctre.webp"
+        alt="Kraken X60 Motor"
+        width="30%"
+    >
+        Photo Credit: CTRE
+    </ContentFigure>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/rev.webp"
+        alt="Spark MAX and NEO Motor"
+        width="30%"
+    >
+        Photo Credit: REV
+    </ContentFigure>
+</ContentRow>
+
+REV uses NEOs and SparkMAXs.
+CTRE uses Krakens.
 If you are not sure which set up your team uses, ask a team member!
+After picking an ecosystem, it's time to clone the relevant repository.
 
-export const codeRepo = [
-    {
-        buttonTitle: 'REV Template',
-        image: '/learning-course/stage1/stage1a/rev.webp',
-        imageAlt:
-            'A photo of a SPARKMax in front of a NEO Motor. Photo Credit: REV',
-        code: 'https://github.com/frcsoftware/Stage1-Template-REV',
-    },
-    {
-        buttonTitle: 'CTRE Template',
-        image: '/learning-course/stage1/stage1a/ctre.webp',
-        imageAlt: 'A photo of a kraken motor. Photo Credit: CTRE',
-        code: 'https://github.com/frcsoftware/Stage1-Template-CTRE',
-    },
-];
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        First, the [CTRE Template](https://github.com/frcsoftware/Stage1-Template-CTRE)
 
-<section class="mechanism-section">
-  <div class="section-heading">  </div>
+        To clone:
+        - Open VS Code
+        - Go to `Clone Git Repository`
+        - You can also select the Git Icon on the left
+        - Copy and paste the link
+        - Create a `stage1a` folder and select it
+        - Done!
+    </TabItem>
+    <TabItem label="REV">
+        First, open the [REV Template](https://github.com/frcsoftware/Stage1-Template-REV)
 
-  <div class="featured-grid">
-    {codeRepo.map((example) => (
-      <article class="featured-card">
-        {example.image && (
-          <div class="featured-image">
-            <img src={example.image} alt={example.imageAlt} loading="lazy" />
-          </div>
-        )}
-        <div class="featured-body">
-          <h3>{example.title}</h3>
-        </div>
-        <div class="featured-links">
-        <a href={example.code} target="_blank"> {example.buttonTitle}</a>
-        </div>
-      </article>
-    ))}
-  </div>
-</section>
+        To clone:
+        - Open VS Code
+        - Go to `Clone Git Repository`
+        - You can also select the Git Icon on the left
+        - Copy and paste the link
+        - Create a `stage1a` folder and select it
+        - Done!
+    </TabItem>
+
+</Tabs>
 
 <Aside type="tip">
-    If you forgot how to fork and clone a repository, read over [the Forking and
+    If you need additional help on how to clone a repository, read over [the
     Cloning guide](/learning-course/getting-started/forking-and-cloning/).
 </Aside>
 

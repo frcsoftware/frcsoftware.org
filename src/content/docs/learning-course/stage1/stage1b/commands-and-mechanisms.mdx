@@ -1,8 +1,6 @@
 ---
 title: Commands & Mechanisms, Part 1
 description: The basics of defining mechanisms and writing commands
-prev: learning-course/stage1/stage1b/the-command-body
-next: learning-course/stage1/stage1b/triggers
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandsAndMechsPt1.java
 ---
@@ -25,8 +23,8 @@ in your robot class:
 ```
 
 <Aside type="note">
-    **Ignore this if you haven't used Commands V2!** Mechanisms in Commands V3
-    are identical to Subsystems in Commands V2. The difference is that you have
+    **Ignore this if you haven't used Commands v2!** Mechanisms in Commands v3
+    are identical to Subsystems in Commands v2. The difference is that you have
     to define your own `periodic()` method while calling it manually in
     `robotPeriodic()`, instead of overriding a method from `SubsystemBase`.
 </Aside>
@@ -58,7 +56,7 @@ you call `named()`:
 ```
 
 <Aside type="note">
-    **Ignore this if you haven't used Commands V2!** Unlike in Commands V2, the
+    **Ignore this if you haven't used Commands v2!** Unlike in Commands v2, the
     code inside of a `run()` method won't run repeatedly! Use while loops inside
     of the `run()` method to run code repeatedly.
 </Aside>

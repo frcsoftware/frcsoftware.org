@@ -26,12 +26,12 @@ void main() {
     double speed = 1;
     System.out.println("Left Motor Speed " + speed);
     //[/stringConcatenation1]
-    
+
     // [stringConcatenation2]
     int first = 6;
     double second = 2.0;
 
-    System.out.println(first + " " + second); 
+    System.out.println(first + " " + second);
 
     //[/stringConcatenation2]
 

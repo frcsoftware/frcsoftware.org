@@ -18,6 +18,7 @@ class CommandBasedKitbot {
   public class Feeder implements Mechanism {
     // your code here...
   }
+
   // [/feederDef]
 
   void schedulerExample() {
@@ -46,13 +47,15 @@ class CommandBasedKitbot {
   private final ExampleMotor motor = new ExampleMotor();
 
   // [feederSim]
-  private final SingleFlywheelSim sim = new SingleFlywheelSim(motor, "Feeder"); // Create a flywheel simulation
+  private final SingleFlywheelSim sim =
+      new SingleFlywheelSim(motor, "Feeder"); // Create a flywheel simulation
 
   public void periodic() { // Update the simulation
     if (RobotBase.isSimulation()) {
       sim.periodic();
     }
   }
+
   // [/feederSim]
 
   class ExampleMechanism {

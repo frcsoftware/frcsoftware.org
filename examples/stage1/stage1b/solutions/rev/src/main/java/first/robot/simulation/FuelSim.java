@@ -24,20 +24,27 @@ public class FuelSim {
     OUTTAKE
   }
 
-  private static final double SHOT_DT = 0.1, SHOT_VELOCITY_X = -2, SHOT_VELOCITY_Z = 5.5;
-  private static final Transform3d
-      FIRST_ROW_POSE = new Transform3d(-0.22, 0, 0.35, Rotation3d.ZERO),
-      SECOND_ROW_POSE = new Transform3d(-0.08, 0, 0.3, Rotation3d.ZERO),
-      THIRD_ROW_POSE = new Transform3d(0.06, 0, 0.25, Rotation3d.ZERO),
-      SHOT_ORIGIN = new Transform3d(0.2, 0, 0.5, Rotation3d.ZERO);
+  private static final double SHOT_DT = 0.1;
+  private static final double SHOT_VELOCITY_X = -2;
+  private static final double SHOT_VELOCITY_Z = 5.5;
+
+  private static final Transform3d FIRST_ROW_POSE =
+      new Transform3d(-0.22, 0, 0.35, Rotation3d.ZERO);
+  private static final Transform3d SECOND_ROW_POSE =
+      new Transform3d(-0.08, 0, 0.3, Rotation3d.ZERO);
+  private static final Transform3d THIRD_ROW_POSE = new Transform3d(0.06, 0, 0.25, Rotation3d.ZERO);
+  private static final Transform3d SHOT_ORIGIN = new Transform3d(0.2, 0, 0.5, Rotation3d.ZERO);
 
   private static final NetworkTable logTable =
       NetworkTableInstance.getDefault().getTable("FuelSim");
-  private static final StructArrayPublisher<Pose3d>
-      row1FuelPub = logTable.getStructArrayTopic("Row1Fuel", Pose3d.struct).publish(),
-      row2FuelPub = logTable.getStructArrayTopic("Row2Fuel", Pose3d.struct).publish(),
-      row3FuelPub = logTable.getStructArrayTopic("Row3Fuel", Pose3d.struct).publish(),
-      parabolaFuelPub = logTable.getStructArrayTopic("ParabolaFuel", Pose3d.struct).publish();
+  private static final StructArrayPublisher<Pose3d> row1FuelPub =
+      logTable.getStructArrayTopic("Row1Fuel", Pose3d.struct).publish();
+  private static final StructArrayPublisher<Pose3d> row2FuelPub =
+      logTable.getStructArrayTopic("Row2Fuel", Pose3d.struct).publish();
+  private static final StructArrayPublisher<Pose3d> row3FuelPub =
+      logTable.getStructArrayTopic("Row3Fuel", Pose3d.struct).publish();
+  private static final StructArrayPublisher<Pose3d> parabolaFuelPub =
+      logTable.getStructArrayTopic("ParabolaFuel", Pose3d.struct).publish();
   private static Mode mode = null;
   private static boolean isPaused = false;
   private static double rowsOfFuel = 0;

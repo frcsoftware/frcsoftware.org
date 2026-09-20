@@ -5,14 +5,14 @@
  */
 
 void main() {
- 
+
     //[logicError1]
     int width = 2;
     int height = 5;
-    int area = width + height; 
+    int area = width + height;
     System.out.println("Area of the rectangle is " + area);
     //[/logicError1]
-    
+
 
 
 }

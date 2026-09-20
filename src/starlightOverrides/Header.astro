@@ -47,9 +47,9 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             </div>
         </div>
 
-        <div class="beta-banner">
-            This website is still in beta. If you find any errors, please report
-            them{' '}
+        <div class="development-banner">
+            This website is still in development. If you find any errors, please
+            report them{' '}
             <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
                 here
             </a>
@@ -274,7 +274,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         padding: 0.5rem 1.5rem;
     }
 
-    .beta-banner {
+    .development-banner {
         text-align: center;
         font-size: 0.8rem;
         line-height: 1.5;
@@ -282,7 +282,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         background: var(--accent-color-dark);
     }
 
-    .beta-banner a {
+    .development-banner a {
         color: #ffffff;
         font-weight: 600;
         text-decoration: underline;

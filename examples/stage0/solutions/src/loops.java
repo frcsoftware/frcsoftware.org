@@ -17,16 +17,16 @@ Drivetrain drivetrain = new Drivetrain();
 
 void main() {
   
-    // First, create a new integer variable named `error`
-    // Below, create a while loop that checks if `error` is less than 5
-    // if that is true, print "Robots should not quit", then increase `error` by one
-    // when `error` is no longer less than 5, print "but yours did"
-    int error = 0;
-    while (error < 5){
-        System.out.println("Robots should not quit");
-        error++;
+    // First, create a new integer variable named calibrationTime
+    // Below, create a while loop that checks if calibrationTime is less than 5
+    // if that is true, print "Calibrating", then increase calibrationTime by one
+    // when calibrationTime is no longer less than 5, print "Done!"
+    int calibrationTime = 0;
+    while (calibrationTime < 5){
+        System.out.println("Calibrating");
+        calibrationTime++;
     }
-    System.out.println("but yours did");
+    System.out.println("Done!");
 
     // Create a for loop that has a new integer variable named `timer`
     // that is set to 15. Check for when `timer` is greater than or equal to 0,

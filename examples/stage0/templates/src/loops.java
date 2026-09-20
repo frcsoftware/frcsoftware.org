@@ -17,10 +17,10 @@ Drivetrain drivetrain = new Drivetrain();
 
 void main() {
   
-    // First, create a new integer variable named `error`
-    // Below, create a while loop that checks if `error` is less than 5
-    // if that is true, print "Robots should not quit", then increase `error` by one
-    // when `error` is no longer less than 5, print "but yours did"
+    // First, create a new integer variable named calibrationTime
+    // Below, create a while loop that checks if calibrationTime is less than 5
+    // if that is true, print "Calibrating", then increase calibrationTime by one
+    // when calibrationTime is no longer less than 5, print "Done!"
 
 
 

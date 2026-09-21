@@ -1,5 +1,20 @@
-// Sidebar configuration for each main navigation section
-// Maps navbar routes to their specific sidebar items
+// Sidebar configuration, consumed by starlight-sidebar-topics in astro.config.mjs.
+// Each topic is one entry in the sidebar's topic dropdown and owns its own page tree.
+
+import type {
+    StarlightIcon,
+    StarlightUserConfig,
+} from '@astrojs/starlight/types';
+
+type StarlightSidebarItem = NonNullable<StarlightUserConfig['sidebar']>[number];
+
+export interface SidebarTopic {
+    label: string;
+    id: string;
+    link: string;
+    icon: StarlightIcon;
+    items: SidebarItem[];
+}
 
 export type SidebarItem = {
     label: string;
@@ -8,329 +23,21 @@ export type SidebarItem = {
     collapsed?: boolean;
 };
 
-export type SidebarSection = {
-    label: string;
-    items: SidebarItem[];
-};
-
-export type Item = {
-    label: string;
-    href?: string;
-    items?: Item[];
-};
-
-// Define which URL paths belong to which sidebar section
-export const sidebarSections: Record<string, SidebarSection[]> = {
-    // Learning Course section
-    '/learning-course': [
+const learningCourse: SidebarTopic = {
+    label: 'Learning Course',
+    id: 'learning-course',
+    link: '/learning-course/',
+    icon: 'notes',
+    items: [
+        { label: 'Overview', slug: 'learning-course' },
         {
-            label: 'Learning Course',
-            items: [
-                { label: 'Overview', slug: 'learning-course' },
-                {
-                    label: 'Website Feature Guide',
-                    slug: 'learning-course/getting-started/website-feature-guide',
-                },
-                {
-                    label: 'Course Setup',
-                    collapsed: true,
-                    items: [
-                        {
-                            label: 'Required Tools',
-                            slug: 'learning-course/getting-started/required-tools',
-                        },
-                        {
-                            label: 'VS Code Overview',
-                            slug: 'learning-course/getting-started/vscode-overview',
-                        },
-                        {
-                            label: 'Forking and Cloning',
-                            slug: 'learning-course/getting-started/forking-and-cloning',
-                        },
-                    ],
-                },
-                {
-                    label: 'Stage 0',
-                    collapsed: true,
-                    items: [
-                        {
-                            label: 'Stage 0 Overview',
-                            slug: 'learning-course/stage0/stage-overview',
-                        },
-                        {
-                            label: 'Java Fundamentals',
-                            slug: 'learning-course/stage0/java-fundamentals',
-                        },
-                        {
-                            label: 'Debugging',
-                            slug: 'learning-course/stage0/debugging',
-                        },
-                        {
-                            label: 'Operators',
-                            slug: 'learning-course/stage0/operators',
-                        },
-                        {
-                            label: 'Conditionals',
-                            slug: 'learning-course/stage0/conditionals',
-                        },
-                        {
-                            label: 'Loops',
-                            slug: 'learning-course/stage0/loops',
-                        },
-                        {
-                            label: 'Classes and Objects',
-                            slug: 'learning-course/stage0/classes-objects',
-                        },
-                        {
-                            label: 'Methods and Mutable State',
-                            slug: 'learning-course/stage0/classes-methods',
-                        },
-                        {
-                            label: 'Arrays and For-Each Loops',
-                            slug: 'learning-course/stage0/arrays',
-                        },
-                        {
-                            label: 'Interfaces, Generics, and Lists',
-                            slug: 'learning-course/stage0/interfaces-lists',
-                        },
-                        {
-                            label: 'Additional Resources',
-                            slug: 'learning-course/stage0/additional-resources',
-                        },
-                        {
-                            label: 'Stage 0 Wrap-Up',
-                            slug: 'learning-course/stage0/stage-wrap-up',
-                        },
-                    ],
-                },
-                {
-                    label: 'Stage 1',
-                    collapsed: true,
-                    items: [
-                        {
-                            label: 'Stage 1 Overview',
-                            slug: 'learning-course/stage1/stage-overview',
-                        },
-                        {
-                            label: 'Stage 1A: Kitbot Intro',
-                            collapsed: true,
-                            items: [
-                                {
-                                    label: 'Stage 1A Overview',
-                                    slug: 'learning-course/stage1/stage1a/stage-overview',
-                                },
-                                {
-                                    label: 'Getting Started',
-                                    slug: 'learning-course/stage1/stage1a/getting-started',
-                                },
-                                {
-                                    label: 'Kitbot Drivetrain',
-                                    slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
-                                },
-                                {
-                                    label: 'Drivetrain Simulation',
-                                    slug: 'learning-course/stage1/stage1a/drivetrain-sim',
-                                },
-                                {
-                                    label: 'Simple Auto',
-                                    slug: 'learning-course/stage1/stage1a/simple-auto',
-                                },
-                                {
-                                    label: 'Additional Motors',
-                                    slug: 'learning-course/stage1/stage1a/kitbot-additional-motors',
-                                },
-                                {
-                                    label: 'Stage 1A Wrap-Up',
-                                    slug: 'learning-course/stage1/stage1a/stage-wrap-up',
-                                },
-                            ],
-                        },
-                        {
-                            label: 'Stage 1B: Commands',
-                            collapsed: true,
-                            items: [
-                                {
-                                    label: 'Stage 1B Overview',
-                                    slug: 'learning-course/stage1/stage1b/stage-overview',
-                                },
-                                {
-                                    label: 'The Concepts',
-                                    slug: 'learning-course/stage1/stage1b/command-based-overview',
-                                },
-                                {
-                                    label: 'The Body of a Command',
-                                    slug: 'learning-course/stage1/stage1b/the-command-body',
-                                },
-                                {
-                                    label: 'Commands & Mechanisms, Pt. 1',
-                                    slug: 'learning-course/stage1/stage1b/commands-and-mechanisms',
-                                },
-                                {
-                                    label: 'Triggers and Scheduling',
-                                    slug: 'learning-course/stage1/stage1b/triggers',
-                                },
-                                {
-                                    label: 'Commands & Mechanisms, Pt. 2',
-                                    slug: 'learning-course/stage1/stage1b/commands-and-mechanisms-pt2',
-                                },
-                                {
-                                    label: 'Bonus: Spot the Error',
-                                    slug: 'learning-course/stage1/stage1b/spot-the-error',
-                                },
-                                {
-                                    label: 'Exercise - Kitbot Rewrite, Pt. 1',
-                                    slug: 'learning-course/stage1/stage1b/command-based-kitbot',
-                                },
-                                {
-                                    label: 'Suppliers in Command-Based',
-                                    slug: 'learning-course/stage1/stage1b/suppliers-in-command-based',
-                                },
-                                {
-                                    label: 'Exercise - Kitbot Rewrite, Pt. 2',
-                                    slug: 'learning-course/stage1/stage1b/command-based-kitbot-pt2',
-                                },
-                                {
-                                    label: 'Bonus: Spot the Error, Pt 2',
-                                    slug: 'learning-course/stage1/stage1b/spot-the-error-pt2',
-                                },
-                                {
-                                    label: 'Stage 1B Wrap-Up',
-                                    slug: 'learning-course/stage1/stage1b/stage-wrap-up',
-                                },
-                            ],
-                        },
-                        {
-                            label: 'Stage 1C: Control and Telemetry',
-                            collapsed: true,
-                            items: [
-                                {
-                                    label: 'Stage 1C Introduction',
-                                    slug: 'learning-course/stage1/stage1c/stage-overview',
-                                },
-                            ],
-                        },
-                    ],
-                },
-                {
-                    label: 'Stage 2',
-                    collapsed: true,
-                    items: [
-                        {
-                            label: 'Stage 2 Overview',
-                            slug: 'learning-course/stage2/stage-overview',
-                        },
-                    ],
-                },
-            ],
+            label: 'Website Feature Guide',
+            slug: 'learning-course/getting-started/website-feature-guide',
         },
-    ],
-    // Educator's Guide section
-    '/educators-guide': [
         {
-            label: "Educator's Guide",
+            label: 'Course Setup',
+            collapsed: true,
             items: [
-                { label: 'Introduction', slug: 'educators-guide/introduction' },
-                {
-                    label: 'The Stages',
-                    slug: 'educators-guide/introduction/the-stages',
-                },
-                {
-                    label: 'Preparing Yourself',
-                    slug: 'educators-guide/introduction/preparation',
-                },
-                { label: 'Stage 0', slug: 'educators-guide/stage0' },
-                {
-                    label: 'Stage 1',
-                    collapsed: true,
-                    items: [
-                        { label: 'Overview', slug: 'educators-guide/stage1' },
-                        {
-                            label: 'Stage 1A',
-                            slug: 'educators-guide/stage1/stage1a',
-                        },
-                        {
-                            label: 'Stage 1B',
-                            slug: 'educators-guide/stage1/stage1b',
-                        },
-                        {
-                            label: 'Stage 1C',
-                            slug: 'educators-guide/stage1/stage1c',
-                        },
-                    ],
-                },
-                { label: 'Stage 2', slug: 'educators-guide/stage2' },
-            ],
-        },
-    ],
-
-    // Best Practices section
-    '/best-practices': [
-        {
-            label: 'Best Practices',
-            items: [
-                {
-                    label: 'Overview',
-                    slug: 'best-practices/overview',
-                },
-                {
-                    label: 'Git Usage',
-                    slug: 'best-practices/git-usage',
-                },
-                {
-                    label: 'GitHub Usage',
-                    slug: 'best-practices/github-usage',
-                },
-                {
-                    label: 'Code Formatter',
-                    slug: 'best-practices/code-formatter',
-                },
-                {
-                    label: 'CI Checks',
-                    slug: 'best-practices/ci-checks',
-                },
-            ],
-        },
-    ],
-
-    // Other Resources section (maps to /resources in content)
-    '/other-resources': [
-        {
-            label: 'Resources',
-            items: [
-                { label: 'Overview', slug: 'resources/overview' },
-                { label: 'Documentation', slug: 'resources/docs' },
-                { label: 'Hardware', slug: 'resources/hardware-intro' },
-                { label: 'Examples', slug: 'resources/examples' },
-                { label: 'Glossary', slug: 'resources/glossary' },
-            ],
-        },
-    ],
-
-    // Contribution section
-    '/contribution': [
-        {
-            label: 'Contribution',
-            items: [
-                {
-                    label: 'Methods of Contributing',
-                    slug: 'contribution/methodsofcontributing',
-                },
-                { label: 'Style Guide', slug: 'contribution/styleguide' },
-                { label: 'Contributors', slug: 'contribution/contributors' },
-                { label: 'Roadmap', slug: 'contribution/roadmap' },
-            ],
-        },
-    ],
-
-    // Getting Started section
-    '/getting-started': [
-        {
-            label: 'Getting Started',
-            items: [
-                {
-                    label: 'Website Feature Guide',
-                    slug: 'learning-course/getting-started/website-feature-guide',
-                },
                 {
                     label: 'Required Tools',
                     slug: 'learning-course/getting-started/required-tools',
@@ -343,161 +50,275 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                     label: 'Forking and Cloning',
                     slug: 'learning-course/getting-started/forking-and-cloning',
                 },
-                {
-                    label: 'Intro to Java',
-                    slug: 'learning-course/stage0/stage-overview',
-                },
             ],
         },
-    ],
-
-    // Intro To Java section
-    '/intro-to-java': [
         {
-            label: 'Intro to Java',
+            label: 'Stage 0',
+            collapsed: true,
             items: [
                 {
-                    label: 'Stage Overview',
+                    label: 'Stage 0 Overview',
                     slug: 'learning-course/stage0/stage-overview',
                 },
                 {
-                    label: 'Java fundamentals',
+                    label: 'Java Fundamentals',
                     slug: 'learning-course/stage0/java-fundamentals',
                 },
                 {
-                    label: 'operators',
+                    label: 'Debugging',
+                    slug: 'learning-course/stage0/debugging',
+                },
+                {
+                    label: 'Operators',
                     slug: 'learning-course/stage0/operators',
+                },
+                {
+                    label: 'Conditionals',
+                    slug: 'learning-course/stage0/conditionals',
+                },
+                { label: 'Loops', slug: 'learning-course/stage0/loops' },
+                {
+                    label: 'Classes and Objects',
+                    slug: 'learning-course/stage0/classes-objects',
+                },
+                {
+                    label: 'Methods and Mutable State',
+                    slug: 'learning-course/stage0/classes-methods',
+                },
+                {
+                    label: 'Arrays and For-Each Loops',
+                    slug: 'learning-course/stage0/arrays',
+                },
+                {
+                    label: 'Interfaces, Generics, and Lists',
+                    slug: 'learning-course/stage0/interfaces-lists',
+                },
+                {
+                    label: 'Additional Resources',
+                    slug: 'learning-course/stage0/additional-resources',
+                },
+                {
+                    label: 'Stage 0 Wrap-Up',
+                    slug: 'learning-course/stage0/stage-wrap-up',
                 },
             ],
         },
-    ],
-
-    // Resources section (content lives at /resources but navbar says "Other Resources")
-    '/resources': [
         {
-            label: 'Resources',
+            label: 'Stage 1',
+            collapsed: true,
             items: [
-                { label: 'Overview', slug: 'resources/overview' },
                 {
-                    label: 'Examples',
-                    slug: 'resources/examples',
+                    label: 'Stage 1 Overview',
+                    slug: 'learning-course/stage1/stage-overview',
                 },
                 {
-                    label: 'Documentation',
-                    slug: 'resources/docs',
+                    label: 'Stage 1A: Kitbot Intro',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 1A Overview',
+                            slug: 'learning-course/stage1/stage1a/stage-overview',
+                        },
+                        {
+                            label: 'Getting Started',
+                            slug: 'learning-course/stage1/stage1a/getting-started',
+                        },
+                        {
+                            label: 'Kitbot Drivetrain',
+                            slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
+                        },
+                        {
+                            label: 'Drivetrain Simulation',
+                            slug: 'learning-course/stage1/stage1a/drivetrain-sim',
+                        },
+                        {
+                            label: 'Simple Auto',
+                            slug: 'learning-course/stage1/stage1a/simple-auto',
+                        },
+                        {
+                            label: 'Additional Motors',
+                            slug: 'learning-course/stage1/stage1a/kitbot-additional-motors',
+                        },
+                        {
+                            label: 'Stage 1A Wrap-Up',
+                            slug: 'learning-course/stage1/stage1a/stage-wrap-up',
+                        },
+                    ],
                 },
                 {
-                    label: 'Hardware',
-                    slug: 'resources/hardware-intro',
+                    label: 'Stage 1B: Commands',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 1B Overview',
+                            slug: 'learning-course/stage1/stage1b/stage-overview',
+                        },
+                        {
+                            label: 'The Concepts',
+                            slug: 'learning-course/stage1/stage1b/command-based-overview',
+                        },
+                        {
+                            label: 'The Body of a Command',
+                            slug: 'learning-course/stage1/stage1b/the-command-body',
+                        },
+                        {
+                            label: 'Commands & Mechanisms, Pt. 1',
+                            slug: 'learning-course/stage1/stage1b/commands-and-mechanisms',
+                        },
+                        {
+                            label: 'Triggers and Scheduling',
+                            slug: 'learning-course/stage1/stage1b/triggers',
+                        },
+                        {
+                            label: 'Commands & Mechanisms, Pt. 2',
+                            slug: 'learning-course/stage1/stage1b/commands-and-mechanisms-pt2',
+                        },
+                        {
+                            label: 'Bonus: Spot the Error',
+                            slug: 'learning-course/stage1/stage1b/spot-the-error',
+                        },
+                        {
+                            label: 'Exercise - Kitbot Rewrite, Pt. 1',
+                            slug: 'learning-course/stage1/stage1b/command-based-kitbot',
+                        },
+                        {
+                            label: 'Suppliers in Command-Based',
+                            slug: 'learning-course/stage1/stage1b/suppliers-in-command-based',
+                        },
+                        {
+                            label: 'Exercise - Kitbot Rewrite, Pt. 2',
+                            slug: 'learning-course/stage1/stage1b/command-based-kitbot-pt2',
+                        },
+                        {
+                            label: 'Bonus: Spot the Error, Pt 2',
+                            slug: 'learning-course/stage1/stage1b/spot-the-error-pt2',
+                        },
+                        {
+                            label: 'Stage 1B Wrap-Up',
+                            slug: 'learning-course/stage1/stage1b/stage-wrap-up',
+                        },
+                    ],
                 },
                 {
-                    label: 'Glossary',
-                    slug: 'resources/glossary',
+                    label: 'Stage 1C: Control and Telemetry',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 1C Introduction',
+                            slug: 'learning-course/stage1/stage1c/stage-overview',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            label: 'Stage 2',
+            collapsed: true,
+            items: [
+                {
+                    label: 'Stage 2 Overview',
+                    slug: 'learning-course/stage2/stage-overview',
                 },
             ],
         },
     ],
 };
 
-/**
- * Gets the sidebar configuration for a given URL path
- * Matches the most specific path prefix
- */
-export function getSidebarForPath(pathname: string): SidebarSection[] {
-    // Normalize pathname
-    const normalizedPath = pathname.endsWith('/')
-        ? pathname.slice(0, -1)
-        : pathname;
+const educatorsGuide: SidebarTopic = {
+    label: "Educator's Guide",
+    id: 'educators-guide',
+    link: '/educators-guide/introduction/',
+    icon: 'open-book',
+    items: [
+        { label: 'Introduction', slug: 'educators-guide/introduction' },
+        {
+            label: 'The Stages',
+            slug: 'educators-guide/introduction/the-stages',
+        },
+        {
+            label: 'Preparing Yourself',
+            slug: 'educators-guide/introduction/preparation',
+        },
+        { label: 'Stage 0', slug: 'educators-guide/stage0' },
+        {
+            label: 'Stage 1',
+            collapsed: true,
+            items: [
+                { label: 'Overview', slug: 'educators-guide/stage1' },
+                { label: 'Stage 1A', slug: 'educators-guide/stage1/stage1a' },
+                { label: 'Stage 1B', slug: 'educators-guide/stage1/stage1b' },
+                { label: 'Stage 1C', slug: 'educators-guide/stage1/stage1c' },
+            ],
+        },
+        { label: 'Stage 2', slug: 'educators-guide/stage2' },
+    ],
+};
 
-    // Try to find exact match first
-    if (sidebarSections[normalizedPath]) {
-        return sidebarSections[normalizedPath];
+const bestPractices: SidebarTopic = {
+    label: 'Best Practices',
+    id: 'best-practices',
+    link: '/best-practices/overview/',
+    icon: 'approve-check-circle',
+    items: [
+        { label: 'Overview', slug: 'best-practices/overview' },
+        { label: 'Git Usage', slug: 'best-practices/git-usage' },
+        { label: 'GitHub Usage', slug: 'best-practices/github-usage' },
+        { label: 'Code Formatter', slug: 'best-practices/code-formatter' },
+        { label: 'CI Checks', slug: 'best-practices/ci-checks' },
+    ],
+};
+
+const resources: SidebarTopic = {
+    label: 'Resources',
+    id: 'resources',
+    link: '/resources/overview/',
+    icon: 'document',
+    items: [
+        { label: 'Overview', slug: 'resources/overview' },
+        { label: 'Examples', slug: 'resources/examples' },
+        { label: 'Documentation', slug: 'resources/docs' },
+        { label: 'Hardware', slug: 'resources/hardware-intro' },
+        { label: 'Glossary', slug: 'resources/glossary' },
+    ],
+};
+
+const contribution: SidebarTopic = {
+    label: 'Contribution',
+    id: 'contribution',
+    link: '/contribution/',
+    icon: 'code-branch',
+    items: [
+        { label: 'Overview', slug: 'contribution' },
+        {
+            label: 'Methods of Contributing',
+            slug: 'contribution/methodsofcontributing',
+        },
+        { label: 'Style Guide', slug: 'contribution/styleguide' },
+        { label: 'Contributors', slug: 'contribution/contributors' },
+        { label: 'Roadmap', slug: 'contribution/roadmap' },
+    ],
+};
+
+const topics: SidebarTopic[] = [
+    learningCourse,
+    educatorsGuide,
+    bestPractices,
+    resources,
+    contribution,
+];
+
+function convertItem(item: SidebarItem): StarlightSidebarItem {
+    if (item.items) {
+        return {
+            label: item.label,
+            collapsed: item.collapsed ?? false,
+            items: item.items.map(convertItem),
+        };
     }
-
-    // Find the longest matching prefix
-    let bestMatch = '';
-    for (const key of Object.keys(sidebarSections)) {
-        if (
-            key !== '/' &&
-            normalizedPath.startsWith(key) &&
-            key.length > bestMatch.length
-        ) {
-            bestMatch = key;
-        }
-    }
-
-    return sidebarSections[bestMatch || '/'] ?? sidebarSections['/'] ?? [];
+    return { label: item.label, link: '/' + item.slug + '/' };
 }
 
-/**
- * Flattens sidebar items into a linear list of links for prev/next navigation
- */
-function flattenSidebarItems(
-    items: SidebarItem[],
-): { label: string; href: string }[] {
-    const result: { label: string; href: string }[] = [];
-
-    for (const item of items) {
-        if (item.slug) {
-            result.push({ label: item.label, href: '/' + item.slug + '/' });
-        }
-        if (item.items) {
-            result.push(...flattenSidebarItems(item.items));
-        }
-    }
-
-    return result;
-}
-
-/**
- * Gets prev/next navigation links for a given path
- */
-export function getPrevNextLinks(pathname: string): {
-    prev: { label: string; href: string } | null;
-    next: { label: string; href: string } | null;
-} {
-    const sections = getSidebarForPath(pathname);
-
-    // Flatten all sections into a single list
-    const allLinks: { label: string; href: string }[] = [];
-    for (const section of sections) {
-        allLinks.push(...flattenSidebarItems(section.items));
-    }
-
-    // Normalize the current path
-    const normalizedPath = pathname.endsWith('/') ? pathname : pathname + '/';
-
-    // Find current page index
-    const currentIndex = allLinks.findIndex(
-        (link) => link.href === normalizedPath,
-    );
-
-    if (currentIndex === -1) {
-        return { prev: null, next: null };
-    }
-    const prev = allLinks.at(currentIndex - 1) ?? null;
-    const next = allLinks.at(currentIndex + 1) ?? null;
-    return {
-        prev,
-        next,
-    };
-}
-
-export function getSidebarLinkLabel(
-    pathname: string,
-    href: string,
-): string | null {
-    const sections = getSidebarForPath(pathname);
-
-    const allLinks: { label: string; href: string }[] = [];
-
-    for (const section of sections) {
-        allLinks.push(...flattenSidebarItems(section.items));
-    }
-
-    const normalizedHref = href.endsWith('/') ? href : href + '/';
-
-    const link = allLinks.find((link) => link.href === normalizedHref);
-
-    return link?.label ?? null;
-}
+export const sidebarTopics = topics.map((topic) => ({
+    ...topic,
+    items: topic.items.map(convertItem),
+}));

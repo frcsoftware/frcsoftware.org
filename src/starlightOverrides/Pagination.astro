@@ -1,18 +1,11 @@
 ---
-import { getSidebarLinkLabel } from '../config/sidebarConfig';
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 import MdiIcon from '../components/MdiIcon.astro';
 
-const pathname = Astro.url.pathname;
 const { prev, next } = Astro.locals.starlightRoute.pagination;
 
-const prevLabel = prev
-    ? (getSidebarLinkLabel(pathname, prev.href) ?? prev.label)
-    : null;
-
-const nextLabel = next
-    ? (getSidebarLinkLabel(pathname, next.href) ?? next.label)
-    : null;
+const prevLabel = prev?.label ?? null;
+const nextLabel = next?.label ?? null;
 ---
 
 {

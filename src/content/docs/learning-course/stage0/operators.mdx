@@ -24,35 +24,41 @@ These include:
             <th>Operator</th>
             <th>Description</th>
             <th>Example</th>
+            <th>Result</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>`+`</td>
             <td>Addition: Adds two values together</td>
-            <td>`a + b`</td>
+            <td>`5 + 2`</td>
+            <td>`7`</td>
         </tr>
         <tr>
             <td>`-`</td>
             <td>Subtraction: Subtracts one value from the other</td>
-            <td>`a - b`</td>
+            <td>`5 - 2`</td>
+            <td>`3`</td>
         </tr>
         <tr>
             <td>`*`</td>
             <td>Multiplication: Multiplies two values together</td>
-            <td>`a * b`</td>
+            <td>`5 * 2`</td>
+            <td>`10`</td>
         </tr>
         <tr>
             <td>`/`</td>
             <td>Division: Divides one value from the other</td>
-            <td>`a / b`</td>
+            <td>`10 / 2`</td>
+            <td>`5`</td>
         </tr>
         <tr>
             <td>`%`</td>
             <td>
                 Remainder: Returns the remainder of two numbers after division
             </td>
-            <td>`a % b`</td>
+            <td>`5 % 2`</td>
+            <td>`1`</td>
         </tr>
     </tbody>
 </table>
@@ -200,6 +206,7 @@ They can be used to help make decisions and are a main part of conditionals, whi
             <th>Operator</th>
             <th>Description</th>
             <th>Example</th>
+            <th>Result</th>
         </tr>
     </thead>
     <tbody>
@@ -208,22 +215,26 @@ They can be used to help make decisions and are a main part of conditionals, whi
             <td>
                 Equal to: Checks if two values are the same
             </td>
-            <td>`a == b`</td>
+            <td>`5 == 2`</td>
+            <td>`false`</td>
         </tr>
         <tr>
             <td>`!=`</td>
             <td>Not Equal: Checks if two values are **not** the same</td>
-            <td>`a != b`</td>
+            <td>`5 != 2`</td>
+            <td>`true`</td>
         </tr>
         <tr>
             <td>`>`</td>
             <td>Greater than: Checks if one value is greater than the other</td>
-            <td>`a > b`</td>
+            <td>`5 > 2`</td>
+            <td>`true`</td>
         </tr>
         <tr>
             <td>`<`</td>
             <td>Less than: Checks if one value is less than the other</td>
-            <td>`a < b`</td>
+            <td>`5 < 5`</td>
+            <td>`false`</td>
         </tr>
         <tr>
             <td>`>=`</td>
@@ -231,7 +242,8 @@ They can be used to help make decisions and are a main part of conditionals, whi
                 Greater than or equal to: Checks if one value is greater than
                 or equal to the other
             </td>
-            <td>`a >= b`</td>
+            <td>`6 >= 7`</td>
+            <td>`false`</td>
         </tr>
         <tr>
             <td>`<=`</td>
@@ -239,7 +251,8 @@ They can be used to help make decisions and are a main part of conditionals, whi
                 Less than or equal to: Checks if one value is less than or
                 equal to the other
             </td>
-            <td>`a <= b`</td>
+            <td>`6 <= 6`</td>
+            <td>`true`</td>
         </tr>
     </tbody>
 </table>
@@ -300,23 +313,27 @@ They are also used in conditionals.
             <th>Operator</th>
             <th>Description</th>
             <th>Example</th>
+            <th>Result</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>`&&`</td>
             <td>And: true if both statements are true</td>
-            <td>`true && true // this is true`</td>
+            <td>`true && true`</td>
+            <td>`true`</td>
         </tr>
         <tr>
             <td>`||`</td>
             <td>Or: true if at least one statement is true</td>
-            <td>`true || false // this is true`</td>
+            <td>`true || false`</td>
+            <td>`true`</td>
         </tr>
         <tr>
             <td>`!`</td>
             <td>Not: reverses. If true, then false. If false, then true </td>
-            <td> `!true // this changes to false`</td>
+            <td> `!true`</td>
+            <td>`false`</td>
         </tr>
     </tbody>
 </table>
@@ -359,9 +376,7 @@ Operators can be used to assign new values to existing variables.
 Arithmetic, and Assignment operators can help perform math and change the values.
 
 Operators can also change the value of variables using the `=` sign.
-In the example, `e`'s value changes to 12 in the print statement.
-`e`'s value is being set to whatever is on the right side of the `=`.
-In this case, it's 12 because `f` is equal to 2, so 2 + 10 is 12.
+In the example, `e`'s value gets changed to 12 as `f` is equal to 2, so 2 + 10 is 12.
 
 ```java #math1
 

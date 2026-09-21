@@ -50,7 +50,8 @@ void main() {
     // [math1]
     int e = 0;
     int f = 2;
-    System.out.println(e = f + 10); // prints 12
+    e = f + 10;
+    System.out.println(e); // prints 12
     // [/math1]
 
     // [math2]

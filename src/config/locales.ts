@@ -46,3 +46,33 @@ export function langFromDocsPath(filePath: string | undefined): string {
     const dir = localeDirFromDocsPath(filePath);
     return dir ? langByLocaleDir[dir]! : defaultLang;
 }
+
+// Page URLs are extensionless, so a last segment with a dot is a file in
+// public/, which lives at one path no matter the locale.
+function isPageUrl(url: string): boolean {
+    if (!url.startsWith('/') || url.startsWith('//')) return false;
+
+    const [path = ''] = url.split(/[?#]/);
+    const lastSegment = path.replace(/\/$/, '').split('/').pop() ?? '';
+    return !lastSegment.includes('.');
+}
+
+/**
+ * Prefixes a root-relative page URL with a locale directory. Anything already
+ * in the locale, external, or pointing at public/ is returned unchanged.
+ *
+ * `localeDir` doubles as the BCP-47 tag, so `Astro.currentLocale` can be passed
+ * straight in.
+ */
+export function localizeHref(
+    href: string,
+    localeDir: string | undefined,
+): string {
+    if (!localeDir || !(localeDir in langByLocaleDir)) return href;
+    if (!isPageUrl(href)) return href;
+    if (href === `/${localeDir}` || href.startsWith(`/${localeDir}/`)) {
+        return href;
+    }
+
+    return `/${localeDir}${href}`;
+}

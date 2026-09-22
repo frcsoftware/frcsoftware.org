@@ -1,8 +1,10 @@
 ---
 import ContentFigure from './ContentFigure.astro';
+import { localizeHref } from '../config/locales';
 
 interface Props {
     title: string;
+    /** Root-relative page URL, written without a locale prefix. */
     href: string;
     image?: string;
     imageAlt?: string;
@@ -21,6 +23,8 @@ const {
 
 const hasImage = Boolean(image);
 const t = Astro.locals.t;
+
+const localizedHref = localizeHref(href, Astro.currentLocale);
 ---
 
 <section
@@ -40,7 +44,7 @@ const t = Astro.locals.t;
 
     <div class="course-section-content">
         <h3 class="course-section-title">
-            <a href={href}>{title}</a>
+            <a href={localizedHref}>{title}</a>
             {
                 underConstruction && (
                     <span class="under-construction">

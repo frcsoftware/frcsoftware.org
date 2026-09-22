@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { LinkButton } from '@astrojs/starlight/components';
+import { localizeHref } from '../config/locales';
 
 const PAGE_TITLE_ID = '_top';
 
@@ -63,7 +64,7 @@ if (image) {
                             variant,
                         }) => (
                             <LinkButton
-                                {href}
+                                href={localizeHref(href, Astro.currentLocale)}
                                 {variant}
                                 icon={icon?.name}
                                 class:list={[className]}

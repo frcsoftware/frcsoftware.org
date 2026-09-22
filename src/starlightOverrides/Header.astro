@@ -5,9 +5,21 @@ import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 
 const props = Astro.props;
 const { hasSidebar } = Astro.locals.starlightRoute;
+const t = Astro.locals.t;
+
+const ISSUE_URL = 'https://github.com/frcsoftware/frcsoftware.org/issues/new';
+
+// The banner wraps a link mid-sentence, and languages put it in different
+// places, so the string carries a `{link}` placeholder rather than being split
+// into fixed-order fragments.
+const [bannerBefore = '', bannerAfter = ''] =
+    t('banner.development').split('{link}');
 ---
 
-<div class="header-wrapper">
+<div
+    class="header-wrapper"
+    data-close-lightbox-label={t('slides.closeLightbox')}
+>
     <div class="site-header">
         <div class="site-header-inner">
             <div class="header-top-row">
@@ -20,7 +32,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                         <button
                             type="button"
                             class="mobile-menu-toggle"
-                            aria-label="Toggle navigation menu"
+                            aria-label={t('header.menuToggle')}
                             popovertarget="starlight__sidebar"
                         >
                             <span class="hamburger-line" />
@@ -48,12 +60,9 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         </div>
 
         <div class="development-banner">
-            This website is still in development. If you find any errors, please
-            report them{' '}
-            <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
-                here
-            </a>
-            .
+            {bannerBefore}
+            <a href={ISSUE_URL}>{t('banner.developmentLinkText')}</a>
+            {bannerAfter}
         </div>
     </div>
 </div>
@@ -94,8 +103,12 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             if (!tmp) {
                 lightbox.id = 'global-image-lightbox';
                 lightbox.className = 'global-image-lightbox';
+                const closeLabel =
+                    document
+                        .querySelector('.header-wrapper')
+                        ?.getAttribute('data-close-lightbox-label') ?? '';
                 lightbox.innerHTML = `
-          <button class="global-lightbox-close" aria-label="Close lightbox">
+          <button class="global-lightbox-close" aria-label="${closeLabel}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
           </button>
           <div class="global-lightbox-content">

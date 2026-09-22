@@ -38,6 +38,7 @@ if (caption) wrapperClasses.push('gif-with-caption');
 
 // Build media styles
 const mediaStyles = scale ? `max-width: ${scale};` : '';
+const t = Astro.locals.t;
 ---
 
 <figure class={wrapperClasses.join(' ')}>
@@ -52,7 +53,7 @@ const mediaStyles = scale ? `max-width: ${scale};` : '';
                 aria-label={alt}
             >
                 <source src={src} type="video/webm" />
-                Your browser does not support the video tag.
+                {t('video.unsupported')}
             </video>
         ) : (
             <img src={src} alt={alt} loading="lazy" style={mediaStyles} />

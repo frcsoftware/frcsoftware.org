@@ -20,6 +20,7 @@ const {
 } = Astro.props;
 
 const hasImage = Boolean(image);
+const t = Astro.locals.t;
 ---
 
 <section
@@ -44,7 +45,7 @@ const hasImage = Boolean(image);
                 underConstruction && (
                     <span class="under-construction">
                         {' '}
-                        (Under Construction)
+                        {t('courseSection.underConstruction')}
                     </span>
                 )
             }

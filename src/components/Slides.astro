@@ -300,14 +300,12 @@ const slidesDataForClient = processedImages.map((slide) => ({
     attrs: slide.attrs,
 }));
 const slidesData = JSON.stringify(slidesDataForClient);
-const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
 const t = Astro.locals.t;
 ---
 
 <div
     class="slides-component"
     data-slides={slidesData}
-    data-slide-id={slideId}
     style={`--slides-scale: ${scalePercent};`}
 >
     <div class="slides-main">

@@ -2,6 +2,7 @@
 import {
     mdiAlert,
     mdiAlertCircle,
+    mdiCheckCircle,
     mdiChevronRight,
     mdiFlask,
     mdiLaptop,
@@ -19,24 +20,37 @@ import MdiIcon from './MdiIcon.astro';
  * <Aside type="tip">Content here</Aside>
  * <Aside type="note" title="Custom Title">Content here</Aside>
  * <Aside type="caution" collapse>Collapsible content here</Aside>
+ * <Aside type="hint">Tip styling, collapsed by default</Aside>
+ * <Aside type="answer">Collapsed by default; pass collapse={false} to show it open</Aside>
  */
 
 interface Props {
     type?:
-        'note' | 'tip' | 'caution' | 'danger' | 'example' | 'exercise' | 'wip';
+        | 'note'
+        | 'tip'
+        | 'hint'
+        | 'caution'
+        | 'danger'
+        | 'example'
+        | 'exercise'
+        | 'answer'
+        | 'wip';
     title?: string;
     collapse?: boolean;
 }
 
-const { type = 'note', title, collapse = false } = Astro.props;
+const { type = 'note', title } = Astro.props;
+const collapse = Astro.props.collapse ?? (type === 'hint' || type === 'answer');
 
 const titles: Record<string, string> = {
     note: 'Note',
     tip: 'Tip',
+    hint: 'Hint',
     caution: 'Warning',
     danger: 'Danger',
     example: 'Example',
     exercise: 'Exercise',
+    answer: 'Answer',
     video: 'Video',
     wip: 'Work in Progress',
 };
@@ -46,10 +60,12 @@ const displayTitle = title || titles[type] || 'Note';
 const iconPaths: Record<string, string> = {
     note: mdiInformation,
     tip: mdiLightbulbOn,
+    hint: mdiLightbulbOn,
     caution: mdiAlert,
     danger: mdiAlertCircle,
     example: mdiFlask,
     exercise: mdiLaptop,
+    answer: mdiCheckCircle,
     video: mdiVideo,
     wip: mdiProgressWrench,
 };
@@ -104,7 +120,8 @@ const iconPaths: Record<string, string> = {
     }
 
     /* Type-specific colors */
-    .aside--tip {
+    .aside--tip,
+    .aside--hint {
         --aside-bg: rgba(74, 222, 128, 0.12);
         --aside-title-color: #4ade80;
     }
@@ -135,6 +152,10 @@ const iconPaths: Record<string, string> = {
     .aside--exercise {
         --aside-bg: rgba(134, 132, 252, 0.12);
         --aside-title-color: #84c8fc;
+    }
+    .aside--answer {
+        --aside-bg: rgba(244, 114, 182, 0.12);
+        --aside-title-color: #f472b6;
     }
     .aside--wip {
         --aside-bg: rgba(251, 146, 60, 0.12);
@@ -234,7 +255,8 @@ const iconPaths: Record<string, string> = {
     }
 
     /* Light mode adjustments */
-    :global(html[data-theme='light']) .aside--tip {
+    :global(html[data-theme='light']) .aside--tip,
+    :global(html[data-theme='light']) .aside--hint {
         --aside-bg: rgba(74, 222, 128, 0.15);
         --aside-title-color: #16a34a;
     }
@@ -267,6 +289,11 @@ const iconPaths: Record<string, string> = {
     :global(html[data-theme='light']) .aside--exercise {
         --aside-bg: rgb(134, 132, 252, 0.12);
         --aside-title-color: rgb(132, 200, 252);
+    }
+
+    :global(html[data-theme='light']) .aside--answer {
+        --aside-bg: rgba(244, 114, 182, 0.15);
+        --aside-title-color: #db2777;
     }
 
     :global(html[data-theme='light']) .aside--wip {

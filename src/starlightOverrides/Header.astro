@@ -21,9 +21,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                             type="button"
                             class="mobile-menu-toggle"
                             aria-label="Toggle navigation menu"
-                            aria-expanded="false"
-                            aria-controls="starlight__sidebar"
-                            data-mobile-menu-toggle
+                            popovertarget="starlight__sidebar"
                         >
                             <span class="hamburger-line" />
                             <span class="hamburger-line" />
@@ -49,9 +47,9 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             </div>
         </div>
 
-        <div class="beta-banner">
-            This website is still in beta. If you find any errors, please report
-            them{' '}
+        <div class="development-banner">
+            This website is still in development. If you find any errors, please
+            report them{' '}
             <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
                 here
             </a>
@@ -171,28 +169,73 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 
 <script is:inline>
     (() => {
-        const initMobileMenuToggle = () => {
-            const toggle = document.querySelector('[data-mobile-menu-toggle]');
-            const nativeButton = document.querySelector(
-                'starlight-menu-button',
-            );
-            const nativeInnerButton = nativeButton?.querySelector('button');
+        const storageKey = 'starlight-theme';
 
-            if (!toggle || !nativeButton || !nativeInnerButton) return;
+        const getStoredTheme = () => {
+            try {
+                return localStorage.getItem(storageKey);
+            } catch {
+                return null;
+            }
+        };
+        const setStoredTheme = (/** @type {'light' | 'dark'} */ value) => {
+            try {
+                localStorage.setItem(storageKey, value);
+            } catch {
+                /* ignore */
+            }
+        };
 
-            toggle.addEventListener('click', () => nativeInnerButton.click());
+        const applyTheme = (
+            /** @type {'light' | string} */ theme,
+            store = false,
+        ) => {
+            const html = document.documentElement;
+            const normalized = theme === 'light' ? 'light' : 'dark';
 
-            const syncExpanded = () => {
-                toggle.setAttribute(
-                    'aria-expanded',
-                    nativeButton.getAttribute('aria-expanded') || 'false',
-                );
+            html.dataset.theme = normalized;
+            // Only persist an explicit user choice. Browser-derived themes must
+            // stay un-stored so the site keeps following the OS/browser setting.
+            if (store) setStoredTheme(normalized);
+            if (window.StarlightThemeProvider?.updatePickers) {
+                window.StarlightThemeProvider.updatePickers(normalized);
+            }
+        };
+
+        const colorScheme = window.matchMedia('(prefers-color-scheme: light)');
+        const getPreferredTheme = () =>
+            colorScheme.matches ? 'light' : 'dark';
+
+        const init = () => {
+            const stored = getStoredTheme();
+            const explicit =
+                stored === 'light' || stored === 'dark' ? stored : null;
+
+            applyTheme(explicit || getPreferredTheme());
+
+            // Follow OS/browser changes unless the user has explicitly chosen a theme.
+            const onSchemeChange = () => {
+                const stored = getStoredTheme();
+                if (stored !== 'light' && stored !== 'dark') {
+                    applyTheme(getPreferredTheme());
+                }
             };
+            if (!explicit) {
+                if (typeof colorScheme.addEventListener === 'function') {
+                    colorScheme.addEventListener('change', onSchemeChange);
+                } else if (typeof colorScheme.addListener === 'function') {
+                    colorScheme.addListener(onSchemeChange);
+                }
+            }
 
-            syncExpanded();
-            new MutationObserver(syncExpanded).observe(nativeButton, {
-                attributes: true,
-                attributeFilter: ['aria-expanded'],
+            document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const current =
+                        document.documentElement.dataset.theme ||
+                        getPreferredTheme();
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    applyTheme(next, true);
+                });
             });
         };
 
@@ -200,11 +243,10 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             document.readyState === 'complete' ||
             document.readyState === 'interactive'
         ) {
-            initMobileMenuToggle();
+            init();
         } else {
-            document.addEventListener('DOMContentLoaded', initMobileMenuToggle);
+            document.addEventListener('DOMContentLoaded', init);
         }
-        document.addEventListener('astro:page-load', initMobileMenuToggle);
     })();
 </script>
 
@@ -232,7 +274,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         padding: 0.5rem 1.5rem;
     }
 
-    .beta-banner {
+    .development-banner {
         text-align: center;
         font-size: 0.8rem;
         line-height: 1.5;
@@ -240,7 +282,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         background: var(--accent-color-dark);
     }
 
-    .beta-banner a {
+    .development-banner a {
         color: #ffffff;
         font-weight: 600;
         text-decoration: underline;
@@ -419,18 +461,24 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             bottom: 11px;
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(1) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(1) {
             top: 50%;
             margin-top: -1.5px;
             transform: rotate(45deg);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(2) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(2) {
             opacity: 0;
             transform: scale(0);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(3) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(3) {
             bottom: auto;
             top: 50%;
             margin-top: -1.5px;

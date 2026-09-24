@@ -29,14 +29,14 @@ public class SingleFlywheelSim {
   /** Creates the physics sim for the intake launcher. */
   public static SingleFlywheelSim forIntakeLauncher(SparkMax motor) {
     var sim = new SingleFlywheelSim(motor, "IntakeLauncher");
-    FuelSim.intakeLauncherSpeedSupplier = sim.m_flywheelSim::getAngularVelocity;
+    FuelSim.intakeLauncherVoltsSupplier = sim.m_flywheelSim::getInputVoltage;
     return sim;
   }
 
   /** Creates the physics sim for the feeder. */
   public static SingleFlywheelSim forFeeder(SparkMax motor) {
     var sim = new SingleFlywheelSim(motor, "Feeder");
-    FuelSim.feederSpeedSupplier = sim.m_flywheelSim::getAngularVelocity;
+    FuelSim.feederVoltsSupplier = sim.m_flywheelSim::getInputVoltage;
     return sim;
   }
 

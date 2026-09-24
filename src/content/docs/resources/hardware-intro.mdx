@@ -33,7 +33,7 @@ Relative encoders track changes in position and reset to zero when the robot is 
 ## Beam Break
 
 A beam break detects if anything is between two points and returns a binary value.
-Beam breaks are typically [`DigitalInput`](https://github.wpilib.org/allwpilib/docs/2027/java/org/wpilib/hardware/discrete/DigitalInput.html)s and will return a `boolean`.
+Beam breaks are typically [`DigitalInput`](https://github.wpilib.org/allwpilib/docs/beta/java/org/wpilib/hardware/discrete/DigitalInput.html)s and will return a `boolean`.
 Beam breaks can be used to detect when game pieces pass a specific point on a robot.
 
 ## Limit Switch
@@ -46,7 +46,7 @@ Beam breaks detect whether a beam of light is being blocked by an object, while 
 ## Inertial Measurement Units (IMUs)
 
 An IMU is a sensor that combines an accelerometer and a gyroscope.
-IMUs are used to measure a robot's orientation, rates of rotation, and acceleration and return these signals as a [`Rotation2d`](https://github.wpilib.org/allwpilib/docs/2027/java/org/wpilib/math/geometry/Rotation2d.html).
+IMUs are used to measure a robot's orientation, rates of rotation, and acceleration and return these signals as a [`Rotation2d`](https://github.wpilib.org/allwpilib/docs/beta/java/org/wpilib/math/geometry/Rotation2d.html).
 They typically use degrees or radians for angular position (yaw/heading, pitch, and roll) and degrees per second or radians per second for angular velocity.
 They can be used for robot heading readings and odometry calculations.
 The most popular IMUs in FRC are navX2, Pigeon 2.0, and the onboard Systemcore IMU.

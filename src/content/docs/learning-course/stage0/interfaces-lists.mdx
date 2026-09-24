@@ -184,18 +184,22 @@ If you already know every element up front, like the fixed autonomous path from 
 ```
 
 `List.of` returns a `List<Point>`, but it doesn't tell you which class implements it.
-The object it gives back isn't an `ArrayList`; it's a class inside the JDK that you'd never write out yourself.
+The object it gives back isn't an `ArrayList`.
+Here, it's `ImmutableCollections$ListN`, a class buried inside the JDK with a name nobody wants to type.
 That's fine, because you only use it through the `List` interface, the same way `isTooClose` only used `DistanceSensor`.
 
 ### List Mutability
 
-In a [previous lesson](/learning-course/stage0/classes-methods/), we saw that some classes are **mutable** (their state can change after they're created) and some are **immutable** (it can't).
-Lists work the same way, and since `List` is an interface, whether a particular list can change depends on which class implements it:
+In a [previous lesson](/learning-course/stage0/classes-methods/), we saw that some classes are mutable, meaning their state can change after they're created, and some are immutable.
+Lists work the same way.
+Since `List` is an interface, whether a particular list can change depends on which class implements it:
 
-- An `ArrayList` is mutable: you can add, remove, and replace elements whenever you want.
-- A list from `List.of` is immutable: its elements are fixed when it's created, and calling `add` or `remove` on it throws an `UnsupportedOperationException`.
+- An `ArrayList` is mutable, so you can add, remove, and replace elements whenever you want.
+- A list from `List.of` is immutable.
+  Its elements are fixed when it's created, and calling `add` or `remove` on it throws an `UnsupportedOperationException`.
 
-Both are declared as `List`, so the compiler can't tell them apart; you only find out when the program runs.
+The compiler can't tell these two apart, because both are declared as `List`.
+You only find out when the program runs and `add` throws the exception.
 
 You can't turn an immutable list into a mutable one, but you can make a mutable _copy_ of it.
 Passing an existing list to `new ArrayList<>(...)` creates a new `ArrayList` that starts out with the same elements:

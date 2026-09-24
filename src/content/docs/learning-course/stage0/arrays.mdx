@@ -98,7 +98,7 @@ This fits an autonomous path well: the route is planned out ahead of time, so we
     ```
 
     This creates an array of three `Point`s, all initially set to `null`.
-    `null` is a special object that represents the absence of a value.
+    `null` is a special value that means "no object here."
     Creating an empty array can be useful if you know how many elements you'll need, but don't yet have their values.
     For example, if you need to wait until after you know what alliance color the robot is to fill in the array.
 
@@ -112,6 +112,13 @@ This fits an autonomous path well: the route is planned out ahead of time, so we
     For this reason, it's usually better to create an array of objects with a literal.
     For example, you can define redPath and bluePath as arrays, then choose which to use.
 
+</Aside>
+
+<Aside type="note" title="Did you know?">
+    `null` was invented in 1965 by Tony Hoare, a British computer scientist. In
+    2009, he called it his "billion-dollar mistake," because of how many bugs
+    and crashes it has caused since. You'll probably meet a few of those
+    `NullPointerException`s yourself.
 </Aside>
 
 ## Looping Over Arrays

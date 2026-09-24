@@ -115,9 +115,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         toggleOffOn()
-        palantirJavaFormat()
-        leadingSpacesToTabs(4)
-        leadingTabsToSpaces(2)
+        googleJavaFormat()
         trimTrailingWhitespace()
         endWithNewline()
     }

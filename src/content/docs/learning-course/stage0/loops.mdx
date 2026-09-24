@@ -1,8 +1,6 @@
 ---
 title: Loops
 description: An Intro loops in Java
-prev: learning-course/stage0/conditionals
-next: learning-course/stage0/classes-objects
 codeRegionSources:
     default: stage0/snippets/src/Loops.java
 ---
@@ -15,20 +13,20 @@ In this lesson, we're going to cover two main types of loops: **while** loops an
 
 <Aside type="note">
     Another type of loop is the do-while loop, but this will not be covered due
-    to sparse use in FRC. However, if you want to learn more about do while
+    to sparse use in FRC. However, if you want to learn more about do-while
     loops, you can do so through
     [w3school](https://www.w3schools.com/java/java_while_loop_do.asp).
 </Aside>
 
 Conditionals and loops may seem similar but they have different purposes.
 Conditionals and loops both control the flow of programs.
-Conditionals are used to run a block of code once, whereas a loop can run a block of multiple times
+Conditionals are used to run a block of code once, whereas a loop can run a block of code multiple times.
 
 ## while
 
 `while` loops are the most simple type of loops.
 
-The syntax of a `while` loops is as shown:
+The syntax of a `while` loop is as shown:
 
 ```java #whileSyntax
 
@@ -42,14 +40,6 @@ A `while` loop includes:
   Example: (5 > 1) is a condition and it is true because 5 is greater than 1
 - `{` to denote the opening of the loop's code block
 - `}` to denote the end of the loop's code block
-
-The following flowchart demonstrates how a while loop works:
-
-<ContentFigure
-    src="/learning-course/stage0/loops/WhileLoop.webp"
-    width="300px"
-    height="300px"
-/>
 
 Like the `if` conditional, the `while` loop will run its code block if the condition is true.
 Unlike the `if` conditional, however, when the code block is done, the `while` loop will evaluate its condition again.
@@ -65,7 +55,7 @@ Let's look at an example:
 ```
 
 In the example, there is an `int` called `i` which holds the value 0. The `while` loop has the condition `i < 6`.
-First, the compiler checks if the condition is true.
+First, the code checks if the condition is true.
 We know that 0 is less than 6 so the `while` code block runs and the value of `i`, which is currently 0, is printed to the terminal.
 The value of `i` is also updated because of `i++` and it changes to 1.
 Now the condition checks if 1 is less than 6. We know that it is true, so the value of `i` gets printed and the value of `i` is increased by 1.
@@ -75,7 +65,7 @@ Now, when the condition is evaluated, it's `false`, as 6 is not less than 6, so 
 <Aside type="tip">
     Does the ``i++`` look familiar? This was covered in the operator section. If
     you need a refresher on what an operator is and how it works, check out the
-    operator page.
+    [operator page](/learning-course/stage0/operators).
 </Aside>
 
 Lets look at an another example!
@@ -200,6 +190,6 @@ To fix this, we would make sure to increment the timer value as shown below.
 
 <Aside type="exercise">
 
-WIP
+Now, you can dive straight into `loops.java!` Follow the comments and write the appropriate code to achieve the objectives.
 
 </Aside>

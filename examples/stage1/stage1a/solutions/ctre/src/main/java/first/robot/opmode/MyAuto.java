@@ -13,18 +13,24 @@ import org.wpilib.system.Timer;
 @Autonomous(name = "My Auto", group = "Group 1")
 public class MyAuto extends PeriodicOpMode {
   private final Robot robot;
-  private Timer autoTimer = new Timer();
+  // [TimerInit]
+  private final Timer autoTimer = new Timer();
+
+  // [/TimerInit]
 
   /** The Robot instance is passed into the opmode via the constructor. */
   public MyAuto(Robot robot) {
     this.robot = robot;
   }
 
+  // [TimerRestart]
   @Override
   public void start() {
     /* Called once when the robot is enabled. */
     autoTimer.restart(); // Reset the timer to zero at the start of auto
   }
+
+  // [/TimerRestart]
 
   // [SimpleAutoStart]
   /*

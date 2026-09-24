@@ -94,7 +94,6 @@ every `Point` object can have a different value for `x` and `y`.
 
 Notice that we used the `final` keyword to make these fields **immutable**.
 This means that once they are created, they cannot be changed.
-Immutable fields are also called **constant** fields.
 A general rule of thumb is to make all fields `final` unless you have a good reason not to,
 which we'll see in the next lesson.
 We also use the `private` keyword to make these fields **private**.
@@ -114,6 +113,8 @@ In this case, the ORIGIN field is shared by all Point objects, and it represents
 Static fields and methods are accessed using the class name, instead of an instance of the class,
 so the ORIGIN field is accessed using `Point.ORIGIN`.
 The ORIGIN field is also `public`, so it can be accessed from anywhere in the program.
+Because it's both `static` and `final`, `ORIGIN` is a **constant**,
+which is why its name is in upper snake case, as described in [Java Fundamentals](/learning-course/stage0/java-fundamentals/#name).
 
 <Aside type="tip" title="Static vs. Instance">
     Non-static fields and methods are called **instance fields** and **instance

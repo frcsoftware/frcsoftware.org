@@ -45,7 +45,7 @@ Some example data types that are commonly used in FRC programming are:
 - `boolean`: Either `true` or `false`.
 - `String`: Holds a sequence of characters.
   Denoted by double quotes (").
-  Example: `“Hello World”`
+  Example: `"Hello World"`
 
 <Aside type="note">
     When creating a String, make sure the S is capitalized! `string robotName =
@@ -65,7 +65,7 @@ Another common variable naming style is upper snake case, where each word is cap
 For example: `BACK_LEFT_DRIVE`, and `GEAR_RATIO` are in upper snake case.
 
 When programming a robot, camel case is commonly used for creating variables.
-Upper snake case is used for constants, which are variables that never change once they're defined.
+Upper snake case is used for constants, which are fixed values shared by the whole program, like a gear ratio.
 
 <Aside type="note">
 Java is a case-sensitive programming language!
@@ -88,17 +88,16 @@ Using an intake motor as an example, here are some bad and good variable names:
     </thead>
     <tbody>
         <tr>
-            <tr>
-                <td>
-                    `f` Avoid short or one letter variable names. It's not
-                    descriptive and doesn't make it clear what the variable is
-                    for.
-                </td>
-                <td>
-                    `frontLeftMotor` Clearly describes what the variable name is
-                    for and it's easy to read.
-                </td>
-            </tr>
+            <td>
+                `f` Avoid short or one letter variable names. It's not
+                descriptive and doesn't make it clear what the variable is for.
+            </td>
+            <td>
+                `frontLeftMotor` Clearly describes what the variable name is for
+                and it's easy to read.
+            </td>
+        </tr>
+        <tr>
             <td>
                 `bingo` Avoid using random words. It makes it hard to know what
                 the variable is for.
@@ -165,7 +164,7 @@ A print statement in Java looks like:
 ```
 
 The print statement uses the information given inside the parentheses.
-In the previous example, the String `“hello!”` is printed out to the terminal screen.
+In the previous example, the String `"hello!"` is printed out to the terminal screen.
 When using a print statement to output text, you have to surround the text with quotes, to indicate that you want to work with that text literally.
 A print statement without the quotes will instead interpret the text as a variable name and attempt to print the data stored by that variable.
 This may cause an error if you intended to print out the text literally since the text is likely not an existing variable.

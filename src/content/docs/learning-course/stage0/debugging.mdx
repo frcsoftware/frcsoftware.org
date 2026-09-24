@@ -18,7 +18,7 @@ This section will cover effective strategies to debug your robot code.
 
 </Aside>
 
-# Types of Errors
+## Types of Errors
 
 There's a few different types of errors that you can run into when writing code.
 Let's take a look!
@@ -84,7 +84,6 @@ For instance, the following code would generate a syntax error:
     height="800px"
 />
 
-Misspelling variable names is also a syntax error.
 Not using proper syntax, as shown, also generates a syntax error.
 
 <ContentFigure
@@ -96,9 +95,11 @@ Not using proper syntax, as shown, also generates a syntax error.
 
 If you notice that the code has the red line under it, hover over that line of code.
 VS Code will give more information about the error.
-Let's look back at the previous misspelled variable name example,
-when putting the cursor over the error, it reads `numer cannot be resolved to a variable`.
+For example, if we misspell a variable name,
+putting the cursor over the error shows `numer cannot be resolved to a variable`.
 This means it's looking for a variable called `numer` but it can't find it.
+Technically, this isn't a syntax error, since the code follows Java's grammar,
+but the compiler still catches it at compile time and shows it the same way.
 
 <ContentFigure
     src="/learning-course/stage0/debugging/syntaxError3.webp"
@@ -136,7 +137,7 @@ However, if the code was to run, it would give a runtime error for dividing by z
 The terminal will show an error similar to `Exception in thread "main" java.lang.ArithmeticException: / by zero at main.main(main.java:5)`
 By reading the error message, it's clear that the error is a divide by 0 error.
 This happens in `int answer = 10/0;` because it's dividing by zero.
-One way to fix this error would be to swap the 10 and 0.
+To fix this error, the code needs to be changed so it never divides by zero.
 
 <Aside type="tip">
     The stacktrace will tell you what line the error is on.

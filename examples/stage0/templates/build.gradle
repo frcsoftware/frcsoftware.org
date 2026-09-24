@@ -3,6 +3,10 @@ plugins {
     id "com.diffplug.spotless" version "8.0.0"
 }
 
+repositories {
+    mavenCentral()
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
@@ -31,10 +35,46 @@ tasks.register('runTemplates') {
     dependsOn templateRunTasks
 }
 
+def allJavaFiles = fileTree(".") {
+    include "**/*.java"
+    exclude "**/build/**", "**/build-*/**"
+}
+
+// Compact source files (JEP 512) declare members at the top level with no enclosing
+// type, which google-java-format cannot parse. They only get whitespace cleanup.
+def compactSourceFiles = allJavaFiles.filter { it.text =~ /(?m)^void main\(/ }
+
 spotless {
     java {
-        target fileTree('.') { include '**/*.java' }
-        licenseHeaderFile(rootProject.file('../../gradle/LICENSE_HEADER'), "^(?!/\\*|\\s*\\*)")
+        target allJavaFiles - compactSourceFiles
+        toggleOffOn()
+        googleJavaFormat()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format "compactSources", {
+        target compactSourceFiles
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree(".") {
+            include "**/*.gradle"
+            exclude "**/build/**", "**/build-*/**"
+        }
+        greclipse()
+        leadingTabsToSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format "misc", {
+        target fileTree(".") {
+            include "**/*.md", "**/.gitignore"
+            exclude "**/build/**", "**/build-*/**"
+        }
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(2)
+        endWithNewline()
     }
 }
 

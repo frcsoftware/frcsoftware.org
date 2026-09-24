@@ -1,8 +1,6 @@
 ---
 title: Exercise - Kitbot Rewrite, Pt. 1
 description: Rewriting the kitbot code in stage 1A to command-based
-prev: learning-course/stage1/stage1b/commands-and-mechanisms-pt2
-next: learning-course/stage1/stage1b/suppliers-in-command-based
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbot.java
 ---
@@ -19,31 +17,23 @@ In part 2 of this exercise, you'll rewrite the drivetrain code
 in command-based, and add some basic auto modes.
 
 <Aside type="note">
-    Your code will only work completely after you complete part 2. However, feel
-    free to check your work with the solution code(currently TBD) after
-    completing part 1.
+    Your code will only work completely after you complete Stage 1A. Make sure
+    to complete Stage 1A!
 </Aside>
 
 ### Task 1: Setup
 
-Use git to clone stage 1 template code.
-Because both stage 1A and stage 1B
-use the same template, use the following terminal command to create a new project:
+Use git to fork and clone stage 1B template code.
+If you need help, read over [the Forking and Cloning guide](/learning-course/getting-started/forking-and-cloning/).
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">
-        {/* rli:ignore */}
+        Fork then Clone the [CTRE Template](https://github.com/frcsoftware/Stage1B-Template-CTRE)
 
-        ```
-        git clone https://github.com/frcsoftware/Stage1-Template-CTRE stage1b-ctre
-        ```
     </TabItem>
     <TabItem label="REV">
-        {/* rli:ignore */}
+       Fork then Clone the [REV Template](https://github.com/frcsoftware/Stage1B-Template-REV)
 
-        ```
-        git clone https://github.com/frcsoftware/Stage1-Template-REV stage1b-rev
-        ```
     </TabItem>
 
 </Tabs>
@@ -160,6 +150,7 @@ to allow for simulation to work:
 ```
 
 This code creates a `SingleFlywheelSim` object named `sim` that simulates the feeder by representing it as a single spinning flywheel, then updates the simulation in `sim.periodic()`.
+The code checks if it is being simulated before updating the sim so the simulation code is not run when the robot is real.
 
 ### Task 3: The IntakeLauncher Mechanism
 
@@ -249,7 +240,8 @@ Define a class named `IntakeLauncher` that implements `Mechanism`; then, add the
 
 <details class="accordion">
     <summary>Item 2 Hint</summary>
-    Call `coroutine.wait(Seconds.of(2))` to wait 2 seconds within a `Command`.
+    Call `coroutine.wait(Seconds.of(2))` to wait 2 seconds within a `Command`. 
+    You can import `Seconds` with `import static org.wpilib.units.Units.Seconds;`
 </details>
 <details class="accordion">
     <summary>Item 6 Hint</summary>

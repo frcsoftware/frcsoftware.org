@@ -7,6 +7,12 @@ Stage 1A used a simple sequential approach to controlling the kitbot.
 But real robots need to respond to many inputs at once, like button presses, sensor data, and vision.
 Command-based programming solves this by modeling robot behavior as commands (actions) triggered by triggers (events).
 
+<Aside type="caution">
+    Stage 1b will only run on a Systemcore. Please note, the code was only
+    tested in a simulation. It was not tested on a real kitbot. Code may not
+    function as expected.
+</Aside>
+
 ## Key Concepts
 
 Commands define individual robot actions (deploy the intake, index a game piece, drive based on joystick inputs).
@@ -29,3 +35,19 @@ This stage will cover the following topics:
 - [Suppliers in Command-Based](/learning-course/stage1/stage1b/suppliers-in-command-based/)
 - [Exercise: Kitbot Rewrite, Pt 2](/learning-course/stage1/stage1b/command-based-kitbot-pt2/)
 - [Bonus: Spot the Error, Pt 2](/learning-course/stage1/stage1b/spot-the-error-pt2/)
+
+<Aside type="note">
+    Why Commands v3? <br />
+    <br /> If you're an experienced programmer, you likely know about or have
+    used Commands v2 in the past. Commands v3 is a major change from Commands
+    v2, changing the internals of the scheduler to run on Java's continuations
+    API. This change cleared much of the boilerplate required by Commands v2.
+    Writing commands is now more akin to writing regular Java code. <br />
+    <br /> Commands v3 also brings many improvements related to commands
+    requiring mechanisms, allowing triggers to be scoped to an opmode or
+    command, and a new state machine API. For all of these reasons, Commands v3
+    was chosen for this course, as its authors believe that Commands v3 offers a
+    significantly better and simpler user experience compared to Commands v2,
+    enabling users to write the same functionality in a much simpler and easier
+    way.
+</Aside>

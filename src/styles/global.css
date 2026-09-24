@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* ==========================================================================
    Root Variables
@@ -10,7 +10,7 @@
     --sl-nav-height: 5.5rem !important;
 
     /* Typography */
-    --sl-font: 'Inter', system-ui, sans-serif !important;
+    --sl-font: 'Noto Sans', system-ui, sans-serif !important;
     --sl-text-body: 0.875rem !important;
     --sl-line-height: 1.7 !important;
 
@@ -73,10 +73,8 @@ body {
     overscroll-behavior-y: none;
 }
 
-@media (max-width: 50rem) {
-    starlight-menu-button {
-        display: none !important;
-    }
+.sl-menu-button {
+    display: none !important;
 }
 
 /* ==========================================================================
@@ -829,8 +827,9 @@ html.sidebar-collapsed .sidebar-collapsed-toggle-wrapper {
 
 .featured-links {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.6rem;
     margin: 0 auto 1rem auto;
     width: 100%;
     padding: 0 1rem;
@@ -838,7 +837,6 @@ html.sidebar-collapsed .sidebar-collapsed-toggle-wrapper {
 }
 
 .featured-links a {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
 import starlightSidebarTopics from 'starlight-sidebar-topics';
-import { sidebarTopics } from './src/config/sidebarTopics';
+import { sidebarTopics } from './src/config/sidebarConfig';
 import remarkGlossary from './src/plugins/remark-glossary';
 import remarkCenter from './src/plugins/remark-center';
 import remarkFigure from './src/plugins/remark-figure';

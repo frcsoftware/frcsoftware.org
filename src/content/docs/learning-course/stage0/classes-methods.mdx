@@ -1,8 +1,6 @@
 ---
 title: Methods and Mutable State
 description: Writing methods that define a class's behavior, and classes whose state changes over time
-prev: learning-course/stage0/classes-objects
-next: learning-course/stage0/arrays
 codeRegionSources:
     point: stage0/snippets/src/classes-methods/Point.java
     tracker: stage0/snippets/src/classes-methods/RobotTracker.java
@@ -110,7 +108,7 @@ Inside `plus`, `a` becomes `this` and `b` becomes `other`.
 
 The `Point` class we defined is **immutable**, meaning that once a `Point` is created,
 its `x` and `y` values can never change, because the fields are `final`.
-Immutability is generally a good thing: it makes classes easier to reason about, since you never have to worry about a value changing unexpectedly.
+Immutability is useful because it makes classes easier to reason about, since you never have to worry about a value changing unexpectedly.
 
 Sometimes, however, we need a class whose state changes over time.
 Let's define a `RobotTracker` class that tracks a robot's current position on the field.
@@ -204,6 +202,6 @@ And an example of using it:
 
 <Aside type="exercise">
 
-WIP
+Now, you can dive straight into `methods.java!` Follow the comments and write the appropriate code to achieve the objectives.
 
 </Aside>

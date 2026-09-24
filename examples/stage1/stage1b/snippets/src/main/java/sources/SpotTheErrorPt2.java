@@ -59,15 +59,17 @@ public class SpotTheErrorPt2 {
     public void robotPeriodic() {}
 
     private Command printHelloWorld() {
-      return Command.noRequirements(coroutine -> {
-            while (true) {
-              System.out.println("Hello World!");
-              coroutine.yield();
-            }
-          })
+      return Command.noRequirements(
+              coroutine -> {
+                while (true) {
+                  System.out.println("Hello World!");
+                  coroutine.yield();
+                }
+              })
           .named("Hello World!");
     }
   }
+
   // [/robotPeriodicBug]
 
   class RobotFixed extends OpModeRobot {

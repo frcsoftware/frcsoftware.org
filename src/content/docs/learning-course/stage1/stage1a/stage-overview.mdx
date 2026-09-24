@@ -2,36 +2,46 @@
 title: Stage 1A Overview
 description: An overview of Stage 1A
 prev: ../stage-overview
-next: false
+next: kitbot-drivetrain
 ---
 
-import YouTube from '../../../../../components/YouTube.astro';
+import { FileTree } from '@astrojs/starlight/components';
+import YouTube from '@components/YouTube.astro';
+
+Welcome to Stage 1A!
+Before we can start programming, we have to fork and clone the relevant repository:
+
+- If your team primarily uses REV electronics (such as SPARK MAX motor controllers), clone [the REV template](https://github.com/frcsoftware/Stage1-Template-REV).
+- If your team primarily uses CTRE electronics (such as Kraken motors), clone [the CTRE template](https://github.com/frcsoftware/Stage1-Template-CTRE).
+
+<Aside type="tip">
+    If you forgot how to fork and clone a repository, read over [the Forking and
+    Cloning guide](/learning-course/getting-started/forking-and-cloning/).
+</Aside>
 
 Now, before we get into the depths of the robot code, it's useful to look at a high-level overview of the contents of a
 typical WPILib project.
 As your code gets more advanced, you'll see more folders and files appear, but they're all controlled
 by the same basic components.
-Below, you can see the sample file structure you'll be starting off with as a template for Stage 1A.
-If your robot has REV electronics, then the template folder's name will be `rev/` instead of `ctre/`
 
 ### Stage 1A Template Structure
 
-{/* rli:ignore */}
-
-```text
-ctre/
-├── src/main/
-|   ├── java/first/
-|   |   ├── robot/
-|   |   |   ├── opmode/
-|   |   |   |   ├── MyAuto.java
-|   |   |   |   ├── MyTeleop.Java
-|   |   |   ├── simulation/
-|   |   |   |   ├── DrivetrainSim.Java
-|   |   |   |   ├── SingleFlywheelSim.java
-|   |   |   ├── Robot.java
-|   |   ├── Main.java
-```
+{/* prettier-ignore */}
+<FileTree>
+- src
+    - main
+        - java
+            - first
+                - robot
+                    - opmode
+                        - MyAuto.java
+                        - MyTeleop.java
+                    - simulation
+                        - DrivetrainSim.java
+                        - SingleFlywheelSim.java
+                    - Robot.java
+                - Main.java
+</FileTree>
 
 You'll notice that we're skipping a lot of files here, because you don't have to edit those.
 What's great about using a framework like WPILib is that it automatically generates these files when you create a new project, so you can get started coding quicker.
@@ -54,7 +64,7 @@ Its contents are pretty short and sweet (comments and package declaration remove
 ```
 
 You can see that all the `Main.java` file is doing is, quite literally, starting up the robot,
-so there's really no reason to edit this file for now.
+so there's no reason to edit this file.
 
 <Aside type="note">
     Notice that the names of all Java files in the project follow PascalCase,
@@ -68,34 +78,37 @@ But what is that one line in `Main.java` doing?
 {/* rli:ignore */}
 
 ```java
-RobotBase.startRobot(first.robot.Robot.class);
+RobotBase.startRobot(first.robot.Robot::new);
 ```
 
 It seems to be "starting" an instance of the `first.robot.Robot` class, and if we go to that class file, we end up at `Robot.java`.
 This is the core of your robot code, where:
 
 - your subsystems are defined
-- your controls are bound
-- your opmodes are modified and used
+- shared behavior is defined
 - your debugging data is logged (telemetry).
 
 <Aside type="note">
     For prior FRC programmers, you might have noticed a `RobotContainer.java`
-    file is missing. This file is being removed in WPILib 2027.
+    file is missing. This file is not used with the Commands v3 framework.
 </Aside>
 
 We'll go through this file, as well as all of the functionalities, more in detail later.
 
 ### `opmode/`
 
-For those who are used to WPILib 2026 and earlier versions, this will probably be the most significant change.
-In WPILib 2027 and later versions, robot frameworks are getting a new way to control the current "mode" of the robot: OpModes.
-We'll talk about this a bit more in-depth later, but they essentially allow you to define various "states" for a robot during
-autonomous and teleop, which can then be set directly through the FIRST Driver Station.
-This would be useful, for example,
-when picking what autonomous routine to run without having to push a different version of the code for every single match.
-WPILib 2027 decouples many of the functions that used to be in `Robot.java` and moves them to separate files for autonomous
-and teleop periods, making it easier to differentiate what functionalities the robot has during each stage of the match.
+This folder contains all the OpModes that your robot will run.
+An OpMode is a class that controls the behavior of your robot during a specific robot mode (autonomous, teleop, and utility).
+You can have multiple OpModes per robot mode, and they are selected on the Driver Station to tell the robot which one to run.
+This allows you to have different autonomous routines for different situations,
+or multiple teleop routines for different drivers.
+OpModes use the `Robot` class to access the robot's subsystems and other shared behavior.
+
+<Aside type="note">
+    Prior FRC programmers may have used `SendableChooser` to register different
+    autonomous routines. OpModes replace `SendableChooser`, as they are
+    integrated into the Driver Station and registered automatically.
+</Aside>
 
 ### `simulation/`
 
@@ -118,4 +131,5 @@ The rest of Stage 1A will cover how to get from the template code to a working k
 
 This stage will cover the following topics:
 
-- [Stage 1A Commands](/learning-course/stage1/stage1b/command-based-overview/)
+- [Programming the Kitbot Drivetrain](/learning-course/stage1/stage1a/kitbot-drivetrain/)
+- [Simulating the Kitbot Drivetrain](/learning-course/stage1/stage1a/drivetrain-sim/)

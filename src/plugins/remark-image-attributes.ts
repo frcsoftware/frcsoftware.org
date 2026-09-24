@@ -79,12 +79,12 @@ export function remarkImageAttributes() {
                         node.data.hProperties = node.data.hProperties || {};
                         node.data.hProperties.class = `img-wrapper img-align-${align}`;
                     } else if (children.length === 1) {
-                        // Standalone image without attributes - still wrap and center
+                        // Standalone image without attributes - still wrap and left-align
                         node.data = node.data || {};
                         node.data.hName = 'div';
                         node.data.hProperties = node.data.hProperties || {};
                         node.data.hProperties.class =
-                            'img-wrapper img-align-center';
+                            'img-wrapper img-align-left';
                     }
                 }
             }

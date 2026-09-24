@@ -19,7 +19,9 @@ public class MyAuto extends PeriodicOpMode {
   }
 
   @Override
-  public void start() {}
+  public void start() {
+    /* Called once when the robot is enabled. */
+  }
 
   /*
    * This method runs periodically, using the same period as the Robot instance.

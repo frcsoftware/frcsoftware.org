@@ -1,0 +1,146 @@
+---
+title: Kitbot Drivetrain Simulation
+description: Writing the code to simulate the kitbot drivetrain
+prev: kitbot-drivetrain
+next: false
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# Simulation
+
+It's common to write code without having immediate access to a physical robot to test changes.
+Luckily, your computer can also run robot code allowing it to be tested without a robot.
+While there are some things that can be tested by simulating pure robot code, there are no physical motors to move and respond with new positions.
+Instead we use simulation classes that use physics to take the desired input voltage to the motors and estimate how the physical mechanism would respond and update our motor controller instances to match.
+For this stage custom classes have been provided that abstract away much of this logic.
+You can find these files under the `simulation` folder if you would like to read the implementation.
+You can also read the [WPILib docs on simulation](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html) if you would like to learn more about simulation.
+
+# Drivetrain Sim
+
+To simulate the drivetrain another class needs to instantiated in `Robot.java`.
+Create an instance of the `DrivetrainSim` class under the `DifferentialDrive` instance using the left and right Leader motors as inputs.
+This class will read the voltage commanded to the motors and, using its physics sim, update the motor controllers with new positions.
+The class will then publish the new drivetrain position and additional motor data so it can be viewed in AdvantageScope.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DrivetrainSim
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DrivetrainSim
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Periodic Methods
+
+Robot code needs to be run in a loop so that it can continually make new commands to motor controllers based on new controller and sensor input.
+To accomplish this Periodic Methods are provided in the `Robot` class and `OpMode` classes.
+Periodic methods get called every 20ms by default, causing any code placed inside of them to be run 50 times per second.
+OpModeRobot has additional periodic methods that only run during specific robot states.
+For example, the `teleopPeriodic()` function will only be called when teleop mode is selected on the Driver Station.
+
+At the moment `DrivetrainSim` will not actually do anything because it is not being told to update periodically.
+To fix this, `DrivetrainSim`'s `periodic()` function should be called inside of the `Robot` class' `simulationPeriodic()` function.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note">
+    The simulation class is updated inside of `simulationPeriodic()` so it only
+    gets updated when the robot code is simulated. This ensures that it doesn't
+    interfere with the motor controllers when the code is being ran on a real
+    robot.
+</Aside>
+
+# Check
+
+After adding the simulation code your `Robot.java` file should now look like this
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#RobotWithSimPart1
+            ```
+            ```java {ctreRobot}#RobotWithSimPart2
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#RobotWithSimPart1
+            ```
+            ```java {revRobot}#RobotWithSimPart2
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+# Simulating code
+
+When simulating code there are two main windows to control and visualize what the code is doing.
+
+The first important window is the Sim GUI.
+The Sim GUI is automatically opened when simulating code and acts as both a Driver Station and shows information about simulated devices such as position and velocity.
+More information about the Sim GUI can be found in [WPILib's documentation](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html).
+
+The other important window is a program called AdvantageScope.
+AdvantageScope is bundled with WPILib and is used to visualize data sent by the robot.
+The main tabs used in AdvantageScope are **Line Graph**, used to graph numeric data such as a motors current position, and **2D Field** used to visualize positions on the field.
+AdvantageScope can also be used to assist in debugging by visualizing logs generated by the robot during a match.
+More information about using AdvantageScope can be found at [their docs](https://docs.advantagescope.org/).
+
+The first step in simulating code is opening AdvantageScope and loading the layout stored as `AdvantageScopeLayout.json` in the top level of the robot project.
+
+<ContentFigure
+    width="650px"
+    alt="Opening AdvantageScope"
+    src="/learning-course/stage1/stage1a/OpenAscope.webm"
+/>
+
+Next, use the WPILib icon in the upper right corner of VS Code to open the command palette and select `WPILib: Simulate Robot Code`.
+This starts the simulation and opens the Sim GUI.
+
+<ContentFigure
+    width="650px"
+    alt="Opening AdvantageScope"
+    src="/learning-course/stage1/stage1a/StartSim.webm"
+/>
+
+Finally connect AdvantageScope to the simulation and select `MyTeleop` as the current `OpMode`.
+Now when you enable the robot using the Sim GUI the robot should now be able to be controlled using WASD.
+
+<ContentFigure
+    width="650px"
+    alt="Opening AdvantageScope"
+    src="/learning-course/stage1/stage1a/ConnectRunSim.webm"
+/>

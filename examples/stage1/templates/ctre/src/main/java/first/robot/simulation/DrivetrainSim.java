@@ -17,6 +17,7 @@ import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;
@@ -34,7 +35,6 @@ public class DrivetrainSim {
   private final double kGearRatio = 10.71;
   private final double kWheelRadiusMeters = Inches.of(3.0).in(Meters);
   private final double linearToMotorRatio = (1.0 / kWheelRadiusMeters) * kGearRatio;
-  private static final double kBusVoltage = 12.0;
 
   private final DifferentialDrivetrainSim driveSim =
       new DifferentialDrivetrainSim(
@@ -46,49 +46,51 @@ public class DrivetrainSim {
           Inches.of(21.5).in(Meters), // Distance between the left and right wheels
           null);
 
+  // we add front slashes here so that the keys show up consistently between the CTRE and REV
+  // examples.
   private final StructPublisher<Pose2d> simPosePublisher =
-      NetworkTableInstance.getDefault().getStructTopic("Drivetrain/Pose", Pose2d.struct).publish();
+      NetworkTableInstance.getDefault().getStructTopic("/Drivetrain/Pose", Pose2d.struct).publish();
 
   private final DoublePublisher leftPositionPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("Drivetrain/LeftPositionMeters").publish();
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftPositionMeters").publish();
 
   private final DoublePublisher rightPositionPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("Drivetrain/RightPositionMeters").publish();
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightPositionMeters").publish();
 
   private final DoublePublisher leftVelocityPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("Drivetrain/LeftVelocityMPS").publish();
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftVelocityMPS").publish();
 
   private final DoublePublisher rightVelocityPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("Drivetrain/RightVelocityMPS").publish();
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightVelocityMPS").publish();
 
   private final DoublePublisher leftMotorVelocityPub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/LeftMotor/MotorVelocityRPS")
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVelocityRPS")
           .publish();
 
   private final DoublePublisher rightMotorVelocityPub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/RightMotor/MotorVelocityRPS")
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorVelocityRPS")
           .publish();
 
   private final DoublePublisher leftMotorVoltagePub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/LeftMotor/MotorVoltage")
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVoltage")
           .publish();
 
   private final DoublePublisher rightMotorVoltagePub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/RightMotor/MotorVoltage")
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorVoltage")
           .publish();
 
   private final DoublePublisher leftMotorSupplyCurrentPub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/LeftMotor/MotorSupplyCurrent")
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorSupplyCurrent")
           .publish();
 
   private final DoublePublisher rightMotorSupplyCurrentPub =
       NetworkTableInstance.getDefault()
-          .getDoubleTopic("Drivetrain/RightMotor/MotorSupplyCurrent")
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorSupplyCurrent")
           .publish();
 
   /**
@@ -97,19 +99,19 @@ public class DrivetrainSim {
    */
   public DrivetrainSim(TalonFX leftTalon, TalonFX rightTalon) {
     this.leftTalon = leftTalon;
-    leftTalonSim = new TalonFXSimState(leftTalon, ChassisReference.CounterClockwise_Positive);
+    leftTalonSim = new TalonFXSimState(leftTalon, ChassisReference.Clockwise_Positive);
     leftTalonSim.setMotorType(MotorType.KrakenX60);
 
     this.rightTalon = rightTalon;
-    rightTalonSim = new TalonFXSimState(rightTalon, ChassisReference.Clockwise_Positive);
+    rightTalonSim = new TalonFXSimState(rightTalon, ChassisReference.CounterClockwise_Positive);
     rightTalonSim.setMotorType(MotorType.KrakenX60);
+
+    driveSim.setPose(new Pose2d(2.5, 2, Rotation2d.ZERO));
+    FuelSim.robotPoseSupplier = driveSim::getPose;
   }
 
   public void periodic() {
-    double leftMotorVoltage = leftTalon.getThrottle() * kBusVoltage;
-    double rightMotorVoltage = rightTalon.getThrottle() * kBusVoltage;
-
-    driveSim.setInputs(leftMotorVoltage, rightMotorVoltage);
+    driveSim.setInputs(leftTalonSim.getMotorVoltage(), rightTalonSim.getMotorVoltage());
     driveSim.update(0.02);
 
     OnboardIMUSim.setYaw(driveSim.getHeading().getRadians());

@@ -33,6 +33,12 @@ bun.lock
 # Build files
 .gradle
 */build/*
+*.class
 
 # IntelliJ
 .idea
+.eslintcache
+tsconfig.tsbuildinfo
+
+# Cloudflare Workers
+.wrangler

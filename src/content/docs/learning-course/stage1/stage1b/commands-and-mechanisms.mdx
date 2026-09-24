@@ -47,7 +47,7 @@ Notice that:
   when the command runs, like a method body.
 - This command will print "Full Speed Baby!" once before commanding
   the motor to spin at max speed.
-- The `named("Set to Full Throttle")` call is required to create a `Command`.
+- The `named("Set to Full Throttle")` call is required to create a `Command`.[^1]
   This allows coders to distinguish this command from others when debugging their code.
 
 To change the priority of the command, simply add a `withPriority(int)` call before
@@ -135,3 +135,5 @@ That means you can run multiple commands in sequence:
 ```java #commandSequence
 
 ```
+
+[^1]: WPILib JavaDocs for [`NeedsNameBuilderStage.named()`](<https://github.wpilib.org/allwpilib/docs/2027/java/org/wpilib/command3/NeedsNameBuilderStage.html#named(java.lang.String)>)

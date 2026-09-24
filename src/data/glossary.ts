@@ -82,7 +82,7 @@ export const glossaryTerms: GlossaryTerm[] = [
     {
         term: 'Repository',
         definition:
-            'A storage location for software packages, often used in version control systems like Git. Repositories are just folders that contain files and subfolders, and they can be hosted on platforms like GitHub to facilitate collaboration and version tracking',
+            'A storage location for your code and related assets, often used in version control systems like Git. Repositories are just folders that contain files and subfolders, and they can be hosted on platforms like GitHub to facilitate collaboration and version tracking',
     },
     {
         term: 'CI',
@@ -98,6 +98,16 @@ export const glossaryTerms: GlossaryTerm[] = [
         term: 'GitHub',
         definition:
             'GitHub is like Google Drive, but for code. It hosts git repositories and allows for improved collaboration on projects through pull requests and issues',
+    },
+    {
+        term: 'Heading',
+        definition:
+            'The direction the robot is pointed, usually expressed as an angle in degrees',
+    },
+    {
+        term: 'Odometry',
+        definition:
+            'Using sensors on the robot to create an estimate of the pose of the robot on the field.',
     },
 ];
 

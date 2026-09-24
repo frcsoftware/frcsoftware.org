@@ -1,0 +1,169 @@
+---
+title: Arrays and For-Each Loops
+description: An introduction to arrays and the for-each loop in Java
+prev: learning-course/stage0/classes-methods
+next: learning-course/stage0/interfaces-lists
+codeRegionSources:
+    default: stage0/snippets/src/Arrays.java
+---
+
+In the [previous lesson](/learning-course/stage0/classes-methods/), we defined a `Point` class to represent a location on the field.
+In this lesson, we're going to learn about **arrays**, which let us store many values of the same type together,
+and the **for-each loop**, a way to loop over those values that's often cleaner than the `for` loop you already know.
+
+## Why Arrays?
+
+Suppose your drivetrain has four motors, and you want to keep track of the speed you've commanded for each one.
+Without arrays, you'd need a separate variable for every motor:
+
+{/* rli:ignore */}
+
+```java
+double motor1Speed = 0.5;
+double motor2Speed = 0.5;
+double motor3Speed = 0.5;
+double motor4Speed = 0.5;
+```
+
+This works for four motors, but it doesn't scale.
+If your robot has eight motors, you need eight variables, and any code that operates on "all the motor speeds" has to repeat itself once per variable.
+An **array** solves this by storing multiple values of the same type together, as a single variable.
+
+## Declaring and Creating Arrays
+
+An array's type is written as the element type followed by square brackets, like `double[]` for an array of `double`s.
+The simplest way to create an array is with an "array literal", a comma-separated list of values inside curly braces:
+
+```java #motorSpeedsLiteral
+
+```
+
+This creates an array of four `double`s, and stores it in the variable `motorSpeeds`.
+An array's size is fixed once it's created, so `motorSpeeds` will always hold exactly four values, for as long as it exists.
+However, the values in the array can be changed at any time.
+
+<Aside type="tip" title="Creating an Empty Array">
+    If you don't know the values yet, you can create an array of a given size with the `new` keyword instead of a literal:
+
+    ```java #motorSpeedsEmpty
+
+    ```
+
+    This creates an array of four `double`s, all initially set to `0.0`.
+    You can think of an array literal as a shorthand for creating an array this way and then filling in each value.
+
+</Aside>
+
+## Indexing and Length
+
+Each value in an array is called an **element**, and you access a specific element using its **index**, the element's position in the array.
+Just like `String` and `List` (which we'll see in the next lesson), array indices in Java start at `0`, not `1`.
+So in `motorSpeeds`, the first motor's speed is at index `0`, and the last is at index `3`.
+
+You read and write an element using square brackets after the array's variable name.
+Let's update the first motor's speed and print it back:
+
+```java #setSpeed
+
+```
+
+An array also has a `length`, the number of elements it holds.
+Unlike `String.length()`, which is a method, an array's `length` is a **field**, so it's accessed without parentheses:
+
+```java #speedsLength
+
+```
+
+<Aside type="caution" title="Array Bounds">
+    Every index must be between `0` and `length - 1`. Accessing
+    `motorSpeeds[4]`, or any index that's out of that range, will throw an
+    exception. This stops your program from continuing.
+</Aside>
+
+## Arrays of Objects
+
+An array's element type isn't limited to primitives like `double`; it can be any type, including a class you defined yourself, like `Point`.
+Let's define a fixed autonomous path as an array of waypoints, in the order the robot should drive through them:
+
+```java #pathArray
+
+```
+
+Just like `motorSpeeds`, `path` has a fixed size, which in this case is three, because we created it with three waypoints.
+This fits an autonomous path well: the route is planned out ahead of time, so we already know exactly how many waypoints it has.
+
+<Aside type="tip" title="Empty Arrays of Objects">
+    Just like with arrays of primitives, you can create an empty array of objects with `new` instead of a literal:
+
+    ```java #pathArrayEmpty
+
+    ```
+
+    This creates an array of three `Point`s, all initially set to `null`.
+    `null` is a special object that represents the absence of a value.
+    Creating an empty array can be useful if you know how many elements you'll need, but don't yet have their values.
+    For example, if you need to wait until after you know what alliance color the robot is to fill in the array.
+
+    However, because `null` isn't actually a `Point`, you can't access any fields or methods.
+    If you try, it will throw an exception called a `NullPointerException`:
+
+    ```java #pathArrayNull
+
+    ```
+
+    For this reason, it's usually better to create an array of objects with a literal.
+
+</Aside>
+
+## Looping Over Arrays
+
+Arrays are useful because you can loop over their elements instead of writing out each one by hand.
+You've already seen the index-based `for` loop; let's use it to add up every motor speed in `motorSpeeds`:
+
+```java #indexLoopSpeeds
+
+```
+
+This loop's condition, `i < motorSpeeds.length`, is what makes it work for an array of any size:
+it always stops right after the last valid index, whether `motorSpeeds` has four elements or forty.
+
+## The For-Each Loop
+
+Often, all we need from a loop like this one is "do something with every element," without caring about the index at all.
+Java's **for-each loop** makes it easy to do that, with no index variable to manage:
+
+{/* rli:ignore */}
+
+```java
+for (ElementType element : array) {
+    // code that uses element
+}
+```
+
+The type before the colon must match the array's element type, and the name after it is a new local variable that holds one element per iteration.
+Let's use a for-each loop to print every waypoint in `path`:
+
+```java #forEachPath
+
+```
+
+This is easier to read than the equivalent index-based loop, since there's no `path[i]` to keep track of;
+`waypoint` simply becomes each `Point` in `path`, in order, for one iteration each.
+
+Sometimes, an index-based loop is unavoidable because you need more than just "the current element."
+For example, to find the total distance of the path, we need each waypoint _and_ the one before it, which a for-each loop has no way to express:
+
+```java #pathLength
+
+```
+
+Here, `path[i - 1]` is the previous waypoint, and `path[i]` is the current one; `i` starts at `1`, since index `0` has no previous waypoint to compare against.
+A for-each loop can't reach the previous element, so the index-based `for` loop is the right choice here.
+
+## Arrays and For-Each Loops Exercise
+
+<Aside type="exercise">
+
+WIP
+
+</Aside>

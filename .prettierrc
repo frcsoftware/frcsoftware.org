@@ -16,6 +16,12 @@
             "options": {
                 "proseWrap": "preserve"
             }
+        },
+        {
+            "files": "*.jsonc",
+            "options": {
+                "parser": "json"
+            }
         }
     ]
 }

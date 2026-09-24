@@ -323,7 +323,6 @@ For multiple images, use the Slides component instead.
 - **pnpm**: Download from [pnpm.io/installation](https://pnpm.io/installation).
   If you just downloaded **Node.js**, follow the `corepack` or `npm` installation options.
 - **Git**: Download from [git-scm.com](https://git-scm.com/)
-- **Vale**: Download from [docs.vale.sh/topics/installation](https://docs.vale.sh/topics/installation)
 - A code editor (e.g., [VS Code](https://code.visualstudio.com/))
 
 ### Setup Instructions

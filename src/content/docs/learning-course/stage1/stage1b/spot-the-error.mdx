@@ -1,0 +1,140 @@
+---
+title: Spot the Error
+description: A review exercise for stage 1B
+prev: learning-course/stage1/stage1b/commands-and-mechanisms-pt2
+next: learning-course/stage1/stage1b/command-based-kitbot
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/SpotTheError.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### The Purpose of this Section
+
+By looking through buggy code snippets that use command-based programming,
+you can hopefully get a better intuition on how to spot common bugs and write better code.
+If you are confident in your skills, you can skip ahead to the stage 1B exercise, but
+the authors still highly recommend it.
+
+<Aside type="note">
+    Unless otherwise mentioned, code snippets in this section do not have
+    compile-time errors.
+</Aside>
+
+### Exercise 1
+
+This code is supposed to spin the intake while the left bumper is held.
+The intake should stop when the bumper is released.
+It also compiles fine.
+
+```java #intakeOnTrueBug
+
+```
+
+Can you spot the error?
+
+<details class="accordion">
+    <summary>Reveal</summary>
+    The `onTrue()` binding schedules the command once, when the bumper is first pressed.
+    The command keeps running even after the bumper is released.
+    Use `whileTrue()` instead, which runs the command for as long as the trigger is active:
+
+    ```java #intakeWhileTrue
+
+    ```
+
+</details>
+
+### Exercise 2
+
+The `aButtonTrigger` is supposed to run a command while the A button is held.
+The code compiles fine.
+
+```java #triggerCapturedValueBug
+
+```
+
+Can you spot the error?
+
+<details class="accordion">
+    <summary>Reveal</summary>
+    The button is read once, before the trigger is created.
+    The trigger always checks the same stored value, so it either runs forever or never runs at all.
+    Read the button inside the trigger's lambda instead:
+
+    ```java #triggerCapturedValueFix
+
+    ```
+
+</details>
+
+### Exercise 3
+
+This fails to compile, with the error shown in the comment.
+It also has a logic error.
+
+{/* rli:ignore */}
+
+```java
+class Intake implements Mechanism {
+  private final ExampleMotor motor = new ExampleMotor();
+
+  Command runAtThrottle(double throttle) {
+    return Command.noRequirements(coroutine -> {
+        while (false) { // Compile-time error: Unreachable statement
+          motor.setThrottle(throttle);
+          coroutine.yield();
+        }
+      })
+      .named("Intake");
+  }
+}
+```
+
+Can you fix the compile-time error and the logic error?
+
+<details class="accordion">
+    <summary>Reveal</summary>
+    The goal is for the commands to set the motor's throttle forever, so
+    `while (true)` should be used instead of `while (false)`. A
+    `while (false)` statement will never run!
+
+    Furthermore, the `intake()` Command needs to require the `Intake` mechanism.
+    So, `run(coroutine -> {})` should be used in place of `Command.noRequirements(coroutine -> {})`.
+
+    ```java #intakeClass
+
+    ```
+
+</details>
+
+### Exercise 4
+
+You've fixed the intake (reveal the answer to exercise 3 to see the full class),
+and have the following code to run it while the left bumper is held:
+
+```java #intakeWhileTrue
+
+```
+
+You hold down the left bumper, and the intake starts spinning; but releasing it doesn't
+stop the intake.
+Can you spot the error?
+
+<details class="accordion">
+    <summary>Hint</summary>
+    Setting the Intake's default command might help you. But why?
+</details>
+<details class="accordion">
+    <summary>Reveal</summary>
+    When you call `motor.setThrottle(double)`, the motor will start spinning forever,
+    even if you aren't calling `setThrottle` anymore. Releasing the left bumper
+    would cancel the `runAtThrottle` command, but it wouldn't stop the motor.
+
+    To fix this, we set a default command, which defines a mechanism's idle state.
+    Here, the intake should stop when no other commands requiring it are running.
+    ```java #intakeClassWithDefaultCmd
+
+    ```
+
+</details>

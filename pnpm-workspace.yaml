@@ -1,3 +1,4 @@
-onlyBuiltDependencies:
-    - esbuild
-    - '@vvago/vale'
+allowBuilds:
+    esbuild: true
+    '@frcsoftware/vale': true
+    workerd: true

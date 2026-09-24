@@ -10,7 +10,8 @@ assignees: ''
 A clear and concise description of the problem.
 
 **Where?**
-Which page, component, or area of the site is affected? Include a URL if applicable.
+Which page, component, or area of the site is affected?
+Include a URL if applicable.
 
 **To Reproduce**
 Describe the steps needed to reproduce the issue.

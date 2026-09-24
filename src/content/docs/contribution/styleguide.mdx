@@ -10,7 +10,7 @@ import Aside from '../../../components/Aside.astro';
 <Aside type="note">
 FRCSoftware.org is just getting started, and has taken a lot from FRCDesign.org
 
-This page will need to be updated as we go along with programming-based examples, and parts may need to be rewriten due to the differences in programming and design.
+This page will need to be updated as we go along with programming-based examples, and parts may need to be rewritten due to the differences in programming and design.
 
 </Aside>
 
@@ -75,7 +75,7 @@ Keep in mind that FRC software trends are temporary and transient.
 
 Adhere to brand standards when possible.
 
-- Abide by _FIRST_ trademark and branding guidelines, available [here](https://www.firstinspires.org/about/brand)
+- Abide by _FIRST_ trademark and branding guidelines, available [here](https://www.firstinspires.org/brand/logos-guidelines)
 - The first instance of _FIRST_ and FRC on a page should include the registered trademark symbol (i.e, _FIRST_)
 - Always capitalize and italicize the name _FIRST_
 - Do NOT use a possessive on the _FIRST_ name (e.g, FIRST's)
@@ -105,7 +105,6 @@ Enforced by `prettier-plugin-sentences-per-line`.
 | Command             | Action                                                                  |
 | ------------------- | ----------------------------------------------------------------------- |
 | `pnpm lint`         | Run all lint steps (ESLint, remark, region validation, vale, typecheck) |
-| `pnpm lint:vale`    | Run Vale prose style checks on `src/content`                            |
 | `pnpm format`       | Auto-fix all formatting and sentence-per-line issues                    |
 | `pnpm format:check` | Prettier check — all file types (includes sentence-per-line)            |
 
@@ -157,3 +156,64 @@ This pulls from `CommandBasedKitbotPt2.java`:
 
 ```
 ````
+
+#### Code Block Tabs
+
+Use Starlight's `Tabs` and `TabItem` components to show alternate versions of a code block, such as CTRE vs.
+REV variants of the same code.
+Import them from `@astrojs/starlight/components`, then wrap each variant's code fence in its own `TabItem`:
+
+{/* rli:ignore */}
+
+````mdx
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+<Tabs>
+    <TabItem label="CTRE">
+        ```java #ctreDrivetrainDef
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java #revDrivetrainDef
+
+        ```
+    </TabItem>
+
+</Tabs>
+````
+
+If multiple `Tabs` on the same page (or across different pages) should stay in sync when the reader switches
+between CTRE and REV, give the `Tabs` component a `syncKey`.
+Rather than inlining a raw string, define a shared constant in `src/data/tabsSyncKeys.ts` and import it:
+
+{/* rli:ignore */}
+
+```ts
+/** The sync key for REV/CTRE choosers */
+export const REV_CTRE_CHOOSER_KEY = 'rev-ctre-chooser';
+```
+
+{/* rli:ignore */}
+
+````mdx
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```
+
+        ```
+    </TabItem>
+
+</Tabs>
+````
+
+This way, once a reader picks CTRE or REV in one set of tabs, every other synced `Tabs` block on the site
+defaults to the same choice, instead of having to reselect it on every page.

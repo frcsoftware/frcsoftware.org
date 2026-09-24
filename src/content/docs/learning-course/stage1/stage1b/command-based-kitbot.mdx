@@ -8,6 +8,8 @@ codeRegionSources:
 ---
 
 import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
 
 ### What You'll Accomplish
 
@@ -28,11 +30,23 @@ Use git to clone stage 1 template code.
 Because both stage 1A and stage 1B
 use the same template, use the following terminal command to create a new project:
 
-{/* rli:ignore */}
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        {/* rli:ignore */}
 
-```
-git clone https://github.com/frcsoftware/Stage1-Template-CTRE stage1b-ctre
-```
+        ```
+        git clone https://github.com/frcsoftware/Stage1-Template-CTRE stage1b-ctre
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        {/* rli:ignore */}
+
+        ```
+        git clone https://github.com/frcsoftware/Stage1-Template-REV stage1b-rev
+        ```
+    </TabItem>
+
+</Tabs>
 
 Then, navigate to the `Robot` class under `src/main/java/first/robot`.
 For commands to function, you must call `Scheduler.getDefault().run()` in
@@ -42,52 +56,90 @@ the robot class' `robotPeriodic()` method.
 
 ```
 
+<details class="accordion">
+    <summary>What does `Scheduler.getDefault().run()` do?</summary>
+    The command scheduler is in charge of running all the commands that are
+    active, and handling any mechanism requirements that those commands may
+    have. Calling this method runs the scheduler, and therefore all active
+    commands, for one iteration.
+</details>
+
 ### Task 2: The Feeder Mechanism
 
 Create a new package named `mechanisms` under the `robot` package.
-Remember that
-packages are folders that contain java files.
-The `mechanisms` package
-will contain the code for our feeder and intake launcher mechanisms.
+Remember that packages are folders that contain java files.
+The `mechanisms` package will contain the code for our feeder and intake launcher mechanisms.
 
-Then, create a new file in the `mechanisms` package named `Feeder.java`.
-Define a class named `Feeder` that implements `Mechanism`, then add the following:
-
-1. A private `TalonFX` motor controller object, named `motor`, with an ID of 5.
-   It is connected to a systemcore CANBus with ID 0.
-2. A `feed()` command that sets the throttle of the motor to 0.75 forever.
-3. An `intake()` command that sets the throttle of the motor to -1 forever.
-4. An `outtake()` command that sets the throttle of the motor to 1 forever.
-5. An `idle()` command that sets the throttle of the motor to 0 forever.
-   Make this the default command.
-
-The `feed()`, `intake()`, `outtake()` and `idle()` commands should be returned from methods.
+Then, create a new Java class in the `mechanisms` package named `Feeder.java`, which will be used to control the feeder.
+The `Feeder` class should implement `Mechanism`.
 
 <details class="accordion">
-    <summary>Item 1, Hint 1</summary>
+    <summary>Hint</summary>
     A mechanism is defined as a class with the `implements Mechanism` keyword at the end.
     ```java #feederDef
 
     ```
 
 </details>
-<details class="accordion">
-    <summary>Item 1, Hint 2</summary>
-    You can create a `CANBus` object via `CANBus.systemcore(id)`.
-</details>
-{/* prettier-ignore */}
-<details class="accordion">
-    <summary>Item 1, Hint 3</summary>
-    Remember that `TalonFX` is a class, and that creating objects within another
-    class is done like so: <br />
-    {/* rli:ignore */}
-    ```java
-    private TypeOfClass myMotor = new TypeOfClass();
-    ```
-    First, figure out what to replace `TypeOfClass` with. Next,
-    add the appropriate constructor parameters by hovering over
-    the red squiggly line.
-</details>
+
+Then, add the following:
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        1. A private `TalonFX` motor controller object, named `motor`, with CAN ID 5 on Systemcore CANBus 0.
+        2. A `feed()` command that sets the throttle of the motor to 0.75 forever.
+        3. An `intake()` command that sets the throttle of the motor to -1 forever.
+        4. An `outtake()` command that sets the throttle of the motor to 1 forever.
+        5. An `idle()` command that sets the throttle of the motor to 0 forever.
+        Make this the default command.
+
+        The `feed()`, `intake()`, `outtake()` and `idle()` commands should be returned from methods.
+
+        <details class="accordion">
+            <summary>Item 1, Hint 1</summary>
+            For CTRE devices, a `CANBus` object can be created via
+            `CANBus.systemcore(id)`.
+        </details>
+        {/* prettier-ignore */}
+        <details class="accordion">
+            <summary>Item 1, Hint 2</summary>
+            Remember that `TalonFX` is a class, and that creating objects within another
+            class is done like so: <br />
+            {/* rli:ignore */}
+            ```java
+            private TypeOfClass myMotor = new TypeOfClass();
+            ```
+            First, figure out what to replace `TypeOfClass` with. Next,
+            add the appropriate constructor parameters by hovering over
+            the red squiggly line.
+        </details>
+    </TabItem>
+    <TabItem label="REV">
+        1. A private `SparkMax` motor controller object, named `motor`, with CAN ID 5 on Systemcore CANBus 0.
+        2. A `feed()` command that sets the throttle of the motor to 0.75 forever.
+        3. An `intake()` command that sets the throttle of the motor to -1 forever.
+        4. An `outtake()` command that sets the throttle of the motor to 1 forever.
+        5. An `idle()` command that sets the throttle of the motor to 0 forever.
+        Make this the default command.
+
+        The `feed()`, `intake()`, `outtake()` and `idle()` commands should be returned from methods.
+
+        <details class="accordion">
+            <summary>Item 1 Hint</summary>
+            Remember that `SparkMax` is a class, and that creating objects within another
+            class is done like so: <br />
+            {/* rli:ignore */}
+            ```java
+            private TypeOfClass myMotor = new TypeOfClass();
+            ```
+            First, figure out what to replace `TypeOfClass` with. Next,
+            add the appropriate constructor parameters by hovering over
+            the red squiggly line.
+        </details>
+    </TabItem>
+
+</Tabs>
+
 <details class="accordion">
     <summary>Items 2-4, Hint 1</summary>
     Re-read the "Defining Commands" and "Combining Commands and Mechanisms"
@@ -107,22 +159,93 @@ to allow for simulation to work:
 
 ```
 
+This code creates a `SingleFlywheelSim` object named `sim` that simulates the feeder by representing it as a single spinning flywheel, then updates the simulation in `sim.periodic()`.
+
 ### Task 3: The IntakeLauncher Mechanism
 
 Create a file named `IntakeLauncher.java` in the `mechanisms` package.
 Define a class named `IntakeLauncher` that implements `Mechanism`; then, add the following:
 
-1. A private `TalonFX` motor controller object, named `motor`, with an ID of 4.
-   It is connected to a systemcore CANBus with ID 0.
-2. A `shoot()` command that waits 2 seconds, then sets the throttle of the motor to 0.9 forever.
-3. A `intake()` command that sets throttle to 0.8 forever.
-4. A `outtake()` command that sets throttle to -0.8 forever.
-5. A `idle()` command that sets throttle to 0 forever.
-   Make this the default command.
-6. The code needed for simulating the intake launcher.
-   You haven't officially learned
-   how to do this, but task 2's final section gives a hint.
-   Can you figure it out?
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        <ol style={{ margin: '0.2em 0', paddingInlineStart: '2.5rem' }}>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A private `TalonFX` motor controller object, named `motor`,
+                    with ID 4 on Systemcore bus 0.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `shoot()` command that waits 2 seconds, then sets the
+                    throttle of the motor to 0.9 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `intake()` command that sets throttle to 0.8 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `outtake()` command that sets throttle to -0.8 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `idle()` command that sets throttle to 0 forever. Make
+                    this the default command.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    The code needed for simulating the intake launcher. You
+                    haven't officially learned how to do this, but task 2's
+                    final section gives a hint. Can you figure it out?
+                </span>
+            </li>
+        </ol>
+    </TabItem>
+    <TabItem label="REV">
+        <ol style={{ margin: '0.2em 0', paddingInlineStart: '2.5rem' }}>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A private `SparkMax` motor controller object, named `motor`,
+                    with ID 4 on Systemcore bus 0.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `shoot()` command that waits 2 seconds, then sets the
+                    throttle of the motor to 0.9 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `intake()` command that sets throttle to 0.8 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `outtake()` command that sets throttle to -0.8 forever.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    A `idle()` command that sets throttle to 0 forever. Make
+                    this the default command.
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    The code needed for simulating the intake launcher. You
+                    haven't officially learned how to do this, but task 2's
+                    final section gives a hint. Can you figure it out?
+                </span>
+            </li>
+        </ol>
+    </TabItem>
+</Tabs>
 
 <details class="accordion">
     <summary>Item 2 Hint</summary>
@@ -134,15 +257,16 @@ Define a class named `IntakeLauncher` that implements `Mechanism`; then, add the
     ```java #feederSim
 
     ```
-    Change one thing, and copy-paste the code into `IntakeLauncher.java`.
+    Copy-paste the code into `IntakeLauncher.java`, and change one thing.
 
 </details>
 
 ### Task 4: Finish the `Robot` class
 
-Create new instances of the `IntakeLauncher` and `Feeder` classes.
-They should be
-public properties of the `Robot` class, so that they are accessible from opmodes.
+Now that we have the mechanism classes created, we need to instantiate them in the `Robot` class.
+
+Go to the `Robot` class and create new instances of the `IntakeLauncher` and `Feeder` classes.
+They should be public properties of the `Robot` class, so that they are accessible from OpModes.
 Name them `intakeLauncher` and `feeder`, respectively.
 
 You also need to call `intakeLauncher.periodic();` and `feeder.periodic();`
@@ -156,17 +280,17 @@ Which method should it be?
 
 ### Task 5: Finish the teleop OpMode
 
-In the constructor of the teleop opmode (it should be in `MyTeleop.java`),
+In the constructor of the teleop OpMode (it should be in `MyTeleop.java`),
 create a private `CommandXboxController` instance named `xbox`.
 
-In your opmode constructor, define the following behavior:
+In your OpMode constructor, define the following behavior:
 
 1. While the `xbox.leftBumper()` trigger is active,
-   run the `robot.intake.intake()` and `robot.feeder.intake()` commands.
+   run the `robot.intakeLauncher.intake()` and `robot.feeder.intake()` commands.
 2. While the `xbox.rightBumper()` trigger is active,
-   run the `robot.intake.shoot()` and `robot.feeder.feed()` commands.
+   run the `robot.intakeLauncher.shoot()` and `robot.feeder.feed()` commands.
 3. While the `xbox.a()` trigger is active,
-   run the `robot.intake.outtake()` and `robot.feeder.outtake()` commands.
+   run the `robot.intakeLauncher.outtake()` and `robot.feeder.outtake()` commands.
 
 <details class="accordion">
     <summary>Hint</summary>

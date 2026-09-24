@@ -1,0 +1,39 @@
+---
+title: Stage 1C Overview
+description: An overview of Stage 1A
+prev: ../stage-overview
+next: false
+---
+
+import YouTube from '../../../../../components/YouTube.astro';
+
+<Aside type="wip">Stage 1C is still in development!</Aside>
+
+If you've watched matches from any recent FRC game, you'll notice that robots typically have to align quite precisely with a field element to score.
+Take this example from the 2026 kitbot reveal (at 0:16).
+
+<YouTube id="nTmZXOgHntM" />
+
+In 2026, robots had to align with the hub to successfully shoot fuel.
+In 2025, robots had to line up with branches on the reef to place coral.
+To execute these tasks, teams run automatic positioning programs rather than burdening the driver with precise maneuvers.
+In Stage 1C, you will learn fundamental concepts pertaining to robot control algorithms and how to log data from your robot beyond simple print statements.
+
+## Key Concepts
+
+Mechanisms have "states" such as position, rotation, velocity, and acceleration.
+A PID controller is an equation which takes a desired mechanism state, compares it to the current state, and returns an output voltage to the motors so that the mechanism can get to the desired state.
+By properly "tuning" a PID controller, you can make a mechanism quickly and precisely change state.
+
+Telemetry is the process of recording and sending live data about your robot to a live output and/or log file.
+Telemetry is vital to troubleshooting, gauging robot performance, and keeping your drive team informed as matches progress.
+
+## Stage 1C Goals
+
+By the end of Stage 1C, you'll program a feature which enables your kitbot's drivetrain to automatically and smoothly turn in place towards any given angle.
+In other words, your kitbot will be able to aim towards the hub on its own.
+You will also be able to read data from your kitbot via logging with telemetry.
+
+This stage will cover the following topics:
+
+- WIP

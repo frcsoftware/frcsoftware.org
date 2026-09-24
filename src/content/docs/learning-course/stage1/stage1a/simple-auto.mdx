@@ -1,0 +1,84 @@
+---
+title: Simple Auto
+description: Programming a time based autonomous
+prev: drivetrain-sim
+next: kitbot-additional-motors
+codeRegionSources:
+    ctreAuto: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyAuto.java
+    revAuto: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyAuto.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# Autonomous OpMode
+
+Now that the kitbot can move in teleop mode, it is time to make it move during the autonomous mode.
+The autonomous mode is typically the first 15 seconds of the match but the exact length may vary from year to year.
+An effective auto can be a very valuable addition to a robot for a variety of reasons.
+Point values are typically increased during auto and sometimes ranking points associated with completing tasks during auto.
+Additionally both game pieces and your robot are in a known position allowing for consistent points.
+You also need to coordinate your autonomous routine with your alliance partners so it is important to have multiple routines and the ability to adjust them.
+
+An autonomous routine is simply an OpMode that gets run during the autonomous portion of the match.
+When writing an OpMode that will be run during the autonomous mode, there is an `@Autonomous` annotation that is added directly before the class definition.
+This annotation tells the Driver Station to place the OpMode under the autonomous selector.
+This OpMode will use a `Timer` to base its behavior off of the time elapsed from the beginning of the autonomous period.
+Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions
+
+The code for the auto will be added to the `MyAuto.java` file inside the opmode folder.
+The goal of the auto is to drive forward at half speed for four seconds then stop.
+The `Timer` class has the `hasElapsed(double seconds)` function which returns true if the specified amount of time has passed.
+This function can be periodically checked as the condition to an if statement to stop the robot after four seconds
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#SimpleAutoStart
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#SimpleAutoStart
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+If `hasElapsed(4)` instead returns false, then less than four seconds must have elapsed so the drivetrain should be told to drive forward at half speed.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#SimpleAutoEnd
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#SimpleAutoEnd
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Running Your Auto
+
+To test the auto routine, start the simulation, and connect Advantage Scope.
+Then, select autonomous mode and `MyAuto` OpMode in the Sim GUI.
+Now when the robot is enabled the auto should run.
+
+<ContentFigure
+    width="650px"
+    alt="Testing Auto"
+    src="/learning-course/stage1/stage1a/RunningMyAuto.webm"
+/>
+
+# Practice
+
+Try adding on to this auto yourself.
+For example, the robot could drive forward at half speed for four seconds, turn counter clockwise for two seconds, then drive forward at full speed for three seconds.
+You could also try creating additional autonomous OpModes so you can select between the different autos you have created.

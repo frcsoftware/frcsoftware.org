@@ -7,6 +7,7 @@ import {
     mdiFolder,
     mdiSchool,
     mdiWrench,
+    mdiSourceBranch,
 } from '@mdi/js';
 import MdiIcon from './MdiIcon.astro';
 
@@ -14,7 +15,14 @@ interface Props {
     title: string;
     href: string;
     description: string;
-    icon: 'book' | 'graduation' | 'wrench' | 'gears' | 'check' | 'folder';
+    icon:
+        | 'book'
+        | 'graduation'
+        | 'wrench'
+        | 'gears'
+        | 'check'
+        | 'folder'
+        | 'sourcebranch';
 }
 
 const { title, href, description, icon } = Astro.props;
@@ -26,6 +34,7 @@ const iconPaths = {
     gears: mdiCog,
     check: mdiCheckCircleOutline,
     folder: mdiFolder,
+    sourcebranch: mdiSourceBranch,
 };
 ---
 
@@ -48,7 +57,7 @@ const iconPaths = {
         position: relative;
         background: var(--sl-color-gray-6);
         border: 1px solid var(--sl-color-gray-5);
-        border-radius: 12px;
+        border-radius: 3px;
         padding: 1.25rem;
         text-decoration: none;
         transition: all 0.3s ease;
@@ -65,7 +74,7 @@ const iconPaths = {
         background: linear-gradient(
             90deg,
             var(--accent-color) 0%,
-            #af7cd4 50%,
+            #d94260 50%,
             var(--accent-color) 100%
         );
         opacity: 0;
@@ -91,7 +100,7 @@ const iconPaths = {
         width: 48px;
         height: 48px;
         background: rgba(163, 113, 247, 0.15);
-        border-radius: 10px;
+        border-radius: 5px;
         color: var(--accent-color);
         transition: all 0.3s ease;
     }
@@ -139,8 +148,8 @@ const iconPaths = {
 
     /* Light mode */
     :global(html[data-theme='light']) .home-card {
-        background: #ffffff;
-        border-color: #e0e0e0;
+        background: #e8e9ee;
+        border-color: #c1c3c8;
     }
 
     :global(html[data-theme='light']) .home-card:hover {

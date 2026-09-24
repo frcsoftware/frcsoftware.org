@@ -3,4 +3,51 @@ title: 'Stage 1A: Basic FRC Programming'
 description: An overview of Stage 1A for educators
 ---
 
-WIP
+Stage 1A will introduce fundamental concepts specific to FRC programming by programming the 2026 Kitbot.
+
+<ContentFigure
+    width="650px"
+    alt="Image of the 2026 Kitbot"
+    src="/learning-course/Kitbot.webp"
+/>
+
+# Objectives
+
+This stage will introduce:
+
+- Configuring motor controllers
+- Controlling motors using open loop control
+- Using Periodic OpModes for Teleop and Autonomous
+- Simulation
+
+# Stage Structure
+
+## 1. Drivetrain
+
+Students will program the kitbot drivetrain by
+
+1. Instantiating and configuring the drivetrain motor controllers.
+2. Creating a `DifferentialDrive` instance.
+3. Providing the `DifferentialDrive` instance with controller inputs inside of a Teleop OpMode
+
+## 2. Simulated Drivetrain
+
+Students will add simulation to their drivetrain, making use of the provided `DifferentialDriveSim` class.
+Students will then use the simGUI and AdvantageScope to control their kitbot.
+
+## 3. Simple Autonomous
+
+Students will make use of a timer to program a simple Autonomous OpMode causing the kitbot to drive forward and stop.
+
+## 4. Additional Motors
+
+Students will complete the kitbot code by
+
+1. Creating the `IntakeLauncher` and `Feeder` motors.
+2. Controlling these motors inside of their Teleop OpMode using `If/elseIf/else` statements.
+3. Adding simulation to these motors using the provided `SingleFlywheelSim` class.
+4. Visualizing their simulated code using AdvantageScope Line Graph and Field3d tabs.
+
+# Additional Practice
+
+This stage can easily be expanded on by having students create their own autonomous routines, making use of different drivetrain movements and the additional motors.

@@ -35,7 +35,7 @@ class CommandBasedKitbot {
 
     // [triggerBindingDef]
     public MyTeleop(Robot robot) {
-      xbox.leftBumper().whileTrue(robot.intake.intake()).whileTrue(robot.feeder.intake());
+      xbox.leftBumper().whileTrue(robot.intakeLauncher.intake()).whileTrue(robot.feeder.intake());
 
       // now fill in the rest...
     }
@@ -45,9 +45,9 @@ class CommandBasedKitbot {
   private final ExampleMotor motor = new ExampleMotor();
 
   // [feederSim]
-  private final SingleFlywheelSim sim = new SingleFlywheelSim(motor, "Feeder");
+  private final SingleFlywheelSim sim = new SingleFlywheelSim(motor, "Feeder"); // Create a flywheel simulation
 
-  public void periodic() {
+  public void periodic() { // Update the simulation
     sim.periodic();
   }
   // [/feederSim]
@@ -59,7 +59,7 @@ class CommandBasedKitbot {
   }
 
   class Robot {
-    ExampleMechanism intake = new ExampleMechanism();
+    ExampleMechanism intakeLauncher = new ExampleMechanism();
     ExampleMechanism feeder = new ExampleMechanism();
   }
 

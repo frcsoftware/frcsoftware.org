@@ -54,7 +54,7 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                     collapsed: true,
                     items: [
                         {
-                            label: 'Stage 0 Introduction',
+                            label: 'Stage 0 Overview',
                             slug: 'learning-course/stage0/stage-overview',
                         },
                         {
@@ -69,18 +69,26 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                             label: 'Conditionals',
                             slug: 'learning-course/stage0/conditionals',
                         },
-                        // {
-                        //     label: 'Loops',
-                        //     slug: 'learning-course/stage0/loops',
-                        // },
                         {
-                            label: 'Classes, Fields, and Methods',
+                            label: 'Loops',
+                            slug: 'learning-course/stage0/loops',
+                        },
+                        {
+                            label: 'Classes and Objects',
+                            slug: 'learning-course/stage0/classes-objects',
+                        },
+                        {
+                            label: 'Methods and Mutable State',
                             slug: 'learning-course/stage0/classes-methods',
                         },
-                        // {
-                        //     label: 'Methods',
-                        //     slug: 'learning-course/stage0/methods',
-                        // },
+                        {
+                            label: 'Arrays and For-Each Loops',
+                            slug: 'learning-course/stage0/arrays',
+                        },
+                        {
+                            label: 'Interfaces, Generics, and Lists',
+                            slug: 'learning-course/stage0/interfaces-lists',
+                        },
                     ],
                 },
                 {
@@ -88,25 +96,33 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                     collapsed: true,
                     items: [
                         {
-                            label: 'Stage 1 Introduction',
+                            label: 'Stage 1 Overview',
                             slug: 'learning-course/stage1/stage-overview',
                         },
                         {
-                            label: 'Stage 1A',
+                            label: 'Stage 1A: Kitbot Intro',
                             collapsed: true,
                             items: [
                                 {
-                                    label: 'Stage 1A Introduction',
+                                    label: 'Stage 1A Overview',
                                     slug: 'learning-course/stage1/stage1a/stage-overview',
                                 },
-                                // {
-                                //     label: 'TBD',
-                                //     slug: 'stage-1a-commands/the-command-body',
-                                // },
-                                // {
-                                //     label: 'TBD',
-                                //     slug: 'stage-1a-commands/commands-and-mechanisms',
-                                // },
+                                {
+                                    label: 'Kitbot Drivetrain',
+                                    slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
+                                },
+                                {
+                                    label: 'Drivetrain Simulation',
+                                    slug: 'learning-course/stage1/stage1a/drivetrain-sim',
+                                },
+                                {
+                                    label: 'Simple Auto',
+                                    slug: 'learning-course/stage1/stage1a/simple-auto',
+                                },
+                                {
+                                    label: 'Additional Motors',
+                                    slug: 'learning-course/stage1/stage1a/kitbot-additional-motors',
+                                },
                             ],
                         },
                         {
@@ -114,7 +130,7 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                             collapsed: true,
                             items: [
                                 {
-                                    label: 'Stage 1B Introduction',
+                                    label: 'Stage 1B Overview',
                                     slug: 'learning-course/stage1/stage1b/stage-overview',
                                 },
                                 {
@@ -138,6 +154,10 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     slug: 'learning-course/stage1/stage1b/commands-and-mechanisms-pt2',
                                 },
                                 {
+                                    label: 'Bonus: Spot the Error',
+                                    slug: 'learning-course/stage1/stage1b/spot-the-error',
+                                },
+                                {
                                     label: 'Exercise - Kitbot Rewrite, Pt. 1',
                                     slug: 'learning-course/stage1/stage1b/command-based-kitbot',
                                 },
@@ -149,7 +169,31 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                                     label: 'Exercise - Kitbot Rewrite, Pt. 2',
                                     slug: 'learning-course/stage1/stage1b/command-based-kitbot-pt2',
                                 },
+                                {
+                                    label: 'Bonus: Spot the Error, Pt 2',
+                                    slug: 'learning-course/stage1/stage1b/spot-the-error-pt2',
+                                },
                             ],
+                        },
+                        {
+                            label: 'Stage 1C: Control and Telemetry',
+                            collapsed: true,
+                            items: [
+                                {
+                                    label: 'Stage 1C Introduction',
+                                    slug: 'learning-course/stage1/stage1c/stage-overview',
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Stage 2',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 2 Overview',
+                            slug: 'learning-course/stage2/stage-overview',
                         },
                     ],
                 },
@@ -225,9 +269,15 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
         {
             label: 'Resources',
             items: [
-                { label: 'Overview', slug: 'resources' },
+                { label: 'Overview', slug: 'resources/overview' },
                 { label: 'Glossary', slug: 'resources/glossary' },
                 { label: 'Documentation', slug: 'resources/docs' },
+                { label: 'Hardware', slug: 'resources/hardware-intro' },
+                { label: 'Examples', slug: 'resources/examples' },
+                {
+                    label: 'Transitioning to Commands V3',
+                    slug: 'resources/transitioning-to-commands-v3',
+                },
             ],
         },
     ],
@@ -244,6 +294,86 @@ export const sidebarSections: Record<string, SidebarSection[]> = {
                 { label: 'Style Guide', slug: 'contribution/styleguide' },
                 { label: 'Contributors', slug: 'contribution/contributors' },
                 { label: 'Roadmap', slug: 'contribution/roadmap' },
+            ],
+        },
+    ],
+
+    // Getting Started section
+    '/getting-started': [
+        {
+            label: 'Getting Started',
+            items: [
+                {
+                    label: 'Website Feature Guide',
+                    slug: 'learning-course/getting-started/website-feature-guide',
+                },
+                {
+                    label: 'Required Tools',
+                    slug: 'learning-course/getting-started/required-tools',
+                },
+                {
+                    label: 'VS Code Overview',
+                    slug: 'learning-course/getting-started/vscode-overview',
+                },
+                {
+                    label: 'Forking and Cloning',
+                    slug: 'learning-course/getting-started/forking-and-cloning',
+                },
+                {
+                    label: 'Intro to Java',
+                    slug: 'learning-course/stage0/stage-overview',
+                },
+            ],
+        },
+    ],
+
+    // Intro To Java section
+    '/intro-to-java': [
+        {
+            label: 'Intro to Java',
+            items: [
+                {
+                    label: 'Stage Overview',
+                    slug: 'learning-course/stage0/stage-overview',
+                },
+                {
+                    label: 'Java fundamentals',
+                    slug: 'learning-course/stage0/java-fundamentals',
+                },
+                {
+                    label: 'operators',
+                    slug: 'learning-course/stage0/operators',
+                },
+            ],
+        },
+    ],
+
+    // Resources section (content lives at /resources but navbar says "Other Resources")
+    '/resources': [
+        {
+            label: 'Resources',
+            items: [
+                { label: 'Overview', slug: 'resources/overview' },
+                {
+                    label: 'Examples',
+                    slug: 'resources/examples',
+                },
+                {
+                    label: 'Glossary',
+                    slug: 'resources/glossary',
+                },
+                {
+                    label: 'Hardware',
+                    slug: 'resources/hardware-intro',
+                },
+                {
+                    label: 'Documentation',
+                    slug: 'resources/docs',
+                },
+                {
+                    label: 'Transitioning to Commands V3',
+                    slug: 'resources/transitioning-to-commands-v3',
+                },
             ],
         },
     ],

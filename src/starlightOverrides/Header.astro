@@ -1,8 +1,7 @@
 ---
 import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
 import Search from '@astrojs/starlight/components/Search.astro';
-import { mdiWeatherNight, mdiWhiteBalanceSunny } from '@mdi/js';
-import MdiIcon from '../components/MdiIcon.astro';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
 
 const props = Astro.props;
 const { hasSidebar } = Astro.locals.starlightRoute;
@@ -34,24 +33,13 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                 }
 
                 <div class="header-actions-section">
-                    <div class="theme-toggle-wrapper">
-                        <button
-                            type="button"
-                            class="theme-toggle-button"
-                            data-theme-toggle
-                            aria-label="Toggle dark / light theme"
-                        >
-                            <MdiIcon
-                                class="theme-icon theme-icon-outline"
-                                path={mdiWeatherNight}
-                                size={26}
-                            />
-                            <MdiIcon
-                                class="theme-icon theme-icon-filled"
-                                path={mdiWhiteBalanceSunny}
-                                size={26}
-                            />
-                        </button>
+                    <div
+                        class:list={[
+                            'theme-select-wrapper',
+                            { 'has-mobile-fallback': hasSidebar },
+                        ]}
+                    >
+                        <ThemeSelect />
                     </div>
 
                     <div class="search-wrapper">
@@ -59,6 +47,15 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="beta-banner">
+            This website is still in beta. If you find any errors, please report
+            them{' '}
+            <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
+                here
+            </a>
+            .
         </div>
     </div>
 </div>
@@ -211,66 +208,6 @@ const { hasSidebar } = Astro.locals.starlightRoute;
     })();
 </script>
 
-<script is:inline>
-    (() => {
-        const storageKey = 'starlight-theme';
-
-        const getStoredTheme = () => {
-            try {
-                return localStorage.getItem(storageKey);
-            } catch {
-                return null;
-            }
-        };
-        const setStoredTheme = (/** @type {'light' | 'dark'} */ value) => {
-            try {
-                localStorage.setItem(storageKey, value);
-            } catch {
-                /* ignore */
-            }
-        };
-
-        const applyTheme = (/** @type {'light' | string} */ theme) => {
-            const html = document.documentElement;
-            const normalized = theme === 'light' ? 'light' : 'dark';
-
-            html.dataset.theme = normalized;
-            setStoredTheme(normalized);
-            // @ts-expect-error javascript...
-            if (window.StarlightThemeProvider?.updatePickers) {
-                // @ts-expect-error javascript...
-                window.StarlightThemeProvider.updatePickers(normalized);
-            }
-        };
-
-        const init = () => {
-            let theme = getStoredTheme();
-
-            if (!theme) {
-                theme = 'dark';
-            }
-            applyTheme(theme);
-
-            document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const current = getStoredTheme() || 'dark';
-                    const next = current === 'dark' ? 'light' : 'dark';
-                    applyTheme(next);
-                });
-            });
-        };
-
-        if (
-            document.readyState === 'complete' ||
-            document.readyState === 'interactive'
-        ) {
-            init();
-        } else {
-            document.addEventListener('DOMContentLoaded', init);
-        }
-    })();
-</script>
-
 <style>
     /* Override the parent .header styles from Starlight */
     :global(.header) {
@@ -293,6 +230,20 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         max-width: var(--sl-content-width, 1200px);
         margin: 0 auto;
         padding: 0.5rem 1.5rem;
+    }
+
+    .beta-banner {
+        text-align: center;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        padding: 0.4rem 0.5rem;
+        background: var(--accent-color-dark);
+    }
+
+    .beta-banner a {
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: underline;
     }
 
     .header-top-row {
@@ -334,41 +285,33 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         min-width: 0;
     }
 
-    .theme-toggle-wrapper {
+    .theme-select-wrapper {
         flex: 0 0 auto;
     }
 
-    .theme-toggle-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        border: none;
-        background: transparent;
-        cursor: pointer;
+    @media not all and (min-width: 50rem) {
+        .theme-select-wrapper.has-mobile-fallback {
+            display: none;
+        }
     }
 
-    .theme-toggle-button:focus-visible {
+    .theme-select-wrapper :global(label),
+    .theme-select-wrapper :global(label:hover) {
+        color: #ffffff;
+    }
+
+    .theme-select-wrapper :global(select) {
+        font-size: 0.8rem;
+    }
+
+    .theme-select-wrapper :global(select:focus-visible) {
         outline: 2px solid rgba(255, 255, 255, 0.9);
         outline-offset: 2px;
     }
 
-    .theme-icon {
-        width: 26px;
-        height: 26px;
-    }
-
-    .theme-icon-filled {
-        display: none;
-    }
-
-    :global(html[data-theme='light']) .theme-icon-outline {
-        display: none;
-    }
-    :global(html[data-theme='light']) .theme-icon-filled {
-        display: block;
+    .theme-select-wrapper :global(option) {
+        background-color: var(--sl-color-bg);
+        color: var(--sl-color-text);
     }
 
     .search-wrapper {
@@ -379,7 +322,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
     .search-wrapper :global(button[data-open-modal]) {
         width: 100%;
         background-color: var(--accent-color-dark) !important;
-        border-radius: 4px;
+        border-radius: 2px;
         border: none;
         box-shadow: none;
         color: #ffffff;
@@ -425,7 +368,6 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         .search-wrapper {
             flex: 1 1 auto;
             min-width: 0;
-            max-width: 200px;
         }
 
         .mobile-menu-toggle {
@@ -456,7 +398,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             width: 22px;
             height: 3px;
             background-color: #ffffff;
-            border-radius: 2px;
+            border-radius: 1px;
             transition: all 0.3s ease;
             transform-origin: center;
             position: absolute;

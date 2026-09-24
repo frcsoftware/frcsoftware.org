@@ -1,0 +1,276 @@
+---
+title: Kitbot Additional Motors
+description: Programming the remaining kitbot motors
+prev: simple-auto
+next: false
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+    ctreTeleop: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyTeleop.java
+    revTeleop: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyTeleop.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# Remaining Motors
+
+The kitbot has two additional motors that allow it to intake and shoot fuel.
+
+The IntakeLauncher motor powers the intake roller and the launcher flywheel.
+
+<ContentFigure
+    width="650px"
+    alt="The intake-launcher subsystem on the kitbot"
+    src="/learning-course/stage1/stage1a/intakeLauncher.webp"
+/>
+
+The Feeder motor feeds fuel into the hopper, into the launcher, or out of the intake depending on the direction it spins.
+
+<ContentFigure
+    width="650px"
+    alt="The feeder subsystem on the kitbot"
+    src="/learning-course/stage1/stage1a/feederMotor.webp"
+/>
+
+The IntakeLauncher motor will be on CAN Bus 0 with a CAN Id of 4 while the Feeder motor will be on CAN Bus 0 with a CAN Id of 5.
+
+Inside of the `Robot.java` file create a motor controller instance for the IntakeLauncher and Feeder motors.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#AdditionalMotors
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#AdditionalMotors
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Simulating Additional Motors
+
+Like the drivetrain, the `SingleFlywheelSim` class is provided which abstracts much of the simulation code.
+The `SingleFlywheelSim` has different static methods for the LauncherFeeder and Intake motors which return instances of `SingleFlywheelSim` with settings for those specific motors.
+
+Creating the `SingleFlywheelSim` instance for the LauncherFeeder motor will look like this
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#IntakeLauncherSim
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#IntakeLauncherSim
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+Now try creating the `SingleFlywheelSim` instance for the Intake motor.
+This will instead use the `forFeeder()` method.
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#FeederSim
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#FeederSim
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+To make the simulated motor controllers update, the `SingleFlywheelSim` instances' `periodic()` functions need to be called inside of `simulationPeriodic()`.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Fuel Sim
+
+If the code was to be simulated at this point, the motors could be controlled using keyboard inputs and the resulting motor speeds could be viewed with a graph inside of AdvantageScope.
+While this is a functional solution, it can be made more interesting by taking advantage of AdvantageScope's 3d tab.
+AdvantageScope's 3d tab displays robots and game pieces inside of a game field using data published from the robot code.
+The `FuelSim` class provides simulation data for fuel game pieces to be visualized entering and exiting the robot.
+References to the IntakeLauncher and Feeder motors are given to the `FuelSim` class when the `SingleFlywheelSim` instances are created.
+
+To make the `FuelSim` class function, its `periodic()` function needs to be called inside of `simulationPeriodic()`.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#FuelSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#FuelSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Check Up
+
+The `Robot` class is now completed!
+At this point your `Robot` class should look like this
+
+<details class="accordion">
+    <summary>Robot Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#FullRobot
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#FullRobot
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+# Additional Motors in Teleop
+
+To control the new motors, the motors need to be commanded inside of the `MyTeleop` OpMode's `periodic()` function.
+When the controller's right bumper is pressed, the `IntakeLauncher` motor should have a throttle of 0.9 while the `Feeder` motor should have a throttle of 0.75.
+This will launch the fuel.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#launchFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#launchFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+When the controller's left bumper is pressed the IntakeLauncher motor should have a throttle of 0.8 while the Feeder motor should have a throttle of -1.0.
+This will intake the fuel.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#intakeFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#intakeFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+When the controller's A button is pressed the IntakeLauncher motor should have a throttle of -0.8 while the Feeder motor should have a throttle of 1.0.
+This will outtake the fuel.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#outakeFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#outakeFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+When none of the previous button are pressed the IntakeLauncher should have a throttle of 0.0 while the Feeder motor should have a throttle of 0.0.
+This will stop the motors.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#stopMotors
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#stopMotors
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Line Graph
+
+The process for testing the new motors in teleop is very similar to the process used to test the drivetrain.
+Holding the "E" key will cause the robot to intake, "Q" will cause the robot to launch.
+and "R" will cause the robot to outtake.
+Instead of looking at the 2D Field tab in Advantage Scope, use the Line Graph tab to view data from the motors.
+The voltage applied from the motor controllers to their motors can be viewed on the left axis while the right axis shows the motors' velocities.
+
+Video showing line 2d graph running goes here.
+
+<ContentFigure
+    width="650px"
+    alt="Using Line Graph"
+    src="/learning-course/stage1/stage1a/LineGraph.webm"
+/>
+
+The 3D Field tab will show a 3D rendering of the kitbot, fuel, and game field.
+As the robot preforms different actions the fuel should appear or disappear to show these actions.
+You should also still be able to move using the WASD keys.
+
+<ContentFigure
+    width="650px"
+    alt="Using 3D Field"
+    src="/learning-course/stage1/stage1a/3dField.webm"
+/>
+
+# Additional Practice
+
+Try improving upon previously created autos by adding robot actions to them.

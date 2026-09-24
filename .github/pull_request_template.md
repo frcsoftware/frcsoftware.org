@@ -1,6 +1,7 @@
 ## Description
 
-What changed? Why? (the code + comments should speak for itself on the "how")
+What changed?
+Why? (the code + comments should speak for itself on the "how")
 
 We highly recommend including screenshots or a video of what was changed, to collect evidence in a place where we can later reference it.
 

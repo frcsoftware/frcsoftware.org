@@ -1,8 +1,8 @@
-name: Preview (Cloudflare Pages)
+name: Preview Upload
 
 on:
     workflow_run:
-        workflows: ['Build and Deploy to GitHub Pages']
+        workflows: ['Build']
         types:
             - completed
 
@@ -11,24 +11,28 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    deploy-preview:
+    upload-preview:
         if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
         runs-on: ubuntu-latest
         permissions:
             actions: read
             contents: read
-            deployments: write
             pull-requests: write
         steps:
+            - name: Checkout default branch for Wrangler config
+              uses: actions/checkout@v7
+
+            - name: Install pnpm and Node
+              uses: pnpm/setup@v2
+              with:
+                  install: false
+
             - uses: actions/download-artifact@v8
               with:
-                  name: github-pages
+                  name: preview-dist
                   path: dist/
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   run-id: ${{ github.event.workflow_run.id }}
-
-            - name: Extract Pages artifact
-              run: tar -xvf dist/artifact.tar -C dist/ && rm dist/artifact.tar
 
             - name: Get PR number
               id: get-pr
@@ -53,29 +57,36 @@ jobs:
                       }
                       core.setOutput('pr-number', prs[0].number);
 
-            - name: Deploy to Cloudflare Pages
+            - name: Upload preview version
+              id: upload
               uses: cloudflare/wrangler-action@v4
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: pages deploy dist/ --project-name=frcsoftware --branch pr-${{ steps.get-pr.outputs.pr-number }}
-                  gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+                  wranglerVersion: '4.128.0'
+                  command: 'versions upload --preview-alias pr-${{ steps.get-pr.outputs.pr-number }} --message "PR #${{ steps.get-pr.outputs.pr-number }}"'
 
             - name: Comment PR with preview URL
               if: success()
               uses: actions/github-script@v9
               with:
                   script: |
-                      const prNumber = '${{ steps.get-pr.outputs.pr-number }}';
-                      if (!prNumber) {
-                          core.warning('No PR number available, skipping comment');
+                      const prNumber = parseInt('${{ steps.get-pr.outputs.pr-number }}');
+                      const alias = 'pr-' + prNumber;
+                      const versionUrl = '${{ steps.upload.outputs.deployment-url }}';
+                      if (!versionUrl) {
+                          core.setFailed('wrangler-action did not report a deployment-url');
                           return;
                       }
-                      const previewUrl = `https://pr-${prNumber}.frcsoftware.pages.dev`;
+                      const previewUrl = versionUrl.replace(
+                          /^(https:\/\/)[^-]+-/,
+                          `$1${alias}-`,
+                      );
+
                       const { data: comments } = await github.rest.issues.listComments({
                           owner: context.repo.owner,
                           repo: context.repo.repo,
-                          issue_number: parseInt(prNumber),
+                          issue_number: prNumber,
                       });
                       const alreadyCommented = comments.some(
                           c => c.user?.type === 'Bot' && c.body?.includes(previewUrl)
@@ -84,7 +95,7 @@ jobs:
                           await github.rest.issues.createComment({
                               owner: context.repo.owner,
                               repo: context.repo.repo,
-                              issue_number: parseInt(prNumber),
+                              issue_number: prNumber,
                               body: `🌐 Preview URL: ${previewUrl}`,
                           });
                       }

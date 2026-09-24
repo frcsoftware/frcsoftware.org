@@ -7,6 +7,7 @@ package first.robot.simulation;
 
 import com.revrobotics.spark.SparkMax;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;
@@ -20,6 +21,7 @@ public class DrivetrainSim {
 
   private final double kGearRatio = 10.71;
   private final double kWheelRadiusMeters = 0.0762; // 3 inches
+  private final double linearToMotorRatio = (1.0 / kWheelRadiusMeters) * kGearRatio;
   private static final double kBusVoltage = 12.0;
 
   private final DifferentialDrivetrainSim m_driveSim =
@@ -32,33 +34,51 @@ public class DrivetrainSim {
           0.546, // Distance between wheels in meters.
           null);
 
-  private final StructPublisher<Pose2d> simPosePublisher;
+  // we add front slashes here so that the keys show up consistently between the CTRE and REV
+  // examples.
+  private final StructPublisher<Pose2d> simPosePublisher =
+      NetworkTableInstance.getDefault().getStructTopic("/Drivetrain/Pose", Pose2d.struct).publish();
 
-  private final DoublePublisher leftPositionPub;
-  private final DoublePublisher rightPositionPub;
-  private final DoublePublisher leftVelocityPub;
-  private final DoublePublisher rightVelocityPub;
+  private final DoublePublisher leftPositionPub =
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftPositionMeters").publish();
+  private final DoublePublisher rightPositionPub =
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightPositionMeters").publish();
+  private final DoublePublisher leftVelocityPub =
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftVelocityMPS").publish();
+  private final DoublePublisher rightVelocityPub =
+      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightVelocityMPS").publish();
 
-  private final DoublePublisher leftVoltagePub;
-  private final DoublePublisher rightVoltagePub;
-  private final DoublePublisher leftCurrentPub;
-  private final DoublePublisher rightCurrentPub;
+  private final DoublePublisher leftMotorVelocityPub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVelocityRPS")
+          .publish();
+  private final DoublePublisher rightMotorVelocityPub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorVelocityRPS")
+          .publish();
+  private final DoublePublisher leftMotorVoltagePub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVoltage")
+          .publish();
+  private final DoublePublisher rightMotorVoltagePub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorVoltage")
+          .publish();
+  private final DoublePublisher leftMotorSupplyCurrentPub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/LeftMotor/MotorSupplyCurrent")
+          .publish();
+  private final DoublePublisher rightMotorSupplyCurrentPub =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("/Drivetrain/RightMotor/MotorSupplyCurrent")
+          .publish();
 
   public DrivetrainSim(SparkMax leftSpark, SparkMax rightSpark) {
     this.leftSpark = leftSpark;
     this.rightSpark = rightSpark;
 
-    var table = NetworkTableInstance.getDefault().getTable("Drivetrain");
-    this.simPosePublisher = table.getStructTopic("Pose", Pose2d.struct).publish();
-
-    this.leftPositionPub = table.getDoubleTopic("LeftPositionMeters").publish();
-    this.rightPositionPub = table.getDoubleTopic("RightPositionMeters").publish();
-    this.leftVelocityPub = table.getDoubleTopic("LeftVelocityMPS").publish();
-    this.rightVelocityPub = table.getDoubleTopic("RightVelocityMPS").publish();
-    this.leftVoltagePub = table.getDoubleTopic("LeftMotorVoltage").publish();
-    this.rightVoltagePub = table.getDoubleTopic("RightMotorVoltage").publish();
-    this.leftCurrentPub = table.getDoubleTopic("LeftCurrentAmps").publish();
-    this.rightCurrentPub = table.getDoubleTopic("RightCurrentAmps").publish();
+    m_driveSim.setPose(new Pose2d(2.5, 2, Rotation2d.ZERO));
+    FuelSim.robotPoseSupplier = m_driveSim::getPose;
   }
 
   public void periodic() {
@@ -75,9 +95,12 @@ public class DrivetrainSim {
     rightPositionPub.set(m_driveSim.getRightPosition());
     leftVelocityPub.set(m_driveSim.getLeftVelocity());
     rightVelocityPub.set(m_driveSim.getRightVelocity());
-    leftVoltagePub.set(leftMotorVoltage);
-    rightVoltagePub.set(rightMotorVoltage);
-    leftCurrentPub.set(m_driveSim.getLeftCurrentDraw());
-    rightCurrentPub.set(m_driveSim.getRightCurrentDraw());
+
+    leftMotorVelocityPub.set(m_driveSim.getLeftVelocity() * linearToMotorRatio);
+    rightMotorVelocityPub.set(m_driveSim.getRightVelocity() * linearToMotorRatio);
+    leftMotorVoltagePub.set(leftMotorVoltage);
+    rightMotorVoltagePub.set(rightMotorVoltage);
+    leftMotorSupplyCurrentPub.set(m_driveSim.getLeftCurrentDraw());
+    rightMotorSupplyCurrentPub.set(m_driveSim.getRightCurrentDraw());
   }
 }

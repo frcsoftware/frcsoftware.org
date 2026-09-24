@@ -1,0 +1,399 @@
+---
+title: Kitbot Drivetrain
+description: Programming the kitbot drivetrain
+prev: stage-overview
+next: drivetrain-sim
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+    ctreTeleop: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyTeleop.java
+    revTeleop: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyTeleop.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import ContentImage from '@components/ContentImage.astro';
+
+# Drivetrain
+
+<ContentFigure
+    width="300px"
+    alt="Drivetrain"
+    src="/learning-course/stage1/stage1a/kitbotDrivetrain.webp"
+/>
+
+The kitbot uses a four motor tank drive meaning the left and right sides are driven independently by two motors each.
+This allows
+the robot to move similar to a tank by driving the left and right sides at different speeds.
+For this stage, the four drivetrain motors will be referred to as `leftLeader`, `leftFollower`, `rightLeader`, `rightFollower`.
+
+# Motor Controllers
+
+Motors can not be controlled directly.
+Instead, Systemcore talks to a motor controller and the motor controller then drives the motors.
+Vendors, such as REV or CTRE, provide classes that can be used to both control and get sensor data, such as position, velocity, and temperature, from their motor controllers.
+While each individual type of motor controller has its own class, motor controllers from the same vendor are
+mostly interacted with in the same way so this stage will only use the `SparkMax` for REV code and the `TalonFX` for CTRE code.
+
+When creating a motor controller object, the physical motor controller's CAN ID and the CAN Bus ID are given.
+CAN Bus refers to which of the 5 Systemcore CAN ports, or which CANivore, the device is plugged into.
+CAN ID is an integer that each CAN device is configured to have.
+All devices on a given CAN Bus must have a unique ID.
+Using the combination of CAN Bus and CAN ID Systemcore can give commands to the correct motor controller.
+
+For this exercise the motor controllers will have the IDs:
+
+- `leftLeader`: CAN Bus 0, CAN ID 0
+- `leftFollower`: CAN Bus 0, CAN ID 1
+- `rightLeader`: CAN Bus 0, CAN ID 2
+- `rightFollower`: CAN Bus 0, CAN ID 3
+
+The motor controller objects should be created inside the `Robot.java` at the top of the class.
+This is how the motor controller objects for the left motors will look.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label = "CTRE">
+        ```java {ctreRobot}#DriveMotorsLeft
+        ```
+
+For the CTRE code, the CAN ID of the leader motors are stored as a variable since they will be used later on to tell the follower which motor controller to follow.
+This helps prevent errors by ensuring a single source of truth for the correct CAN ID.
+Additionally, CTRE uses a CANBus object to store the CANBus instead of just an integer.
+
+    </TabItem>
+    <TabItem label = "REV">
+        ```java {revRobot}#DriveMotorsLeft
+        ```
+
+Since the Spark Max can control both brushed and brushless motors it's necessary to specify the type as `MotorType.kBrushless` for motors like a NEO and `MotorType.kBrushed` for motors like a CIM.
+
+When writing code for a real robot, make sure your motor type is set correctly!
+Setting a NEO to `MotorType.kBrushed` will break the NEO.
+
+ </TabItem>
+
+</Tabs>
+
+Now try creating the right motor controllers on your own.
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#DriveMotorsRight
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#DriveMotorsRight
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+# Motor Controller Configuration
+
+Motor Controllers have many settings that can be changed such as IDs, motor
+types, and limits.
+Vendors provide
+software, such as REV's [REV Hardware Client 2](https://docs.revrobotics.com/rev-hardware-client-2) and CTRE's [Phoenix Tuner X](https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/index.html), to run
+and configure their devices from a computer.
+However, it is recommended to
+configure devices through code to ensure that all motor controllers are properly
+configured.
+This is especially useful because it can be easy to forget all of
+the configurations that need to be added and their proper values.
+
+<Aside type="note">
+    Motor controllers should usually only configured once and should never be
+    configured periodically during the main robot loop. This is because
+    configuring motor controllers is usually a blocking command meaning the
+    robot code will pause and wait for the motor controller to confirm that it
+    has been properly configured before continuing. This can cause the robot to
+    respond in unexpected and dangerous ways if done while the robot is enabled
+    since motor controllers will not be getting new commands.
+</Aside>
+
+For this section only the motor controller's invert setting will be configured.
+This setting controls what direction a motor spins when the motor controller is given a command with a positive sign.
+Given two motors on each side of the drivetrain, it's important to ensure that each of the motors on a side
+moves in sync with the other.
+This can be accomplished by telling one of the motor controllers to follow the other.
+This is why one motor is named Leader and the other is Follower.
+The code tells the Follower to listen to the commands given to the Leader.
+
+The motor controller configuration will be done inside of the constructor for the robot class.
+Motor Controllers are configured by first creating a motor controller configuration object.
+This object stores the configuration so it can be changed and shared across different Motor Controllers.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorConfigCreationLeft
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorConfigCreationLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+Next, settings can be changed from their default by calling various functions on the configuration object with their new values.
+For the left motors, the invert setting will be `true` for REV code and `Clockwise_Positive` for CTRE code.
+This will cause the motors to spin in a direction that would drive the robot forward when a positive input is given.
+Since the motors on the right side of the drivetrain are facing the opposite direction they would cause the wheels try and drive the robot backwards when given a positive input if they were configured the same way.
+Instead they should be configured with an invert setting of `false` or `Counter_Clockwise_Positive` so they also drive the robot forward when given a positive input.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorConfigSetLeft
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorConfigSetLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+Finally, the configuration object gets given to the motor controller object.
+It's important to remember that settings only get changed when the configuration gets given to the motor controller.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label = "CTRE">
+        For CTRE Motor Controllers, becoming a follower is a `ControlRequest` instead of a configuration.
+
+        ```java {ctreRobot}#MotorConfigLeft
+        ```
+
+    </TabItem>
+    <TabItem label = "REV">
+        For REV Motor Controllers, becoming a follower is a configuration so the follower setting gets changed before being applied to the follower motor using the leader motor as the function parameter.
+        This must happen after the configuration is applied to the Leader so the motor controller doesn't want to follow itself.
+        `ResetMode.kResetSafeParameters` gets to tell the motor controller to reset all unchanged configurations to their default value.
+        This prevents old configurations from being left on the controller.
+        `PersistMode.kPersistParameters` is used so the configuration gets saved on the motor control so it persists even after power is removed.
+
+        ```java {revRobot}#MotorConfigLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+Now try configuring the right motor controllers on your own.
+Remember that some of the configurations may be different.
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#MotorConfig
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#MotorConfig
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+# Arcade Drive
+
+<ContentFigure
+    width="564px"
+    alt="Arcade Drive"
+    src="/learning-course/stage1/stage1a/arcadeDriveJoystick.webp"
+/>
+
+While there are several ways to control a tank drive, this stage will be using arcade drive.
+Arcade drive uses the y-axis of a joystick to control how fast the robot drives forward or backward while the x-axis controls how fast the robot rotates clockwise or counter clockwise.
+WPILib provides a class to convert joystick inputs into commands for the motors to follow called `DifferentialDrive`.
+
+An instance of `DifferentialDrive` should be created under where the motor controllers were declared.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DrivetrainInstance
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DrivetrainInstance
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+Notice how the `DifferentialDrive` constructor takes the form `DifferentialDrive(DoubleConsumer leftMotor, DoubleConsumer rightMotor)`.
+When created the `DifferentialDrive` is asking for a `DoubleConsumer` that it can use to drive the left and right motors.
+A `Consumer` is simply a function that takes something as an input so a `DoubleConsumer` is a function that takes a double as an input when called.
+The `motorController:setThrottle` syntax is used to proved the `DifferentialDrive` instance with the motor controllers `setThrottle()` function.
+This function commands the motor to run a percentage of their maximum speed, also known as duty cycle, with an input from -1.0 to 1.0.
+This allows the `DifferentialDrive` instance to call the provided motors controller's `setThrottle()` functions with the correct duty cycle when provided with input from the joysticks.
+
+<Aside type="note">
+    The `DifferentialDrive` instance only needs to be provided with the Lead
+    motor controller's `setThrottle()` functions since the Follower motors will
+    automatically follow.
+</Aside>
+
+# IMU
+
+An IMU, Inertial Measurement Unit, is a sensor that allows the robot to accurately track its 3d rotation (roll, pitch, and yaw) as it moves around the field.
+While there are several vendors that sell very accurate IMUs, this stage will make use of Systemcore's built in IMU.
+An instance of Systemcore's IMU should be created beneath the `differentialDrive`.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#IMU
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#IMU
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note">
+    While IMUs are accurate they can only measure rotation relative to the
+    initial orientation of the robot when powered on. Therefore, to make full
+    use of an IMU the robot must either start in a known orientation or receive
+    its initial orientation through a vision system.
+</Aside>
+
+# Check Up
+
+By now your `Robot` class in `Robot.java` should look like this and VS code should not be giving you any errors.
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#RobotTop
+            ```
+            ```java {ctreRobot}#AllConfigs
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#RobotTop
+            ```
+            ```java {revRobot}#AllConfigs
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>
+
+# OpModes
+
+`OpMode`s are a class that registers itself with the Driver Station providing a name and robot mode (autonomous, teleop, or utility).
+This allows the robot to run different code based on what is selected on the Driver Station.
+This stage will use classes that extend `PeriodicOpMode.`
+By extending `PeriodicOpMode` these classes gain a few useful functions that are only called when the OpMode is selected on the Driver Station.
+
+- `start()` is called once when the robot transitions from disabled to enabled.
+- `periodic()` is called repeatedly when the robot is enabled.
+- `end()` is called once when the robot transitions from enabled to disabled.
+- `disabledPeriodic()` is called repeatedly when the robot is disabled.
+  Further information about OpModes can be found in [this blog post](https://zharel.me/blog/opmodes/) if you would like to learn more.
+
+Two blank `PeriodicOpMode`s, `MyTeleop.java` and `MyAuto.java` are provided under the `opmode` folder.
+
+To control the robot with joysticks a Teleop OpMode needs to be created that periodically gives the `DifferentialDrive` instance new values from the controller.
+First a instance of `NiDsXboxController` needs to be created.
+This class has functions that provide the state of different buttons on the controller.
+Multiple controllers can be used at once so the Driver Station gives each a slot.
+The index provided in the constructor tells the `NiDsXboxController`which slot to listen too.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#Controller
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#Controller
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note">
+    Different classes should be used for different types of controllers. A
+    generic `Gamepad` class can also be used to get button or axis values by
+    index.
+</Aside>
+
+Next, the `periodic()` method inside of `MyTeleop.java` will be used to continually update the `DifferentialDrive`index through the`arcadeDrive`function.
+The`MyTeleop`class has the`Robot`class as a parameter in its constructor.
+This allows the Opmode to access the methods and fields of the`Robot` class.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+At this point `MyTeleop.java` should look like this
+
+<details class="accordion">
+    <summary>Solution</summary>
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreTeleop}#FullDrivetrain
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revTeleop}#FullDrivetrain
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</details>

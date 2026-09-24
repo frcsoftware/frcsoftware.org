@@ -11,7 +11,7 @@ public final class Main {
   private Main() {}
 
   public static void main(String... args) {
-    RobotBase.startRobot(first.robot.Robot.class);
+    RobotBase.startRobot(first.robot.Robot::new);
   }
 }
 // [/main]

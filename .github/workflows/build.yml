@@ -1,0 +1,35 @@
+name: Build
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout your repository using git
+              uses: actions/checkout@v7
+
+            - name: Install pnpm, Node, and dependencies
+              uses: pnpm/setup@v2
+              with:
+                  cache: true
+                  require-lockfile: true
+
+            - name: Build site
+              run: pnpm build
+
+            - uses: actions/upload-artifact@v5
+              with:
+                  name: preview-dist
+                  path: dist/

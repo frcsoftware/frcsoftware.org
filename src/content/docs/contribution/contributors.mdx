@@ -5,23 +5,60 @@ prev: contribution/styleguide
 next: contribution/roadmap
 ---
 
-import Aside from '../../../components/Aside.astro';
+import ContributorList from '@components/ContributorList.astro';
 
-<Aside type="note">
-FRCSoftware.org is just getting started.
-This page will be expanded as contributors join the project.
+FRCSoftware wouldn't be possible without everyone who contributed!
+If you are interested in contributing, check out the [Methods Of Contributing page.](/contribution/methodsofcontributing/)
 
-</Aside>
+Huge thank you to [FRCDesign.org](https://www.frcdesign.org) for allowing us to use their website as starting point when creating FRCSoftware.
 
-FRCSoftware.org is in its early stage, and we do not have a formal contributor list yet.
+<Aside
+    type="note"
+    title="Please note that Team affiliations and statuses may be out of date."
+></Aside>
 
-## Current Status
+## Project Leads
 
-- No contributors are listed yet.
-- If you want to help build the project, open a pull request.
+Thank you to our Project leads as their contributions and hard work made FRCSoftware possible.
 
-## How to Join
+<ContributorList names={[
+   '<span style="font-family: \'Comic Sans MS\';">Adriana - 6201AM</span>',
+  "Daniel - 5160A",
+  "Dylan - 9452M",
+  "Edan - FRC 1418",
+  "Jade - 4788A",
+  "Rotiro",
+  "Sam - PhotonVision",
+  "Zach - FTC 8110AM",
 
-1. Fork the repository.
-2. Create a branch for your changes.
-3. Open a pull request with a clear description.
+]} />
+
+## Primary Contributors
+
+Thank to you our Primary contributors who contributions helped FRCSoftware get started.
+
+<ContributorList
+    names={[
+        'AJ - Alum',
+        'Ben - FRC 5181',
+        'CodeMyGame - 9470a',
+        'Danilo - 6201',
+        'Devyn - FTC 14343/FRC 5937',
+        'ハイドラ | 167A',
+        'Trystan - FRC 11755',
+        'Pixel - 3681c',
+        'Renie - 2046',
+        'Spaceman - 4655a',
+    ]}
+/>
+
+## Additional Input
+
+Thank you to those who reviewed pull requests, proofread content, and contributed resources.
+
+<ContributorList names={['Tim', 'Jay', 'Navaneet', 'FRC Team 4322']} />
+
+## All Contributors
+
+Thank you to all our contributors!
+[![Contributors to frcsoftware.org](https://contrib.rocks/image?repo=frcsoftware/frcsoftware.org)](https://github.com/frcsoftware/frcsoftware.org/graphs/contributors)

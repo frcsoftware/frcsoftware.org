@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import astro from 'eslint-plugin-astro';
 import globals from 'globals';
-import process from 'node:process';
 import tseslint from 'typescript-eslint';
 
 import { defineConfig } from 'eslint/config';
@@ -21,8 +20,7 @@ export default defineConfig([
                 { argsIgnorePattern: '^_' },
             ],
             '@typescript-eslint/no-explicit-any': 'error',
-            // ci runs `astro check` which runs a full typescript checker
-            'no-undef': process.env.CI ? 'off' : 'error',
+            'no-undef': 'off',
         },
     },
     {
@@ -41,9 +39,6 @@ export default defineConfig([
             globals: {
                 ImageMetadata: 'readonly',
             },
-        },
-        rules: {
-            'no-undef': 'off',
         },
     },
 ]);

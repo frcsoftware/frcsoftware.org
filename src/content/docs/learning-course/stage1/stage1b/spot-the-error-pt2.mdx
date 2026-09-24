@@ -1,0 +1,50 @@
+---
+title: Spot the Error, Part 2
+description: A review exercise for stage 1B
+prev: learning-course/stage1/stage1b/command-based-kitbot-pt2
+next: false
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/SpotTheErrorPt2.java
+---
+
+### Exercise 1
+
+"Hello World!" doesn't show up in the console while the a button is pressed.
+Can you spot the error?
+
+```java #robotPeriodicBug
+
+```
+
+<details class="accordion">
+    <summary>Reveal</summary>
+    The scheduler never runs, so scheduled commands never execute.
+    Call `Scheduler.getDefault().run()` inside `robotPeriodic()`:
+
+    ```java #robotPeriodicFix
+
+    ```
+
+</details>
+
+### Exercise 2
+
+This command is supposed to drive the robot using the joystick's forward and rotation axes.
+
+```java #arcadeDriveBug
+
+```
+
+Can you spot the error?
+
+<details class="accordion">
+    <summary>Reveal</summary>
+    The supplier values are read once, before the command starts running.
+    The robot drives at the same speed and rotation forever, even as the joystick moves.
+    Read the values from the suppliers inside the loop instead:
+
+    ```java #arcadeDriveFix
+
+    ```
+
+</details>

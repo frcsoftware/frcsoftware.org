@@ -2,7 +2,7 @@
 title: Exercise - Kitbot Rewrite, Pt. 2
 description: Rewriting the kitbot code in stage 1A to command-based
 prev: learning-course/stage1/stage1b/suppliers-in-command-based
-next: false
+next: learning-course/stage1/stage1b/spot-the-error-pt2
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbotPt2.java
 ---
@@ -13,31 +13,50 @@ import Aside from '@components/Aside.astro';
 
 In this second part of the kitbot rewrite, you will:
 
-1. Create a `Drivetrain` mechanism class.
+1. Create a `Drivetrain` mechanism class to allow for control of the drivetrain.
 2. Define an `arcadeDrive` command that dynamically reads controller inputs using `DoubleSupplier`s.
 3. Bind the default drivetrain command in your teleop OpMode to enable driving.
 4. Define some basic autonomous modes.
 
 ### Task 1: The Drivetrain Mechanism
 
-Create a new file named `Drivetrain.java` in the `mechanisms` package.
-Then,
-copy-paste the following code into the file:
+Create a new Java class named `Drivetrain.java` in the `mechanisms` package.
+This class should implement `Mechanism`.
 
-```java #drivetrainDef
+Then, do the following:
 
-```
-
-Then implement the following:
-
-1. An `idle()` command that commands `0.0` speed and `0.0` rotation, and is set as the default command in the constructor.
-2. An `arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle)` command that continuously updates the drive motor speeds using the values from the suppliers.
-3. The drivetrain motor configuration code, which can be found in `Robot.java` from stage 1A.
-   Where should this code
-   be placed?
+1. Initialize four motors as private class fields: `leftLeader`, `leftFollower`, `rightLeader`, and `rightFollower`, which are on CANBus 0 and CAN IDs 0-3 respectively.
+2. Initialize a `DifferentialDrive` object named `differentialDrive` with the left and right leader motors.
+3. Initialize an `OnboardIMU` object named `imu`.
+4. Initialize a `DrivetrainSim` object named `drivetrainSim` and make a method named `periodic()` that runs the drivetrain sim `periodic()` method.
 
 <details class="accordion">
-    <summary>Item 2 Hint</summary>
+    <summary>Hint</summary>
+    Refer back to Stage 1A for how to do these steps.
+</details>
+
+### Task 2: Controlling the Drivetrain
+
+Now that we have a `Drivetrain` class, we can create `Command`s that control the drivetrain.
+
+To do that, write the following:
+
+1. The drivetrain motor configuration code, which can be found in `Robot.java` from stage 1A.
+2. An `idle()` command that commands `0.0` speed and `0.0` rotation, and is set as the default command in the constructor.
+3. An `arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle)` command that continuously updates the drive motor speeds using the values from the suppliers.
+
+<details class="accordion">
+    <summary>Item 1, Hint 1</summary>
+    The constructor of the `Robot` class in stage 1A contains the code to
+    configure the drivetrain motors.
+</details>
+<details class="accordion">
+    <summary>Item 1, Hint 2</summary>
+    We want to configure our motors when a new `Drivetrain` instance is created.
+    What Java declaration defines the code that runs when a class is instantiated?
+</details>
+<details class="accordion">
+    <summary>Item 3 Hint</summary>
     Since the joystick values change constantly, you must fetch the speed and
     rotation from the suppliers inside the command's loop. You should have the
     following inside of your command's body: 
@@ -46,18 +65,10 @@ Then implement the following:
     ```
 
 </details>
-<details class="accordion">
-    <summary>Item 3, Hint 1</summary>
-    The constructor of the `Robot` class in stage 1A contains the code to
-    configure the drivetrain motors.
-</details>
-<details class="accordion">
-    <summary>Item 3, Hint 2</summary>
-    We want to configure our motors when a new `Drivetrain` instance is created.
-    What java declaration defines the code that runs when a class is instantiated?
-</details>
 
-### Task 2: Drivetrain Setup
+### Task 3: Using the Drivetrain
+
+Now that we have a `Drivetrain` class, we need to set it up to be used in our robot code.
 
 1. Create a `Drivetrain` instance in `Robot.java` named `drivetrain`.
    It should be a public instead of private.
@@ -90,9 +101,11 @@ Then implement the following:
     command set in the constructor (`idle()`) will apply.
 </Aside>
 
-### Task 3: Create Auto Mode Files
+### Task 4: Create Auto Mode Files
 
-Create 2 java files in the `opmode` package, named `DriveStraightAutoMode.java` and `TurnInPlaceAutoMode.java`,
+We need to create two new files to define our autonomous OpModes.
+
+Create 2 Java files in the `opmode` package, named `DriveStraight.java` and `DriveBackThenShoot.java`,
 before deleting the `MyAuto.java` file.
 Copy-paste the following code in each file,
 while replacing `MyOpModeName` with the correct name for each opmode:
@@ -101,13 +114,15 @@ while replacing `MyOpModeName` with the correct name for each opmode:
 
 ```
 
-### Task 3: Drive Straight Autonomous
+### Task 5: Drive Straight Autonomous
 
-In the `start()` method of `DriveStraightAutoMode.java`, schedule
+This auto will drive the robot straight forwards for 4 seconds.
+
+In the `start()` method of `DriveStraight.java`, schedule
 an `arcadeDrive` command with a timeout of 4 seconds.
 Then, do the following:
 
-1. Rename the class defined in `DriveStraightAutoMode.java` to `DriveStraightAutoMode`.
+1. Rename the class defined in `DriveStraight.java` to `DriveStraight`.
 2. In the `start()` method, schedule an `arcadeDrive` command with a timeout of 4 seconds.
    This `arcadeDrive` command should have a constant forward throttle of `0.5`
    and a constant rotational throttle of `0`.
@@ -132,32 +147,49 @@ Then, do the following:
 
 </details>
 
-### Task 4: Rotate in Place Command
+### Task 6: Drive Back then Shoot Autonomous
 
-Create a new `Command` in `Drivetrain.java`, called `rotateInPlace`,
-with the parameters `double angleDegrees` and `DoubleSupplier rotationThrottle`.
-It should execute these actions, in order:
+Driving back and shooting is a common auto found in the 2026 game, rebuilt.
+At the start
+of auto, the drive team would line up the kitbot to the wall of the scoring location.
+The kitbot would then drive backwards, and finally shoot the preloaded balls.
 
-1. Define a local variable, named `targetAngle`, whose value is the sum of `angleDegrees` and the robot's current yaw.
-   To get the robot's current yaw, call `imu.getRotation2d().getDegrees()`.
-2. Call `differentialDrive.arcadeDrive()` in a while loop,
-   which should continue while the robot's current yaw is less than the `targetAngle`.
+Create a `Command`-returning method named `autoCommand()`, with the following requirements:
+
+1. The command returned from that method should have no requirements.
+2. First, it should drive backwards with the `robot.drivetrain.arcadeDrive()` command, at a throttle of `-0.2`, for 2 seconds.
+3. Then, it should run the `robot.shooter.shoot()` and `robot.feeder.feed()` commands simultaneously.
+
+Then, in the `start()` method of the OpMode, schedule the `autoCommand()` we just created.
 
 <details class="accordion">
-    <summary>Hint</summary>
-    ```java #rotateInPlaceBody
-
+    <summary>Hint 1</summary>
+    ```java #autoCmdDef
     ```
-
 </details>
-
-### Task 5: Rotate in Place Autonomous
-
-Finally, use the `rotateInPlace` command to implement a turn-in-place autonomous within `TurnInPlaceAutoMode.java`.
-It should rotate the robot 90 degrees from its starting position, at a throttle of 0.2.
-
 <details class="accordion">
-    <summary>Hint</summary>
-    Use the `Scheduler` to schedule a new `rotateInPlace` command, just like how
-    task 3 accomplishes this.
+    <summary>Hint 2</summary>
+    What should you put in the curly brackets? <br />
+    `Command.noRequirements(coroutine -> {}).named("Drive Back Then Shoot")`
 </details>
+<details class="accordion">
+    <summary>Hint 3</summary>
+    `coroutine.await(Command)` runs a command from start to finish inside of another.
+</details>
+<details class="accordion">
+    <summary>Hint 4</summary>
+    Look at the `DriveStraight.java` class. There, you wrote a command to drive forward,
+    at a throttle of 0.5, for 4 seconds. Try copy-pasting that command into a
+    `coroutine.await()` call, while changing some parameters.
+</details>
+<details class="accordion">
+    <summary>Hint 5</summary>
+    To run 2 commands simultaneously, call `coroutine.awaitAll(command1, command2)` inside
+    of another command.
+</details>
+
+# Solution
+
+The solutions to this stage can be found below:
+[CTRE](https://github.com/frcsoftware/Stage1B-Solution-CTRE)
+[REV](https://github.com/frcsoftware/Stage1B-Solution-REV)

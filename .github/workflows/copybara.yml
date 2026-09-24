@@ -10,6 +10,10 @@ on:
             - 'copy.bara.sky'
             - '.github/workflows/copybara.yml'
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
+
 jobs:
     copybara:
         if: github.ref == 'refs/heads/main' && github.repository == 'frcsoftware/frcsoftware.org'
@@ -24,6 +28,7 @@ jobs:
                     - stage1a_ctre_solution
                     - stage1_rev_template
                     - stage1_ctre_template
+                    - stage1b_ctre_solution
 
         steps:
             - name: Checkout
@@ -32,10 +37,10 @@ jobs:
                   fetch-depth: 0
 
             - name: Setup Java
-              uses: actions/setup-java@v5
+              uses: actions/setup-java@v6
               with:
                   distribution: 'temurin'
-                  java-version: '21'
+                  java-version: '25'
 
             - name: Configure Git Auth
               run: |
@@ -46,7 +51,7 @@ jobs:
                   # Configure git to use your PAT for all HTTPS connections to GitHub
                   git config --global url."https://x-access-token:${{ secrets.COPYBARA_PAT }}@github.com/".insteadOf "https://github.com/"
             - name: Download Copybara
-              run: wget https://github.com/google/copybara/releases/download/v20260629/copybara_deploy.jar
+              run: wget https://github.com/google/copybara/releases/download/v20260824/copybara_deploy.jar
 
             - name: Run Copybara
               # Copybara uses exit code 4 to indicate a no-op (no files were updated).

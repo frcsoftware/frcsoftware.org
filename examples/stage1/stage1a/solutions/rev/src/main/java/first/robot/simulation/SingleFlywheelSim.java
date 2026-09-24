@@ -19,27 +19,42 @@ public class SingleFlywheelSim {
   private final FlywheelSim m_flywheelSim;
 
   private final DoublePublisher motorVoltagePub;
-  private final DoublePublisher rotorVelocityPub;
+  private final DoublePublisher motorVelocityPub;
   private final DoublePublisher currentPub;
-  private final DoublePublisher rotorPositionPub;
+  private final DoublePublisher motorPositionPub;
   private double rotorPositionRad;
 
   private static final double kBusVoltage = 12.0;
 
-  private final String name;
+  /** Creates the physics sim for the intake launcher. */
+  public static SingleFlywheelSim forIntakeLauncher(SparkMax motor) {
+    var sim = new SingleFlywheelSim(motor, "IntakeLauncher");
+    FuelSim.intakeLauncherSpeedSupplier = sim.m_flywheelSim::getAngularVelocity;
+    return sim;
+  }
 
-  public SingleFlywheelSim(SparkMax motor, String name) {
-    this.name = name;
+  /** Creates the physics sim for the feeder. */
+  public static SingleFlywheelSim forFeeder(SparkMax motor) {
+    var sim = new SingleFlywheelSim(motor, "Feeder");
+    FuelSim.feederSpeedSupplier = sim.m_flywheelSim::getAngularVelocity;
+    return sim;
+  }
+
+  private SingleFlywheelSim(SparkMax motor, String name) {
     this.motor = motor;
     var gearbox = DCMotor.getNEO(1);
     this.m_flywheelSim =
         new FlywheelSim(Models.flywheelFromPhysicalConstants(gearbox, 0.001, 1.0), gearbox);
 
-    var table = NetworkTableInstance.getDefault().getTable(this.name);
+    var table = NetworkTableInstance.getDefault().getTable(name);
     this.motorVoltagePub = table.getDoubleTopic("MotorVoltage").publish();
-    this.rotorVelocityPub = table.getDoubleTopic("RotorVelocity").publish();
+    this.motorVelocityPub = table.getDoubleTopic("MotorVelocity").publish();
     this.currentPub = table.getDoubleTopic("Current").publish();
-    this.rotorPositionPub = table.getDoubleTopic("RotorPosition").publish();
+    this.motorPositionPub = table.getDoubleTopic("MotorPosition").publish();
+
+    // Voltage and current properties aren't included since they default to volts and amps already
+    this.motorVelocityPub.getTopic().setProperty("unit", "\"RadiansPerSecond\"");
+    this.motorPositionPub.getTopic().setProperty("unit", "\"Radians\"");
   }
 
   public void periodic() {
@@ -52,8 +67,8 @@ public class SingleFlywheelSim {
     rotorPositionRad += radPerSec * 0.02;
 
     motorVoltagePub.set(motorVoltage);
-    rotorVelocityPub.set(radPerSec);
+    motorVelocityPub.set(radPerSec);
     currentPub.set(m_flywheelSim.getCurrentDraw());
-    rotorPositionPub.set(rotorPositionRad);
+    motorPositionPub.set(rotorPositionRad);
   }
 }

@@ -1,10 +1,11 @@
 import { readFileSync, readdirSync } from 'fs';
-import { join, relative } from 'path';
+import { basename, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const EXAMPLES_DIR = join(ROOT, 'examples');
 const DOCS_DIR = join(ROOT, 'src', 'content', 'docs');
+const SKIP_DIRS = new Set(['build', '.gradle', 'node_modules', 'gradle']);
 
 const START_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[(\w+)\]\s*$/;
 const END_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[\/(\w+)\]\s*$/;
@@ -15,6 +16,7 @@ const CODE_REGION_SOURCES_KEY_RE = /^codeRegionSources:\s*$/;
 const CODE_REGION_SOURCE_ENTRY_RE = /^\s+([\w-]+):\s*(.+?)\s*$/;
 
 const errors: string[] = [];
+const extensions: Set<string> = new Set();
 
 function parseCodeRegionSources(content: string): Map<string, string> {
     const sources = new Map<string, string>();
@@ -35,9 +37,9 @@ function parseCodeRegionSources(content: string): Map<string, string> {
         const m = line.match(CODE_REGION_SOURCE_ENTRY_RE);
         if (m) {
             sources.set(m[1]!, m[2]!);
+            extensions.add(m[2]!.split('.').at(-1)!);
         }
     }
-
     return sources;
 }
 
@@ -63,7 +65,6 @@ function walkMdx(dir: string) {
                 if (!m) continue;
 
                 const [, alias, definedFilePath, regionName] = m;
-
                 let filePath: string | undefined;
                 if (alias) {
                     filePath = codeRegionSources.get(alias);
@@ -74,6 +75,14 @@ function walkMdx(dir: string) {
                         continue;
                     }
                 } else if (definedFilePath) {
+                    const ext = basename(definedFilePath).split('.').at(-1);
+                    if (!ext) {
+                        errors.push(
+                            `${relative(DOCS_DIR, full)}: Region "${regionName}" doesn't specify a file extension.`,
+                        );
+                        continue;
+                    }
+                    extensions.add(ext);
                     filePath = definedFilePath;
                 } else {
                     filePath = codeRegionSources.get('default');
@@ -147,11 +156,18 @@ function validateSource(filePath: string) {
 }
 
 function walkExamples(dir: string) {
+    if (SKIP_DIRS.has(basename(dir))) {
+        return;
+    }
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const full = join(dir, entry.name);
         if (entry.isDirectory()) {
             walkExamples(full);
         } else {
+            if (!extensions.has(full.split('.').at(-1)!)) {
+                // we only care about source files
+                continue;
+            }
             validateSource(full);
         }
     }

@@ -1,0 +1,211 @@
+---
+title: Interfaces, Generics, and Lists
+description: An introduction to interfaces, generic methods, and the List interface in Java
+prev: learning-course/stage0/arrays
+next: false
+codeRegionSources:
+    sensor: stage0/snippets/src/interfaces-lists/DistanceSensor.java
+    ultrasonic: stage0/snippets/src/interfaces-lists/UltrasonicSensor.java
+    lidar: stage0/snippets/src/interfaces-lists/LidarSensor.java
+    tracker: stage0/snippets/src/interfaces-lists/RobotHistoryTracker.java
+    usage: stage0/snippets/src/interfaces-lists/InterfacesListsUsage.java
+    pair: stage0/snippets/src/interfaces-lists/Pair.java
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+In earlier lessons, we wrote classes like `Point` and `RobotTracker` to represent things in our program.
+In this lesson, we'll learn about **interfaces**, a way to describe what a class can do without saying how it does it,
+**generics**, a way to write code that works with more than one type, and the **`List`** interface, a more flexible alternative to arrays.
+
+## Why Interfaces?
+
+Suppose your robot needs to measure its distance from a wall during autonomous.
+One year, your team might use an ultrasonic sensor; the next, a LiDAR sensor.
+Both measure distance, but they're different pieces of hardware, controlled by different code.
+
+If the rest of your robot code is written to only work with one specific sensor class, swapping hardware means rewriting everything that used it.
+An **interface** solves this by describing what a sensor can do, without saying which specific sensor it is:
+
+```java {sensor}#distanceSensorInterface
+
+```
+
+An interface looks like a class, but its methods have no bodies, just a signature ending in a semicolon.
+It's a contract: any class that **implements** `DistanceSensor` must provide a `getDistanceMeters()` method.
+
+Here are two classes that each implement that contract, in their own way:
+
+```java {ultrasonic}#ultrasonicSensorClass
+
+```
+
+```java {lidar}#lidarSensorClass
+
+```
+
+Here we use the `implements` keyword to tell Java that `UltrasonicSensor` and `LidarSensor` implement `DistanceSensor`.
+If we said the `implements DistanceSensor` but didn't add a `getDistanceMeters()` method, the compiler would error.
+We also use the `@Override` annotation to tell the compiler we are **overriding** that `getDistanceMeters()` method.
+Overriding a method is a way to change the behavior of a method that's already defined in a parent class or interface.
+
+<Aside type="note">
+    A real sensor's `getDistanceMeters()` would read a value from hardware.
+    These simplified versions just return a fixed number, so we can focus on the
+    interface itself.
+</Aside>
+
+Because both classes implement `DistanceSensor`, code that only knows about `DistanceSensor` can work with either one,
+like this method to see if we're too close to an object:
+
+```java {usage}#isTooClose
+
+```
+
+Here, `isTooClose` is defined to take a `DistanceSensor`, so it doesn't matter whether we pass in an `UltrasonicSensor` or a `LidarSensor`:
+
+```java {usage}#distanceSensorCall
+
+```
+
+If your team switches sensors next season, this method doesn't need to change at all.
+
+## A Generic Method
+
+Interfaces let one piece of code work with several related types.
+**Generics** go a step further, letting a method work with _any_ type.
+Here's a method that returns the last element of an array, no matter what it's an array of:
+
+```java {usage}#genericLast
+
+```
+
+The `<T>` before the return type introduces a **type parameter**, a placeholder for a type that isn't decided until the method is called.
+Inside the method, `T` acts like a real type: the parameter is `T[]`, and the return type is `T`.
+
+We can call `last` with completely unrelated array types, and it works for both:
+
+```java {usage}#genericLastCall
+
+```
+
+When we call `last(path)`, Java fills in `T` with `Point`; when we call `last(sensors)`, it fills in `T` with `DistanceSensor`.
+We didn't have to write a separate method for each case.
+
+A class or interface can also be generic.
+For example, if we wanted to return two values from a method, we could write a `Pair<A, B>` class:
+
+```java {pair}#pairClass
+
+```
+
+This would let us create `Pair`s with any two types:
+
+```java {usage}#pairCall
+
+```
+
+## Packages and Imports
+
+So far, every class we've written has had no package, which is why our classes could use each other with no `import` statements at all.
+However, most real projects have many classes organized into different directories,
+so we need a way to tell Java where to find both them and the classes they depend on.
+Classes built into the Java Development Kit (JDK), classes from external libraries like WPILib,
+and the classes in your own robot project are all organized into **packages**: named groups of related classes.
+
+A package's name matches the directory its classes live in, with dots in place of slashes.
+`ArrayList` lives in the `java/util/` directory of the JDK, so its package is `java.util` and its full name is `java.util.ArrayList`.
+Robot code follows the same rule, and typically lives in the `first.robot` package, which you'll see when you start Stage 1 of this course:
+
+{/* prettier-ignore */}
+<FileTree>
+- src/main/java
+    - first
+        - robot
+            - Robot.java
+            - subsystems
+                - Drivetrain.java
+        - Main.java
+</FileTree>
+
+Every file in a package declares which package it belongs to on its first line.
+`Drivetrain.java` sits in `first/robot/subsystems/`, so it starts with:
+
+{/* rli: ignore */}
+
+```java
+package first.robot.subsystems;
+```
+
+Classes in the same package can use each other directly.
+To use a class from a _different_ package, you need an `import` statement below the package declaration, naming the exact class you want:
+
+```java {usage}#importList
+
+```
+
+This imports `ArrayList<T>` and `List<T>` from the `java.util` package, which we'll use next.
+Later in the course, you'll import classes the same way from WPILib packages, such as `org.wpilib.math.geometry.Translation2d`.
+
+<Aside type="note" title="Why doesn't `String` need an import?">
+    Classes in the `java.lang` package, like `String`, `Math`, and `System`, are
+    imported automatically. Everything else needs an explicit `import`.
+</Aside>
+
+## The `List<` Interface and `ArrayList`
+
+In the [previous lesson](/learning-course/stage0/arrays/), we used arrays to store multiple values together.
+An array's size is fixed once it's created, which works well when you know exactly how many elements you'll need, like a fixed autonomous path.
+But sometimes you don't know the size ahead of time, for example, if you want to record the robot's position every time it moves, for as long as the match lasts.
+
+`List<T>` is an interface, like `DistanceSensor`, that describes a collection that can grow and shrink.
+`ArrayList<T>` is a class that implements `List<T>`:
+
+```java {usage}#historyList
+
+```
+
+Just like `DistanceSensor sensor = new UltrasonicSensor();`, the declared type (`List<Point>`) is an interface, and the object we create (`new ArrayList<>()`) is one specific implementation of it.
+`<Point>` tells Java that this particular `List` holds `Point`s; `List` itself is generic, the same way `Pair` was.
+
+A `List` doesn't have a fixed size, you add elements to it as you go, and it grows to fit:
+
+```java {usage}#historyAdd
+
+```
+
+<Aside type="caution" title="size(), not length">
+    A `List`'s number of elements is read with the method `size()`, not the
+    field `length` you saw with arrays.
+</Aside>
+
+## Giving `RobotTracker` a Memory
+
+`RobotTracker`, from a [previous lesson](/learning-course/stage0/classes-methods/), keeps track of the robot's current position, but forgets everywhere it's been.
+Let's add the ability to remember every position the robot has visited, not just the current one, using a `List<Point>`:
+
+```java {tracker}#robotHistoryTrackerClass
+
+```
+
+<Aside type="note">
+    Instead of making a new class, you could also add the new fields and methods
+    to the `RobotTracker` class.
+</Aside>
+
+`getHistory()` returns the `List<Point>` of every position `move` has ever moved to, in order.
+We can loop over it with a for-each loop, exactly the way we looped over arrays in the previous lesson:
+
+```java {usage}#forEachHistory
+
+```
+
+Even though `history` grows every time `move` is called, the for-each loop doesn't need to know how many positions it will visit; it simply visits all of them.
+
+## Interfaces, Generics, and Lists Exercise
+
+<Aside type="exercise">
+
+WIP
+
+</Aside>

@@ -1,132 +1,24 @@
 ---
-title: Classes, Fields, and Methods
-description: An Introduction to Java classes and objects, as well as their members (fields and methods)
-prev: learning-course/stage0/conditionals
-next: false
+title: Methods and Mutable State
+description: Writing methods that define a class's behavior, and classes whose state changes over time
+prev: learning-course/stage0/classes-objects
+next: learning-course/stage0/arrays
 codeRegionSources:
-    point: stage0/snippets/classes-methods/Point.java
-    tracker: stage0/snippets/classes-methods/RobotTracker.java
-    usage: stage0/snippets/classes-methods/Usage.java
+    point: stage0/snippets/src/classes-methods/Point.java
+    tracker: stage0/snippets/src/classes-methods/RobotTracker.java
+    usage: stage0/snippets/src/classes-methods/Usage.java
 ---
 
-In an [earlier lesson](/learning-course/stage0/java-fundamentals/), we discussed different data types in Java,
-such as `int`, `double`, and `String`.
-In this lesson, we're going to learn about classes, which are a way to create our own data types,
-how to use them to create objects, and how to define a class's components: fields and methods.
+In the [previous lesson](/learning-course/stage0/classes-objects/), we wrote a `Point` class with fields, a constructor, and getters.
+It can store a pair of coordinates, but it can't do anything with them.
+In this lesson, we're going to write **methods**, which define a class's behavior,
+and then build a class whose state changes over time.
 
-## Types of Types
-
-The Java programming language has two types of types: **primitive types** and **reference types**.
-**Primitive types** are the most basic types that are built into the language,
-such as `int`, `double`, and `boolean`.
-**Reference types** (also called object types) are more complex types that are defined by programmers.
-Many reference types come built into the Java Development Kit (JDK), such as `String`,
-and others come from external libraries, but you can also define your own object types.
-
-Classes are a way to define object types.
-A **class** is a template for creating **object**s,
-with **fields** and **methods** that define the object's state and behavior.
-An **object** is an instance of a class;
-for example, `"a"` and `"b"` are both objects of the `String` class.
-
-Before writing any code, it helps to have a mental picture of what an object actually is.
-So far, all the code you've written has been from the perspective of a single actor: the computer running your program.
-For instance, `System.out.println("hello");` reads like an instruction: "tell the computer to print hello."
-
-Classes let you write code from a different perspective, sometimes called **object-oriented programming**.
-Instead of one actor doing everything, your program is made up of many objects, each with its own **state** and **behavior**,
-similar to characters in a play.
-A character has attributes, like a costume or a name, and capabilities, like singing, or speaking a line.
-In code, an object's attributes are stored in its **fields**, and its capabilities are defined by its **methods**.
-
-Some of a character's attributes stay the same for the whole play, like their name,
-while others change from scene to scene, like their costume or where they're standing on stage.
-Fields work the same way: some are set once and never change, which we call **immutable**,
-while others are expected to change over time, which we call **mutable**.
-Whether a field should be mutable or immutable is a choice we make when we design a class,
-and we'll see examples of both later in this lesson.
-
-In FRC code, objects are usually more abstract than characters in a play.
-A `Point` represents a location, a `Motor` represents a physical motor, and so on.
-Objects are also just a convenient way to group related data and behavior together,
-so it doesn't always have to belong to a real-world thing.
-
-<Aside title="Literal Values">
-    Primitive types are **literal values** that are directly stored in memory.
-    For example, `123` is a literal value of type `int`.
-
-    The `String` type is special, because it is a **reference type**,
-    but it can be created using a literal value, such as `"Hello, world!"`.
-    For example, `"Hello, world!"` is a reference value of type `String`.
-    This means you can access its methods, such as `length()`.
-    For example, `"Hello, world!".length()` returns `13`.
-
-</Aside>
-
-## Defining Our Own Classes
-
-Now that we know what a class is, let's define our own class.
-Our first example will be a simple `Point` class that represents a point in a two-dimensional space.
-This will help us write code that lets our robot know where on the field it is.
-
-In Java, every class is defined in a `.java` file, and starts with the `public class` keywords.
-The `public` keyword means the class can be accessed from anywhere in the program, including other files.
-We'll see the `public` keyword again later in this lesson, applied to fields and methods instead of a whole class.
-The `class` keyword tells Java we're defining a new class, followed by the name we're giving it, `Point`.
-
-Let's create a new file called `Point.java` and start it like this:
-
-{/* rli:ignore */}
-
-```java
-public class Point {
-
-}
-```
-
-Then, we're going to add three fields.
-A **field** is a variable that belongs to a class, and stores part of an object's state.
-Every `Point` object will have its own copy of each field, so two different `Point` objects can have different coordinates.
-Firstly, we add two `double` fields, x and y, which represent the point's coordinates;
-every `Point` object can have a different value for `x` and `y`.
-
-```java {point}#finalFields
-
-```
-
-Notice that we used the `final` keyword to make these fields **immutable**.
-This means that once they are created, they cannot be changed.
-Immutable fields are also called **constant** fields.
-A general rule of thumb is to make all fields `final` unless you have a good reason not to,
-which we'll see later in this lesson.
-We also use the `private` keyword to make these fields **private**.
-This means that they can only be accessed by methods in the same class.
-
-So far, the `x` and `y` fields each belong to a specific `Point` object.
-Sometimes, though, we want a value that's shared by every object of a class, instead of one copy per object.
-Next, we're going to add a static constant field, ORIGIN, which represents the point at the origin (0, 0).
-
-```java {point}#staticConstant
-
-```
-
-The `static` keyword is used to make a field **static**.
-A static field is a field shared by all instances of a class.
-In this case, the ORIGIN field is shared by all Point objects, and it represents the point at the origin (0, 0).
-Static fields and methods are accessed using the class name, instead of an instance of the class,
-so the ORIGIN field is accessed using `Point.ORIGIN`.
-The ORIGIN field is also `public`, so it can be accessed from anywhere in the program.
-
-<Aside type="tip" title="Static vs. Instance">
-    Non-static fields and methods are called **instance fields** and **instance
-    methods**, respectively, to distinguish them from static fields and methods.
-</Aside>
-
-## Methods and Constructors
+## Writing Methods
 
 A method is a block of code that is defined inside a class.
 Methods are used to define the behavior of the class.
-We already saw one example of a method, which is `length()` in the `String` class.
+We already saw two examples of methods: `length()` in the `String` class, and the getters we wrote on `Point`.
 Methods can have parameters, which are values that are passed into the method when it is called.
 
 When a method finishes, it can give a value back to whoever called it; this is called **returning** a value.
@@ -152,43 +44,7 @@ we use the return type `void`, which is a keyword that indicates that the method
 A `void` method can still use `return` on its own, without a value, to stop early,
 but it's more commonly left out entirely, since the method just finishes on its own once it reaches the end.
 
-A constructor is a special method that is called when an object is created with the `new` keyword.
-It is often used to initialize the object's fields.
-
-To define a constructor, we use the `public` keyword,
-followed by the class name, and then a parameter list in parentheses.
-
-```java {point}#constructor
-
-```
-
-This allows us to create new `Point` objects with the `new` keyword.
-For example, the point (1, 1) can be created with `new Point(1, 1)`;
-`new Point (1, 1)` is an object of the `Point` class.
-
-You'll notice that we use the `this` keyword.
-The `this` keyword is used to refer to the current object.
-It is used to access the object's fields and methods.
-In this example, we use the `this` keyword to access the `x` and `y` fields of the current object,
-and set them to the values of the parameters `x` and `y`.
-Using `this` is necessary here because the parameter names are the same as the field names,
-so we use `this.x` to refer to the field `x`, and `x` to refer to the parameter `x`.
-`this` isn't always required: if a method's parameters have different names than the fields they set,
-Java can already tell them apart, and you can leave `this` out.
-
-Next we're going to define some getter methods.
-Getter methods are methods that simply get, or return, the value of a field.
-They have the same return type as the field they return, and no parameters.
-Because the `x` and `y` fields are private, we need to define getter methods to
-allow other classes to access them:
-
-```java {point}#getters
-
-```
-
-As you can see, getter methods conventionally start with `get`, followed by the name of the field.
-
-Next, we're going to define the `plus` method.
+Let's give `Point` some behavior, starting with the `plus` method.
 The `plus` method takes another `Point` object as a parameter,
 and returns a new `Point` object that is the sum of the two `Point` objects.
 
@@ -247,17 +103,8 @@ And here is an example of how to use it:
 
 ```
 
-We create new `Point` objects using the `new` keyword followed by the constructor.
-We then call methods on them using the dot operator (`.`):
 `a.plus(b)` means "call the `plus` method on the object `a`, passing `b` as the argument."
 Inside `plus`, `a` becomes `this` and `b` becomes `other`.
-The same pattern applies to any method call: `object.method(arguments)`.
-
-We can also access the `ORIGIN` constant directly on the class, without creating an instance:
-
-```java {usage}#accessStaticConstant
-
-```
 
 ## Mutable State
 
@@ -353,7 +200,7 @@ And an example of using it:
 
 </Aside>
 
-## Classes and Methods Exercise
+## Methods and Mutable State Exercise
 
 <Aside type="exercise">
 

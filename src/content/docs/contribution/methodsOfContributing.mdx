@@ -34,15 +34,11 @@ Windows installers will almost always need to be the 64-bit version if there is 
     - Download the LTS version for your OS
     - Use all default options for installation
 - [pnpm](https://pnpm.io/installation)
-- [VSCode](https://code.visualstudio.com/)
-    - Download the stable build for your OS
-    - Use all default options for installation, except creating a desktop icon if you want
-    - A WPILib VSCode installation will work perfectly fine
-    - Recommended: Install a spellcheck extension to catch mistakes early
-- [Vale](https://vale.sh) (prose linter)
-    - Used to check writing style and consistency in documentation
-    - Install via the [latest release](https://github.com/vale-cli/vale/releases/latest) for your OS
-    - Run `pnpm lint:vale` or `pnpm lint` after setup
+- [VSCode](https://code.visualstudio.com/) - Download the stable build for your OS - Use all default options for installation, except creating a desktop icon if you want - A WPILib VSCode installation will work perfectly fine - Recommended: Install a spellcheck extension to catch mistakes early
+    <Aside type="note">
+        If you get an error when using Vale on NixOS, install it manually and
+        use the VALE_BIN environment variable instead.
+    </Aside>
 
 ### Steps to Start Writing Contributions
 
@@ -89,7 +85,7 @@ You can get a local hosted version of the website to have a live preview of the 
 
 1. Open the repository in VS Code (doesn't matter which branch)
 2. Toggle the bottom panel on if there isn't one with the shortcut `Ctrl + J`
-3. Click the dropdown next to the + on the top righthand side of the bottom panel and click "Terminal"
+3. Click the dropdown next to the + on the top right-hand side of the bottom panel and click "Terminal"
 4. Run the command `pnpm install` to install all needed packages (FIRST TIME)
 5. Run the command `pnpm dev` to start the development server
 6. If everything went smoothly it should say its serving on something like `http://localhost:4321`
@@ -97,7 +93,7 @@ You can get a local hosted version of the website to have a live preview of the 
 Make sure to run `pnpm dev` every time you open VS Code to edit.
 
 <Aside type="tip">
-After clicking on the terminal in the bottom panel, you can use Ctrl + C to terminate the local website hosting.
+After clicking on the terminal in the bottom panel, you can use Ctrl + C to end the local website hosting.
 
 </Aside>
 

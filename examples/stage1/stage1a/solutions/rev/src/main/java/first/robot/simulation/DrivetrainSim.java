@@ -7,6 +7,7 @@ package first.robot.simulation;
 
 import com.revrobotics.spark.SparkMax;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;
@@ -59,6 +60,9 @@ public class DrivetrainSim {
     this.rightVoltagePub = table.getDoubleTopic("RightMotorVoltage").publish();
     this.leftCurrentPub = table.getDoubleTopic("LeftCurrentAmps").publish();
     this.rightCurrentPub = table.getDoubleTopic("RightCurrentAmps").publish();
+
+    m_driveSim.setPose(new Pose2d(2.5, 2, Rotation2d.ZERO));
+    FuelSim.robotPoseSupplier = m_driveSim::getPose;
   }
 
   public void periodic() {

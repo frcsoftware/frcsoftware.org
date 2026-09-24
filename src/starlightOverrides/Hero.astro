@@ -87,8 +87,8 @@ if (image) {
     .hero {
         display: grid;
         align-items: center;
-        gap: 1rem;
-        padding-bottom: 1rem;
+        gap: 0rem; /*1rem normally*/
+        padding-bottom: 0rem; /*1rem normally*/
     }
 
     .hero > :global(img),
@@ -147,11 +147,16 @@ if (image) {
         justify-content: center;
     }
 
+    .sl-link-button {
+        padding: 1.5rem 6rem;
+        font-size: 1.25rem;
+    }
+
     @media (min-width: 50rem) {
         .hero {
             grid-template-columns: 7fr 4fr;
             gap: 3%;
-            padding-block: clamp(2.5rem, calc(1rem + 10vmin), 10rem);
+            padding-block: clamp(1rem, calc(1rem + 1vmin), 1rem);
         }
 
         .hero > :global(img),
@@ -170,6 +175,11 @@ if (image) {
 
         .actions {
             justify-content: flex-start;
+        }
+
+        .sl-link-button {
+            padding: 1.5rem 9rem;
+            font-size: 1.5rem;
         }
     }
 </style>

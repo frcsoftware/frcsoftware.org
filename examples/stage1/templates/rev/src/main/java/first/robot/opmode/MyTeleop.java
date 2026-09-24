@@ -13,10 +13,13 @@ import org.wpilib.opmode.Teleop;
 public class MyTeleop extends PeriodicOpMode {
   private final Robot robot;
 
+  /** The Robot instance is passed into the opmode via the constructor. */
   public MyTeleop(Robot robot) {
     this.robot = robot;
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    /* Called periodically (set time interval) while the robot is enabled. */
+  }
 }

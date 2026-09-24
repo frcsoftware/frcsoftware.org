@@ -1,0 +1,123 @@
+---
+title: Examples
+description: A programming reference featuring FRC robot code repositories, best practices, and innovative approaches
+---
+
+export const kitbots = [
+    {
+        title: '2024 Kitbot',
+        image: '/examples/2024-kitbot.webp',
+        imageAlt: '2024 kitbot render',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2024',
+    },
+    {
+        title: '2025 Kitbot',
+        image: '/examples/2025-kitbot.webp',
+        imageAlt: '2025 kitbot render',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2025',
+    },
+    {
+        title: '2026 Kitbot',
+        image: '/examples/2026-kitbot.webp',
+        imageAlt: '2026 kitbot render',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2026',
+    },
+];
+
+export const examples = [
+    {
+        title: "6328's 2026 Code",
+        image: '/examples/6328-2026-robot.webp',
+        imageAlt: '6328 2026 robot render',
+        category: 'Advanced Software',
+        description:
+            'IO layer, hub shift tracker, sotm with drum shooter, hood anti-decapitation trench bounds, battery state estimator, and a variety of Gradle plugins',
+        repo: 'https://github.com/Mechanical-Advantage/RobotCode2026Public',
+        chiefdelphi:
+            'https://www.chiefdelphi.com/t/frc-6328-mechanical-advantage-2026-build-thread/509595',
+    },
+    {
+        title: "1678's 2026 Code",
+        image: '/examples/1678-2026-robot.webp',
+        imageAlt: '1678 2026 robot render',
+        category: '',
+        description:
+            'Team library, custom targeting system, and customer power analyzer',
+        repo: 'https://github.com/frc1678/C2026-Public',
+        chiefdelphi:
+            'https://www.chiefdelphi.com/t/1678-citrus-circuits-2026-cad-and-robot-code-release/521535',
+    },
+    {
+        title: "581's 2026 Code",
+        image: '/examples/581-2026-robot.webp',
+        imageAlt: '581 2026 robot render',
+        category: 'Best Practices',
+        description:
+            'Advanced software practices, automation, and team programming documentation',
+        repo: 'https://github.com/team581/frc-2026',
+        chiefdelphi:
+            'https://www.chiefdelphi.com/t/581-blazing-bulldogs-2026-cad-and-code-release/521762',
+    },
+];
+
+<p>
+    Don't be afraid to take inspiration from robot code that already solved hard
+    programming problems. This library collects code analysis and repositories
+    so teams can study real examples, compare approaches, and build better code
+    faster.
+</p>
+
+<section class="mechanism-section">
+  <div class="section-heading">
+    <p class="mechanism-eyebrow">Intro level</p>
+    <h2>Kitbot Examples</h2>
+    <p>These kitbot examples show starter code for teams using past season's kitbots.</p>
+  </div>
+
+  <div class="featured-grid">
+    {kitbots.map((example) => (
+      <article class="featured-card">
+        {example.image && (
+          <div class="featured-image">
+            <img src={example.image} alt={example.imageAlt} loading="lazy" />
+          </div>
+        )}
+        <div class="featured-body">
+          <h3>{example.title}</h3>
+        </div>
+        <div class="featured-links">
+          <a href={example.code} target="_blank">Code</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section class="mechanism-section">
+  <div class="section-heading">
+    <p class="mechanism-eyebrow">Team codebases</p>
+    <h2>Advanced Examples</h2>
+    <p>These examples go beyond the basics and highlight things top teams have done well in their code.</p>
+  </div>
+
+  <div class="featured-grid">
+    {examples.map((example) => (
+      <article class="featured-card">
+        {example.image && (
+          <div class="featured-image">
+            <img src={example.image} alt={example.imageAlt} loading="lazy" />
+          </div>
+        )}
+        <div class="featured-body">
+          <p class="category-label">{example.category}</p>
+          <h3>{example.title}</h3>
+          <p>{example.description}</p>
+        </div>
+        <div class="featured-links">
+          <a href={example.repo} target="_blank">Repo</a>
+          <a href={example.chiefdelphi} target="_blank">Chief Delphi</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

@@ -10,6 +10,7 @@ interface Props extends HTMLAttributes<'a'> {
 }
 
 const { title, subTitle, href, ...attributes } = Astro.props;
+const t = Astro.locals.t;
 ---
 
 <div class="custom-card">
@@ -24,7 +25,7 @@ const { title, subTitle, href, ...attributes } = Astro.props;
                 <button
                     class="copy-btn"
                     data-href={href}
-                    aria-label="Copy link to clipboard"
+                    aria-label={t('card.copyLink')}
                 >
                     <span class="icon-default">
                         <MdiIcon path={mdiLinkVariant} size={18} />

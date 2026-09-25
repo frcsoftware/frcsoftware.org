@@ -30,18 +30,20 @@ interface Props {
 
 const { type = 'note', title, collapse = false } = Astro.props;
 
+const t = Astro.locals.t;
+
 const titles: Record<string, string> = {
-    note: 'Note',
-    tip: 'Tip',
-    caution: 'Warning',
-    danger: 'Danger',
-    example: 'Example',
-    exercise: 'Exercise',
-    video: 'Video',
-    wip: 'Work in Progress',
+    note: t('aside.note'),
+    tip: t('aside.tip'),
+    caution: t('aside.caution'),
+    danger: t('aside.danger'),
+    example: t('aside.example'),
+    exercise: t('aside.exercise'),
+    video: t('aside.video'),
+    wip: t('aside.wip'),
 };
 
-const displayTitle = title || titles[type] || 'Note';
+const displayTitle = title || titles[type] || t('aside.note');
 
 const iconPaths: Record<string, string> = {
     note: mdiInformation,

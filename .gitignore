@@ -27,6 +27,8 @@ bun.lock
 .DS_Store
 
 .vscode
+*/.idea/
+
 
 # Build files
 .gradle

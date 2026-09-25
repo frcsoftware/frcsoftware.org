@@ -70,7 +70,9 @@ export function localizeHref(
 ): string {
     if (!localeDir || !(localeDir in langByLocaleDir)) return href;
     if (!isPageUrl(href)) return href;
-    if (href === `/${localeDir}` || href.startsWith(`/${localeDir}/`)) {
+
+    const [path = ''] = href.split(/[?#]/);
+    if (path === `/${localeDir}` || path.startsWith(`/${localeDir}/`)) {
         return href;
     }
 

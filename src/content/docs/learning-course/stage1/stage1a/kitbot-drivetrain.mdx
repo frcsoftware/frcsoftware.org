@@ -11,6 +11,8 @@ codeRegionSources:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
 import ContentImage from '@components/ContentImage.astro';
+import ContentRow from '@components/ContentRow.astro';
+import ContentRowCaption from '@components/ContentRow.astro';
 
 # Drivetrain
 
@@ -35,45 +37,32 @@ Motor controllers connect to the Systemcore through the CAN ports.
     width="300px"
     alt="Drivetrain"
     src="/learning-course/stage1/stage1a/systemcore.webp"
-/>
+>
+    Photo Credit: FIRST's Blog post
+</ContentFigure>
 
 # Motor Controllers
 
 Motors can not be controlled directly.
 Instead, Systemcore talks to a motor controller and the motor controller then drives the motors.
-FRCSoftware covers two types of motor controllers: REV's SparkMAX and CTRE's TalonFX
+This stages uses two types of motor controllers: REV's SparkMAX and CTRE's TalonFX
 
-export const codeRepo = [
-    {
-        title: 'SparkMAX',
-        image: '/learning-course/stage1/stage1a/sparkmax.webp',
-        imageAlt: 'A photo of a SPARKMax. Photo Credit: REV',
-    },
-    {
-        title: 'TalonFX',
-        image: '/learning-course/stage1/stage1a/kraken.webp',
-        imageAlt: 'A photo of a kraken motor. Photo Credit: CTRE',
-    },
-];
-
-<section class="mechanism-section">
-  <div class="section-heading">  </div>
-
-  <div class="featured-grid">
-    {codeRepo.map((example) => (
-      <article class="featured-card">
-        {example.image && (
-          <div class="featured-image">
-            <img src={example.image} alt={example.imageAlt} loading="lazy" />
-          </div>
-        )}
-        <div class="featured-body">
-          <h3>{example.title}</h3>
-        </div>
-      </article>
-    ))}
-  </div>
-</section>
+<ContentRow>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/sparkmax.webp"
+        alt="A photo of a sparkmax"
+        width="30%"
+    >
+        Photo Credit: REV
+    </ContentFigure>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/kraken.webp"
+        alt="A photo of the built in talonfx motor controller"
+        width="30%"
+    >
+        Photo Credit: CTRE
+    </ContentFigure>
+</ContentRow>
 
 Vendors, such as REV or CTRE, provide classes that can be used to both control and get sensor data, such as position, velocity, and temperature, from their motor controllers.
 While each individual type of motor controller has its own class, motor controllers from the same vendor are

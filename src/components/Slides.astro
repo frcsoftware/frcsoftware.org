@@ -300,13 +300,12 @@ const slidesDataForClient = processedImages.map((slide) => ({
     attrs: slide.attrs,
 }));
 const slidesData = JSON.stringify(slidesDataForClient);
-const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
+const t = Astro.locals.t;
 ---
 
 <div
     class="slides-component"
     data-slides={slidesData}
-    data-slide-id={slideId}
     style={`--slides-scale: ${scalePercent};`}
 >
     <div class="slides-main">
@@ -357,11 +356,17 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
                 }
             </div>
 
-            <button class="slides-nav slides-prev" aria-label="Previous slide">
+            <button
+                class="slides-nav slides-prev"
+                aria-label={t('slides.previous')}
+            >
                 <MdiIcon path={mdiChevronLeft} size={24} />
             </button>
 
-            <button class="slides-nav slides-next" aria-label="Next slide">
+            <button
+                class="slides-nav slides-next"
+                aria-label={t('slides.next')}
+            >
                 <MdiIcon path={mdiChevronRight} size={24} />
             </button>
         </div>
@@ -384,7 +389,10 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
                     <button
                         class={`dot ${index === 0 ? 'active' : ''}`}
                         data-index={index}
-                        aria-label={`Go to slide ${index + 1}`}
+                        aria-label={t('slides.goTo').replace(
+                            '{number}',
+                            String(index + 1),
+                        )}
                     />
                 ))
             }
@@ -392,7 +400,7 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
     </div>
 
     <div class="lightbox" aria-hidden="true">
-        <button class="lightbox-close" aria-label="Close lightbox">
+        <button class="lightbox-close" aria-label={t('slides.closeLightbox')}>
             <MdiIcon path={mdiClose} size={24} />
         </button>
 
@@ -400,7 +408,7 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
             <div class="lightbox-media-container">
                 <button
                     class="lightbox-nav lightbox-prev"
-                    aria-label="Previous slide"
+                    aria-label={t('slides.previous')}
                 >
                     <MdiIcon path={mdiChevronLeft} size={24} />
                 </button>
@@ -409,7 +417,7 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
 
                 <button
                     class="lightbox-nav lightbox-next"
-                    aria-label="Next slide"
+                    aria-label={t('slides.next')}
                 >
                     <MdiIcon path={mdiChevronRight} size={24} />
                 </button>
@@ -433,7 +441,10 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
                         <button
                             class={`dot ${index === 0 ? 'active' : ''}`}
                             data-index={index}
-                            aria-label={`Go to slide ${index + 1}`}
+                            aria-label={t('slides.goTo').replace(
+                                '{number}',
+                                String(index + 1),
+                            )}
                         />
                     ))
                 }

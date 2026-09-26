@@ -3,6 +3,7 @@ import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 import MdiIcon from '../components/MdiIcon.astro';
 
 const { prev, next } = Astro.locals.starlightRoute.pagination;
+const t = Astro.locals.t;
 
 const prevLabel = prev?.label ?? null;
 const nextLabel = next?.label ?? null;
@@ -23,7 +24,9 @@ const nextLabel = next?.label ?? null;
                         size={24}
                     />
                     <span>
-                        <span class="pagination-label">Previous</span>
+                        <span class="pagination-label">
+                            {t('page.previousLink')}
+                        </span>
                         <span class="pagination-title">{prevLabel}</span>
                     </span>
                 </a>
@@ -35,7 +38,9 @@ const nextLabel = next?.label ?? null;
                     class="pagination-link next-link"
                 >
                     <span>
-                        <span class="pagination-label">Next</span>
+                        <span class="pagination-label">
+                            {t('page.nextLink')}
+                        </span>
                         <span class="pagination-title">{nextLabel}</span>
                     </span>
                     <MdiIcon

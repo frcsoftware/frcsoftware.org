@@ -15,6 +15,8 @@
  * - Use `{ minHeadingLevel: 2, maxHeadingLevel: 4 }` for custom levels
  */
 
+import { localeDirs } from './locales';
+
 export interface TocConfig {
     minHeadingLevel?: number;
     maxHeadingLevel?: number;
@@ -34,15 +36,29 @@ export const tocEnabledDirectories: Record<string, TocConfig | true> = {
     // '/best-practices': true,
 };
 
+function stripLocale(pathname: string): string {
+    for (const dir of localeDirs) {
+        if (pathname === `/${dir}`) return '';
+        if (pathname.startsWith(`/${dir}/`)) {
+            return pathname.slice(dir.length + 1);
+        }
+    }
+    return pathname;
+}
+
 /**
  * Check if TOC should be enabled for a given path
  * Returns the config if enabled, or false if not in any enabled directory
  */
 export function getTocConfigForPath(pathname: string): TocConfig | false {
     // Normalize pathname
-    const normalizedPath = pathname.endsWith('/')
+    const withoutTrailingSlash = pathname.endsWith('/')
         ? pathname.slice(0, -1)
         : pathname;
+
+    // Keys are locale-free, so a localized page has to be matched on the
+    // equivalent default-language path or it would match nothing at all.
+    const normalizedPath = stripLocale(withoutTrailingSlash);
 
     // Check for exact match first
     if (tocEnabledDirectories[normalizedPath]) {

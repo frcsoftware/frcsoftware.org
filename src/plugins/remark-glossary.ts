@@ -1,34 +1,16 @@
-import { readFileSync } from 'node:fs';
 import { visit, SKIP } from 'unist-util-visit';
-import { parse } from 'yaml';
 import type { Root, RootContent, Text } from 'mdast';
 import type { VFile } from 'vfile';
 import type { MdxJsxTextElement } from 'mdast-util-mdx-jsx';
-
-const glossary = parse(
-    readFileSync(new URL('../data/glossary.yaml', import.meta.url), 'utf-8'),
-) as Record<string, { definition: string; caseSensitive?: boolean }>;
-
-const sortedTerms = Object.entries(glossary).sort(
-    ([a], [b]) => b.length - a.length,
-);
-
-const pattern = new RegExp(
-    `(?<![\\p{L}\\p{N}_])(${sortedTerms
-        .map(([term, { caseSensitive }]) =>
-            caseSensitive ? `(?-i:${escapeRegex(term)})` : escapeRegex(term),
-        )
-        .join('|')})(?![\\p{L}\\p{N}_])`,
-    'giu',
-);
-
-function escapeRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+import { matcherFor } from '../data/loadGlossary';
+import { langFromDocsPath } from '../config/locales';
 
 export function remarkGlossary() {
     return (tree: Root, file: VFile) => {
         if (file.path?.endsWith('glossary.mdx')) return;
+
+        const lang = langFromDocsPath(file.path);
+        const { pattern, canonicalFor } = matcherFor(lang);
 
         visit(tree, 'text', (node: Text, index, parent) => {
             if (!parent || index === undefined) return;
@@ -57,16 +39,36 @@ export function remarkGlossary() {
                     });
                 }
 
+                const attributes: MdxJsxTextElement['attributes'] = [
+                    {
+                        type: 'mdxJsxAttribute',
+                        name: 'term',
+                        value: matchedTerm,
+                    },
+                ];
+
+                // Lets the component resolve a translated term, and look the
+                // definition up directly instead of scanning the collection.
+                const canonical = canonicalFor(matchedTerm);
+                if (canonical !== undefined) {
+                    attributes.push(
+                        {
+                            type: 'mdxJsxAttribute',
+                            name: 'termId',
+                            value: canonical,
+                        },
+                        {
+                            type: 'mdxJsxAttribute',
+                            name: 'lang',
+                            value: lang,
+                        },
+                    );
+                }
+
                 const glossaryNode: MdxJsxTextElement = {
                     type: 'mdxJsxTextElement',
                     name: 'Glossary',
-                    attributes: [
-                        {
-                            type: 'mdxJsxAttribute',
-                            name: 'term',
-                            value: matchedTerm,
-                        },
-                    ],
+                    attributes,
                     children: [],
                 };
                 newNodes.push(glossaryNode);

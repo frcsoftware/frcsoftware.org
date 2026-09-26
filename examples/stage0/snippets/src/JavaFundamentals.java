@@ -18,8 +18,8 @@ void main() {
     // [/printLiteral]
 
     // [printVariable]
-    int num = 4;
-    System.out.println(num); // prints out the value 4
+    int motorCount = 4;
+    System.out.println(motorCount); // prints out the value 4
     // [/printVariable]
 
     // [stringConcatenation1]
@@ -28,10 +28,10 @@ void main() {
     //[/stringConcatenation1]
 
     // [stringConcatenation2]
-    int first = 6;
-    double second = 2.0;
+    int ballsScored = 6;
+    double batteryVoltage = 12.5;
 
-    System.out.println(first + " " + second);
+    System.out.println(ballsScored + " " + batteryVoltage);
 
     //[/stringConcatenation2]
 

@@ -5,6 +5,7 @@ on:
         branches:
             - main
         paths:
+            - 'examples/stage0/**'
             - 'examples/stage1/**'
             - 'examples/LICENSE'
             - 'copy.bara.sky'
@@ -15,25 +16,46 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    copybara:
+    detect:
         if: github.ref == 'refs/heads/main' && github.repository == 'frcsoftware/frcsoftware.org'
         runs-on: ubuntu-latest
 
+        outputs:
+            workflows: ${{ steps.filter.outputs.changes }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Determine changed workflows
+              uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      stage0_solution:
+                        - &lic 'examples/LICENSE'
+                        - &sky 'copy.bara.sky'
+                        - &wfl '.github/workflows/copybara.yml'
+                        - 'examples/stage0/solutions/**'
+                      stage0_template: [*lic, *sky, *wfl, 'examples/stage0/templates/**']
+                      stage1a_rev_solution: [*lic, *sky, *wfl, 'examples/stage1/stage1a/solutions/rev/**']
+                      stage1a_ctre_solution: [*lic, *sky, *wfl, 'examples/stage1/stage1a/solutions/ctre/**']
+                      stage1b_rev_solution: [*lic, *sky, *wfl, 'examples/stage1/stage1b/solutions/rev/**']
+                      stage1b_ctre_solution: [*lic, *sky, *wfl, 'examples/stage1/stage1b/solutions/ctre/**']
+                      stage1a_rev_template: [*lic, *sky, *wfl, 'examples/stage1/templates/rev/**']
+                      stage1a_ctre_template: [*lic, *sky, *wfl, 'examples/stage1/templates/ctre/**']
+                      stage1b_rev_template: [*lic, *sky, *wfl, 'examples/stage1/templates/rev/**']
+                      stage1b_ctre_template: [*lic, *sky, *wfl, 'examples/stage1/templates/ctre/**']
+
+    copybara:
+        needs: detect
+        if: needs.detect.outputs.workflows != '[]'
+        runs-on: ubuntu-latest
+
         strategy:
-            # Run the workflows in parallel
             fail-fast: false
             matrix:
-                workflow:
-                    - stage0_solution
-                    - stage0_template
-                    - stage1a_rev_solution
-                    - stage1a_ctre_solution
-                    - stage1a_rev_template
-                    - stage1a_ctre_template
-                    - stage1b_rev_solution
-                    - stage1b_ctre_solution
-                    - stage1b_rev_template
-                    - stage1b_ctre_template
+                workflow: ${{ fromJSON(needs.detect.outputs.workflows) }}
 
         steps:
             - name: Checkout
@@ -59,6 +81,4 @@ jobs:
               run: wget https://github.com/google/copybara/releases/download/v20260824/copybara_deploy.jar
 
             - name: Run Copybara
-              # Copybara uses exit code 4 to indicate a no-op (no files were updated).
-              # We catch this and treat it as success so the workflow doesn't fail.
               run: java -jar copybara_deploy.jar copy.bara.sky ${{ matrix.workflow }} --force --ignore-noop || test $? -eq 4

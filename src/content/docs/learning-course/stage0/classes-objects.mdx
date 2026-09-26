@@ -8,24 +8,11 @@ codeRegionSources:
 
 In an [earlier lesson](/learning-course/stage0/java-fundamentals/), we discussed different data types in Java,
 such as `int`, `double`, and `String`.
-In this lesson, we're going to learn about classes, which are a way to create our own data types,
-and how to use them to create objects.
+In this lesson, we're going to learn about **classes**, which are a way to create our own data types,
+and how to use them to create **objects**.
 We'll also define two of a class's components: fields and constructors.
 
-## Types of Types
-
-Java has two types of types: **primitive types** and **reference types**:
-
-- **Primitive types** are the most basic types that are built into the language, such as `int`, `double`, and `boolean`.
-- **Reference types** (also called object types) are more complex types that are defined by programmers.
-  Many reference types come built into the Java Development Kit (JDK), such as `String`,
-  and others come from external libraries, but you can also define your own object types.
-
-Classes are a way to define object types.
-A **class** is a template for creating **object**s,
-with **fields** and **methods** that define the object's state and behavior.
-An **object** is an instance of a class;
-for example, `"a"` and `"b"` are both objects of the `String` class.
+## What Is an Object?
 
 Before writing any code, it helps to have a mental picture of what an object actually is.
 So far, all the code you've written has been from the perspective of a single actor: the computer running your program.
@@ -48,6 +35,21 @@ In FRC code, objects are usually more abstract than characters in a play.
 A `Point` represents a location, a `Motor` represents a physical motor, and so on.
 Objects are also just a convenient way to group related data and behavior together,
 so it doesn't always have to belong to a real-world thing.
+
+## Types of Types
+
+Java has two types of types: **primitive types** and **reference types**:
+
+- **Primitive types** are the most basic types that are built into the language, such as `int`, `double`, and `boolean`.
+- **Reference types** (also called object types) are more complex types that are defined by programmers.
+  Many reference types come built into the Java Development Kit (JDK), such as `String`,
+  and others come from external libraries, but you can also define your own object types.
+
+Classes are a way to define object types.
+A **class** is a template for creating objects,
+with fields and methods that define the object's state and behavior.
+An **object** is an instance of a class;
+for example, `"a"` and `"b"` are both objects of the `String` class.
 
 <Aside title="Literal Values">
     Primitive types are **literal values** that are directly stored in memory.
@@ -94,7 +96,6 @@ every `Point` object can have a different value for `x` and `y`.
 
 Notice that we used the `final` keyword to make these fields **immutable**.
 This means that once they are created, they cannot be changed.
-Immutable fields are also called **constant** fields.
 A general rule of thumb is to make all fields `final` unless you have a good reason not to,
 which we'll see in the next lesson.
 We also use the `private` keyword to make these fields **private**.
@@ -114,6 +115,8 @@ In this case, the ORIGIN field is shared by all Point objects, and it represents
 Static fields and methods are accessed using the class name, instead of an instance of the class,
 so the ORIGIN field is accessed using `Point.ORIGIN`.
 The ORIGIN field is also `public`, so it can be accessed from anywhere in the program.
+Because it's both `static` and `final`, `ORIGIN` is a **constant**,
+which is why its name is in upper snake case, as described in [Java Fundamentals](/learning-course/stage0/java-fundamentals/#name).
 
 <Aside type="tip" title="Static vs. Instance">
     Non-static fields and methods are called **instance fields** and **instance

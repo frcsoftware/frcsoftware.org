@@ -1,43 +1,39 @@
-import { readFileSync } from 'node:fs';
 import { visit, SKIP } from 'unist-util-visit';
-import { parse } from 'yaml';
-import type { Root, RootContent, Text } from 'mdast';
+import type { Root, RootContent, Node, Text, Parent } from 'mdast';
 import type { VFile } from 'vfile';
 import type { MdxJsxTextElement } from 'mdast-util-mdx-jsx';
-
-const glossary = parse(
-    readFileSync(new URL('../data/glossary.yaml', import.meta.url), 'utf-8'),
-) as Record<string, { definition: string; caseSensitive?: boolean }>;
-
-const sortedTerms = Object.entries(glossary).sort(
-    ([a], [b]) => b.length - a.length,
-);
-
-const pattern = new RegExp(
-    `(?<![\\p{L}\\p{N}_])(${sortedTerms
-        .map(([term, { caseSensitive }]) =>
-            caseSensitive ? `(?-i:${escapeRegex(term)})` : escapeRegex(term),
-        )
-        .join('|')})(?![\\p{L}\\p{N}_])`,
-    'giu',
-);
-
-function escapeRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+import { matcherFor } from '../data/loadGlossary';
+import { langFromDocsPath } from '../config/locales';
 
 export function remarkGlossary() {
     return (tree: Root, file: VFile) => {
         if (file.path?.endsWith('glossary.mdx')) return;
 
-        visit(tree, 'text', (node: Text, index, parent) => {
+        const lang = langFromDocsPath(file.path);
+        const { pattern, canonicalFor } = matcherFor(lang);
+
+        const seen = new Map<string, boolean>();
+
+        const test = (node: Node) => {
+            return (
+                node.type === 'link' ||
+                node.type === 'heading' ||
+                node.type === 'text'
+            );
+        };
+
+        visit(tree, test, (node: Node, index, parent: Parent) => {
             if (!parent || index === undefined) return;
 
-            if (parent.type === 'link' || parent.type === 'mdxJsxTextElement') {
+            if (node.type === 'link' || node.type === 'heading') {
+                return SKIP;
+            }
+
+            if (parent.type === 'mdxJsxTextElement') {
                 return;
             }
 
-            const text = node.value;
+            const text = (node as Text).value;
             const matches = [...text.matchAll(pattern)];
 
             if (matches.length === 0) return;
@@ -50,6 +46,12 @@ export function remarkGlossary() {
                 const matchEnd = matchStart + match[0].length;
                 const matchedTerm = match[0];
 
+                const lowered = matchedTerm.toLowerCase();
+                if (seen.has(lowered)) {
+                    return;
+                }
+                seen.set(lowered, true);
+
                 if (matchStart > lastIndex) {
                     newNodes.push({
                         type: 'text',
@@ -57,22 +59,47 @@ export function remarkGlossary() {
                     });
                 }
 
+                const attributes: MdxJsxTextElement['attributes'] = [
+                    {
+                        type: 'mdxJsxAttribute',
+                        name: 'term',
+                        value: matchedTerm,
+                    },
+                ];
+
+                // Lets the component resolve a translated term, and look the
+                // definition up directly instead of scanning the collection.
+                const canonical = canonicalFor(matchedTerm);
+                if (canonical !== undefined) {
+                    attributes.push(
+                        {
+                            type: 'mdxJsxAttribute',
+                            name: 'termId',
+                            value: canonical,
+                        },
+                        {
+                            type: 'mdxJsxAttribute',
+                            name: 'lang',
+                            value: lang,
+                        },
+                    );
+                }
+
                 const glossaryNode: MdxJsxTextElement = {
                     type: 'mdxJsxTextElement',
                     name: 'Glossary',
-                    attributes: [
-                        {
-                            type: 'mdxJsxAttribute',
-                            name: 'term',
-                            value: matchedTerm,
-                        },
-                    ],
+                    attributes,
                     children: [],
                 };
                 newNodes.push(glossaryNode);
 
                 lastIndex = matchEnd;
             });
+
+            if (lastIndex == 0) {
+                // no unseen matches
+                return;
+            }
 
             if (lastIndex < text.length) {
                 newNodes.push({

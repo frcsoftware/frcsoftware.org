@@ -12,6 +12,8 @@ export function remarkGlossary() {
         const lang = langFromDocsPath(file.path);
         const { pattern, canonicalFor } = matcherFor(lang);
 
+        const seen = new Map<string, boolean>();
+
         visit(tree, 'text', (node: Text, index, parent) => {
             if (!parent || index === undefined) return;
 
@@ -31,6 +33,12 @@ export function remarkGlossary() {
                 const matchStart = match.index;
                 const matchEnd = matchStart + match[0].length;
                 const matchedTerm = match[0];
+
+                const lowered = matchedTerm.toLowerCase();
+                if (seen.has(lowered)) {
+                    return;
+                }
+                seen.set(lowered, true);
 
                 if (matchStart > lastIndex) {
                     newNodes.push({
@@ -75,6 +83,11 @@ export function remarkGlossary() {
 
                 lastIndex = matchEnd;
             });
+
+            if (lastIndex == 0) {
+                // no unseen matches
+                return;
+            }
 
             if (lastIndex < text.length) {
                 newNodes.push({

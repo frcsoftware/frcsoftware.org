@@ -25,10 +25,10 @@ void main() {
     // [/ifSyntax]
 
     // [ifExample]
-    double distance = 6;
-    if (distance < 10) {
-        System.out.println("Motors are spinning");
-        drivetrain.setThrottle(1); // runs the motor at full speed
+    double distance = 60; // distance to the wall, in centimeters
+    if (distance > 10) {
+        System.out.println("Driving at full speed");
+        drivetrain.setThrottle(1); // runs the motors at full speed
     }
     // [/ifExample]
 
@@ -36,18 +36,18 @@ void main() {
     if (conditionA) {
     // code to run when conditionA is true
     } else if (conditionB) {
-    // code to run when ConditionB is true
+    // code to run when conditionA is false and conditionB is true
     }
     // [/elseIfSyntax]
 
     // [elseIfExample]
-    distance = 15;
-    if (distance < 10) {
-        System.out.println("Motors are half speed");
-        drivetrain.setThrottle(0.5); // runs the motors at half speed
-    } else if (distance > 10) {
-        System.out.println("Motors are at full speed");
+    distance = 30;
+    if (distance > 50) {
+        System.out.println("Driving at full speed");
         drivetrain.setThrottle(1); // runs the motors at full speed
+    } else if (distance > 10) {
+        System.out.println("Driving at half speed");
+        drivetrain.setThrottle(0.5); // runs the motors at half speed
     }
     // [/elseIfExample]
 
@@ -60,26 +60,26 @@ void main() {
     // [/ifElseSyntax]
 
     // [elseExample]
-    distance = 21;
-    if (distance < 10) {
-        System.out.println("Motors are at half speed");
-        drivetrain.setThrottle(0.5); // runs the motors at half speed
+    distance = 6;
+    if (distance > 10) {
+        System.out.println("Driving at full speed");
+        drivetrain.setThrottle(1); // runs the motors at full speed
     } else {
-        System.out.println("Motors are not spinning");
+        System.out.println("Stopped");
         drivetrain.setThrottle(0); // stops the motors
     }
     // [/elseExample]
 
     // [conditionalExample]
-    distance = 21;
-    if (distance < 10) {
-        System.out.println("Motors are at half speed");
-        drivetrain.setThrottle(0.5); // runs the motors at half speed
-    } else if (distance <= 20) {
-        System.out.println("Motors are at full speed");
+    distance = 10;
+    if (distance > 50) {
+        System.out.println("Driving at full speed");
         drivetrain.setThrottle(1); // runs the motors at full speed
+    } else if (distance > 10) {
+        System.out.println("Driving at half speed");
+        drivetrain.setThrottle(0.5); // runs the motors at half speed
     } else {
-        System.out.println("Motors are not spinning");
+        System.out.println("Stopped");
         drivetrain.setThrottle(0); // stops the motors
     }
     // [/conditionalExample]

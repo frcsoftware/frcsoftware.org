@@ -4,58 +4,59 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 // [variables]
-int answer1 = 2 + 4;
-int answer2 = 6 / 3;
-int answer3 = 10 - 3;
+int totalMotors = 2 + 4;
+int motorsPerSide = 4 / 2;
+int ballsLeft = 10 - 3;
 // [/variables]
 
 void main() {
     // [increments]
-    int x = 6;
-    int y = 7;
+    int shotsFired = 6;
+    int ballsInHopper = 7;
 
-    x++; // x is now 7!
-    y--; // y is now 6!
+    shotsFired++; // shotsFired is now 7!
+    ballsInHopper--; // ballsInHopper is now 6!
 
-    System.out.println(x); // prints 7
-    System.out.println(y); // prints 6
+    System.out.println(shotsFired); // prints 7
+    System.out.println(ballsInHopper); // prints 6
     // [/increments]
 
     // [arithmetic]
-    int a = 10;
-    int b = 5;
-    a += 2;
-    b -= 1;
+    int score = 10;
+    int ballsCarried = 5;
+    score += 2;
+    ballsCarried -= 1;
 
-    System.out.println(a); // prints 12
-    System.out.println(b); // prints 4
+    System.out.println(score); // prints 12
+    System.out.println(ballsCarried); // prints 4
     // [/arithmetic]
 
     // [comparison]
-    int c = 2;
-    int d = 4;
-    System.out.println(c > d); // prints false
+    int ballsScored = 2;
+    int ballsNeeded = 4;
+    System.out.println(ballsScored > ballsNeeded); // prints false
     // [/comparison]
 
     // [logical]
-    boolean fiveIsGreaterThanThree = 5 > 3; // true
-    boolean nineIsLessThanTwo = 9 < 2; // false
+    boolean hasBall = true;
+    boolean isAligned = false;
 
-    System.out.println(fiveIsGreaterThanThree && nineIsLessThanTwo);
-    System.out.println(fiveIsGreaterThanThree || nineIsLessThanTwo);
-    System.out.println(!fiveIsGreaterThanThree);
+    System.out.println(hasBall && isAligned);
+    System.out.println(hasBall || isAligned);
+    System.out.println(!hasBall);
     // [/logical]
 
 
     // [math1]
-    int e = 0;
-    int f = 2;
-    System.out.println(e = f + 10); // prints 12
+    int totalPoints = 0;
+    int autoPoints = 2;
+    totalPoints = autoPoints + 10;
+    System.out.println(totalPoints); // prints 12
     // [/math1]
 
     // [math2]
-    int magicNumber = 6;
-    System.out.println(magicNumber * 2); // prints 12
+    int gamePieces = 6;
+    System.out.println(gamePieces * 2); // prints 12
     // [/math2]
 
 }

@@ -2,12 +2,26 @@
 import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
 import Search from '@astrojs/starlight/components/Search.astro';
 import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import LanguageSelect from '@astrojs/starlight/components/LanguageSelect.astro';
+import { isMultilingual } from '../config/locales';
 
 const props = Astro.props;
 const { hasSidebar } = Astro.locals.starlightRoute;
+const t = Astro.locals.t;
+
+const ISSUE_URL = 'https://github.com/frcsoftware/frcsoftware.org/issues/new';
+
+// The banner wraps a link mid-sentence, and languages put it in different
+// places, so the string carries a `{link}` placeholder rather than being split
+// into fixed-order fragments.
+const [bannerBefore = '', bannerAfter = ''] =
+    t('banner.development').split('{link}');
 ---
 
-<div class="header-wrapper">
+<div
+    class="header-wrapper"
+    data-close-lightbox-label={t('slides.closeLightbox')}
+>
     <div class="site-header">
         <div class="site-header-inner">
             <div class="header-top-row">
@@ -20,7 +34,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                         <button
                             type="button"
                             class="mobile-menu-toggle"
-                            aria-label="Toggle navigation menu"
+                            aria-label={t('header.menuToggle')}
                             popovertarget="starlight__sidebar"
                         >
                             <span class="hamburger-line" />
@@ -33,12 +47,26 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                 <div class="header-actions-section">
                     <div
                         class:list={[
-                            'theme-select-wrapper',
+                            'header-select',
                             { 'has-mobile-fallback': hasSidebar },
                         ]}
                     >
                         <ThemeSelect />
                     </div>
+
+                    {
+                        // only render when there are actually language options
+                        isMultilingual && (
+                            <div
+                                class:list={[
+                                    'header-select',
+                                    { 'has-mobile-fallback': hasSidebar },
+                                ]}
+                            >
+                                <LanguageSelect />
+                            </div>
+                        )
+                    }
 
                     <div class="search-wrapper">
                         <Search {...props} />
@@ -47,13 +75,10 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             </div>
         </div>
 
-        <div class="beta-banner">
-            This website is still in beta. If you find any errors, please report
-            them{' '}
-            <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
-                here
-            </a>
-            .
+        <div class="development-banner">
+            {bannerBefore}
+            <a href={ISSUE_URL}>{t('banner.developmentLinkText')}</a>
+            {bannerAfter}
         </div>
     </div>
 </div>
@@ -94,8 +119,12 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             if (!tmp) {
                 lightbox.id = 'global-image-lightbox';
                 lightbox.className = 'global-image-lightbox';
+                const closeLabel =
+                    document
+                        .querySelector('.header-wrapper')
+                        ?.getAttribute('data-close-lightbox-label') ?? '';
                 lightbox.innerHTML = `
-          <button class="global-lightbox-close" aria-label="Close lightbox">
+          <button class="global-lightbox-close" aria-label="${closeLabel}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
           </button>
           <div class="global-lightbox-content">
@@ -274,7 +303,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         padding: 0.5rem 1.5rem;
     }
 
-    .beta-banner {
+    .development-banner {
         text-align: center;
         font-size: 0.8rem;
         line-height: 1.5;
@@ -282,7 +311,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         background: var(--accent-color-dark);
     }
 
-    .beta-banner a {
+    .development-banner a {
         color: #ffffff;
         font-weight: 600;
         text-decoration: underline;
@@ -327,31 +356,31 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         min-width: 0;
     }
 
-    .theme-select-wrapper {
+    .header-select {
         flex: 0 0 auto;
     }
 
     @media not all and (min-width: 50rem) {
-        .theme-select-wrapper.has-mobile-fallback {
+        .header-select.has-mobile-fallback {
             display: none;
         }
     }
 
-    .theme-select-wrapper :global(label),
-    .theme-select-wrapper :global(label:hover) {
+    .header-select :global(label),
+    .header-select :global(label:hover) {
         color: #ffffff;
     }
 
-    .theme-select-wrapper :global(select) {
+    .header-select :global(select) {
         font-size: 0.8rem;
     }
 
-    .theme-select-wrapper :global(select:focus-visible) {
+    .header-select :global(select:focus-visible) {
         outline: 2px solid rgba(255, 255, 255, 0.9);
         outline-offset: 2px;
     }
 
-    .theme-select-wrapper :global(option) {
+    .header-select :global(option) {
         background-color: var(--sl-color-bg);
         color: var(--sl-color-text);
     }

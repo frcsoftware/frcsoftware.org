@@ -54,6 +54,19 @@ void main() {
     System.out.println(waypoints.size()); // 2
     // [/historyAdd]
 
+    // [listOf]
+    List<Point> autoPath = List.of(new Point(0, 0), new Point(1, 2), new Point(3, 3));
+    System.out.println(autoPath.size());     // 3
+    System.out.println(autoPath.getClass()); // class java.util.ImmutableCollections$ListN
+    // [/listOf]
+
+    // [copyList]
+    List<Point> editablePath = new ArrayList<>(autoPath);
+    editablePath.add(new Point(4, 5));
+    System.out.println(editablePath.size()); // 4
+    System.out.println(autoPath.size());     // 3
+    // [/copyList]
+
     // [forEachHistory]
     RobotHistoryTracker tracker = new RobotHistoryTracker(Point.ORIGIN);
     tracker.move(new Point(3, 0));

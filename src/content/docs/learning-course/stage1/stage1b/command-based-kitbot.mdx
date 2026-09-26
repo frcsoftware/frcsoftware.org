@@ -17,31 +17,23 @@ In part 2 of this exercise, you'll rewrite the drivetrain code
 in command-based, and add some basic auto modes.
 
 <Aside type="note">
-    Your code will only work completely after you complete part 2. However, feel
-    free to check your work with the solution code(currently TBD) after
-    completing part 1.
+    Your code will only work completely after you complete Stage 1A. Make sure
+    to complete Stage 1A!
 </Aside>
 
 ### Task 1: Setup
 
-Use git to clone stage 1 template code.
-Because both stage 1A and stage 1B
-use the same template, use the following terminal command to create a new project:
+Use git to fork and clone stage 1B template code.
+If you need help, read over [the Forking and Cloning guide](/learning-course/getting-started/forking-and-cloning/).
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">
-        {/* rli:ignore */}
+        Fork then Clone the [CTRE Template](https://github.com/frcsoftware/Stage1B-Template-CTRE)
 
-        ```
-        git clone https://github.com/frcsoftware/Stage1-Template-CTRE stage1b-ctre
-        ```
     </TabItem>
     <TabItem label="REV">
-        {/* rli:ignore */}
+       Fork then Clone the [REV Template](https://github.com/frcsoftware/Stage1B-Template-REV)
 
-        ```
-        git clone https://github.com/frcsoftware/Stage1-Template-REV stage1b-rev
-        ```
     </TabItem>
 
 </Tabs>
@@ -54,13 +46,12 @@ the robot class' `robotPeriodic()` method.
 
 ```
 
-<details class="accordion">
-    <summary>What does `Scheduler.getDefault().run()` do?</summary>
+<Aside type="note" title="What does Scheduler.getDefault().run() do?" collapse>
     The command scheduler is in charge of running all the commands that are
     active, and handling any mechanism requirements that those commands may
     have. Calling this method runs the scheduler, and therefore all active
     commands, for one iteration.
-</details>
+</Aside>
 
 ### Task 2: The Feeder Mechanism
 
@@ -71,14 +62,13 @@ The `mechanisms` package will contain the code for our feeder and intake launche
 Then, create a new Java class in the `mechanisms` package named `Feeder.java`, which will be used to control the feeder.
 The `Feeder` class should implement `Mechanism`.
 
-<details class="accordion">
-    <summary>Hint</summary>
+<Aside type="hint">
     A mechanism is defined as a class with the `implements Mechanism` keyword at the end.
     ```java #feederDef
 
     ```
 
-</details>
+</Aside>
 
 Then, add the following:
 
@@ -93,14 +83,12 @@ Then, add the following:
 
         The `feed()`, `intake()`, `outtake()` and `idle()` commands should be returned from methods.
 
-        <details class="accordion">
-            <summary>Item 1, Hint 1</summary>
+        <Aside type="hint" title="Item 1, Hint 1">
             For CTRE devices, a `CANBus` object can be created via
             `CANBus.systemcore(id)`.
-        </details>
+        </Aside>
         {/* prettier-ignore */}
-        <details class="accordion">
-            <summary>Item 1, Hint 2</summary>
+        <Aside type="hint" title="Item 1, Hint 2">
             Remember that `TalonFX` is a class, and that creating objects within another
             class is done like so: <br />
             {/* rli:ignore */}
@@ -110,7 +98,7 @@ Then, add the following:
             First, figure out what to replace `TypeOfClass` with. Next,
             add the appropriate constructor parameters by hovering over
             the red squiggly line.
-        </details>
+        </Aside>
     </TabItem>
     <TabItem label="REV">
         1. A private `SparkMax` motor controller object, named `motor`, with CAN ID 5 on Systemcore CANBus 0.
@@ -122,8 +110,7 @@ Then, add the following:
 
         The `feed()`, `intake()`, `outtake()` and `idle()` commands should be returned from methods.
 
-        <details class="accordion">
-            <summary>Item 1 Hint</summary>
+        <Aside type="hint" title="Item 1 Hint">
             Remember that `SparkMax` is a class, and that creating objects within another
             class is done like so: <br />
             {/* rli:ignore */}
@@ -133,22 +120,20 @@ Then, add the following:
             First, figure out what to replace `TypeOfClass` with. Next,
             add the appropriate constructor parameters by hovering over
             the red squiggly line.
-        </details>
+        </Aside>
     </TabItem>
 
 </Tabs>
 
-<details class="accordion">
-    <summary>Items 2-4, Hint 1</summary>
+<Aside type="hint" title="Items 2-4, Hint 1">
     Re-read the "Defining Commands" and "Combining Commands and Mechanisms"
     subsections of the "Commands and Mechanisms, Pt. 1" supersection (it should
     be visible from the left sidebar).
-</details>
-<details class="accordion">
-    <summary>Item 5, Hint 1</summary>
+</Aside>
+<Aside type="hint" title="Item 5, Hint 1">
     To set a mechanism's default command, call `setDefaultCommand(Command)`
     inside of the constructor.
-</details>
+</Aside>
 
 After completing all of that, copy-paste the following code into the `Feeder` class
 to allow for simulation to work:
@@ -246,20 +231,18 @@ Define a class named `IntakeLauncher` that implements `Mechanism`; then, add the
     </TabItem>
 </Tabs>
 
-<details class="accordion">
-    <summary>Item 2 Hint</summary>
+<Aside type="hint" title="Item 2 Hint">
     Call `coroutine.wait(Seconds.of(2))` to wait 2 seconds within a `Command`. 
     You can import `Seconds` with `import static org.wpilib.units.Units.Seconds;`
-</details>
-<details class="accordion">
-    <summary>Item 6 Hint</summary>
+</Aside>
+<Aside type="hint" title="Item 6 Hint">
     In task 2, you were told to copy-paste the following code to simulate the feeder:
     ```java #feederSim
 
     ```
     Copy-paste the code into `IntakeLauncher.java`, and change one thing.
 
-</details>
+</Aside>
 
 ### Task 4: Finish the `Robot` class
 
@@ -273,10 +256,9 @@ You also need to call `intakeLauncher.periodic();` and `feeder.periodic();`
 within a method of the `Robot` class.
 Which method should it be?
 
-<details class="accordion">
-    <summary>Hint</summary>
+<Aside type="hint">
     What method in the `Robot` class has the word `periodic` in it?
-</details>
+</Aside>
 
 ### Task 5: Finish the teleop OpMode
 
@@ -292,11 +274,10 @@ In your OpMode constructor, define the following behavior:
 3. While the `xbox.a()` trigger is active,
    run the `robot.intakeLauncher.outtake()` and `robot.feeder.outtake()` commands.
 
-<details class="accordion">
-    <summary>Hint</summary>
+<Aside type="hint">
     Can you think of why we should use `whileTrue()` instead of `onTrue()` here?
     ```java #triggerBindingDef
 
     ```
 
-</details>
+</Aside>

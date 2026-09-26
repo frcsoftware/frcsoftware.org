@@ -1,13 +1,18 @@
 source_url = "https://github.com/frcsoftware/frcsoftware.org.git"
 
+stage0_dest_solution = "https://github.com/frcsoftware/Stage0-Solution.git"
+stage0_dest_template = "https://github.com/frcsoftware/Stage0-Template.git"
+
 stage1a_dest_rev_solution   = "https://github.com/frcsoftware/stage1a-solution-rev.git"
 stage1a_dest_ctre_solution  = "https://github.com/frcsoftware/stage1a-solution-ctre.git"
 
 stage1b_dest_rev_solution  = "https://github.com/frcsoftware/stage1b-solution-rev.git"
 stage1b_dest_ctre_solution = "https://github.com/frcsoftware/stage1b-solution-ctre.git"
 
-stage1_dest_rev_template = "https://github.com/frcsoftware/stage1-template-rev.git"
-stage1_dest_ctre_template = "https://github.com/frcsoftware/stage1-template-ctre.git"
+stage1a_dest_rev_template  = "https://github.com/frcsoftware/stage1a-template-rev.git"
+stage1a_dest_ctre_template = "https://github.com/frcsoftware/stage1a-template-ctre.git"
+stage1b_dest_rev_template  = "https://github.com/frcsoftware/stage1b-template-rev.git"
+stage1b_dest_ctre_template = "https://github.com/frcsoftware/stage1b-template-ctre.git"
 
 def create_workflow(name, source_path, dest_url):
     core.workflow(
@@ -40,6 +45,18 @@ def create_workflow(name, source_path, dest_url):
     )
 
 create_workflow(
+    name = "stage0_solution",
+    source_path = "examples/stage0/solutions",
+    dest_url = stage0_dest_solution
+)
+
+create_workflow(
+    name = "stage0_template",
+    source_path = "examples/stage0/templates",
+    dest_url = stage0_dest_template
+)
+
+create_workflow(
     name = "stage1a_ctre_solution",
     source_path = "examples/stage1/stage1a/solutions/ctre",
     dest_url = stage1a_dest_ctre_solution
@@ -64,13 +81,25 @@ create_workflow(
 )
 
 create_workflow(
-    name = "stage1_ctre_template",
+    name = "stage1a_ctre_template",
     source_path = "examples/stage1/templates/ctre",
-    dest_url = stage1_dest_ctre_template
+    dest_url = stage1a_dest_ctre_template
 )
 
 create_workflow(
-    name = "stage1_rev_template",
+    name = "stage1a_rev_template",
     source_path = "examples/stage1/templates/rev",
-    dest_url = stage1_dest_rev_template
+    dest_url = stage1a_dest_rev_template
+)
+
+create_workflow(
+    name = "stage1b_ctre_template",
+    source_path = "examples/stage1/templates/ctre",
+    dest_url = stage1b_dest_ctre_template
+)
+
+create_workflow(
+    name = "stage1b_rev_template",
+    source_path = "examples/stage1/templates/rev",
+    dest_url = stage1b_dest_rev_template
 )

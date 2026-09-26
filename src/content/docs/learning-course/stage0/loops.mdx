@@ -1,195 +1,174 @@
 ---
 title: Loops
-description: An Intro loops in Java
+description: An introduction to while loops and for loops in Java
 codeRegionSources:
     default: stage0/snippets/src/Loops.java
 ---
 
-Oftentimes in code, there is a need to repeat the same action multiple times in a row.
-For instance, if you know your grades are about to be released, you might repeatedly check them until they come out.
-In Java we can use loops to do this.
+In the [previous lesson](/learning-course/stage0/conditionals/), we used conditionals to decide whether a block of code should run.
+In this lesson, we're going to learn about **loops**, which let a block of code run more than once.
 
-In this lesson, we're going to cover two main types of loops: **while** loops and **for** loops.
+## Why Loops?
+
+Programs often need to do the same thing several times in a row.
+In everyday life, if you know your grades are about to be released, you might check for them over and over until they come out.
+A robot does the same kind of thing:
+it might keep driving forward until it's close enough to a wall, or run the launch sequence for every ball in its hopper.
+Writing the same line of code once per repetition would be tedious,
+and it wouldn't work at all if you don't know ahead of time how many repetitions you need.
+
+Conditionals and loops both control which code runs,
+but a conditional runs its code block at most once, while a loop can run its code block many times.
+We'll cover the two main kinds of loops: `while` loops and `for` loops.
 
 <Aside type="note">
-    Another type of loop is the do-while loop, but this will not be covered due
-    to sparse use in FRC. However, if you want to learn more about do while
-    loops, you can do so through
-    [w3school](https://www.w3schools.com/java/java_while_loop_do.asp).
+    Java also has a do-while loop, which isn't covered here because it's rarely
+    used in FRC. If you want to learn more about it, see
+    [w3schools](https://www.w3schools.com/java/java_while_loop_do.asp).
 </Aside>
 
-Conditionals and loops may seem similar but they have different purposes.
-Conditionals and loops both control the flow of programs.
-Conditionals are used to run a block of code once, whereas a loop can run a block of multiple times
+## The `while` Loop
 
-## while
-
-`while` loops are the most simple type of loops.
-
-The syntax of a `while` loops is as shown:
+A **`while` loop** runs its code block over and over, for as long as its condition is true:
 
 ```java #whileSyntax
 
 ```
 
-You might notice that a `while` loop looks very similar to the `if` conditional, which was discussed in the previous lesson.
-A `while` loop includes:
+A `while` loop looks a lot like the `if` statement from the [previous lesson](/learning-course/stage0/conditionals/).
+It has the `while` keyword, a condition in parentheses that is either true or false, and a code block in curly braces.
 
-- the `while` keyword to declare that we're making a `while` loop
-- `( )` to hold the condition that is either true or false.
-  Example: (5 > 1) is a condition and it is true because 5 is greater than 1
-- `{` to denote the opening of the loop's code block
-- `}` to denote the end of the loop's code block
+The difference is what happens after the code block finishes.
+An `if` statement moves on to the code after it, but a `while` loop checks its condition again.
+If the condition is still true, the code block runs again, and this repeats until the condition is false.
+If the condition is false the first time it's checked, the code block never runs.
+Unlike an `if` statement, a `while` loop can't have an `else` attached.
 
-Like the `if` conditional, the `while` loop will run its code block if the condition is true.
-Unlike the `if` conditional, however, when the code block is done, the `while` loop will evaluate its condition again.
-If the condition is still true, the code block will run again.
-This will repeat until the condition is false.
-Also unlike the `if` conditional, a `while` loop (or any other type of loop) can't have any `else` statements attached.
-This means that if the condition is false when the loop is first encountered, the entire thing is skipped.
-
-Let's look at an example:
+Here's a loop that prints the numbers from 0 to 5:
 
 ```java #whileExample
 
 ```
 
-In the example, there is an `int` called `i` which holds the value 0. The `while` loop has the condition `i < 6`.
-First, the compiler checks if the condition is true.
-We know that 0 is less than 6 so the `while` code block runs and the value of `i`, which is currently 0, is printed to the terminal.
-The value of `i` is also updated because of `i++` and it changes to 1.
-Now the condition checks if 1 is less than 6. We know that it is true, so the value of `i` gets printed and the value of `i` is increased by 1.
-This repeats and eventually `i`'s value becomes 6.
-Now, when the condition is evaluated, it's `false`, as 6 is not less than 6, so the loop is complete.
+`i` starts at 0.
+Each time through the loop, the code prints `i`, adds 1 to it with `i++`, and then checks `i < 6` again.
+Does `i++` look familiar?
+It's the increment operator from the [Operators lesson](/learning-course/stage0/operators/).
+Once `i` reaches 6, the condition is false and the loop ends, so the last number printed is 5.
 
-<Aside type="tip">
-    Does the ``i++`` look familiar? This was covered in the operator section. If
-    you need a refresher on what an operator is and how it works, check out the
-    operator page.
-</Aside>
+Each pass through a loop's code block is called an **iteration**, so this loop runs for six iterations.
 
-Lets look at an another example!
-In the example below we have:
+### Loops and Conditionals Together
+
+A loop's code block can contain any code, including an `if` statement.
+This loop tells the robot to drive forward for a few iterations, then stop:
 
 ```java #whileExample2
 
 ```
 
-Without running the code, what do you think happens?
+Without running the code, what does it print?
 
-`timer` is set to 0, and the `while` loop’s condition is checking if `timer` is less than or equal to 5.
-0 is less than 5, so the code enters the while loop.
-Now the `if` statement checks whether `timer` is less than 5.
-0 is less than 5, so it prints out `Drive Forward`.
-The `if` statement is done, and the code runs `timer++`, which increases `timer`’s value by one.
+<Aside type="tip" title="Answer" collapse>
+    It prints `Drive Forward` five times, then `Stop Driving` once.
 
-The code goes back to the `while` loop.
-1 is less than 5, so the code enters the `while` loop again.
-For the `if` statement, 1 is less than 5.
-Therefore, `Drive Forward` gets printed out again.
+    The loop runs while `loopCount <= 5`, so it runs once for each value of
+    `loopCount` from 0 to 5. That's six iterations. In the first five,
+    `loopCount < 5` is true, so the `if` block runs. In the last one,
+    `loopCount` is 5, so the `else` block runs instead. Then `loopCount`
+    becomes 6, the loop's condition is false, and the loop ends.
 
-This repeats 4 times until `timer` is 5.
-Once this happens, the `if` statement is skipped since 5 is not less than 5.
-Now the else runs and prints out `Stop Driving`, `timer`’s value increases to 6, 6 is not less than 5, so the code stops running.
+</Aside>
 
-## for
+## The `for` Loop
 
-With the power of while loops, we're able to repeat a block of code any number of times, like so:
+Many loops follow the same pattern: create a counter variable, check it in the condition, and update it at the end of each iteration.
+Here's that pattern written as a `while` loop:
 
 ```java #ForExample1
 
 ```
 
-This loop depends on 3 important statements:
-`int i = 0;`, `i < 6`, and `i++`.
-For loops allow us to inline these statements:
+This loop depends on three pieces: `int i = 0`, `i < 6`, and `i++`.
+A **`for` loop** puts all three in one place, at the top of the loop:
 
 ```java #ForExample2
 
 ```
 
-Using the previous example, we can see that the `for` loop syntax includes:
+The parentheses after `for` hold three parts, separated by semicolons:
 
-- the `for` keyword to declare that we're making a `for` loop
-- `()`to hold the three statements which allow the loop to run
-- `{` to denote the opening of the loop's code block
-- `}` to denote the ending of the loop's code block
+- **Initialization** (`int i = 0`) runs once, before the loop starts, and usually creates the counter variable.
+- **Condition** (`i < 6`) is checked before every iteration, and the loop keeps going while it's true.
+- **Update** (`i++`) runs at the end of every iteration.
 
-The three statements are
+These two loops do the same thing, but the `for` loop is easier to read.
+Where the counter starts, when the loop stops, and how the counter changes are all on one line, instead of spread across the loop.
 
-- **initialization**: creates a variable that sets the starting point of the loop.
-  This is the `int i = 0;` seen in the previous example.
-- **condition**: a condition, which uses the variable, that is checked before each iteration.
-  This is `i < 6;`.
-  If the condition is true, the code inside the loop runs
-- **update**: updates the variable created in initialization after each iteration.
-  Lastly, that's `i++`;
+<Aside type="tip">
+    All three parts of a `for` loop are optional, but the two semicolons are
+    always required. The loops in this course always use all three parts.
+</Aside>
 
-All 3 statements are optional, but the semicolons must be present.
-However, the examples in this section will use all statements.
-
-Let's look at another example:
+Without running the code, what does this loop print?
 
 ```java #forExample
 
 ```
 
-In this example, we create a variable `i` that is set to 0. When `i` is less than 5, the `for` code block runs, printing the value of `i` which is 0.
-Then it goes back to the update statement which is `i++`, `i` has increased by 1 and `i`'s value is now 1.
-We check the condition, 1 is less than 5, so `for` code block runs, the new value of `i` is printed, `i` is updated and this repeats until `i` is no longer less than 5.
-When `i` is no longer less than 5, the `for` loop is skipped.
-
-## Be Careful about Infinite Loops
-
-It is important to make sure that the condition can become false.
-If the condition is always true, the loop will always run causing an infinite loop.
-When an infinite loop happens, the code never stops.
-This can be unsafe if the code is running a robot mechanism.
-This could cause a robot to never stop driving forward or an arm to always move.
-Infinite loops can be prevented by ensuring that the value inside the condition changes by incrementing or decrementing.
-
-<Aside type="note">
-
-When diving into FRC programming, you will find that infinite loops are occasionally encouraged (such as in commands).
-This will be talked about more in Stage 1
-
+<Aside type="tip" title="Answer" collapse>
+    It prints the numbers 0, 1, 2, 3, and 4, one per line. `i` starts at 0 and
+    increases by 1 every iteration. When `i` reaches 5, the condition `i < 5` is
+    false, so the loop ends before 5 is printed.
 </Aside>
 
-{/* rli:ignore */}
+## Be Careful About Infinite Loops
 
-```java
-    int timer = 0;
-    if (false) {
-        while (timer < 7){
-            drivetrain.setThrottle(1); // sets drive motors to full speed
-        }
-    }
-```
+A loop only stops when its condition becomes false.
+If nothing inside the loop ever changes the condition, it stays true forever, and the loop never stops.
+This is called an **infinite loop**.
 
-In this example, we want our drive train to run for 7 seconds.
-We have our variable called `timer` which is set to 0.
-0 is less than 7 so the code inside runs and the robot drives forward at full speed.
-However, `timer`'s value never changes.
-This means `timer` will always be 0. 0 is less than 7 so the loop will continuously run and the robot never stops driving!
-
-To fix this, we would make sure to increment the timer value as shown below.
+On a robot, an infinite loop is dangerous.
+The drivetrain might never stop driving, or an arm might keep moving until it hits something.
+This loop is meant to drive forward for 7 iterations:
 
 {/* rli:ignore */}
 
 ```java
-    int timer = 0;
-    while (timer < 7){
-        drivetrain.setThrottle(1); // sets drive motors to full speed
-        timer++; // increments timer by 1
-    }
+int loopCount = 0;
+while (loopCount < 7) {
+    drivetrain.setThrottle(1); // sets drive motors to full speed
+}
 ```
 
-`timer` now increments by 1 each time the loop is run, and the robot will stop driving after 7 seconds.
+However, nothing inside the loop changes `loopCount`.
+It's always 0, so `loopCount < 7` is always true, and the robot never stops driving!
+
+To fix it, update `loopCount` inside the loop so the condition eventually becomes false:
+
+{/* rli:ignore */}
+
+```java
+int loopCount = 0;
+while (loopCount < 7) {
+    drivetrain.setThrottle(1); // sets drive motors to full speed
+    loopCount++;
+}
+```
+
+Now `loopCount` increases by 1 every iteration, and the loop stops after 7 iterations.
+
+<Aside type="note">
+    When you start writing FRC robot code, you'll find that some code is meant
+    to keep running for as long as the robot is on, such as commands. We'll
+    cover how that works in Stage 1.
+</Aside>
 
 ## Loops Exercise
 
 <Aside type="exercise">
 
-WIP
+Now, you can dive straight into `Loops.java`!
+Follow the comments and write the appropriate code to achieve the objectives.
 
 </Aside>

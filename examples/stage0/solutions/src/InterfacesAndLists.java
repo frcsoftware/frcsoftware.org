@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+// Import `ArrayList` and `List` from the `java.util` package.
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,12 +56,12 @@ class Pair<A, B> {
 
 void main() {
     // Create a variable named `beamBreak` with type `IntakeSensor`, and assign it a new instance of BeamBreak.
-    // Create a variable named `currentSensor` of type `IntakeSensor`, and assign it a new instance of CurrentSensor.
-    // Print the result of calling `hasGamePiece()` on both sensors.
+    // Create a variable named `laserCAN` of type `IntakeSensor`, and assign it a new instance of LaserCAN.
+    // Print the result of calling `distanceMillimeters()` on both sensors.
     IntakeSensor beamBreak = new BeamBreak();
-    IntakeSensor currentSensor = new LaserCAN();
+    IntakeSensor laserCAN = new LaserCAN();
     System.out.println(beamBreak.distanceMillimeters());
-    System.out.println(currentSensor.distanceMillimeters());
+    System.out.println(laserCAN.distanceMillimeters());
 
     // Create a Pair of String and Integer (Pair<String, Integer>) with the values "Robot" and 254.
     // Print the first value and the second value separated by a space using getFirst() and getSecond().

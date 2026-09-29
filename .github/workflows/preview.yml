@@ -74,16 +74,11 @@ jobs:
               with:
                   script: |
                       const prNumber = parseInt('${{ steps.get-pr.outputs.pr-number }}');
-                      const alias = 'pr-' + prNumber;
-                      const versionUrl = '${{ steps.upload.outputs.deployment-url }}';
-                      if (!versionUrl) {
+                      const previewUrl = '${{ steps.upload.outputs.deployment-url }}'.replace(/\/?$/, '');
+                      if (!previewUrl) {
                           core.setFailed('wrangler-action did not report a deployment-url');
                           return;
                       }
-                      const previewUrl = versionUrl.replace(
-                          /^(https:\/\/)[^-]+-/,
-                          `$1${alias}-`,
-                      );
 
                       // wrangler lists each newly uploaded asset as "+ /some/path/index.html"
                       const uploaded = (process.env.WRANGLER_OUTPUT || '')

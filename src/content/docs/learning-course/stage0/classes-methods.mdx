@@ -60,14 +60,22 @@ Because the constructor we defined earlier takes two parameters,
 we pass `this.x + other.x` and `this.y + other.y` as the arguments to the constructor.
 Therefore, the new `Point` object will have the sum of the two `Point` objects' coordinates.
 
-The `minus` method works the same way, but subtracts the coordinates instead of adding them,
-giving us the vector that points from `other` to this `Point`:
+The `minus` method works the same way, but subtracts the coordinates instead of adding them:
 
 ```java {point}#minus
 
 ```
 
-Finally, we're going to define a `norm` method that returns the distance of this object from the origin.
+The result of `minus` isn't a location on the field.
+It's a **vector**, an arrow with a direction and a length, like "3 meters right and 4 meters up."
+Subtracting `other` from this `Point` gives the vector that points from `other` to this `Point`.
+A `Point` can hold a vector as well as a location, since both are an `x` and a `y`.
+
+Finally, we're going to define a `norm` method that returns the distance of this `Point` from the origin.
+Picture a right triangle with one corner at the origin and the opposite corner at this `Point`.
+Its two shorter sides are `x` and `y` long, so by the Pythagorean theorem, its longest side is the square root of `x² + y²`.
+For the point (3, 4), that's the square root of 9 + 16, which is 5.
+The length of a vector is called its **norm**, which is where the method gets its name.
 
 ```java {point}#norm
 
@@ -89,7 +97,8 @@ which returns the square root of its argument.
     method.
 </Aside>
 
-Here is the complete `Point` class:
+`Point` can do math now!
+Here is the complete class:
 
 ```java {point}#pointFull
 
@@ -202,6 +211,7 @@ And an example of using it:
 
 <Aside type="exercise">
 
-Now, you can dive straight into `methods.java!` Follow the comments and write the appropriate code to achieve the objectives.
+Now, you can dive straight into `Methods.java`!
+Follow the comments and write the appropriate code to achieve the objectives.
 
 </Aside>

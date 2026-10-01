@@ -31,8 +31,7 @@ It also compiles fine.
 
 Can you spot the error?
 
-<details class="accordion">
-    <summary>Reveal</summary>
+<Aside type="answer">
     The `onTrue()` binding schedules the command once, when the bumper is first pressed.
     The command keeps running even after the bumper is released.
     Use `whileTrue()` instead, which runs the command for as long as the trigger is active:
@@ -41,7 +40,7 @@ Can you spot the error?
 
     ```
 
-</details>
+</Aside>
 
 ### Exercise 2
 
@@ -54,8 +53,7 @@ The code compiles fine.
 
 Can you spot the error?
 
-<details class="accordion">
-    <summary>Reveal</summary>
+<Aside type="answer">
     The button is read once, before the trigger is created.
     The trigger always checks the same stored value, so it either runs forever or never runs at all.
     Read the button inside the trigger's lambda instead:
@@ -64,7 +62,7 @@ Can you spot the error?
 
     ```
 
-</details>
+</Aside>
 
 ### Exercise 3
 
@@ -91,8 +89,7 @@ class Intake implements Mechanism {
 
 Can you fix the compile-time error and the logic error?
 
-<details class="accordion">
-    <summary>Reveal</summary>
+<Aside type="answer">
     The goal is for the commands to set the motor's throttle forever, so
     `while (true)` should be used instead of `while (false)`. A
     `while (false)` statement will never run!
@@ -104,7 +101,7 @@ Can you fix the compile-time error and the logic error?
 
     ```
 
-</details>
+</Aside>
 
 ### Exercise 4
 
@@ -119,12 +116,10 @@ You hold down the left bumper, and the intake starts spinning; but releasing it 
 stop the intake.
 Can you spot the error?
 
-<details class="accordion">
-    <summary>Hint</summary>
+<Aside type="hint">
     Setting the Intake's default command might help you. But why?
-</details>
-<details class="accordion">
-    <summary>Reveal</summary>
+</Aside>
+<Aside type="answer">
     When you call `motor.setThrottle(double)`, the motor will start spinning forever,
     even if you aren't calling `setThrottle` anymore. Releasing the left bumper
     would cancel the `runAtThrottle` command, but it wouldn't stop the motor.
@@ -135,4 +130,4 @@ Can you spot the error?
 
     ```
 
-</details>
+</Aside>

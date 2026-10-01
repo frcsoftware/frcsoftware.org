@@ -11,8 +11,10 @@ export const collections = {
         loader: i18nLoader(),
         schema: i18nSchema({
             extend: z.object({
+                'aside.answer': z.string().optional(),
                 'aside.example': z.string().optional(),
                 'aside.exercise': z.string().optional(),
+                'aside.hint': z.string().optional(),
                 'aside.video': z.string().optional(),
                 'aside.wip': z.string().optional(),
                 'banner.development': z.string().optional(),

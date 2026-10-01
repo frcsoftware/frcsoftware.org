@@ -1,6 +1,7 @@
 ---
 import { mdiGithub } from '@mdi/js';
 import MdiIcon from '../components/MdiIcon.astro';
+import EditLink from 'virtual:starlight/components/EditLink';
 import Pagination from 'virtual:starlight/components/Pagination';
 
 const t = Astro.locals.t;
@@ -13,6 +14,9 @@ const mdiDiscord =
 <footer class="site-footer">
     <!-- Pagination Navigation -->
     <div class="pagination-wrapper">
+        <div class="footer-meta">
+            <EditLink />
+        </div>
         <Pagination />
     </div>
 
@@ -59,6 +63,17 @@ const mdiDiscord =
         max-width: var(--sl-content-width, 72rem);
         margin: 0 auto 2rem;
         padding: 0 2rem;
+    }
+
+    .footer-meta {
+        display: flex;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-size: var(--sl-text-sm);
+    }
+
+    .footer-meta:empty {
+        display: none;
     }
 
     .pagination-wrapper :global(nav) {

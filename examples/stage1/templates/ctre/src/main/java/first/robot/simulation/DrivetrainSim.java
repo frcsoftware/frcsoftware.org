@@ -5,12 +5,7 @@
  */
 package first.robot.simulation;
 
-import static org.wpilib.units.Units.Inches;
-import static org.wpilib.units.Units.KilogramSquareMeters;
-import static org.wpilib.units.Units.Kilograms;
-import static org.wpilib.units.Units.Meters;
-import static org.wpilib.units.Units.Radians;
-import static org.wpilib.units.Units.RadiansPerSecond;
+import static org.wpilib.units.Units.*;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.ChassisReference;
@@ -137,5 +132,9 @@ public class DrivetrainSim {
     rightMotorVoltagePub.set(rightTalon.getMotorVoltage().getValueAsDouble());
     leftMotorSupplyCurrentPub.set(leftTalon.getSupplyCurrent().getValueAsDouble());
     rightMotorSupplyCurrentPub.set(rightTalon.getSupplyCurrent().getValueAsDouble());
+  }
+
+  public void setPose(Pose2d pose) {
+    driveSim.setPose(pose);
   }
 }

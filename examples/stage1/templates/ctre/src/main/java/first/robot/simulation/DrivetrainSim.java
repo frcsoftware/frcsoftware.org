@@ -9,6 +9,7 @@ import static org.wpilib.units.Units.Inches;
 import static org.wpilib.units.Units.KilogramSquareMeters;
 import static org.wpilib.units.Units.Kilograms;
 import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.MetersPerSecond;
 import static org.wpilib.units.Units.Radians;
 import static org.wpilib.units.Units.RadiansPerSecond;
 
@@ -19,11 +20,10 @@ import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTableInstance;
-import org.wpilib.networktables.StructPublisher;
 import org.wpilib.simulation.DifferentialDrivetrainSim;
 import org.wpilib.simulation.OnboardIMUSim;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 public class DrivetrainSim {
 
@@ -46,52 +46,9 @@ public class DrivetrainSim {
           Inches.of(21.5).in(Meters), // Distance between the left and right wheels
           null);
 
-  // we add front slashes here so that the keys show up consistently between the CTRE and REV
-  // examples.
-  private final StructPublisher<Pose2d> simPosePublisher =
-      NetworkTableInstance.getDefault().getStructTopic("/Drivetrain/Pose", Pose2d.struct).publish();
-
-  private final DoublePublisher leftPositionPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftPositionMeters").publish();
-
-  private final DoublePublisher rightPositionPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightPositionMeters").publish();
-
-  private final DoublePublisher leftVelocityPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/LeftVelocityMPS").publish();
-
-  private final DoublePublisher rightVelocityPub =
-      NetworkTableInstance.getDefault().getDoubleTopic("/Drivetrain/RightVelocityMPS").publish();
-
-  private final DoublePublisher leftMotorVelocityPub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVelocityRPS")
-          .publish();
-
-  private final DoublePublisher rightMotorVelocityPub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/RightMotor/MotorVelocityRPS")
-          .publish();
-
-  private final DoublePublisher leftMotorVoltagePub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/LeftMotor/MotorVoltage")
-          .publish();
-
-  private final DoublePublisher rightMotorVoltagePub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/RightMotor/MotorVoltage")
-          .publish();
-
-  private final DoublePublisher leftMotorSupplyCurrentPub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/LeftMotor/MotorSupplyCurrent")
-          .publish();
-
-  private final DoublePublisher rightMotorSupplyCurrentPub =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("/Drivetrain/RightMotor/MotorSupplyCurrent")
-          .publish();
+  private final TelemetryTable table = Telemetry.getTable("Drivetrain");
+  private final TelemetryTable leftMotorTable = table.getTable("LeftMotor");
+  private final TelemetryTable rightMotorTable = table.getTable("RightMotor");
 
   /**
    * @param leftTalon the left-side TalonFX motor controller
@@ -125,17 +82,17 @@ public class DrivetrainSim {
     rightTalonSim.setRotorVelocity(
         RadiansPerSecond.of(driveSim.getRightVelocity() * linearToMotorRatio));
 
-    simPosePublisher.set(driveSim.getPose());
-    leftPositionPub.set(driveSim.getLeftPosition());
-    rightPositionPub.set(driveSim.getRightPosition());
-    leftVelocityPub.set(driveSim.getLeftVelocity());
-    rightVelocityPub.set(driveSim.getRightVelocity());
+    table.log("Pose", driveSim.getPose(), Pose2d.struct);
+    table.log("LeftPositionMeters", Meters.of(driveSim.getLeftPosition()));
+    table.log("RightPositionMeters", Meters.of(driveSim.getRightPosition()));
+    table.log("LeftVelocityMPS", MetersPerSecond.of(driveSim.getLeftVelocity()));
+    table.log("RightVelocityMPS", MetersPerSecond.of(driveSim.getRightVelocity()));
 
-    leftMotorVelocityPub.set(leftTalon.getVelocity().getValueAsDouble());
-    rightMotorVelocityPub.set(rightTalon.getVelocity().getValueAsDouble());
-    leftMotorVoltagePub.set(leftTalon.getMotorVoltage().getValueAsDouble());
-    rightMotorVoltagePub.set(rightTalon.getMotorVoltage().getValueAsDouble());
-    leftMotorSupplyCurrentPub.set(leftTalon.getSupplyCurrent().getValueAsDouble());
-    rightMotorSupplyCurrentPub.set(rightTalon.getSupplyCurrent().getValueAsDouble());
+    leftMotorTable.log("MotorVelocityRPS", leftTalon.getVelocity().getValue());
+    rightMotorTable.log("MotorVelocityRPS", rightTalon.getVelocity().getValue());
+    leftMotorTable.log("MotorVoltage", leftTalon.getMotorVoltage().getValue());
+    rightMotorTable.log("MotorVoltage", rightTalon.getMotorVoltage().getValue());
+    leftMotorTable.log("MotorSupplyCurrent", leftTalon.getSupplyCurrent().getValue());
+    rightMotorTable.log("MotorSupplyCurrent", rightTalon.getSupplyCurrent().getValue());
   }
 }

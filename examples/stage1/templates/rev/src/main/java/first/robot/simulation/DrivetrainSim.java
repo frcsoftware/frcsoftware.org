@@ -103,4 +103,8 @@ public class DrivetrainSim {
     leftMotorSupplyCurrentPub.set(m_driveSim.getLeftCurrentDraw());
     rightMotorSupplyCurrentPub.set(m_driveSim.getRightCurrentDraw());
   }
+
+  public void setPose(Pose2d pose) {
+    m_driveSim.setPose(pose);
+  }
 }

@@ -313,9 +313,8 @@ const iconPaths: Record<string, string> = {
         color: #374151;
     }
 
-    /* Ensure all text content inside asides uses Inter font */
-    .aside-content,
-    .aside-content :global(*) {
+    /* Text inside asides inherits Inter; code elements keep their own monospace font */
+    .aside-content {
         font-family: 'Inter', system-ui, sans-serif;
     }
 

@@ -10,7 +10,10 @@ import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
 import { TabItem, Tabs } from '@astrojs/starlight/components';
 
 Before we can start programming, we have to get the code set up.
-FRCSoftware focuses two types of vendors: REV and CTRE.
+FRCSoftware focuses on two vendors: REV and CTRE.
+REV and CTRE both have many motors and motor controllers.
+For REV, this course will use NEO motors and Spark Max motor controllers.
+For CTRE, this course will uses Kraken motors and its built in motor controller TalonFX.
 
 <ContentRow>
     <ContentFigure
@@ -31,8 +34,6 @@ FRCSoftware focuses two types of vendors: REV and CTRE.
 
 ---
 
-REV uses NEOs and SparkMAXs.
-CTRE uses Krakens.
 If you are not sure which set up your team uses, ask a team member!
 After picking an ecosystem, it's time to clone the relevant repository.
 

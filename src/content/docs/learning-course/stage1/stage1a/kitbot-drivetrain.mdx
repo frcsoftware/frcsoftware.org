@@ -39,13 +39,13 @@ mostly interacted with in the same way so this stage will only use the `SparkMax
     Therefore, these classes need to be imported into files where they are used
     so the compiler knows what they are. If you use a class that has not yet
     been imported VS Code will mark it as an error and provide a quick fix
-    button that allows you to quickly import the class. The import statement for
-    `TalonFX` and `SparkMax` look like `import
+    button that allows you to quickly import the class. The import statements
+    for `TalonFX` and `SparkMax` look like `import
     com.ctre.phoenix6.hardware.TalonFX;` and `import
     com.revrobotics.spark.SparkMax;` respectively.
 </Aside>
 
-When creating a motor controller object, the physical motor controller's CAN ID and the CAN Bus ID are given.
+When creating a motor controller object, the physical motor controller’s CAN Bus ID and CAN ID are given.
 CAN Bus refers to which of the 5 Systemcore CAN ports, or which CANivore, the device is plugged into.
 CAN ID is an integer that each CAN device is configured to have.
 All devices on a given CAN Bus must have a unique ID.
@@ -53,10 +53,10 @@ Using the combination of CAN Bus and CAN ID Systemcore can give commands to the 
 
 For this exercise the motor controllers will have the IDs:
 
-- `leftLeader`: CAN Bus 0, CAN ID 0
-- `leftFollower`: CAN Bus 0, CAN ID 1
-- `rightLeader`: CAN Bus 0, CAN ID 2
-- `rightFollower`: CAN Bus 0, CAN ID 3
+- `leftLeader`: CAN Bus `CAN_S0`, CAN ID `0`
+- `leftFollower`: CAN Bus `CAN_S0`, CAN ID `1`
+- `rightLeader`: CAN Bus `CAN_S0`, CAN ID `2`
+- `rightFollower`: CAN Bus `CAN_S0`, CAN ID `3`
 
 The motor controller objects should be created inside the `Robot.java` at the top of the class.
 This is how the motor controller objects for the left motors will look.
@@ -66,8 +66,8 @@ This is how the motor controller objects for the left motors will look.
         ```java {ctreRobot}#DriveMotorsLeft
         ```
 
-        CTRE uses a `CANBus` that is constructed with a `CANPort enum to specify which of Systemcore's CANBuses the device is connected too.
-        This enum is a field in the `CANPort` class and only CAN_S0 through CAN_S4 will ever be used since Systemcore only has five CAN Busses.
+        CTRE uses a `CANBus` that is constructed with a `CANPort` enum to specify which of Systemcore's CANBuses the device is connected too.
+        This enum is a field in the `CANPort` class and only `CAN_S0` through `CAN_S4` will ever be used since Systemcore only has five CAN Busses.
 
 
     </TabItem>
@@ -159,10 +159,10 @@ This object stores the configuration so it can be changed and shared across diff
 </Tabs>
 
 Next, settings can be changed from their default by calling various functions on the configuration object with their new values.
-For the left motors, the invert setting will be `true` for REV code and `Clockwise_Positive` for CTRE code.
+For the left motors, the invert setting will be `true` for REV code and `InvertedValue.CounterClockwise_Positive` for CTRE code.
 This will cause the motors to spin in a direction that would drive the robot forward when a positive input is given.
 Since the motors on the right side of the drivetrain are facing the opposite direction they would cause the wheels try and drive the robot backwards when given a positive input if they were configured the same way.
-Instead they should be configured with an invert setting of `false` or `CounterClockwise_Positive` so they also drive the robot forward when given a positive input.
+Instead they should be configured with an invert setting of `false` or `InvertedValue.CounterClockwise_Positive` so they also drive the robot forward when given a positive input.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">

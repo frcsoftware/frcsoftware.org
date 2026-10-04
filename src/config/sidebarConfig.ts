@@ -5,11 +5,16 @@ import type {
     StarlightIcon,
     StarlightUserConfig,
 } from '@astrojs/starlight/types';
+import { defaultLang } from './locales';
 
 type StarlightSidebarItem = NonNullable<StarlightUserConfig['sidebar']>[number];
 
+// Labels should be keyed by locale code as in `src/config/locales.ts`, e.g. `en-US`, `fr-FR`, etc.
+export type LocalizedLabels = Record<string, string>;
+
 export interface SidebarTopic {
     label: string;
+    translations?: LocalizedLabels;
     id: string;
     link: string;
     icon: StarlightIcon;
@@ -18,6 +23,7 @@ export interface SidebarTopic {
 
 export type SidebarItem = {
     label: string;
+    translations?: LocalizedLabels;
     slug?: string;
     items?: SidebarItem[];
     collapsed?: boolean;
@@ -311,14 +317,22 @@ function convertItem(item: SidebarItem): StarlightSidebarItem {
     if (item.items) {
         return {
             label: item.label,
+            translations: item.translations,
             collapsed: item.collapsed ?? false,
             items: item.items.map(convertItem),
         };
     }
-    return { label: item.label, link: '/' + item.slug + '/' };
+    return {
+        label: item.label,
+        translations: item.translations,
+        link: '/' + item.slug + '/',
+    };
 }
 
-export const sidebarTopics = topics.map((topic) => ({
+export const sidebarTopics = topics.map(({ translations, ...topic }) => ({
     ...topic,
+    label: translations
+        ? { [defaultLang]: topic.label, ...translations }
+        : topic.label,
     items: topic.items.map(convertItem),
 }));

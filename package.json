@@ -28,7 +28,7 @@
         "lint:md": "remark src/content/docs --ext mdx --frail",
         "lint:regions": "tsx scripts/validate-regions.ts",
         "lint:images": "node scripts/images.lint.js",
-        "vale": "pnpm vale:setup && vale sync && vale src/content",
+        "vale": "pnpm vale:setup && vale sync && tsx scripts/run-vale.ts",
         "vale:setup": "tsx scripts/setup-vale.ts",
         "format": "prettier --write .",
         "format:check": "prettier --check .",

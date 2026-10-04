@@ -7,22 +7,39 @@
  * <Glossary term="Custom">Custom definition here</Glossary>
  */
 
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import { defaultLang } from '../config/locales';
 
 interface Props {
     term: string;
+    /** Canonical English term, supplied by remark-glossary. */
+    termId?: string;
+    lang?: string;
 }
 
-const { term } = Astro.props;
+const { term, termId, lang = defaultLang } = Astro.props;
 
-const glossaryEntry = (await getCollection('glossary')).find(
-    (entry) => entry.id.toLowerCase() === term.trim().toLowerCase(),
-);
+// if term is supplied directly, use that, otherwise search for it
+let entry = termId
+    ? await getEntry('glossary', `${lang}:${termId}`)
+    : undefined;
+
+if (!entry) {
+    const needle = term.trim().toLowerCase();
+    entry = (await getCollection('glossary')).find(
+        ({ data }) =>
+            data.lang === lang &&
+            (data.term.toLowerCase() === needle ||
+                data.key.toLowerCase() === needle),
+    );
+}
+
+const t = Astro.locals.t;
 const slotContent = await Astro.slots.render('default');
 const definition =
     slotContent?.trim() ||
-    glossaryEntry?.data.definition ||
-    'Definition not found';
+    entry?.data.definition ||
+    t('glossary.definitionNotFound');
 ---
 
 <span class="glossary-term" data-tooltip={definition}>{term.trim()}</span>

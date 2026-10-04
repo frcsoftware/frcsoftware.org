@@ -10,9 +10,11 @@ import {
     mdiSourceBranch,
 } from '@mdi/js';
 import MdiIcon from './MdiIcon.astro';
+import { localizeHref } from '../config/locales';
 
 interface Props {
     title: string;
+    /** Root-relative page URL, written without a locale prefix. */
     href: string;
     description: string;
     icon:
@@ -27,6 +29,8 @@ interface Props {
 
 const { title, href, description, icon } = Astro.props;
 
+const localizedHref = localizeHref(href, Astro.currentLocale);
+
 const iconPaths = {
     book: mdiBookOpenVariant,
     graduation: mdiSchool,
@@ -38,7 +42,7 @@ const iconPaths = {
 };
 ---
 
-<a href={href} class="home-card">
+<a href={localizedHref} class="home-card">
     <div class="home-card-icon">
         <MdiIcon path={iconPaths[icon]} size={28} />
     </div>

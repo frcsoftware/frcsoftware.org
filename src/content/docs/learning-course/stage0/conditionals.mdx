@@ -1,148 +1,136 @@
 ---
 title: Conditionals
-description: An Intro To Conditional Statements
+description: An introduction to if, else, and else if statements in Java
 codeRegionSources:
     default: stage0/snippets/src/Conditionals.java
 ---
 
-In everyday life, we make decisions based on different situations.
-For example, "If we are hungry, then we get a snack" or "If we are tired, then we go to bed."
-Robots often need to make different decisions depending on the situation.
-For example, "If the timer starts, drive the robot for 5 seconds" or "If the timer is 0, stop driving."
-To add decisions to our code, we use conditionals.
+In the [previous lesson](/learning-course/stage0/operators/), we used comparison and logical operators to produce `true` or `false` values.
+In this lesson, we're going to use those values to make decisions with **conditionals**, which run a block of code only when a condition is true.
 
-This section will cover three types of conditionals which are:
+## Why Conditionals?
 
-- if
-- else
-- else if
+In everyday life, we make decisions all the time, like "If I'm hungry, I get a snack."
+Robots make decisions too, like "If the robot is far from the wall, drive forward," or "If the match timer reaches 0, stop driving."
+So far, every line of code we've written runs every time.
+Conditionals let us choose which code runs based on values like a sensor reading or the time left in the match.
+
+We'll cover three kinds of conditionals: `if`, `else`, and `else if`.
 
 <Aside type="note">
-    Another type of conditional, called a switch statement, will not be covered
-    due to its sparse FRC usage. However, if you want to learn more about the
-    switch statement, you can use w3school's page [which covers this type of
-    conditional.](https://www.w3schools.com/java/java_switch.asp)
+    Java also has a `switch` statement, which isn't covered here because it's
+    rarely used in FRC. If you want to learn more about it, see
+    [w3schools](https://www.w3schools.com/java/java_switch.asp).
 </Aside>
 
-## if
+## The `if` Statement
 
-An `if` statement runs code only if a specified condition is true.
-The syntax for an `if` statement is as follows:
+An **`if` statement** runs a block of code only if its condition is true:
 
 ```java #ifSyntax
 
 ```
 
-Let's break down what this means:
+An `if` statement has three parts:
 
-- `if` is a keyword
-- `( )` holds the condition that is either true or false.
-  Example: (6 > 2) is a condition and it is true because 6 is greater than 2
-- `{` an open curly braces is used to denote the opening of the conditional
-- `}` a closed curly braces is used to denote the end of the conditional
+- the `if` keyword
+- a condition in parentheses, which is either true or false, like `6 > 2`
+- a **code block**, which is the code between the curly braces `{` and `}`
 
-The code in between the opening and closing curly braces is called a "code block".
+If the condition is true, the code block runs.
+If it's false, the code block is skipped, and the program moves on to the code after it.
 
-<Aside type="tip">
-    All conditionals follow a very similar syntax. They all start with a
-    keyword, most are followed by parentheses, and they all have an opening and
-    closing curly braces.
-</Aside>
-
-`if` statements can make decisions based on the `condition` inside the parentheses.
-If `condition` is true, the code inside the `if` block will run.
-If `condition` is false, the code inside the `if` block will be skipped.
-
-Now let's look at an example.
-In this example, this code will only tell the drivetrain to move forward when distance is smaller then 10.
+Here's an example that drives the robot forward only if it's more than 10 centimeters from a wall:
 
 ```java #ifExample
 
 ```
 
-The condition is `distance < 10`.
-We know `distance` is equal to 6, therefore we can think of the condition saying 6 < 10. 6 is less than 10 which makes the condition true.
-This means the code inside the `if` block runs, which prints "Motors are spinning" and the spins the motors at full speed.
+`distance` is 60, so the condition `distance > 10` is true.
+The code block runs, printing `Driving at full speed` and setting the drivetrain to full speed.
+If `distance` were 5 instead, the condition would be false, and nothing would be printed.
 
-## else
+<Aside type="tip">
+    Every conditional in this lesson follows the same pattern: a keyword,
+    usually a condition in parentheses, and a code block in curly braces. You'll
+    see the same pattern again in the next lesson, on loops.
+</Aside>
 
-When making decisions, sometimes there isn't a need for precise logic.
-Sometimes you don't want to (or can't) determine the other possibilities that can be true and it would be better to encompass everything in a "catch all" type statement.
-For example: The robot keeps driving until distance is at 10, then stop.
-This is one example where we could use an `else` statement.
+## Adding an `else`
 
-The syntax for an else statement is as follows:
+An `if` statement on its own does nothing when its condition is false.
+Often, though, we want to do something _else_ in that case, like stopping the robot once it's close to the wall.
+An **`else`** block runs only when the `if` statement's condition is false:
 
 ```java #ifElseSyntax
 
 ```
 
-`else` statements do not have parentheses because they do not need a condition to decide if they should run or not.
-Here's how this works: if the`if` statement's condition is `true`, then the code inside will run.
-If the `if` statement's condition is `false`, the `if` block will be skipped, and the code inside the `else` block will run.
+`else` has no condition of its own.
+It catches every case the `if` didn't.
+Exactly one of the two code blocks runs, never both.
 
-In this example, we now have an `else` statement that sets the motor speed to 0 if `distance` is not less than 10.
-Since our `distance` is set to 21, what would the code print out?
+Now the robot drives when it's far from the wall and stops when it's close:
 
 ```java #elseExample
 
 ```
 
-We check the first conditional `distance < 10`.
-21 is not less than 10 so we skip that conditional and go to `else`.
-The `else` runs and it prints out "Motors are not spinning", and the motors are set to 0.
+Without running the code, what does it print?
 
-## else if
+<Aside type="tip" title="Answer" collapse>
+    It prints `Stopped`. `distance` is 6, so `distance > 10` is false. The `if`
+    block is skipped, and the `else` block runs instead, stopping the motors.
+</Aside>
 
-`if` and `else` lets you choose between two options, but what if you wanted to choose between even more options?
-`else if` statements let you choose between as many conditions as you like.
+## Adding `else if`
 
-The syntax for an `else if` statement goes as follows:
+`if` and `else` choose between two options, but sometimes we need more.
+An **`else if`** adds another condition, which is only checked if every condition before it was false:
 
 ```java #elseIfSyntax
 
 ```
 
-The syntax is similar to an `if` statement but now it has `else if` at the end.
-Let's break down what this new addition means.
-`else if` is a keyword that allows the conditional to run a different task if the if statement is false.
+Java checks the conditions from top to bottom, and runs the code block for the _first_ one that's true.
+Once one code block runs, the rest are skipped, even if their conditions are also true.
+If none of the conditions are true, none of the code blocks run.
 
-If `conditionA` is true then the code inside the `if` block will run.
-If `conditionA` if false, then it will go to the `else if` statement.
-If `conditionB` is true, the code inside the `else if` block will run.
-If `conditionB` if false, then it will exit the statement and none of the code will run.
-
-In the example, we now have an `else if` statement that sets the motor to half speed if the distance from an object is less than 10cm.
-Our `distance` is now 15cm.
-With the new addition, what would the code print out?
+Let's use `else if` to slow the robot down as it gets closer to the wall:
 
 ```java #elseIfExample
 
 ```
 
-The `distance` is 15cm away.
-The first condition is `distance < 10`.
-15 is not less than 10, which means that condition is false.
-Therefore we go to the next part of the conditional which is the `else if`.
-The `else if` has the condition `distance > 10`.
-15 is greater than 10 so the code inside this `else if` block runs.
-This means the motors are set to drive at full speed and "Motors are at full speed" gets printed to the terminal.
+`distance` is 30, so the first condition, `distance > 50`, is false, and Java moves on to the `else if`.
+`distance > 10` is true, so the robot drives at half speed.
 
-## Putting Everything Together
+The order of the conditions matters here.
+A `distance` of 60 is greater than both 50 _and_ 10, but only the first matching block runs, so the robot drives at full speed.
+If we had checked `distance > 10` first, the robot would drive at half speed even when it's far from the wall.
 
-The previous code has the robot drive at full speed if the distance is greater than 10cm, and drive at half speed if the distance is less than 10cm, but it doesn't stop if it reaches its target distance.
-You could add another else if, or you could put everything that we previously learned together and add an else conditional.
+## Putting It All Together
+
+The previous example doesn't do anything once the robot is within 10 centimeters of the wall, so the motors keep running at whatever speed they were last set to.
+We can fix this by adding an `else` at the end, which catches every remaining case:
 
 ```java #conditionalExample
 
 ```
 
-We check the first conditional `distance < 10`.
-21 is not less than 10 so we skip that conditional and go to the `else if`.
-This conditional has `distance <= 20`, we know 21 is not less than or equal to 20 so we skip this conditional.
-Since the two conditionals were false, this means the `else` runs and it prints out "Motors are not spinning", and the motors are set to 0.
+Without running the code, what does it print?
+Careful, this one's a little sneaky.
 
-## Conditional Exercise
+<Aside type="tip" title="Answer" collapse>
+    It prints `Stopped`. `distance` is exactly 10. `distance > 50` is false, and
+    `distance > 10` is also false, since 10 is not _greater_ than 10. Neither
+    condition is true, so the `else` block runs and stops the motors.
+</Aside>
+
+You can chain as many `else if`s as you need between the `if` and the `else`,
+and the `else` at the end is optional.
+
+## Conditionals Exercise
 
 <Aside type="exercise">
     ### Exercise

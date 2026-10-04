@@ -1,11 +1,21 @@
 'stage0':
     - changed-files:
           - any-glob-to-any-file:
-                [examples/stage0/**, src/content/docs/learning-course/stage0/**]
+                [
+                    examples/stage0/**,
+                    examples/*/stage0/**,
+                    src/content/docs/learning-course/stage0/**,
+                    src/content/docs/*/learning-course/stage0/**,
+                ]
 'stage1':
     - changed-files:
           - any-glob-to-any-file:
-                [examples/stage1/**, src/content/docs/learning-course/stage1/**]
+                [
+                    examples/stage1/**,
+                    examples/*/stage1/**,
+                    src/content/docs/learning-course/stage1/**,
+                    src/content/docs/*/learning-course/stage1/**,
+                ]
 'examples':
     - changed-files:
           - any-glob-to-any-file: examples/**

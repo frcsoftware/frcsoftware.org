@@ -3,14 +3,25 @@ import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
 import starlightSidebarTopics from 'starlight-sidebar-topics';
 import { sidebarTopics } from './src/config/sidebarConfig';
+import { locales, localeDirs } from './src/config/locales';
 import remarkGlossary from './src/plugins/remark-glossary';
 import remarkCenter from './src/plugins/remark-center';
 import remarkFigure from './src/plugins/remark-figure';
 import remarkImageAttributes from './src/plugins/remark-image-attributes';
 import { remarkMdxGlobalImports } from './src/plugins/remark-mdx-global-imports';
 import remarkCodeRegion from './src/plugins/remark-code-region';
+import remarkLocalizeLinks from './src/plugins/remark-localize-links';
 import { unified } from '@astrojs/markdown-remark';
 import rehypeTargetBlank from './src/plugins/rehype-external-links';
+
+// Pages that belong to no sidebar topic. starlight-sidebar-topics matches these
+// against the route id, which carries the locale prefix, so each needs a
+// per-locale variant or the build fails on the localized copy of the page.
+const topicLessPaths = ['/', '/test-content-figure'];
+const excludedFromTopics = topicLessPaths.flatMap((path) => [
+    path,
+    ...localeDirs.map((dir) => (path === '/' ? `/${dir}` : `/${dir}${path}`)),
+]);
 
 export default defineConfig({
     site: 'https://frcsoftware.org',
@@ -25,6 +36,7 @@ export default defineConfig({
                 remarkImageAttributes,
                 remarkMdxGlobalImports,
                 remarkCodeRegion,
+                remarkLocalizeLinks,
             ],
             rehypePlugins: [rehypeTargetBlank],
             remarkRehype: {
@@ -40,6 +52,7 @@ export default defineConfig({
         starlight({
             title: 'FRCSoftware.org',
             favicon: '/favicon.svg',
+            locales,
             head: [
                 {
                     tag: 'meta',
@@ -83,9 +96,10 @@ export default defineConfig({
             plugins: [
                 // Separates sidebar into topics that are switchable with a dropdown
                 starlightSidebarTopics(sidebarTopics, {
-                    exclude: ['/', '/test-content-figure'],
+                    exclude: excludedFromTopics,
                 }),
-                starlightLinksValidator(),
+                // untranslated pages are fallbacks and we don't want to error if a translation isn't complete yet
+                starlightLinksValidator({ errorOnFallbackPages: false }),
             ],
         }),
     ],

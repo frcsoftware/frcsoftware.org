@@ -5,10 +5,10 @@
  */
 package first.robot.simulation;
 
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.sim.SparkRelativeEncoderSim;
 import static org.wpilib.units.Units.*;
 
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -94,17 +94,8 @@ public class DrivetrainSim {
     table.log("RightPosition", Meters.of(m_driveSim.getRightPosition()));
     table.log("LeftVelocity", MetersPerSecond.of(m_driveSim.getLeftVelocity()));
     table.log("RightVelocity", MetersPerSecond.of(m_driveSim.getRightVelocity()));
-
-    leftMotorTable.log(
-        "MotorVelocity", RadiansPerSecond.of(m_driveSim.getLeftVelocity() * linearToMotorRatio));
-    rightMotorTable.log(
-        "MotorVelocity", RadiansPerSecond.of(m_driveSim.getRightVelocity() * linearToMotorRatio));
-    leftMotorTable.log("MotorVoltage", Volts.of(leftMotorVoltage));
-    rightMotorTable.log("MotorVoltage", Volts.of(rightMotorVoltage));
-    leftMotorTable.log("MotorSupplyCurrent", Amps.of(m_driveSim.getLeftCurrentDraw()));
-    rightMotorTable.log("MotorSupplyCurrent", Amps.of(m_driveSim.getRightCurrentDraw()));
   }
-  
+
   public void setPose(Pose2d pose) {
     m_driveSim.setPose(pose);
   }

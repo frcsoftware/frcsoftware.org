@@ -46,7 +46,7 @@ public class FuelSim {
       logTable.getStructArrayTopic("ParabolaFuel", Pose3d.struct).publish();
   private static Mode mode = null;
   private static boolean isPaused = false;
-  private static double rowsOfFuel = 0;
+  private static double rowsOfFuel = 3;
 
   /** A supplier that fetches the velocity of the feeder. */
   static DoubleSupplier feederVoltsSupplier = () -> 0;

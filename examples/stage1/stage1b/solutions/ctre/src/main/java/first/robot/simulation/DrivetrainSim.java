@@ -133,4 +133,8 @@ public class DrivetrainSim {
     leftMotorSupplyCurrentPub.set(leftTalon.getSupplyCurrent().getValueAsDouble());
     rightMotorSupplyCurrentPub.set(rightTalon.getSupplyCurrent().getValueAsDouble());
   }
+
+  public void setPose(Pose2d pose) {
+    driveSim.setPose(pose);
+  }
 }

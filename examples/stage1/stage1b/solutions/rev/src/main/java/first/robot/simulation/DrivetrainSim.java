@@ -5,10 +5,13 @@
  */
 package first.robot.simulation;
 
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.util.Units;
 import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;
 import org.wpilib.networktables.StructPublisher;
@@ -18,6 +21,8 @@ import org.wpilib.simulation.OnboardIMUSim;
 public class DrivetrainSim {
 
   private final SparkMax leftSpark, rightSpark;
+  private final SparkMaxSim leftSparkSim, rightSparkSim;
+  private final SparkRelativeEncoderSim leftEncoderSim, rightEncoderSim;
 
   private final double kGearRatio = 10.71;
   private final double kWheelRadiusMeters = 0.0762; // 3 inches
@@ -49,6 +54,12 @@ public class DrivetrainSim {
     this.leftSpark = leftSpark;
     this.rightSpark = rightSpark;
 
+    this.leftSparkSim = new SparkMaxSim(leftSpark, DCMotor.getNEO(2));
+    this.rightSparkSim = new SparkMaxSim(rightSpark, DCMotor.getNEO(2));
+
+    this.leftEncoderSim = leftSparkSim.getRelativeEncoderSim();
+    this.rightEncoderSim = rightSparkSim.getRelativeEncoderSim();
+
     var table = NetworkTableInstance.getDefault().getTable("Drivetrain");
     this.simPosePublisher = table.getStructTopic("Pose", Pose2d.struct).publish();
 
@@ -74,6 +85,17 @@ public class DrivetrainSim {
 
     OnboardIMUSim.setYaw(m_driveSim.getHeading().getRadians());
 
+    leftEncoderSim.setPosition(
+        Units.radiansToRotations(m_driveSim.getLeftPosition() / kWheelRadiusMeters * kGearRatio));
+    leftEncoderSim.setVelocity(
+        Units.radiansPerSecondToRotationsPerMinute(
+            m_driveSim.getLeftVelocity() / kWheelRadiusMeters * kGearRatio));
+    rightEncoderSim.setPosition(
+        Units.radiansToRotations(m_driveSim.getRightPosition() / kWheelRadiusMeters * kGearRatio));
+    rightEncoderSim.setVelocity(
+        Units.radiansPerSecondToRotationsPerMinute(
+            m_driveSim.getRightVelocity() / kWheelRadiusMeters * kGearRatio));
+
     simPosePublisher.set(m_driveSim.getPose());
     leftPositionPub.set(m_driveSim.getLeftPosition());
     rightPositionPub.set(m_driveSim.getRightPosition());
@@ -83,5 +105,9 @@ public class DrivetrainSim {
     rightVoltagePub.set(rightMotorVoltage);
     leftCurrentPub.set(m_driveSim.getLeftCurrentDraw());
     rightCurrentPub.set(m_driveSim.getRightCurrentDraw());
+  }
+
+  public void setPose(Pose2d pose) {
+    m_driveSim.setPose(pose);
   }
 }

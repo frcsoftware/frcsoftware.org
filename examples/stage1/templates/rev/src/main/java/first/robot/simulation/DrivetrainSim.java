@@ -53,18 +53,6 @@ public class DrivetrainSim {
     this.leftEncoderSim = leftSparkSim.getRelativeEncoderSim();
     this.rightEncoderSim = rightSparkSim.getRelativeEncoderSim();
 
-    var table = NetworkTableInstance.getDefault().getTable("Drivetrain");
-    this.simPosePublisher = table.getStructTopic("Pose", Pose2d.struct).publish();
-
-    this.leftPositionPub = table.getDoubleTopic("LeftPositionMeters").publish();
-    this.rightPositionPub = table.getDoubleTopic("RightPositionMeters").publish();
-    this.leftVelocityPub = table.getDoubleTopic("LeftVelocityMPS").publish();
-    this.rightVelocityPub = table.getDoubleTopic("RightVelocityMPS").publish();
-    this.leftVoltagePub = table.getDoubleTopic("LeftMotorVoltage").publish();
-    this.rightVoltagePub = table.getDoubleTopic("RightMotorVoltage").publish();
-    this.leftCurrentPub = table.getDoubleTopic("LeftCurrentAmps").publish();
-    this.rightCurrentPub = table.getDoubleTopic("RightCurrentAmps").publish();
-
     m_driveSim.setPose(new Pose2d(2.5, 2, Rotation2d.ZERO));
     FuelSim.robotPoseSupplier = m_driveSim::getPose;
   }

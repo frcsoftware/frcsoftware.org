@@ -22,7 +22,7 @@ An autonomous routine is simply an OpMode that gets run during the autonomous po
 When writing an OpMode that will be run during the autonomous mode, there is an `@Autonomous` annotation that is added directly before the class definition.
 This annotation tells the Driver Station to place the OpMode under the autonomous selector.
 This OpMode will use a `Timer` to base its behavior off of the time elapsed from the beginning of the autonomous period.
-Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions
+Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions.
 The code for the auto will be added to the `MyAuto.java` file inside the opmode folder.
 
 To write a time based auto, a `Timer` must be created to keep track of how long the auto has run.

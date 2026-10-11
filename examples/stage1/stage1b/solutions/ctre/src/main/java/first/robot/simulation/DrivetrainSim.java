@@ -89,4 +89,8 @@ public class DrivetrainSim {
     leftMotorTable.log("MotorSupplyCurrent", leftTalon.getSupplyCurrent().getValue());
     rightMotorTable.log("MotorSupplyCurrent", rightTalon.getSupplyCurrent().getValue());
   }
+
+  public void setPose(Pose2d pose) {
+    driveSim.setPose(pose);
+  }
 }

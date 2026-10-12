@@ -87,8 +87,4 @@ public class DrivetrainSim {
   public void setPose(Pose2d pose) {
     m_driveSim.setPose(pose);
   }
-
-  public void setPose(Pose2d pose) {
-    m_driveSim.setPose(pose);
-  }
 }

@@ -75,6 +75,7 @@ waypoint
 waypoints
 webm
 webpage
+whitespace
 
 [case-sensitive]
 CANBus

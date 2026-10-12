@@ -1,22 +1,25 @@
 ---
 title: Operators
-description: An Intro to Operators
+description: An introduction to arithmetic, assignment, comparison, and logical operators in Java
 codeRegionSources:
     default: stage0/snippets/src/Operators.java
 ---
 
-Java uses operators to change or compare the values of variables.
-There four different types of operators are:
+In the [Java Fundamentals lesson](/learning-course/stage0/java-fundamentals/), we stored values in variables.
+In this lesson, we're going to learn about **operators**, symbols like `+` and `>` that calculate new values from existing ones.
+Robot code is full of them.
+Counting the balls in the hopper takes `+`, and checking whether the shooter is up to speed takes `>`.
 
-- Arithmetic Operators
-- Assignment Operators
-- Comparison Operators
-- Logical Operators
+We'll cover four kinds of operators:
+
+- **Arithmetic operators**, which do math
+- **Assignment operators**, which update a variable's value
+- **Comparison operators**, which compare two values
+- **Logical operators**, which combine `true` and `false` values
 
 ## Arithmetic Operators
 
-Arithmetic operators are used to perform basic math on variables.
-These include:
+**Arithmetic operators** do basic math on numbers:
 
 <table class="Arithmetic Operators">
     <thead>
@@ -63,41 +66,35 @@ These include:
     </tbody>
 </table>
 
-Operators can be used anywhere you would use a number, such as when assigning variables.
-In the example below, we have three variables whose values are set using different operators.
-Without running the code, think about what value would each variable hold.
+Operators can be used anywhere you would use a number, such as when giving a variable its value.
+Without running the code, what value does each of these variables hold?
 
 ```java #variables
 
 ```
 
-<details class="accordion">
-    <summary>Answer</summary>
-    <div class="content">
-        <p>
-            <ul>
-                <li>`answer1` is 6 because 2 + 4 = 6</li>
-                <li>`answer2` is 2 because 6 / 3 = 2</li>
-                <li>`answer3` is 7 because 10 - 3 = 7</li>
-            </ul>
-        </p>
-    </div>
-</details>
+<Aside type="tip" title="Answer" collapse>
+    - `totalMotors` is 6, because 2 + 4 = 6
+    - `motorsPerSide` is 2, because 4 / 2 = 2
+    - `ballsLeft` is 7, because 10 - 3 = 7
 
-<Aside type="note">
-    When dividing two integers, the result will be rounded down to an integer instead of the result being a
-    double. Example: `System.out.print(7 / 2);` will print out 3. If you want
-    the result to return a `double`, like 3.5, the data type should be a
-    `double` instead of an `int`.
+</Aside>
 
-    Due to this, it's often better to use `double`s when writing code so you can use decimal values.
+<Aside type="caution" title="Dividing Integers">
+    When you divide one `int` by another, the result is also an `int`, and any
+    decimal part is dropped, so `7 / 2` is `3`, not `3.5`. To get a decimal
+    result, at least one of the numbers must be a `double`. `7.0 / 2` is `3.5`.
+
+    This is one reason robot code mostly uses `double`s. Speeds, positions, and
+    voltages all need their decimal parts.
 
 </Aside>
 
 ## Assignment Operators
 
-Assignment operators are used when assigning or updating the values in a variable.
-These include:
+**Assignment operators** give a variable a new value.
+You've already used the simplest one, `=`, to set a variable's value.
+The others are shorthand for updating a variable based on its current value:
 
 <table class="Assignment Operators">
     <thead>
@@ -152,20 +149,18 @@ These include:
     </tbody>
 </table>
 
-Assignment operators are similar to arithmetic operators.
-The main difference is that assignment operators are the shorthand version.
-Using assignment operators can help make code easier to read.
-It prevents having to write the variable name twice which can also be helpful in preventing code errors.
+`score += 2` does the same thing as `score = score + 2`, but you only write the variable's name once.
+The code is shorter, and there's one less place to mistype the name.
 
-In the example below, we have variables `a` which is set to 10, and variable `b` which is set to 5. Since `+=` adds 2 to `a`, `a` will hold the value of 12. Similarly, `b` will now hold the value of 4
+Here, `score` starts at 10 and goes up by 2, while `ballsCarried` starts at 5 and goes down by 1:
 
 ```java #arithmetic
 
 ```
 
-Sometimes placed in the category of "unary operators", the `++` and `--` operators are also used to change the value of the a variable.
-They help with incrementing and decrementing values and are used in conditionals (which are covered in a later stage).
-For now, we can use the operators to change variables without using conditionals.
+Adding or subtracting 1 comes up so often that Java has operators just for it.
+`++` **increments** a variable by adding 1 to it, and `--` **decrements** it by subtracting 1.
+You'll see `++` in most of the [loops](/learning-course/stage0/loops/) later in this stage.
 
 <table class="Increment/Decrement Operators">
     <thead>
@@ -189,7 +184,7 @@ For now, we can use the operators to change variables without using conditionals
     </tbody>
 </table>
 
-In the example below, we have two variables: `x` which is set to 6 and `y` which is set to 7.
+Each time the robot shoots a ball, it can count the shot and remove the ball from its hopper:
 
 ```java #increments
 
@@ -197,8 +192,8 @@ In the example below, we have two variables: `x` which is set to 6 and `y` which
 
 ## Comparison Operators
 
-Comparison operators compare values.
-They can be used to help make decisions and are a main part of conditionals, which are discussed later in this stage.
+**Comparison operators** compare two values and give back a `boolean`, either `true` or `false`.
+They're how a program makes decisions, which you'll see in the [Conditionals lesson](/learning-course/stage0/conditionals/).
 
 <table class="Comparison Operators">
     <thead>
@@ -257,54 +252,56 @@ They can be used to help make decisions and are a main part of conditionals, whi
     </tbody>
 </table>
 
-Comparison operators help make decisions because they can return if the value of a comparison is true or false.
-If you remember from the previous section, these are `booleans`!
-
-Comparison operators are very similar to what you see in math problems.
-In this example, we have two variables: `c` and `d`.
-`c` is set to 2, and `d` is set to 4. The print statement compares the two variables using the greater than sign.
-In the example below, it returns false because 2 is not greater than 4.
+These work like the comparisons from math class.
+Here, the robot has scored 2 balls but needs 4, so `ballsScored > ballsNeeded` is `false`:
 
 ```java #comparison
 
 ```
 
-<Aside type="note">
-`==` and `!=` cannot be used to compare the values of `String`s. 
-To compare `String`s, `.equals()` is used.
-Though it's not used, more information can be found [here.](https://www.w3schools.com/java/ref_string_equals.asp)
-
+<Aside type="caution" title="Comparing Strings">
+    On `String`s, `==` checks whether two variables refer to the same object,
+    not whether they contain the same text. Two different `String`s that both
+    say `"Plunk"` can still fail an `==` check. To compare the text, use the
+    `.equals()` method instead. You won't need it in this stage, but
+    [w3schools](https://www.w3schools.com/java/ref_string_equals.asp) has more
+    on how it works.
 </Aside>
 
-### Pay attention to equals signs!
+### `=` vs. `==`
 
-When using comparison operators, make sure to use a double equal sign `==` instead of a single equal `=`.
-Unlike in math, a single equal is assignment.
+To check whether two values are equal, use a double equals sign, `==`.
+A single equals sign, `=`, is the assignment operator.
+It sets a variable's value and doesn't compare anything.
 
-In the example below, the print statement would not run.
-You would get an error message about how the left hand side of an assignment must be a variable.
+Mixing them up is a common mistake.
+This line doesn't compile.
+Java reads it as an attempt to change the number 6 into 8, which not even Java can do.
+The error says that the left-hand side of an assignment must be a variable:
+
 {/* rli:ignore */}
 
 ```java
-    System.out.println(6 = 8);
+System.out.println(6 = 8);
 ```
 
-Adding the double equal sign, fixes the error because the compiler will read this as comparing the value on the left to the value on the right.
-This will print out `false` because 6 is not equal to 8.
+With `==`, Java compares the two values instead, and this prints `false`, since 6 is not equal to 8:
+
 {/* rli:ignore */}
 
 ```java
-    System.out.println(6 == 8);
+System.out.println(6 == 8);
 ```
 
 ## Logical Operators
 
-Logical operators help a program make decisions by using true or false statements.
-They are also used in conditionals.
+**Logical operators** combine `boolean` values, so you can make decisions based on more than one condition at a time,
+like "the robot has a ball _and_ is lined up with the target."
 
 <Aside type="note">
-    Logical operators also follow the order of operations (known as PEMDAS) and
-    parentheses can be used to change this order.
+    Logical operators have an order of operations, just like arithmetic ones.
+    `!` comes first, then `&&`, then `||`. Parentheses change the order, the
+    same way they do in math.
 </Aside>
 
 <table class="Comparison Operators">
@@ -338,67 +335,48 @@ They are also used in conditionals.
     </tbody>
 </table>
 
-In the example below we have 2 variables: `fiveIsGreaterThanThree` and `nineIsLessThanTwo`.
-We know `fiveIsGreaterThanThree` is true since 5 is greater than 3. We also know that `nineIsLessThanTwo` is false since 9 is not less than 2.
-Using that information and without running the code, what should the print statements print out?
+Here, the robot has a ball, but isn't lined up with the target yet.
+Without running the code, what does each line print?
 
 ```java #logical
 
 ```
 
-<details class="accordion">
-    <summary>Answer</summary>
-    <div class="content">
-        <p>
-            <ul>
-                <li>
-                    false. && returns true if both statements are true
-                    `nineIsLessThanTwo` is false, therefore the operator will
-                    return false.
-                </li>
-                <li>
-                    true. || returns true if one of the statements are true
-                    `fiveIsGreaterThanThree` is true, therefore the operator
-                    will return true.
-                </li>
-                <li>
-                    false. ! reverses the outcome `fiveIsGreaterThanThree` is
-                    true, adding ! will reverse it and return false.
-                </li>
-            </ul>
-        </p>
-    </div>
-</details>
+<Aside type="tip" title="Answer" collapse>
+    1. `false`. `&&` needs both values to be true, and `isAligned` is false, so
+       the robot shouldn't shoot yet.
+    2. `true`. `||` only needs one of them, and `hasBall` is true.
+    3. `false`. `!` flips a value, and `hasBall` is true.
 
-## Math and Operators
+</Aside>
 
-Operators can be used to assign new values to existing variables.
-Arithmetic, and Assignment operators can help perform math and change the values.
+## Changing a Variable vs. Using Its Value
 
-Operators can also change the value of variables using the `=` sign.
-In the example, `e`'s value gets changed to 12 as `f` is equal to 2, so 2 + 10 is 12.
+An operator on its own calculates a new value, but it doesn't change any variables.
+A variable only changes when you assign the result back to it with `=` or another assignment operator.
+
+Here, `totalPoints` is set to the result of `autoPoints + 10`, so its value changes to 12:
 
 ```java #math1
 
 ```
 
-In the example, we have an integer variable named `magicNumber` that is set to 6.
-Using the multiplication operator, the value is adjusted inside the print statement.
+In this example, `gamePieces * 2` is calculated inside the print statement instead:
 
 ```java #math2
 
 ```
 
-Unlike the previous example, `magicNumber`'s value remains 6.
-The value calculated inside `println` only affects what gets printed, since it's never assigned back to `magicNumber` using an equal sign.
-This can be confirmed by printing the value of `magicNumber` again.
+This prints 12, but `gamePieces` is still 6 afterwards.
+The result of `gamePieces * 2` is only used for printing, and is never assigned back to `gamePieces`.
+You can check this by printing `gamePieces` again on the next line.
 
 ## Operators Exercise
 
 <Aside type="exercise">
     ### Exercise
 
-    Now, you can dive straight into `Operators.java`, which you set up in the last section!
+    Now, you can dive straight into `Operators.java`, which you set up in the Java Fundamentals lesson!
     Follow the comments and write the appropriate code to achieve the objectives.
 
 </Aside>

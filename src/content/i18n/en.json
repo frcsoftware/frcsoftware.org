@@ -1,0 +1,23 @@
+{
+    "aside.caution": "Warning",
+    "header.menuToggle": "Toggle navigation menu",
+    "aside.answer": "Answer",
+    "aside.example": "Example",
+    "aside.exercise": "Exercise",
+    "aside.hint": "Hint",
+    "aside.video": "Video",
+    "aside.wip": "Work in Progress",
+    "banner.development": "This website is still in development. If you find any errors, please report them {link}.",
+    "banner.developmentLinkText": "here",
+    "courseSection.underConstruction": "(Under Construction)",
+    "glossary.definitionNotFound": "Definition not found",
+    "footer.github": "Open FRCSoftware.org on GitHub",
+    "footer.discord": "Join the FRCSoftware.org Discord",
+    "card.copyLink": "Copy link to clipboard",
+    "slides.previous": "Previous slide",
+    "slides.next": "Next slide",
+    "slides.goTo": "Go to slide {number}",
+    "slides.closeLightbox": "Close lightbox",
+    "video.unsupported": "Your browser does not support the video tag.",
+    "video.youTubeTitle": "YouTube video"
+}

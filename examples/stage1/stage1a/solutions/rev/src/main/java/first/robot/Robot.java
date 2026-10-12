@@ -110,8 +110,8 @@ public class Robot extends OpModeRobot {
   public void simulationPeriodic() {
     drivetrainSim.periodic();
     // [/DriveSimPeriodic]
-    intakeLauncherSim.periodic();
     // [MotorSimPeriodic]
+    intakeLauncherSim.periodic();
     feederSim.periodic();
     // [/MotorSimPeriodic]
 

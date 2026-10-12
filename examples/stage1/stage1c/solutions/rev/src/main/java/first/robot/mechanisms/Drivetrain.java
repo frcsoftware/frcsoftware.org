@@ -48,11 +48,6 @@ public class Drivetrain implements Mechanism {
   private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
 
-  private final Signal<Double> leftDistanceSignal = leftEncoder.getPosition();
-  private final Signal<Double> rightDistanceDignal = rightEncoder.getPosition();
-  private final Signal<Double> leftVelocitySignal = leftEncoder.getVelocity();
-  private final Signal<Double> rightVelocitySignal = rightEncoder.getVelocity();
-
   public Drivetrain() {
     var leftConfig = new SparkMaxConfig().inverted(true);
     leftLeader.configure(

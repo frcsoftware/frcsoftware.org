@@ -11,7 +11,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.util.Signal;
 import first.robot.simulation.DrivetrainSim;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;

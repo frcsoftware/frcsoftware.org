@@ -16,7 +16,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import first.robot.simulation.DrivetrainSim;
 import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.drive.DifferentialDrive;
@@ -161,9 +160,7 @@ public class Drivetrain implements Mechanism {
     table.log("Right Distance", Meters.of(getRightDistance()));
     table.log("Right Velocity", MetersPerSecond.of(getRightVelocity()));
     table.log("Heading", getHeading());
-    table.log(
-        "Active Commands",
-        getRunningCommands().stream().map(Command::name).toArray());
+    table.log("Active Commands", getRunningCommands().stream().map(Command::name).toArray());
   }
 
   public double getLeftDistance() {

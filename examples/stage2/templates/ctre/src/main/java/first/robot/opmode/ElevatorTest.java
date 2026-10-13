@@ -4,10 +4,9 @@
 
 package first.robot.opmode;
 
+import first.robot.Robot;
 import org.wpilib.command3.button.CommandGamepad;
 import org.wpilib.opmode.PeriodicOpMode;
-import org.wpilib.opmode.Teleop;
-import first.robot.Robot;
 import org.wpilib.opmode.Utility;
 
 @Utility

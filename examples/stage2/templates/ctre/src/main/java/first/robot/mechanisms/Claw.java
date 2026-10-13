@@ -6,70 +6,72 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import first.robot.simulation.ClawSim;
-import first.robot.simulation.CoralSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.discrete.DigitalInput;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
 public class Claw implements Mechanism {
-    private final TalonFX motor;
-    private final DigitalInput sensor;
+  private final TalonFX motor;
+  private final DigitalInput sensor;
 
-    private final ClawSim sim;
+  private final ClawSim sim;
 
-    private VoltageOut voltageRequest;
+  private VoltageOut voltageRequest;
 
-    private StatusSignal<Voltage> appliedVoltageSignal;
-    private StatusSignal<Current> statorCurrentSignal;
-    private StatusSignal<Current> supplyCurrentSignal;
+  private StatusSignal<Voltage> appliedVoltageSignal;
+  private StatusSignal<Current> statorCurrentSignal;
+  private StatusSignal<Current> supplyCurrentSignal;
 
-    private BaseStatusSignal[] signals;
+  private BaseStatusSignal[] signals;
 
-    public Claw() {
-        motor = new TalonFX(23, CANBus.systemcore(2));
-        sensor = new DigitalInput(1);
+  public Claw() {
+    motor = new TalonFX(23, new CANBus(CANPort.CAN_S2));
+    sensor = new DigitalInput(1);
 
-        sim = new ClawSim(motor);
+    sim = new ClawSim(motor);
 
-        voltageRequest = new VoltageOut(0);
+    voltageRequest = new VoltageOut(0);
 
-        appliedVoltageSignal = motor.getMotorVoltage();
-        statorCurrentSignal = motor.getStatorCurrent();
-        supplyCurrentSignal = motor.getSupplyCurrent();
+    appliedVoltageSignal = motor.getMotorVoltage();
+    statorCurrentSignal = motor.getStatorCurrent();
+    supplyCurrentSignal = motor.getSupplyCurrent();
 
-        signals = new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
+    signals =
+        new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
 
-        Scheduler.getDefault().addPeriodic(this::periodic);
-    }
+    Scheduler.getDefault().addPeriodic(this::periodic);
+  }
 
-    public void periodic() {
-        sim.periodic();
+  public void periodic() {
+    sim.periodic();
 
-        BaseStatusSignal.refreshAll(signals);
+    BaseStatusSignal.refreshAll(signals);
 
-        Telemetry.log("Claw/Applied Voltage", appliedVoltageSignal.getValueAsDouble());
-        Telemetry.log("Claw/Stator Current", statorCurrentSignal.getValueAsDouble());
-        Telemetry.log("Claw/Supply Current", supplyCurrentSignal.getValueAsDouble());
-        Telemetry.log("Claw/Active Commands", getRunningCommands().toString());
+    Telemetry.log("Claw/Applied Voltage", appliedVoltageSignal.getValueAsDouble());
+    Telemetry.log("Claw/Stator Current", statorCurrentSignal.getValueAsDouble());
+    Telemetry.log("Claw/Supply Current", supplyCurrentSignal.getValueAsDouble());
+    Telemetry.log("Claw/Active Commands", getRunningCommands().toString());
 
-        Telemetry.log("Claw/Has Coral", sensor.get());
-    }
+    Telemetry.log("Claw/Has Coral", hasCoral());
+  }
 
-    /**
-     * @param voltage the voltage to apply to the motors
-     * @return a command
-     */
-    public Command setVoltage(double voltage) {
-        return run((coro) -> {
-            motor.setControl(voltageRequest.withOutput(voltage));
-        }).named("Set Voltage: " + voltage + "V");
-    }
+  /**
+   * @param voltage the voltage to apply to the motors
+   * @return a command
+   */
+  public Command setVoltage(double voltage) {
+    return run((coro) -> {
+          motor.setControl(voltageRequest.withOutput(voltage));
+        })
+        .named("Set Voltage: " + voltage + "V");
+  }
 
-    public boolean hasCoral() {
-        return sensor.get();
-    }
+  public boolean hasCoral() {
+    return sensor.get();
+  }
 }

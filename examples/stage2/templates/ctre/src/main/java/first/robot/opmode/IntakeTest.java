@@ -22,17 +22,32 @@ public class IntakeTest extends PeriodicOpMode {
 
     controller = new CommandGamepad(0);
 
-    controller.button(0).onTrue(Command.noRequirements(coro -> {
-            coro.await(robot.intake.setRollerVoltage(12));
-            coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(0)));
-            }).named("Deploy intake"));
-      controller.button(1).onTrue(Command.noRequirements(coro -> {
-          coro.await(robot.intake.setRollerVoltage(0));
-          coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(90)));
-      }).named("Retract intake"));
-      controller.button(2).onTrue(Command.noRequirements(coro -> {
-          coro.await(robot.intake.setRollerVoltage(0));
-          coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(45)));
-      }).named("Retract intake"));
+    controller
+        .button(0)
+        .onTrue(
+            Command.noRequirements(
+                    coro -> {
+                      coro.await(robot.intake.setRollerVoltage(12));
+                      coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(0)));
+                    })
+                .named("Deploy intake"));
+    controller
+        .button(1)
+        .onTrue(
+            Command.noRequirements(
+                    coro -> {
+                      coro.await(robot.intake.setRollerVoltage(0));
+                      coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(90)));
+                    })
+                .named("Retract intake"));
+    controller
+        .button(2)
+        .onTrue(
+            Command.noRequirements(
+                    coro -> {
+                      coro.await(robot.intake.setRollerVoltage(0));
+                      coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(45)));
+                    })
+                .named("Retract intake"));
   }
 }

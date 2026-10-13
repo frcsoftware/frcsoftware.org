@@ -29,6 +29,7 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 
@@ -54,6 +55,10 @@ public class Drivetrain implements Mechanism {
   private final StatusSignal<Angle> rightDistanceSignal = rightLeader.getPosition();
   private final StatusSignal<AngularVelocity> leftVelocitySignal = leftLeader.getVelocity();
   private final StatusSignal<AngularVelocity> rightVelocitySignal = rightLeader.getVelocity();
+
+  private final TelemetryTable table = Telemetry.getTable("Drive");
+  private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
+  private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
   public Drivetrain() {
     var leftConfig = new TalonFXConfiguration();
@@ -111,10 +116,10 @@ public class Drivetrain implements Mechanism {
             double effort = driveDistanceController.calculate(currentDistance);
             differentialDrive.arcadeDrive(effort, 0);
 
-            Telemetry.log("Drive/Drive Distance/Target", targetDistance);
-            Telemetry.log("Drive/Drive Distance/Current", currentDistance);
-            Telemetry.log("Drive/Drive Distance/Error", driveDistanceController.getError());
-            Telemetry.log("Drive/Drive Distance/Effort", effort);
+            driveDistanceTable.log("Target", targetDistance);
+            driveDistanceTable.log("Current", currentDistance);
+            driveDistanceTable.log("Error", driveDistanceController.getError());
+            driveDistanceTable.log("Effort", effort);
 
             coroutine.yield();
           }
@@ -132,10 +137,10 @@ public class Drivetrain implements Mechanism {
 
             differentialDrive.arcadeDrive(0, effort);
 
-            Telemetry.log("Drive/Turn in Place/Target", target);
-            Telemetry.log("Drive/Turn in Place/Current", getHeading());
-            Telemetry.log("Drive/Turn in Place/Error", headingController.getError());
-            Telemetry.log("Drive/Turn in Place/Effort", effort);
+            turnTable.log("Target", target);
+            turnTable.log("Current", getHeading());
+            turnTable.log("Error", headingController.getError());
+            turnTable.log("Effort", effort);
 
             coroutine.yield();
           }
@@ -151,13 +156,13 @@ public class Drivetrain implements Mechanism {
     StatusSignal.refreshAll(
         leftDistanceSignal, rightDistanceSignal, leftVelocitySignal, rightVelocitySignal);
 
-    Telemetry.log("Drive/Left Distance", getLeftDistance());
-    Telemetry.log("Drive/Left Velocity", getLeftDistance());
-    Telemetry.log("Drive/Right Distance", getRightDistance());
-    Telemetry.log("Drive/Right Velocity", getRightVelocity());
-    Telemetry.log("Drive/Heading", getHeading());
-    Telemetry.log(
-        "Drive/Active Commands",
+    table.log("Left Distance", getLeftDistance());
+    table.log("Left Velocity", getLeftVelocity());
+    table.log("Right Distance", getRightDistance());
+    table.log("Right Velocity", getRightVelocity());
+    table.log("Heading", getHeading());
+    table.log(
+        "Active Commands",
         getRunningCommands().stream().map(Command::name).collect(Collectors.toList()).toArray());
   }
 

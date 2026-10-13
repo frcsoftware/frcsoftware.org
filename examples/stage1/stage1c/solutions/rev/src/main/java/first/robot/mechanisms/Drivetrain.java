@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -13,7 +15,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import first.robot.simulation.DrivetrainSim;
 import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.drive.DifferentialDrive;
@@ -111,9 +112,9 @@ public class Drivetrain implements Mechanism {
             double effort = driveDistanceController.calculate(currentDistance);
             differentialDrive.arcadeDrive(effort, 0);
 
-            driveDistanceTable.log("Target", targetDistance);
-            driveDistanceTable.log("Current", currentDistance);
-            driveDistanceTable.log("Error", driveDistanceController.getError());
+            driveDistanceTable.log("Target", Meters.of(targetDistance));
+            driveDistanceTable.log("Current", Meters.of(currentDistance));
+            driveDistanceTable.log("Error", Meters.of(driveDistanceController.getError()));
             driveDistanceTable.log("Effort", effort);
 
             coroutine.yield();
@@ -134,7 +135,7 @@ public class Drivetrain implements Mechanism {
 
             turnTable.log("Target", target);
             turnTable.log("Current", getHeading());
-            turnTable.log("Error", headingController.getError());
+            turnTable.log("Error", Radians.of(headingController.getError()));
             turnTable.log("Effort", effort);
 
             coroutine.yield();
@@ -148,14 +149,12 @@ public class Drivetrain implements Mechanism {
       drivetrainSim.periodic();
     }
 
-    table.log("Left Distance", getLeftDistance());
-    table.log("Left Velocity", getLeftVelocity());
-    table.log("Right Distance", getRightDistance());
-    table.log("Right Velocity", getRightVelocity());
+    table.log("Left Distance", Meters.of(getLeftDistance()));
+    table.log("Left Velocity", MetersPerSecond.of(getLeftVelocity()));
+    table.log("Right Distance", Meters.of(getRightDistance()));
+    table.log("Right Velocity", MetersPerSecond.of(getRightVelocity()));
     table.log("Heading", getHeading());
-    table.log(
-        "Active Commands",
-        getRunningCommands().stream().map(Command::name).collect(Collectors.toList()).toArray());
+    table.log("Active Commands", getRunningCommands().stream().map(Command::name).toArray());
   }
 
   public double getLeftDistance() {

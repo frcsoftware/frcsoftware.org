@@ -116,9 +116,9 @@ public class Drivetrain implements Mechanism {
             double effort = driveDistanceController.calculate(currentDistance);
             differentialDrive.arcadeDrive(effort, 0);
 
-            driveDistanceTable.log("Target", targetDistance);
-            driveDistanceTable.log("Current", currentDistance);
-            driveDistanceTable.log("Error", driveDistanceController.getError());
+            driveDistanceTable.log("Target", Meters.of(targetDistance));
+            driveDistanceTable.log("Current", Meters.of(currentDistance));
+            driveDistanceTable.log("Error", Meters.of(driveDistanceController.getError()));
             driveDistanceTable.log("Effort", effort);
 
             coroutine.yield();
@@ -139,7 +139,7 @@ public class Drivetrain implements Mechanism {
 
             turnTable.log("Target", target);
             turnTable.log("Current", getHeading());
-            turnTable.log("Error", headingController.getError());
+            turnTable.log("Error", Radians.of(headingController.getError()));
             turnTable.log("Effort", effort);
 
             coroutine.yield();
@@ -156,14 +156,14 @@ public class Drivetrain implements Mechanism {
     StatusSignal.refreshAll(
         leftDistanceSignal, rightDistanceSignal, leftVelocitySignal, rightVelocitySignal);
 
-    table.log("Left Distance", getLeftDistance());
-    table.log("Left Velocity", getLeftVelocity());
-    table.log("Right Distance", getRightDistance());
-    table.log("Right Velocity", getRightVelocity());
+    table.log("Left Distance", Meters.of(getLeftDistance()));
+    table.log("Left Velocity", MetersPerSecond.of(getLeftVelocity()));
+    table.log("Right Distance", Meters.of(getRightDistance()));
+    table.log("Right Velocity", MetersPerSecond.of(getRightVelocity()));
     table.log("Heading", getHeading());
     table.log(
         "Active Commands",
-        getRunningCommands().stream().map(Command::name).collect(Collectors.toList()).toArray());
+        getRunningCommands().stream().map(Command::name).toArray());
   }
 
   public double getLeftDistance() {

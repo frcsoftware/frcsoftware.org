@@ -36,7 +36,7 @@ public class FuelSim {
   private static final TelemetryTable table = Telemetry.getTable("FuelSim");
   private static Mode mode = null;
   private static boolean isPaused = false;
-  private static double rowsOfFuel = 0;
+  private static double rowsOfFuel = 3;
 
   /** A supplier that fetches the velocity of the feeder. */
   static DoubleSupplier feederVoltsSupplier = () -> 0;

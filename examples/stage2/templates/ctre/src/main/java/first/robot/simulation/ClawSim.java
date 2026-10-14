@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026 FRCSoftware
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 package first.robot.simulation;
 
 import com.ctre.phoenix6.hardware.TalonFX;

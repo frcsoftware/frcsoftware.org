@@ -40,13 +40,14 @@ function extractVideoId(videoUrl: string): string {
 
 const videoId = id || (url ? extractVideoId(url) : '');
 const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&showinfo=0&vq=hd1080`;
+const t = Astro.locals.t;
 ---
 
 <div class="youtube-container">
     <div class="youtube-wrapper">
         <iframe
             src={embedUrl}
-            title="YouTube video"
+            title={t('video.youTubeTitle')}
             style="border: none;"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen

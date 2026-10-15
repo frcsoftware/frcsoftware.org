@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -25,6 +27,7 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.*;
 
 public class Elevator implements Mechanism {
@@ -73,6 +76,8 @@ public class Elevator implements Mechanism {
   private final BaseStatusSignal[] signals;
 
   private double setpoint = 0;
+
+  private TelemetryTable table = Telemetry.getTable("Elevator");
 
   public Elevator() {
     // Construct and configure motors
@@ -147,11 +152,11 @@ public class Elevator implements Mechanism {
 
     BaseStatusSignal.refreshAll(signals);
 
-    Telemetry.log("Elevator/Applied Voltage", getAppliedVoltage());
-    Telemetry.log("Elevator/Position", getPosition());
-    Telemetry.log("Elevator/Velocity", getVelocity());
-    Telemetry.log("Elevator/At Setpoint", isAtSetpoint());
-    Telemetry.log("Elevator/Active Commands", getRunningCommands().toString());
+    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
+    table.log("Position", Meters.of(getPosition()));
+    table.log("Velocity", MetersPerSecond.of(getVelocity()));
+    table.log("At Setpoint", isAtSetpoint());
+    table.log("Active Commands", getRunningCommands().toString());
   }
 
   /**
@@ -174,7 +179,7 @@ public class Elevator implements Mechanism {
           setpoint = position;
           leader.setControl(
               positionRequest.withPosition(position / Constants.PULLEY_CIRCUMFERENCE));
-          Telemetry.log("Elevator/Setpoint", position);
+          table.log("Setpoint", Meters.of(position));
 
           coro.waitUntil(() -> isAtPosition(position));
         })

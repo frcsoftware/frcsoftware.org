@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -21,6 +23,7 @@ import org.wpilib.math.system.Models;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.FlywheelSim;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
@@ -39,6 +42,8 @@ public class Indexer implements Mechanism {
   private final StatusSignal<Current> supplyCurrentSignal;
 
   private BaseStatusSignal[] signals;
+
+  private TelemetryTable table = Telemetry.getTable("Indexer");
 
   private static class Constants {
     static final int MOTOR_ID = 35;
@@ -79,12 +84,12 @@ public class Indexer implements Mechanism {
 
     BaseStatusSignal.refreshAll(signals);
 
-    Telemetry.log("Indexer/Applied Voltage", appliedVoltageSignal.getValueAsDouble());
-    Telemetry.log("Indexer/Stator Current", statorCurrentSignal.getValueAsDouble());
-    Telemetry.log("Indexer/Supply Current", supplyCurrentSignal.getValueAsDouble());
-    Telemetry.log("Indexer/Active Commands", getRunningCommands().toString());
+    table.log("Applied Voltage", Volts.of(appliedVoltageSignal.getValueAsDouble()));
+    table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
+    table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
+    table.log("Active Commands", getRunningCommands().toString());
 
-    Telemetry.log("Indexer/Has Coral", sensor.get());
+    table.log("Has Coral", sensor.get());
   }
 
   public void simPeriodic() {

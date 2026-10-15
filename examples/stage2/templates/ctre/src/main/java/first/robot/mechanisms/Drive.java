@@ -26,11 +26,11 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.kinematics.SwerveModulePosition;
 import org.wpilib.math.trajectory.TrapezoidProfile;
 import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 public class Drive implements Mechanism {
 
@@ -48,6 +48,9 @@ public class Drive implements Mechanism {
   private static final double MAX_ACCELERATION = 5;
 
   private Pose2d currentPose = new Pose2d();
+
+  private TelemetryTable table = Telemetry.getTable("Drive");
+  private TelemetryTable autoAlignTable = table.getTable("AutoAlign");
 
   public Drive() {
     constants =
@@ -123,20 +126,11 @@ public class Drive implements Mechanism {
 
     currentPose = swerve.getState().Pose;
 
-    Telemetry.log("Drive/Pose", currentPose);
-
-    var modules = swerve.getModules();
-    SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-    for (int i = 0; i < modules.length; i++) {
-      modulePositions[i] = modules[i].getPosition(true);
-      Telemetry.log(
-          "Drive/ModuleVel/" + i, modules[i].getDriveMotor().getVelocity().getValueAsDouble());
-    }
-
-    Telemetry.log("Drive/ModulesReal", swerve.getState().ModuleVelocities);
-    Telemetry.log("Drive/ModulesTargets", swerve.getState().ModuleTargets);
-    Telemetry.log("Drive/Velocity", swerve.getState().Velocity);
-    Telemetry.log("Drive/Active Commands", getRunningCommands().toString());
+    table.log("Pose", currentPose);
+    table.log("ModulesReal", swerve.getState().ModuleVelocities);
+    table.log("ModulesTargets", swerve.getState().ModuleTargets);
+    table.log("Velocity", swerve.getState().Velocity);
+    table.log("Active Commands", getRunningCommands().toString());
   }
 
   /**
@@ -185,8 +179,8 @@ public class Drive implements Mechanism {
 
               swerve.setControl(request);
 
-              Telemetry.log(
-                  "Drive/DesiredVelocity",
+              table.log(
+                  "DesiredVelocity",
                   new ChassisVelocities(x, y, rotation).toRobotRelative(getHeading()));
             })
         .named("Teleop Drive");
@@ -268,25 +262,25 @@ public class Drive implements Mechanism {
           targetPose = poseSupplier.get();
         }
 
-        Telemetry.log("Drive/AutoAlign/At Target", atPosition());
-        Telemetry.log(
-            "Drive/AutoAlign/Position in Tolerance",
+        drive.autoAlignTable.log("At Target", atPosition());
+        drive.autoAlignTable.log(
+            "Position in Tolerance",
             targetPose.getTranslation().getDistance(drive.getPose().getTranslation())
                 <= positionTolerance);
-        Telemetry.log(
-            "Drive/AutoAlign/Angle in Tolerance",
+        drive.autoAlignTable.log(
+            "Angle in Tolerance",
             (ignoreRotation
                 || Math.abs(
                         targetPose.getRotation().minus(drive.getPose().getRotation()).getRadians())
                     <= angleTolerance));
 
-        Telemetry.log("Drive/AutoAlign/Target Pose", targetPose);
+        drive.autoAlignTable.log("Target Pose", targetPose);
 
         Translation2d vectorToTarget =
             targetPose.getTranslation().minus(currentPose.getTranslation());
         double distanceToEnd = vectorToTarget.getNorm();
 
-        Telemetry.log("Drive/AutoAlign/Distance", distanceToEnd);
+        drive.autoAlignTable.log("Distance", Meters.of(distanceToEnd));
 
         //                ChassisVelocities currentVelocity = drive.getVelocity();
         //                Translation2d currentVelocityAsTranslation = new
@@ -301,11 +295,11 @@ public class Drive implements Mechanism {
         double velocityForDistance =
             Math.sqrt(Math.pow(targetVelocity, 2) - 2 * -accelerationLimit * distanceToEnd);
 
-        Telemetry.log("Drive/AutoAlign/Velocity for Distance", velocityForDistance);
+        drive.autoAlignTable.log("Velocity for Distance", MetersPerSecond.of(velocityForDistance));
 
         double velocityToTarget = Math.min(velocityForDistance * 0.85, velocityLimit);
 
-        Telemetry.log("Drive/AutoAlign/Targeted Velocity", velocityToTarget);
+        drive.autoAlignTable.log("Targeted Velocity", MetersPerSecond.of(velocityToTarget));
 
         Translation2d velocities = vectorToTarget.div(distanceToEnd).times(velocityToTarget);
 
@@ -323,7 +317,7 @@ public class Drive implements Mechanism {
         ChassisVelocities chassisVelocities =
             new ChassisVelocities(lastVelocityVector.getX(), lastVelocityVector.getY(), omega);
 
-        Telemetry.log("Drive/DesiredVelocity", chassisVelocities);
+        drive.table.log("DesiredVelocity", chassisVelocities);
 
         swerveRequest.withVelocity(chassisVelocities);
         drive.swerve.setControl(swerveRequest);

@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -17,6 +19,7 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.discrete.DigitalInput;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
@@ -33,6 +36,8 @@ public class Claw implements Mechanism {
   private StatusSignal<Current> supplyCurrentSignal;
 
   private BaseStatusSignal[] signals;
+
+  private TelemetryTable table = Telemetry.getTable("Claw");
 
   public Claw() {
     motor = new TalonFX(23, new CANBus(CANPort.CAN_S2));
@@ -58,12 +63,12 @@ public class Claw implements Mechanism {
 
     BaseStatusSignal.refreshAll(signals);
 
-    Telemetry.log("Claw/Applied Voltage", appliedVoltageSignal.getValueAsDouble());
-    Telemetry.log("Claw/Stator Current", statorCurrentSignal.getValueAsDouble());
-    Telemetry.log("Claw/Supply Current", supplyCurrentSignal.getValueAsDouble());
-    Telemetry.log("Claw/Active Commands", getRunningCommands().toString());
+    table.log("Applied Voltage", Volts.of(appliedVoltageSignal.getValueAsDouble()));
+    table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
+    table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
+    table.log("Active Commands", getRunningCommands().toString());
 
-    Telemetry.log("Claw/Has Coral", hasCoral());
+    table.log("Has Coral", hasCoral());
   }
 
   /**

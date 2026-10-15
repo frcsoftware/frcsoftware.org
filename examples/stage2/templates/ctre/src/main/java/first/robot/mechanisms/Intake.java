@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -13,7 +15,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
@@ -28,6 +29,7 @@ import org.wpilib.math.util.Units;
 import org.wpilib.simulation.FlywheelSim;
 import org.wpilib.simulation.SingleJointedArmSim;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
@@ -63,6 +65,10 @@ public class Intake implements Mechanism {
   private final PositionVoltage pivotPositionRequest = new PositionVoltage(0);
   private final VoltageOut rollersVoltageRequest = new VoltageOut(0);
 
+  private final TelemetryTable table = Telemetry.getTable("Intake");
+  private final TelemetryTable pivotTable = table.getTable("Pivot");
+  private final TelemetryTable rollersTable = table.getTable("Rollers");
+
   private static class Constants {
     static final int PIVOT_ID = 30;
     static final int ROLLERS_ID = 31;
@@ -77,7 +83,6 @@ public class Intake implements Mechanism {
             * (42.0 / 10.0); // Three stage, 60:16, 70:18, 42:10 reductions
 
     static final double PIVOT_kS = 0;
-    static final double PIVOT_kG = 0.349;
     static final double PIVOT_kV = 5.621;
     static final double PIVOT_kA = 0.03;
     //        static final double PIVOT_kP = 19; //92
@@ -113,13 +118,11 @@ public class Intake implements Mechanism {
     pivotConfiguration
         .Slot0
         .withKS(Constants.PIVOT_kS)
-        .withKG(Constants.PIVOT_kG)
         .withKV(Constants.PIVOT_kV)
         .withKA(Constants.PIVOT_kA)
         .withKP(Constants.PIVOT_kP)
         .withKI(Constants.PIVOT_kI)
-        .withKD(Constants.PIVOT_kD)
-        .withGravityType(GravityTypeValue.Arm_Cosine);
+        .withKD(Constants.PIVOT_kD);
 
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     currentLimitsConfigs
@@ -132,8 +135,8 @@ public class Intake implements Mechanism {
 
     pivot.getConfigurator().apply(pivotConfiguration);
 
-    //        pivot.setPosition(Constants.PIVOT_ARM_MAX_ANGLE);
-    //        pivot.setPosition(0.38);
+    pivot.setPosition(Constants.PIVOT_ARM_MAX_ANGLE);
+    //    pivot.setPosition(0.38);
 
     TalonFXConfiguration rollersConfiguration = new TalonFXConfiguration();
     rollersConfiguration.withCurrentLimits(currentLimitsConfigs);
@@ -203,20 +206,20 @@ public class Intake implements Mechanism {
 
     BaseStatusSignal.refreshAll(statusSignals);
 
-    Telemetry.log("Intake/Pivot/Applied Voltage", getPivotAppliedVoltage());
-    Telemetry.log("Intake/Pivot/Stator Current", pivotStatorCurrentSignal.getValueAsDouble());
-    Telemetry.log("Intake/Pivot/Supply Current", pivotSupplyCurrentSignal.getValueAsDouble());
-    Telemetry.log("Intake/Pivot/Target Position", pivotTargetPosition);
-    Telemetry.log("Intake/Pivot/Position", getPivotPosition());
-    Telemetry.log("Intake/Pivot/Velocity", getPivotVelocity());
-    Telemetry.log("Intake/Pivot/At Setpoint", isPivotAtSetpoint());
+    pivotTable.log("Applied Voltage", Volts.of(getPivotAppliedVoltage()));
+    pivotTable.log("Stator Current", Amps.of(pivotStatorCurrentSignal.getValueAsDouble()));
+    pivotTable.log("Supply Current", Amps.of(pivotSupplyCurrentSignal.getValueAsDouble()));
+    pivotTable.log("Target Position", Rotations.of(pivotTargetPosition));
+    pivotTable.log("Position", Rotations.of(getPivotPosition()));
+    pivotTable.log("Velocity", RotationsPerSecond.of(getPivotVelocity()));
+    pivotTable.log("At Setpoint", isPivotAtSetpoint());
 
-    Telemetry.log("Intake/Rollers/Applied Voltage", getRollersAppliedVoltage());
-    Telemetry.log("Intake/Rollers/Stator Current", rollersStatorCurrentSignal.getValueAsDouble());
-    Telemetry.log("Intake/Rollers/Supply Current", rollersSupplyCurrentSignal.getValueAsDouble());
-    Telemetry.log("Intake/Rollers/Velocity", getRollersVelocity());
+    rollersTable.log("Applied Voltage", Volts.of(getRollersAppliedVoltage()));
+    rollersTable.log("Stator Current", Amps.of(rollersStatorCurrentSignal.getValueAsDouble()));
+    rollersTable.log("Supply Current", Amps.of(rollersSupplyCurrentSignal.getValueAsDouble()));
+    rollersTable.log("Velocity", RotationsPerSecond.of(getRollersVelocity()));
 
-    Telemetry.log("Intake/Active Commands", getRunningCommands().toString());
+    table.log("Active Commands", getRunningCommands().toString());
   }
 
   public void simPeriodic() {
@@ -228,7 +231,7 @@ public class Intake implements Mechanism {
     pivotSimState.setRotorVelocity(
         Units.radiansToRotations(pivotSim.getVelocity()) * Constants.PIVOT_RATIO);
 
-    Telemetry.log("Intake/Pivot/SimPosition", Units.radiansToRotations(pivotSim.getAngle()));
+    pivotTable.log("SimPosition", Radians.of(pivotSim.getAngle()));
 
     rollersSim.setInputVoltage(rollersSimState.getMotorVoltage());
     rollersSim.update(0.02);

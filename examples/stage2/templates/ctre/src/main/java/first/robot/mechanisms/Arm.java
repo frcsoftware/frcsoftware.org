@@ -5,6 +5,8 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
@@ -23,6 +25,7 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
@@ -65,6 +68,8 @@ public class Arm implements Mechanism {
   private BaseStatusSignal[] signals;
 
   private double setpoint = 0;
+
+  private TelemetryTable table = Telemetry.getTable("Arm");
 
   public Arm() {
     // Construct and configure motors
@@ -126,11 +131,11 @@ public class Arm implements Mechanism {
 
     BaseStatusSignal.refreshAll(signals);
 
-    Telemetry.log("Arm/Applied Voltage", getAppliedVoltage());
-    Telemetry.log("Arm/Position", getPosition());
-    Telemetry.log("Arm/Velocity", getVelocity());
-    Telemetry.log("Arm/At Setpoint", isAtSetpoint());
-    Telemetry.log("Arm/Active Commands", getRunningCommands().toString());
+    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
+    table.log("Position", Rotations.of(getPosition()));
+    table.log("Velocity", RotationsPerSecond.of(getVelocity()));
+    table.log("At Setpoint", isAtSetpoint());
+    table.log("Active Commands", getRunningCommands().toString());
   }
 
   /**
@@ -152,7 +157,7 @@ public class Arm implements Mechanism {
     return run(coro -> {
           setpoint = position;
           motor.setControl(positionRequest.withPosition(position));
-          Telemetry.log("Arm/Setpoint", position);
+          table.log("Setpoint", Rotations.of(position));
 
           coro.waitUntil(() -> isAtPosition(position));
         })

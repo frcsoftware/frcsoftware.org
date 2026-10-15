@@ -21,7 +21,6 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
-import org.wpilib.command3.Scheduler;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.system.Models;
@@ -194,11 +193,10 @@ public class Intake implements Mechanism {
             Models.flywheelFromPhysicalConstants(
                 DCMotor.getKrakenX60(1), Constants.ROLLERS_J, Constants.ROLLERS_RATIO),
             DCMotor.getKrakenX60(1));
-
-    Scheduler.getDefault().addPeriodic(this::periodic);
   }
 
   public void periodic() {
+    // Update simulation
     if (Robot.isSimulation()) {
       simPeriodic();
     }

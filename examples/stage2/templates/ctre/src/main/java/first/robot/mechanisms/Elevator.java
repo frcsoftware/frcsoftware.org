@@ -18,10 +18,10 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import first.robot.Robot;
 import first.robot.simulation.ElevatorSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
-import org.wpilib.command3.Scheduler;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
@@ -111,9 +111,6 @@ public class Elevator implements Mechanism {
 
     follower.setControl(new Follower(leader.getDeviceID(), Constants.FOLLOWER_ALIGNMENT));
 
-    // Set up periodic method to run every code loop
-    Scheduler.getDefault().addPeriodic(this::periodic);
-
     // Set up simulation
     sim = new ElevatorSim(leader, follower);
 
@@ -142,9 +139,11 @@ public class Elevator implements Mechanism {
         };
   }
 
-  private void periodic() {
+  public void periodic() {
     // Update simulation
-    sim.periodic();
+    if (Robot.isSimulation()) {
+      sim.periodic();
+    }
 
     BaseStatusSignal.refreshAll(signals);
 

@@ -49,6 +49,20 @@ public class Robot extends OpModeRobot {
 
   @Override
   public void robotPeriodic() {
+    drive.periodic();
+    elevator.periodic();
+    arm.periodic();
+    claw.periodic();
+    intake.periodic();
+    indexer.periodic();
+
+    robotVisualization.periodic();
+
     Scheduler.getDefault().run();
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    coralSim.periodic();
   }
 }

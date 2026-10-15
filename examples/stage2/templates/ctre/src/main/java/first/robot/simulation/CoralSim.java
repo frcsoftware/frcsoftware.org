@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.wpilib.command3.Scheduler;
 import org.wpilib.math.geometry.*;
 import org.wpilib.math.shape.Rectangle2d;
 import org.wpilib.math.util.Units;
@@ -68,8 +67,6 @@ public class CoralSim {
 
     indexerSensor.setIsInput(true);
     clawSensor.setIsInput(true);
-
-    Scheduler.getDefault().addPeriodic(this::periodic);
 
     //        Arrays.fill(redScoredCoral, new boolean[]{true, true, true});
     //        Arrays.fill(blueScoredCoral, new boolean[]{true, true, true});

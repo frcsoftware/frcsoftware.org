@@ -10,10 +10,10 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import first.robot.Robot;
 import first.robot.simulation.ClawSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
-import org.wpilib.command3.Scheduler;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.discrete.DigitalInput;
 import org.wpilib.telemetry.Telemetry;
@@ -48,12 +48,13 @@ public class Claw implements Mechanism {
 
     signals =
         new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
-
-    Scheduler.getDefault().addPeriodic(this::periodic);
   }
 
   public void periodic() {
-    sim.periodic();
+    // Update simulation
+    if (Robot.isSimulation()) {
+      sim.periodic();
+    }
 
     BaseStatusSignal.refreshAll(signals);
 

@@ -111,8 +111,6 @@ public class Drive implements Mechanism {
     swerve =
         new SwerveDrivetrain<>(
             TalonFX::new, TalonFX::new, CANcoder::new, constants, moduleConstants);
-
-    Scheduler.getDefault().addPeriodic(this::periodic);
   }
 
   public void periodic() {

@@ -14,7 +14,6 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
-import org.wpilib.command3.Scheduler;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.discrete.DigitalInput;
 import org.wpilib.math.system.DCMotor;
@@ -70,11 +69,10 @@ public class Indexer implements Mechanism {
 
     signals =
         new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
-
-    Scheduler.getDefault().addPeriodic(this::periodic);
   }
 
   public void periodic() {
+    // Update simulation
     if (Robot.isSimulation()) {
       simPeriodic();
     }

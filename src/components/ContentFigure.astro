@@ -167,6 +167,7 @@ if (!isYouTubeVideo && !isLocalVideo) {
 }
 
 const hasCaption = Astro.slots.has('default');
+const t = Astro.locals.t;
 ---
 
 <figure
@@ -181,7 +182,7 @@ const hasCaption = Astro.slots.has('default');
             >
                 <iframe
                     src={embedUrl}
-                    title="YouTube video"
+                    title={t('video.youTubeTitle')}
                     style="border: none;"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
@@ -202,7 +203,7 @@ const hasCaption = Astro.slots.has('default');
                     playsinline
                     preload="metadata"
                 >
-                    Your browser does not support the video tag.
+                    {t('video.unsupported')}
                 </video>
             </div>
         ) : (

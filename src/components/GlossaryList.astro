@@ -7,17 +7,28 @@
  */
 
 import { getCollection } from 'astro:content';
+import { defaultLang } from '../config/locales';
 
-const terms = (await getCollection('glossary')).sort((a, b) =>
-    a.id.toLowerCase().localeCompare(b.id.toLowerCase()),
-);
+interface Props {
+    lang?: string;
+}
+
+const { lang = defaultLang } = Astro.props;
+
+const terms = (await getCollection('glossary'))
+    .filter(({ data }) => data.lang === lang)
+    .sort((a, b) =>
+        a.data.term.toLowerCase().localeCompare(b.data.term.toLowerCase()),
+    );
 ---
 
 <dl class="glossary-list">
     {
-        terms.map(({ id, data }) => (
+        terms.map(({ data }) => (
             <div class="glossary-entry">
-                <dt id={id.toLowerCase().replace(/\s+/g, '-')}>{id}</dt>
+                <dt id={data.term.toLowerCase().replace(/\s+/g, '-')}>
+                    {data.term}
+                </dt>
                 <dd>{data.definition}</dd>
             </div>
         ))

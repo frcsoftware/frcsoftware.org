@@ -42,9 +42,6 @@ public class Robot extends OpModeRobot {
     // Math.sin(Timer.getTimestamp()) * Math.PI);
     robotVisualization =
         new RobotVisualization(drive::getPose, elevator::getPosition, arm::getPosition, () -> 0);
-
-    Scheduler.getDefault().addPeriodic(coralSim::periodic);
-    Scheduler.getDefault().addPeriodic(robotVisualization::periodic);
   }
 
   @Override

@@ -55,8 +55,8 @@ public class Drive implements Mechanism {
 
     moduleConstantsFactory =
         new SwerveModuleConstantsFactory<>()
-            .withDriveMotorGearRatio(7.03)
-            .withSteerMotorGearRatio(26.09090909090909)
+            .withDriveMotorGearRatio((54.0/12.0) * (25.0/35.0) * (30.0/15.0))
+            .withSteerMotorGearRatio(287.0/11.0)
             .withCouplingGearRatio(3.857142857142857)
             .withWheelRadius(Units.inchesToMeters(2))
             //                .withSteerMotorGains(new Slot0Configs()

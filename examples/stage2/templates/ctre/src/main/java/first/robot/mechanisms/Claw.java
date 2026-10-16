@@ -1,0 +1,88 @@
+/*
+ * Copyright 2026 FRCSoftware
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+package first.robot.mechanisms;
+
+import static org.wpilib.units.Units.*;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import first.robot.Robot;
+import first.robot.simulation.ClawSim;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Mechanism;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.hardware.discrete.DigitalInput;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Voltage;
+
+public class Claw implements Mechanism {
+  private final TalonFX motor;
+  private final DigitalInput sensor;
+
+  private final ClawSim sim;
+
+  private VoltageOut voltageRequest;
+
+  private StatusSignal<Voltage> appliedVoltageSignal;
+  private StatusSignal<Current> statorCurrentSignal;
+  private StatusSignal<Current> supplyCurrentSignal;
+
+  private BaseStatusSignal[] signals;
+
+  private TelemetryTable table = Telemetry.getTable("Claw");
+
+  public Claw() {
+    motor = new TalonFX(23, new CANBus(CANPort.CAN_S2));
+    sensor = new DigitalInput(1);
+
+    sim = new ClawSim(motor);
+
+    voltageRequest = new VoltageOut(0);
+
+    appliedVoltageSignal = motor.getMotorVoltage();
+    statorCurrentSignal = motor.getStatorCurrent();
+    supplyCurrentSignal = motor.getSupplyCurrent();
+
+    signals =
+        new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
+  }
+
+  public void periodic() {
+    // Update simulation
+    if (Robot.isSimulation()) {
+      sim.periodic();
+    }
+
+    BaseStatusSignal.refreshAll(signals);
+
+    table.log("Applied Voltage", Volts.of(appliedVoltageSignal.getValueAsDouble()));
+    table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
+    table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
+    table.log("Active Commands", getRunningCommands().toString());
+
+    table.log("Has Coral", hasCoral());
+  }
+
+  /**
+   * @param voltage the voltage to apply to the motors
+   * @return a command
+   */
+  public Command setVoltage(double voltage) {
+    return run((coro) -> {
+          motor.setControl(voltageRequest.withOutput(voltage));
+        })
+        .named("Set Voltage: " + voltage + "V");
+  }
+
+  public boolean hasCoral() {
+    return sensor.get();
+  }
+}

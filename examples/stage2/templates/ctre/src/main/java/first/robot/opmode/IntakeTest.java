@@ -7,7 +7,7 @@ package first.robot.opmode;
 
 import first.robot.Robot;
 import org.wpilib.command3.Command;
-import org.wpilib.command3.button.CommandGamepad;
+import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.math.util.Units;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Utility;
@@ -16,24 +16,26 @@ import org.wpilib.opmode.Utility;
 public class IntakeTest extends PeriodicOpMode {
   private final Robot robot;
 
-  private final CommandGamepad controller;
+  private final CommandXboxController controller;
 
   public IntakeTest(Robot robot) {
     this.robot = robot;
 
-    controller = new CommandGamepad(0);
+    controller = new CommandXboxController(0);
 
     controller
-        .button(0)
+        .a()
         .onTrue(
             Command.noRequirements(
                     coro -> {
                       coro.await(robot.intake.setRollerVoltage(12));
-                      coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(0)));
+                      //
+                      // coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(0)));
+                      coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(-3.206)));
                     })
                 .named("Deploy intake"));
     controller
-        .button(1)
+        .b()
         .onTrue(
             Command.noRequirements(
                     coro -> {
@@ -42,7 +44,7 @@ public class IntakeTest extends PeriodicOpMode {
                     })
                 .named("Retract intake"));
     controller
-        .button(2)
+        .x()
         .onTrue(
             Command.noRequirements(
                     coro -> {

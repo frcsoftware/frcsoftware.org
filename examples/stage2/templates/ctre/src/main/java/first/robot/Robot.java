@@ -34,14 +34,16 @@ public class Robot extends OpModeRobot {
     intake = new Intake();
     indexer = new Indexer();
 
-    //    robotVisualization = new RobotVisualization(drive::getPose, elevator::getPosition,
-    // arm::getPosition, intake::getPivotPosition);
+    robotVisualization =
+        new RobotVisualization(
+            drive::getPose, elevator::getPosition, arm::getPosition, intake::getPivotPosition);
     //    robotVisualization = new RobotVisualization(drive::getPose, () -> 0, () -> 0, () -> 0);
     //    robotVisualization = new RobotVisualization(drive::getPose, () -> Math.max(0,
     // Math.sin(Timer.getTimestamp()) * 2), () -> Timer.getTimestamp()/2 * Math.PI, () ->
     // Math.sin(Timer.getTimestamp()) * Math.PI);
-    robotVisualization =
-        new RobotVisualization(drive::getPose, elevator::getPosition, arm::getPosition, () -> 0);
+    //    robotVisualization =
+    //        new RobotVisualization(drive::getPose, elevator::getPosition, arm::getPosition, () ->
+    // 0);
   }
 
   @Override

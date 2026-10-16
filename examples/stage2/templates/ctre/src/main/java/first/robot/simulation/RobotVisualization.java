@@ -43,7 +43,10 @@ public class RobotVisualization {
   public void periodic() {
     double elevatorHeight = Math.clamp(elevatorHeightSupplier.getAsDouble(), 0, 1.347);
     double intakeAngle =
-        Math.clamp(intakeAngleSupplier.getAsDouble(), 0, Units.degreesToRadians(138.469));
+        Math.clamp(
+            Units.rotationsToRadians(intakeAngleSupplier.getAsDouble()),
+            0,
+            Units.degreesToRadians(138.469));
 
     double firstStageHeight =
         elevatorHeight < ELEVATOR_CARRIAGE_TRAVEL ? 0 : elevatorHeight - ELEVATOR_CARRIAGE_TRAVEL;

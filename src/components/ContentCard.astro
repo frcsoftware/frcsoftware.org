@@ -16,7 +16,7 @@ const { title, description, eyebrow, href, ...attributes } = Astro.props;
     <h3>{title}</h3>
     {description && <p class="content-card-description">{description}</p>}
     <slot />
-    <span class="content-card-arrow" aria-hidden="true">→</span>
+    <span class="content-card-arrow" aria-hidden="true"> → </span>
 </a>
 
 <style>

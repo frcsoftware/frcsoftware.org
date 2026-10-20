@@ -146,6 +146,9 @@ importers:
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.10.0(supports-color@10.2.2))
+      '@eslint/markdown':
+        specifier: ^8.0.3
+        version: 8.0.3(supports-color@10.2.2)
       '@frcsoftware/vale':
         specifier: 3.19.0
         version: 3.19.0
@@ -170,6 +173,9 @@ importers:
       eslint-plugin-astro:
         specifier: ^3.1.0
         version: 3.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(@typescript-eslint/parser@8.70.0(eslint@10.10.0(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.10.0(supports-color@10.2.2))(supports-color@10.2.2)(typescript-eslint@8.70.0(eslint@10.10.0(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))
+      eslint-plugin-sentences-per-line:
+        specifier: ^0.1.6
+        version: 0.1.6(supports-color@10.2.2)
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
@@ -194,15 +200,6 @@ importers:
       oxfmt:
         specifier: ^0.73.0
         version: 0.73.0(@astrojs/compiler-rs@0.5.2)
-      prettier:
-        specifier: ^3.9.6
-        version: 3.9.6
-      prettier-plugin-astro:
-        specifier: ^0.14.1
-        version: 0.14.1
-      prettier-plugin-sentences-per-line:
-        specifier: ^0.2.4
-        version: 0.2.4(prettier@3.9.6)
       remark-cli:
         specifier: ^12.0.1
         version: 12.0.1(supports-color@10.2.2)
@@ -814,6 +811,10 @@ packages:
     peerDependenciesMeta:
       eslint:
         optional: true
+
+  '@eslint/markdown@8.0.3':
+    resolution: {integrity: sha512-rBTSSShrq7e4O+PWfeE4azH4/CWPNrC+VGxBXiW00o3vYVJnznsZiDayj3KC9JztIMVRZxZHn2nrDIUau/4j7A==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@eslint/object-schema@3.0.5':
     resolution: {integrity: sha512-vqTaUEgxzm+YDSdElad6PiRoX4t8VGDjCtt05zn4nU810UIx/uNEV7/lZJ6KwFThKZOzOxzXy48da+No7HZaMw==}
@@ -2038,6 +2039,9 @@ packages:
         optional: true
       typescript-eslint:
         optional: true
+
+  eslint-plugin-sentences-per-line@0.1.6:
+    resolution: {integrity: sha512-2uYFopwmLlvc6IsqfSGT/7qoQoC6mvMvTZKvDBlV6u+GtaMBaTo0JgFug6GoJ3i/pxUiaDw3PsC2h4VsLoRfDQ==}
 
   eslint-scope@9.1.2:
     resolution: {integrity: sha512-xS90H51cKw0jltxmvmHy2Iai1LIqrfbw57b79w/J7MfvDfkIkFZ+kj6zC3BjtUwh150HsSSdxXZcsuv72miDFQ==}
@@ -3291,11 +3295,6 @@ packages:
     resolution: {integrity: sha512-RiBETaaP9veVstE4vUwSIcdATj6dKmXljouXc/DDNwBSPTp8FRkLGDSGFClKsAFeeg+13SB0Z1JZvbD76bigJw==}
     engines: {node: ^14.15.0 || >=16.0.0}
 
-  prettier-plugin-sentences-per-line@0.2.4:
-    resolution: {integrity: sha512-1SSPJxwvekA6wVb4VqJYcVZw39Ak7Oy/IKd4qCGG48hO7oWg/DF0EWPo4PrEROy2LWLl3/U570NM7SurMKQNSA==}
-    peerDependencies:
-      prettier: ^3
-
   prettier@3.9.6:
     resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
@@ -3580,8 +3579,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  sentences-per-line@0.5.3:
-    resolution: {integrity: sha512-pXuRJ4bKjxEaRVi7ZbwJBF2THPShuLHvWjw9yCtyn5qNqgAfZ/sqPHJu9HS72TffLQwIFX+aSP61HuGGz+7Aww==}
+  sentences-per-line@0.5.6:
+    resolution: {integrity: sha512-Nr8nl/K1oqxcSX5jle3/dDlQyej1DYzhoSTbWRMNECV/NTl5KTIjxhgElmn167PEAqgMEdaXMRQo7kaGbXUS5Q==}
     engines: {node: '>=22.14.0'}
 
   sharp@0.35.4:
@@ -4825,6 +4824,22 @@ snapshots:
   '@eslint/js@10.0.1(eslint@10.10.0(supports-color@10.2.2))':
     optionalDependencies:
       eslint: 10.10.0(supports-color@10.2.2)
+
+  '@eslint/markdown@8.0.3(supports-color@10.2.2)':
+    dependencies:
+      '@eslint/core': 1.2.1
+      '@eslint/plugin-kit': 0.7.3
+      github-slugger: 2.0.0
+      mdast-util-from-markdown: 2.0.3(supports-color@10.2.2)
+      mdast-util-frontmatter: 2.0.1(supports-color@10.2.2)
+      mdast-util-gfm: 3.1.0(supports-color@10.2.2)
+      mdast-util-math: 3.0.0(supports-color@10.2.2)
+      micromark-extension-frontmatter: 2.0.0
+      micromark-extension-gfm: 3.0.0
+      micromark-extension-math: 3.1.0
+      micromark-util-normalize-identifier: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
 
   '@eslint/object-schema@3.0.5': {}
 
@@ -6091,6 +6106,15 @@ snapshots:
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
+      - supports-color
+
+  eslint-plugin-sentences-per-line@0.1.6(supports-color@10.2.2):
+    dependencies:
+      '@eslint/markdown': 8.0.3(supports-color@10.2.2)
+      eslint: 10.10.0(supports-color@10.2.2)
+      sentences-per-line: 0.5.6
+    transitivePeerDependencies:
+      - jiti
       - supports-color
 
   eslint-scope@9.1.2:
@@ -7996,11 +8020,7 @@ snapshots:
       '@astrojs/compiler': 2.13.1
       prettier: 3.9.6
       sass-formatter: 0.7.9
-
-  prettier-plugin-sentences-per-line@0.2.4(prettier@3.9.6):
-    dependencies:
-      prettier: 3.9.6
-      sentences-per-line: 0.5.3
+    optional: true
 
   prettier@3.9.6: {}
 
@@ -8459,7 +8479,8 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  s.color@0.0.15: {}
+  s.color@0.0.15:
+    optional: true
 
   sade@1.8.1:
     dependencies:
@@ -8470,6 +8491,7 @@ snapshots:
   sass-formatter@0.7.9:
     dependencies:
       suf-log: 2.5.3
+    optional: true
 
   satteri@0.10.5:
     dependencies:
@@ -8509,7 +8531,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  sentences-per-line@0.5.3: {}
+  sentences-per-line@0.5.6: {}
 
   sharp@0.35.4(@types/node@26.5.0):
     dependencies:
@@ -8687,6 +8709,7 @@ snapshots:
   suf-log@2.5.3:
     dependencies:
       s.color: 0.0.15
+    optional: true
 
   super-regex@0.2.0:
     dependencies:

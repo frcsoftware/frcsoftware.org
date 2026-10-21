@@ -1,0 +1,366 @@
+---
+title: Operators（运算符）
+description: 介绍 Java 中的算术运算符、赋值运算符、比较运算符和逻辑运算符
+codeRegionSources:
+    default: stage0/snippets/src/Operators.java
+---
+
+在 [Java基础](/learning-course/stage0/java-fundamentals/) 这一课中，我们把值存在变量里。
+这一课学习 **运算符**，也就是像 `+` 和 `>` 这样的符号，用来根据已有的值计算出新的值。
+机器人代码里到处都是运算符。
+数储球仓里的球要用 `+`，检查射球机构是否达到速度要用 `>`。
+
+我们会介绍四种运算符：
+
+- <strong>Arithmetic operators（算术运算符）</strong>，用来做数学运算
+- <strong>Assignment operators（赋值运算符）</strong>，用来更新变量的值
+- <strong>Comparison operators（比较运算符）</strong>，用来比较两个值
+- <strong>Logical operators（逻辑运算符）</strong>，用来组合 `true` 和 `false`
+
+## Arithmetic Operators（算术运算符）
+
+**算术运算符**对数字做基本数学运算：
+
+<table class="Arithmetic Operators">
+    <thead>
+        <tr>
+            <th>运算符</th>
+            <th>说明</th>
+            <th>示例</th>
+            <th>结果</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>`+`</td>
+            <td>加法：将两个值相加</td>
+            <td>`5 + 2`</td>
+            <td>`7`</td>
+        </tr>
+        <tr>
+            <td>`-`</td>
+            <td>减法：用一个值减去另一个值</td>
+            <td>`5 - 2`</td>
+            <td>`3`</td>
+        </tr>
+        <tr>
+            <td>`*`</td>
+            <td>乘法：将两个值相乘</td>
+            <td>`5 * 2`</td>
+            <td>`10`</td>
+        </tr>
+        <tr>
+            <td>`/`</td>
+            <td>除法：用一个值除以另一个值</td>
+            <td>`10 / 2`</td>
+            <td>`5`</td>
+        </tr>
+        <tr>
+            <td>`%`</td>
+            <td>余数：返回两个数相除后的余数</td>
+            <td>`5 % 2`</td>
+            <td>`1`</td>
+        </tr>
+    </tbody>
+</table>
+
+任何可以使用数字的地方都可以使用运算符，例如给变量赋值时。
+不运行代码的话，下面这些变量分别保存什么值？
+
+```java #variables
+
+```
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    - `totalMotors` 是 6，因为 2 + 4 = 6
+    - `motorsPerSide` 是 2，因为 4 / 2 = 2
+    - `ballsLeft` 是 7，因为 10 - 3 = 7
+
+</Aside>
+
+<Aside type="caution" title="Dividing Integers（整数相除）">
+    一个 `int` 除以另一个 `int` 时，结果也是 `int`，小数部分会被丢掉，所以 `7 / 2` 是 `3`，不是 `3.5`。
+    要得到带小数的结果，其中至少一个数必须是 `double`。`7.0 / 2` 是 `3.5`。
+
+    这也是机器人代码大多使用 `double` 的原因之一。速度、位置和电压都需要保留小数部分。
+
+</Aside>
+
+## Assignment Operators（赋值运算符）
+
+**赋值运算符**给变量一个新的值。
+你已经用过最简单的一个，`=`，用来设置变量的值。
+其他赋值运算符是根据变量当前值来更新它的简写：
+
+<table class="Assignment Operators">
+    <thead>
+        <tr>
+            <th>运算符</th>
+            <th>说明</th>
+            <th>示例</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>`=`</td>
+            <td>把一个值赋给变量</td>
+            <td>`a = 2`</td>
+        </tr>
+        <tr>
+            <td>`+=`</td>
+            <td>
+                加法：取变量的当前值，加上指定的量，再把结果赋给这个变量。它与
+                `x = x + y` 相同
+            </td>
+            <td>`a += 3`</td>
+        </tr>
+        <tr>
+            <td>`-=`</td>
+            <td>
+                减法：取变量的当前值，减去指定的量，再把结果赋给这个变量。它与
+                `x = x - y` 相同
+            </td>
+            <td>`a -= 4`</td>
+        </tr>
+        <tr>
+            <td>`*=`</td>
+            <td>
+                乘法：取变量的当前值，乘以指定的量，再把结果赋给这个变量。它与
+                `x = x * y` 相同
+            </td>
+            <td>`a *= 5`</td>
+        </tr>
+        <tr>
+            <td>`/=`</td>
+            <td>
+                除法：取变量的当前值，除以指定的量，再把结果赋给这个变量。它与
+                `x = x / y` 相同
+            </td>
+            <td>`a /= 6`</td>
+        </tr>
+    </tbody>
+</table>
+
+`score += 2` 和 `score = score + 2` 做的是同一件事，但变量名只需要写一次。
+代码更短，少一个容易出错的地方。
+
+这里，`score` 从 10 开始并增加 2，而 `ballsCarried` 从 5 开始并减少 1：
+
+```java #arithmetic
+
+```
+
+加 1 或减 1 非常常见，所以 Java 专门提供了运算符。
+`++` 通过加 1 来 <strong>increment（自增）</strong>一个变量，`--` 通过减 1 来 <strong>decrement（自减）</strong>一个变量。
+在本阶段后面的[循环](/learning-course/stage0/loops/)里，你会经常看到 `++`。
+
+<table class="Increment/Decrement Operators">
+    <thead>
+        <tr>
+            <th>运算符</th>
+            <th>说明</th>
+            <th>示例</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>`++`</td>
+            <td>自增：给变量加 1</td>
+            <td>`a++`</td>
+        </tr>
+        <tr>
+            <td>`--`</td>
+            <td>自减：给变量减 1</td>
+            <td>`a--`</td>
+        </tr>
+    </tbody>
+</table>
+
+机器人每射出一个球，就可以记下这一次，并从储球仓里去掉这个球：
+
+```java #increments
+
+```
+
+## Comparison Operators（比较运算符）
+
+**比较运算符**比较两个值，并返回一个 `boolean`，也就是 `true` 或 `false`。
+程序靠它们做判断，[条件语句](/learning-course/stage0/conditionals/)那一课会用到。
+
+<table class="Comparison Operators">
+    <thead>
+        <tr>
+            <th>运算符</th>
+            <th>说明</th>
+            <th>示例</th>
+            <th>结果</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>`==`</td>
+            <td>等于：检查两个值是否相同</td>
+            <td>`5 == 2`</td>
+            <td>`false`</td>
+        </tr>
+        <tr>
+            <td>`!=`</td>
+            <td>不等于：检查两个值是否**不**相同</td>
+            <td>`5 != 2`</td>
+            <td>`true`</td>
+        </tr>
+        <tr>
+            <td>`>`</td>
+            <td>大于：检查一个值是否大于另一个值</td>
+            <td>`5 > 2`</td>
+            <td>`true`</td>
+        </tr>
+        <tr>
+            <td>`<`</td>
+            <td>小于：检查一个值是否小于另一个值</td>
+            <td>`5 < 5`</td>
+            <td>`false`</td>
+        </tr>
+        <tr>
+            <td>`>=`</td>
+            <td>大于或等于：检查一个值是否大于或等于另一个值</td>
+            <td>`6 >= 7`</td>
+            <td>`false`</td>
+        </tr>
+        <tr>
+            <td>`<=`</td>
+            <td>小于或等于：检查一个值是否小于或等于另一个值</td>
+            <td>`6 <= 6`</td>
+            <td>`true`</td>
+        </tr>
+    </tbody>
+</table>
+
+它们的用法和数学课里的比较一样。
+这里，机器人已经进了 2 个球，但需要 4 个，所以 `ballsScored > ballsNeeded` 是 `false`：
+
+```java #comparison
+
+```
+
+<Aside type="caution" title="Comparing Strings（比较字符串）">
+    对 `String` 使用 `==`
+    时，检查的是两个变量是否指向同一个对象，而不是它们是否包含相同的文本。
+    两个都是 `"Plunk"` 的不同 `String`，`==` 检查仍可能失败。 要比较文本，应改用
+    `.equals()` 方法。本阶段还用不到它，但
+    [w3schools](https://www.w3schools.com/java/ref_string_equals.asp)
+    有更详细的说明。
+</Aside>
+
+### `=` 与 `==`
+
+要检查两个值是否相等，使用双等号 `==`。
+单个等号 `=` 是赋值运算符。
+它设置变量的值，不做比较。
+
+把它们弄混是常见错误。
+下面这行代码无法通过编译。
+Java 会把它理解成试图把数字 6 改成 8，这在java中是做不到的。
+错误信息会说，赋值的左边必须是一个变量：
+
+{/* rli:ignore */}
+
+```java
+System.out.println(6 = 8);
+```
+
+换成 `==` 后，Java 比较的是两个值，并且会打印 `false`，因为 6 不等于 8：
+
+{/* rli:ignore */}
+
+```java
+System.out.println(6 == 8);
+```
+
+## Logical Operators（逻辑运算符）
+
+**逻辑运算符**用来组合 `boolean` 值，这样可以同时根据多个条件做判断，例如“机器人有球，并且已经对准目标”。
+
+<Aside type="note" title="Note（备注）">
+    逻辑运算符也有运算顺序，和算术运算符一样。 `!` 最先，然后是 `&&`，最后是
+    `||`。括号可以改变顺序，和数学里一样。
+</Aside>
+
+<table class="Comparison Operators">
+    <thead>
+        <tr>
+            <th>运算符</th>
+            <th>说明</th>
+            <th>示例</th>
+            <th>结果</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>`&&`</td>
+            <td>与：两个语句都为 true 时结果为 true</td>
+            <td>`true && true`</td>
+            <td>`true`</td>
+        </tr>
+        <tr>
+            <td>`||`</td>
+            <td>或：至少一个语句为 true 时结果为 true</td>
+            <td>`true || false`</td>
+            <td>`true`</td>
+        </tr>
+        <tr>
+            <td>`!`</td>
+            <td>非：取反。true 变成 false，false 变成 true</td>
+            <td>`!true`</td>
+            <td>`false`</td>
+        </tr>
+    </tbody>
+</table>
+
+这里，机器人有球，但还没有对准目标。
+不运行代码的话，每一行会打印什么？
+
+```java #logical
+
+```
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    1. `false`。`&&` 需要两个值都为 true，而 `isAligned` 是 false，所以机器人现在还不该射球。
+    2. `true`。`||` 只需要其中一个为 true，而 `hasBall` 是 true。
+    3. `false`。`!` 会把值反过来，而 `hasBall` 是 true。
+
+</Aside>
+
+## 改变变量与使用它的值
+
+运算符本身会算出一个新的值，但不会改变任何变量。
+只有用 `=` 或其他赋值运算符把结果赋回去，变量才会改变。
+
+这里，`totalPoints` 被设为 `autoPoints + 10` 的结果，所以它的值变成 12：
+
+```java #math1
+
+```
+
+在这个示例里，`gamePieces * 2` 是在打印语句内部计算的：
+
+```java #math2
+
+```
+
+这会打印 12，但之后 `gamePieces` 仍然是 6。
+`gamePieces * 2` 的结果只用于打印，从未赋回给 `gamePieces`。
+可以在下一行再打印一次 `gamePieces` 来确认。
+
+## 运算符练习
+
+<Aside type="exercise" title="Exercise（练习）">
+    ### 练习
+
+    现在可以直接打开 `Operators.java`，这个文件是在 Java基础那一课里准备好的！
+    按照注释编写相应代码，以完成目标。
+
+    完成这个练习后，把修改 commit（提交）并 push（推送）到 GitHub。
+    如果需要回顾操作步骤，请查看 [Git - Uploading code（上传代码）](/learning-course/stage0/git/)。
+
+</Aside>

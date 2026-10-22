@@ -73,44 +73,32 @@ const iconPaths: Record<string, string> = {
 };
 ---
 
-{
-    collapse ? (
-        <details class={`aside aside--${type}`}>
-            <summary>
-                <span class="aside-icon">
-                    <MdiIcon
-                        path={iconPaths[type] || mdiInformation}
-                        size={20}
-                    />
-                </span>
-                <span class="aside-title">{displayTitle}</span>
-                <MdiIcon
-                    class="aside-chevron"
-                    path={mdiChevronRight}
-                    size={20}
-                />
-            </summary>
-            <div class="aside-content">
-                <slot />
-            </div>
-        </details>
-    ) : (
-        <div class={`aside aside--${type}`}>
-            <div class="aside-header">
-                <span class="aside-icon">
-                    <MdiIcon
-                        path={iconPaths[type] || mdiInformation}
-                        size={20}
-                    />
-                </span>
-                <span class="aside-title">{displayTitle}</span>
-            </div>
-            <div class="aside-content">
-                <slot />
-            </div>
+{collapse ? (
+    <details class={`aside aside--${type}`}>
+        <summary>
+            <span class="aside-icon">
+                <MdiIcon path={iconPaths[type] || mdiInformation} size={20} />
+            </span>
+            <span class="aside-title">{displayTitle}</span>
+            <MdiIcon class="aside-chevron" path={mdiChevronRight} size={20} />
+        </summary>
+        <div class="aside-content">
+            <slot />
         </div>
-    )
-}
+    </details>
+) : (
+    <div class={`aside aside--${type}`}>
+        <div class="aside-header">
+            <span class="aside-icon">
+                <MdiIcon path={iconPaths[type] || mdiInformation} size={20} />
+            </span>
+            <span class="aside-title">{displayTitle}</span>
+        </div>
+        <div class="aside-content">
+            <slot />
+        </div>
+    </div>
+)}
 
 <style>
     .aside {
@@ -313,9 +301,8 @@ const iconPaths: Record<string, string> = {
         color: #374151;
     }
 
-    /* Ensure all text content inside asides uses Inter font */
-    .aside-content,
-    .aside-content :global(*) {
+    /* Text inside asides inherits Inter; code elements keep their own monospace font */
+    .aside-content {
         font-family: 'Inter', system-ui, sans-serif;
     }
 

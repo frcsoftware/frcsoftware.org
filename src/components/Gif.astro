@@ -42,23 +42,21 @@ const t = Astro.locals.t;
 ---
 
 <figure class={wrapperClasses.join(' ')}>
-    {
-        isVideo ? (
-            <video
-                autoplay
-                loop
-                muted
-                playsinline
-                style={mediaStyles}
-                aria-label={alt}
-            >
-                <source src={src} type="video/webm" />
-                {t('video.unsupported')}
-            </video>
-        ) : (
-            <img src={src} alt={alt} loading="lazy" style={mediaStyles} />
-        )
-    }
+    {isVideo ? (
+        <video
+            autoplay
+            loop
+            muted
+            playsinline
+            style={mediaStyles}
+            aria-label={alt}
+        >
+            <source src={src} type="video/webm" />
+            {t('video.unsupported')}
+        </video>
+    ) : (
+        <img src={src} alt={alt} loading="lazy" style={mediaStyles} />
+    )}
     {caption && <figcaption set:html={caption} />}
 </figure>
 

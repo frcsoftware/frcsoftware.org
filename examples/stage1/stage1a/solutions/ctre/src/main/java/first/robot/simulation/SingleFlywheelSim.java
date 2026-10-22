@@ -14,9 +14,9 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.system.Models;
-import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTableInstance;
 import org.wpilib.simulation.FlywheelSim;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 public class SingleFlywheelSim {
 
@@ -30,10 +30,7 @@ public class SingleFlywheelSim {
           Models.flywheelFromPhysicalConstants(DCMotor.getKrakenX60(1), 0.001, gearRatio),
           DCMotor.getKrakenX60(1));
 
-  private final DoublePublisher motorVoltagePub;
-  private final DoublePublisher motorVelocityPub;
-  private final DoublePublisher motorCurrentPub;
-  private final DoublePublisher motorPositionPub;
+  private final TelemetryTable table;
 
   /** Creates the physics sim for the intake launcher. */
   public static SingleFlywheelSim forIntakeLauncher(TalonFX talonMotor) {
@@ -55,15 +52,7 @@ public class SingleFlywheelSim {
         new TalonFXSimState(talonMotor, ChassisReference.CounterClockwise_Positive);
     this.talonMotorSim.setMotorType(MotorType.KrakenX60);
 
-    var table = NetworkTableInstance.getDefault().getTable(name);
-    motorVoltagePub = table.getDoubleTopic("MotorVoltage").publish();
-    motorVelocityPub = table.getDoubleTopic("MotorVelocity").publish();
-    motorCurrentPub = table.getDoubleTopic("MotorStatorCurrent").publish();
-    motorPositionPub = table.getDoubleTopic("MotorPosition").publish();
-
-    // Voltage and current properties aren't included since they default to volts and amps already
-    motorVelocityPub.getTopic().setProperty("unit", "\"RotationsPerSecond\"");
-    motorPositionPub.getTopic().setProperty("unit", "\"Rotations\"");
+    table = Telemetry.getTable(name);
   }
 
   public void periodic() {
@@ -77,9 +66,9 @@ public class SingleFlywheelSim {
     talonMotorSim.setRawRotorPosition(Radians.of(motorPosition));
     talonMotorSim.setRotorVelocity(RadiansPerSecond.of(motorVelo));
 
-    motorVoltagePub.set(talonMotor.getMotorVoltage().getValueAsDouble());
-    motorVelocityPub.set(talonMotor.getVelocity().getValueAsDouble());
-    motorCurrentPub.set(talonMotor.getStatorCurrent().getValueAsDouble());
-    motorPositionPub.set(talonMotor.getPosition().getValueAsDouble());
+    table.log("MotorVoltage", talonMotor.getMotorVoltage().getValue());
+    table.log("MotorVelocity", talonMotor.getVelocity().getValue());
+    table.log("MotorStatorCurrent", talonMotor.getStatorCurrent().getValue());
+    table.log("MotorPosition", talonMotor.getPosition().getValue());
   }
 }

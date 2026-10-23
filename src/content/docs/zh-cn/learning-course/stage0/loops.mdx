@@ -1,0 +1,169 @@
+---
+title: Loops（循环）
+description: 介绍 Java 中的 while 循环和 for 循环
+codeRegionSources:
+    default: stage0/snippets/src/Loops.java
+---
+
+在[上一课](/learning-course/stage0/conditionals/)中，我们用条件语句决定一段代码是否执行。
+本节课我们将学习**循环**。循环可以让同一段代码块执行不止一次。
+
+## 为什么需要循环？
+
+程序经常需要把同一件事连续执行多次。
+日常生活中，如果知道成绩即将公布，你可能会反复查看，直到成绩出来。
+机器人也是这样：它可能需要一直向前行驶，直到离墙壁足够近；也可能需要对料斗里的每一个球都执行一次发射流程。
+如果每重复一次就再写一行相同的代码，既麻烦，也无法应对事先不知道要重复多少次的情况。
+
+条件语句和循环都可以用来控制哪段代码应该执行。
+条件语句的代码块**最多执行一次**，循环的代码块可以执行很多次。
+本节介绍两种主要的循环：`while` 循环和 `for` 循环。
+
+<Aside type="note" title="Note（备注）">
+    Java 还有 do-while 循环。因为它在 FRC 中很少使用，在这里我们将不会介绍。
+    如果想进一步了解，可以查看
+    [w3schools](https://www.w3schools.com/java/java_while_loop_do.asp)。
+</Aside>
+
+## `while` 循环
+
+**`while` 循环**会反复执行它的代码块，只要条件成立就会继续：
+
+```java #whileSyntax
+
+```
+
+`while` 循环和[上一课](/learning-course/stage0/conditionals/)的 `if` 语句很像。
+它同样包含 `while` 关键字、圆括号里结果为 true 或 false 的条件，以及花括号里的代码块。
+
+它们的区别在于代码块执行完之后：
+`if` 语句会继续执行后面的代码，而 `while` 循环会再次进行条件的判断。
+如果条件仍然成立，代码块会再执行一次，如此重复，直到条件不成立为止。
+如果第一次判断时条件就是 false，代码块将一次都不会执行。
+与 `if` 语句不同，`while` 循环不能带有 `else` 语句。
+
+下面这个循环会依次输出从 0 到 5 的数字：
+
+```java #whileExample
+
+```
+
+`i` 从 0 开始。
+每执行一次循环，代码都会输出 `i` 的值，然后用 `i++` 给它加 1，然后再次判断 `i < 6`是否成立。
+`i++` 就是 [Operators（运算符）](/learning-course/stage0/operators/)那一节内容里的自增运算符。
+一旦 `i` 的值达到 6，条件就不成立，循环结束，所以最后输出的数字是 5。
+
+每执行一次循环的代码块，称为一次 <strong>iteration（迭代）</strong>。这个循环会执行六次迭代。
+
+### 循环和条件语句一起用
+
+循环的代码块里可以包含任何代码，包括 `if` 语句。
+下面这个循环会让机器人先向前行驶几次，然后停下来：
+
+```java #whileExample2
+
+```
+
+不运行代码，判断它会输出什么？
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    它会输出五次 `Drive Forward`，然后输出一次 `Stop Driving`。
+
+    循环在 `loopCount <= 5` 时执行，所以 `loopCount` 从 0 到 5 的每个值都会执行一次，一共六次迭代。前五次 `loopCount < 5` 成立，所以执行 `if` 代码块。最后一次 `loopCount` 是 5，所以改为执行 `else` 代码块。然后 `loopCount` 变成 6，循环条件不成立，循环结束。
+
+</Aside>
+
+## `for` 循环
+
+很多循环都遵循同一种结构：先创建计数变量，然后在条件里判断它，并在每次迭代结束时更新它。
+写成 `while` 循环就是：
+
+```java #ForExample1
+
+```
+
+这个循环依赖三部分：`int i = 0`、`i < 6` 和 `i++`。
+**`for` 循环**把这三部分放在一起，写在循环开头：
+
+```java #ForExample2
+
+```
+
+`for` 后面的圆括号里有三个部分，用分号隔开：
+
+- <strong>Initialization（初始化）</strong>（`int i =
+  0`）在循环开始前执行一次，通常用来创建计数变量。
+- <strong>Condition（条件）</strong>（`i < 6`）在每次迭代前判断，条件成立时循环继续。
+- <strong>Update（更新）</strong>（`i++`）在每次迭代结束时执行。
+
+这两个循环完成的是同一件事，但 `for` 循环更容易阅读和理解。
+计数从哪里开始、循环何时停止、计数如何变化，都写在同一行里，而不是散落在循环各处。
+
+<Aside type="tip" title="Tip（提示）">
+    `for`
+    循环的三个部分都可以省略，但两个分号必须保留。本课程中的循环都会使用全部三个部分。
+</Aside>
+
+不运行代码，判断这个循环会依次输出什么？
+
+```java #forExample
+
+```
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    它会依次逐行输出 0、1、2、3 和 4。`i` 从 0 开始，每次迭代加 1。当 `i` 到达 5 时，条件 `i < 5` 不成立，所以循环会在输出 5 之前结束。
+</Aside>
+
+## 小心无限循环
+
+只有条件变成 false，循环才会停止。
+如果循环内部没有任何代码改变这个条件，条件就会一直成立，循环将永远不会停止。
+这称为 <strong>infinite loop（无限循环）</strong>。
+
+在机器人的控制系统中，无限循环很危险。
+传动系统可能会一直行驶，机械臂也可能一直运动，直到撞上其他物体。
+下面这个循环的本意是让机器人连续向前行驶 7 次：
+
+{/* rli:ignore */}
+
+```java
+int loopCount = 0;
+while (loopCount < 7) {
+    drivetrain.setThrottle(1); // sets drive motors to full speed
+}
+```
+
+但是循环内部没有修改 `loopCount` 的值。
+所以它的值一直为 0，`loopCount < 7` 一直成立，机器人永远不会停止行驶。
+
+要修正这个问题，就需要在循环内部更新 `loopCount` 的值，让条件最终不成立：
+
+{/* rli:ignore */}
+
+```java
+int loopCount = 0;
+while (loopCount < 7) {
+    drivetrain.setThrottle(1); // sets drive motors to full speed
+    loopCount++;
+}
+```
+
+现在 `loopCount` 的值每次迭代结束时都会被加 1，循环会在 7 次迭代后停止。
+
+<Aside type="note" title="Note（备注）">
+    开始编写 FRC
+    机器人代码后，你会发现有些代码本来就要在机器人开机期间一直运行，例如命令。在阶段
+    1 中我们会介绍这是如何实现的。
+</Aside>
+
+## 循环练习
+
+<Aside type="exercise" title="Exercise（练习）">
+
+现在，你可以直接打开 `Loops.java`文件开始练习！
+按照注释提示，编写对应的代码来完成目标要求。
+
+完成这个练习后，把修改 commit（提交）并 push（推送）到 GitHub。
+如果需要回顾操作步骤，请查看 [Git - Uploading code（上传代码）](/learning-course/stage0/git/)。
+
+</Aside>

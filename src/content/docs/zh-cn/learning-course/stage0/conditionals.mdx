@@ -1,0 +1,139 @@
+---
+title: Conditionals（条件语句）
+description: 介绍 Java 中的 if、else 和 else if 语句
+codeRegionSources:
+    default: stage0/snippets/src/Conditionals.java
+---
+
+在[上一课](/learning-course/stage0/operators/)中，我们用比较运算符和逻辑运算符得到 `true` 或 `false`。
+本节课我们将利用这些值，通过**条件语句**实现程序判断：只有当条件成立（`true`）时，才执行对应的代码块。
+
+## 为什么需要条件语句？
+
+日常生活中我们一直在做决定，例如“如果饿了，就去吃点零食”。
+机器人也会做决定，例如“如果机器人离墙很远，就向前行驶”，或者“如果比赛计时到 0，就停止行驶”。
+到目前为止，我们写的每一行代码每次都会运行。
+条件语句让我们可以根据传感器读数或比赛剩余时间这样的值，选择运行哪一段代码。
+
+我们会介绍三种条件语句：`if`、`else` 和 `else if`。
+
+<Aside type="note" title="Note（备注）">
+    Java 还有 `switch` 语句。因为它在 FRC 中很少使用，这里不会介绍。
+    如果想进一步了解，可以查看
+    [w3schools](https://www.w3schools.com/java/java_switch.asp)。
+</Aside>
+
+## `if` 语句
+
+**`if` 语句**只在条件为 true 时运行一段代码：
+
+```java #ifSyntax
+
+```
+
+`if` 语句有三个部分：
+
+- `if` 关键字
+- 圆括号里的条件，结果为 true 或 false，例如 `6 > 2`
+- **代码块**，也就是花括号 `{` 和 `}` 之间的代码
+
+如果条件为 true，代码块就会运行。
+如果为 false，代码块会被跳过，程序继续执行它后面的代码。
+
+下面的示例只有当机器人离墙壁超过 10 厘米时，才让机器人向前行驶：
+
+```java #ifExample
+
+```
+
+`distance` 是 60，所以条件 `distance > 10` 为 true。
+代码块会运行，打印 `Driving at full speed`，并把传动系统设置为全速。
+如果 `distance` 是 5，条件就为 false，不会打印任何内容。
+
+<Aside type="tip" title="Tip（提示）">
+    这一课里的每个条件语句都遵循同一种形式：一个关键字，通常还有圆括号里的条件，以及花括号里的代码块。
+    下一课讲循环时，你会再次看到这种形式。
+</Aside>
+
+## 加上 `else`
+
+单独的 `if` 语句在条件为 false 时不会执行任何操作。
+但很多时候，我们希望在这种情况下执行其他动作，比如机器人靠近墙壁时停下。
+**`else`** 代码块只在 `if` 语句的条件为 false 时运行：
+
+```java #ifElseSyntax
+
+```
+
+`else` 本身不带判断条件。
+它负责处理所有 `if` 没有匹配到的情况。
+这两段代码块**只会执行其中一个，不会同时运行**。
+
+现在机器人就可以实现：离墙较远时前进，靠近墙壁时停下。
+
+```java #elseExample
+
+```
+
+不运行代码，判断它会输出什么？
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    会打印 `Stopped`。`distance` 是 6，所以 `distance > 10` 为 false。`if` 代码块被跳过，改为运行 `else` 代码块，电机会停止。
+</Aside>
+
+## 加上 `else if`
+
+`if` 和 `else` 只能在两种情况里做选择，但有时我们需要更多分支。
+**`else if`** 可以增加新的判断条件，只有它前面所有条件都 false 时，才会检查这个条件：
+
+```java #elseIfSyntax
+
+```
+
+Java 会**从上往下依次判断条件**，执行第一个结果为 true 所对应的代码块。
+只要某一段代码块执行了，后面所有条件都会直接跳过，哪怕后面的条件同样成立。
+如果所有条件都不成立，就不会执行任何代码块。
+
+我们用 `else if` 实现让机器人在靠近墙壁时减速：
+
+```java #elseIfExample
+
+```
+
+`distance` 为 30，所以第一个条件 `distance > 50` 为 false，Java 继续判断 `else if`。
+`distance > 10` 为 true，所以机器人以半速行驶。
+
+条件的判断顺序在这里非常关键。
+`distance` 为 60 时，它同时满足大于 50 和大于 10，但只会执行第一个匹配到的代码块，所以机器人全速行驶。
+如果我们先检查 `distance > 10`，那么即便机器人离墙很远，也只会以半速行驶。
+
+## 综合运用
+
+刚才的例子里，一旦机器人距离墙壁小于等于 10 厘米，程序就不会执行任何分支，电机会保持在上一次设定的转速继续运转。
+我们可以在末尾加上一个 `else` 来解决这个问题，它用来处理剩下所有的情况：
+
+```java #conditionalExample
+
+```
+
+不运行代码，判断它会输出什么？
+注意，这一题有点容易踩坑。
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    会打印 `Stopped`。`distance` 正好是 10。`distance > 50` 为 false，`distance > 10` 也为 false，因为 10 并不大于 10。两个条件都不为 true，所以运行 `else` 代码块，电机停止。
+</Aside>
+
+你可以在 `if` 和末尾的 `else` 之间按需串联任意多个 `else if`，并且最后的这个 `else` 也可以省略。
+
+## 条件语句练习
+
+<Aside type="exercise" title="Exercise（练习）">
+    ### 练习
+
+    现在，你可以直接打开 `Conditionals.java`文件开始练习！
+    按照注释提示，编写对应的代码来完成目标要求。
+
+    完成这个练习后，把修改 commit（提交）并 push（推送）到 GitHub。
+    如果需要回顾操作步骤，请查看 [Git - Uploading code（上传代码）](/learning-course/stage0/git/)。
+
+</Aside>

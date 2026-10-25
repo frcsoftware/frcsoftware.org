@@ -1,8 +1,8 @@
 ---
-name: Example code issue
+name: Example Code Issue
 about: Report an issue with the example robot code under the examples/ directory
 title: ''
-labels: examples
+labels: Example Code Issue
 assignees: ''
 ---
 

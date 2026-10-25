@@ -1,33 +1,119 @@
-'stage0':
+'Stage 0':
     - changed-files:
           - any-glob-to-any-file:
                 [
                     examples/stage0/**,
                     examples/*/stage0/**,
-                    src/content/docs/learning-course/stage0/**,
-                    src/content/docs/*/learning-course/stage0/**,
+                    src/content/docs/**/stage0/**,
+                    examples/stage0/**,
+                    public/learning-course/stage0/**,
                 ]
-'stage1':
+
+'Stage 1':
     - changed-files:
           - any-glob-to-any-file:
                 [
                     examples/stage1/**,
                     examples/*/stage1/**,
-                    src/content/docs/learning-course/stage1/**,
-                    src/content/docs/*/learning-course/stage1/**,
+                    src/content/docs/**/stage1/**,
+                    examples/stage1/**,
+                    public/learning-course/stage1/**,
                 ]
-'examples':
-    - changed-files:
-          - any-glob-to-any-file: examples/**
-'Curriculum material':
+
+'Stage 2':
     - changed-files:
           - any-glob-to-any-file:
-                - src/content/docs/**
-'infra':
+                [
+                    examples/stage2/**,
+                    examples/*/stage2/**,
+                    src/content/docs/**/stage2/**,
+                    examples/stage2/**,
+                    public/learning-course/stage2/**,
+                ]
+
+'Java Code':
     - changed-files:
           - any-glob-to-any-file:
-                - .github/**
-                - package.json
-                - pnpm-lock.yaml
-                - pnpm-workspace.yaml
-                - copy.bara.sky
+                [
+                    examples/stage0/**,
+                    examples/stage1/**,
+                    examples/stage2/**,
+                ]
+
+'Educators Guide':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/docs/educators-guide/**,
+                ]
+
+'Learning Course':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/docs/learning-course/**,
+                    public/learning-course/**,
+                ]
+
+'Resources':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/docs/resources/**,
+                    public/examples/**,
+                    public/hardware-intro/**,
+                    src/data/glossary.yaml
+                ]
+
+'Best Practices':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/docs/best-practices/**,
+                    examples/best-practices/**,
+                ]
+
+'Contribution':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/docs/contribution/**,
+                ]
+
+'Translations':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    src/content/i18n/**,
+                ]
+
+'CTRE':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    examples/**/ctre/**,
+                ]
+
+'REV':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    examples/**/rev/**,
+                ]
+
+'Backend':
+    - changed-files:
+          - any-glob-to-any-file:
+                [
+                    .github/**,
+                    .husky/**,
+                    scripts/**,
+                    *,
+                    src/components/**,
+                    src/config/**,
+                    src/data/*.ts,
+                    src/plugins/**,
+                    src/starlightOverrides/**,
+                    src/styles/**,
+                    src/*
+                ]

@@ -1,0 +1,35 @@
+{
+  "name": "WPILib Robot Development",
+  "build": { "dockerfile": "Dockerfile" },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postAttachCommand": "bash .devcontainer/post-attach.sh",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installGradle": "true",
+      "installMaven": "true"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode"
+    }
+  },
+  "remoteEnv": {
+    "DISPLAY": ":1",
+    "WPILIB_SIMULATION": "true"
+  },
+  "runArgs": [
+    "--shm-size=2g",
+    "-e", "DISPLAY=:1"
+  ],
+  
+  "forwardPorts": [6080, 5901],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle"
+      ]
+    }
+  }
+}

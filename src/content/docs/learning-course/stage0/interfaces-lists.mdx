@@ -115,8 +115,8 @@ A package's name matches the directory its classes live in, with dots in place o
 `ArrayList` lives in the `java/util/` directory of the JDK, so its package is `java.util` and its full name is `java.util.ArrayList`.
 Robot code follows the same rule, and typically lives in the `first.robot` package, which you'll see when you start Stage 1 of this course:
 
-{/* prettier-ignore */}
 <FileTree>
+
 - src/main/java
     - first
         - robot
@@ -124,6 +124,7 @@ Robot code follows the same rule, and typically lives in the `first.robot` packa
             - subsystems
                 - Drivetrain.java
         - Main.java
+
 </FileTree>
 
 Every file in a package declares which package it belongs to on its first line.
@@ -142,7 +143,7 @@ To use a class from a _different_ package, you need an `import` statement below 
 
 ```
 
-This imports `ArrayList<T>` and `List<T>` from the `java.util` package, which we'll use next.
+This imports `ArrayList` and `List` from the `java.util` package, which we'll use next.
 Later in the course, you'll import classes the same way from WPILib packages, such as `org.wpilib.math.geometry.Translation2d`.
 
 <Aside type="note" title="Why doesn't `String` need an import?">
@@ -150,7 +151,7 @@ Later in the course, you'll import classes the same way from WPILib packages, su
     imported automatically. Everything else needs an explicit `import`.
 </Aside>
 
-## The `List<` Interface and `ArrayList`
+## The `List` Interface and `ArrayList`
 
 In the [previous lesson](/learning-course/stage0/arrays/), we used arrays to store multiple values together.
 An array's size is fixed once it's created, which works well when you know exactly how many elements you'll need, like a fixed autonomous path.
@@ -176,6 +177,39 @@ A `List` doesn't have a fixed size, you add elements to it as you go, and it gro
     A `List`'s number of elements is read with the method `size()`, not the
     field `length` you saw with arrays.
 </Aside>
+
+If you already know every element up front, like the fixed autonomous path from the previous lesson, `List.of` creates a `List` of them in one line:
+
+```java {usage}#listOf
+
+```
+
+`List.of` returns a `List<Point>`, but it doesn't tell you which class implements it.
+The object it gives back isn't an `ArrayList`.
+Here, it's `ImmutableCollections$ListN`, a class buried inside the JDK with a name nobody wants to type.
+That's fine, because you only use it through the `List` interface, the same way `isTooClose` only used `DistanceSensor`.
+
+### List Mutability
+
+In a [previous lesson](/learning-course/stage0/classes-methods/), we saw that some classes are mutable, meaning their state can change after they're created, and some are immutable.
+Lists work the same way.
+Since `List` is an interface, whether a particular list can change depends on which class implements it:
+
+- An `ArrayList` is mutable, so you can add, remove, and replace elements whenever you want.
+- A list from `List.of` is immutable.
+  Its elements are fixed when it's created, and calling `add` or `remove` on it throws an `UnsupportedOperationException`.
+
+The compiler can't tell these two apart, because both are declared as `List`.
+You only find out when the program runs and `add` throws the exception.
+
+You can't turn an immutable list into a mutable one, but you can make a mutable _copy_ of it.
+Passing an existing list to `new ArrayList<>(...)` creates a new `ArrayList` that starts out with the same elements:
+
+```java {usage}#copyList
+
+```
+
+`editablePath` is a separate object from `autoPath`, so adding a waypoint to it leaves `autoPath` unchanged.
 
 ## Giving `RobotTracker` a Memory
 
@@ -207,5 +241,8 @@ Even though `history` grows every time `move` is called, the for-each loop doesn
 
     Now, you can dive straight into `InterfacesAndLists.java`! Follow the comments and
     write the appropriate code to achieve the objectives.
+
+    After you complete this exercise, commit and push your changes to GitHub!
+    If you need a reminder on how to do so, review [Git-Uploading Code.](/learning-course/stage0/git/)
 
 </Aside>

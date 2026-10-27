@@ -1,8 +1,10 @@
 {
     "aside.caution": "Warning",
     "header.menuToggle": "Toggle navigation menu",
+    "aside.answer": "Answer",
     "aside.example": "Example",
     "aside.exercise": "Exercise",
+    "aside.hint": "Hint",
     "aside.video": "Video",
     "aside.wip": "Work in Progress",
     "banner.development": "This website is still in development. If you find any errors, please report them {link}.",

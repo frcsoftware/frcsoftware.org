@@ -1,6 +1,0 @@
-node_modules/
-dist/
-.astro/
-.styles/
-pnpm-lock.yaml
-examples/

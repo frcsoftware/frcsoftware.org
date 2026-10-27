@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+// Import `ArrayList` and `List` from the `java.util` package.
+
+
 // Define an interface named `IntakeSensor` with a single method:
 // `double distanceMillimeters();`
 
@@ -16,10 +19,16 @@
 // The method `distanceMillimeters()` should return `5.0`.
 
 
+// Define a generic class named `Pair<A, B>` with two private final fields:
+// `first` of type `A`, and `second` of type `B`.
+// Provide a constructor `Pair(A first, B second)` and getter methods
+// `getFirst()` and `getSecond()`.
+
+
 void main() {
     // Create a variable named `beamBreak` with type `IntakeSensor`, and assign it a new instance of BeamBreak.
-    // Create a variable named `currentSensor` of type `IntakeSensor`, and assign it a new instance of CurrentSensor.
-    // Print the result of calling `hasGamePiece()` on both sensors.
+    // Create a variable named `laserCAN` of type `IntakeSensor`, and assign it a new instance of LaserCAN.
+    // Print the result of calling `distanceMillimeters()` on both sensors.
 
 
     // Create a Pair of String and Integer (Pair<String, Integer>) with the values "Robot" and 254.

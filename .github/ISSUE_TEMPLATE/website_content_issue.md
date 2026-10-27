@@ -1,8 +1,8 @@
 ---
-name: Content error
+name: Website Content Issue
 about: Report an inaccuracy or mistake in the website's documentation or text
 title: ''
-labels: content
+labels: Website Content Issue
 assignees: ''
 ---
 

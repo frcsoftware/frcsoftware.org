@@ -72,12 +72,12 @@
 
 'Backend':
     - changed-files:
-          - any-glob-to-any-file: [
+          - any-glob-to-any-file:
+                [
                     .github/**,
                     .husky/**,
                     scripts/**,
-                    // oxfmt-ignore
-                    *,
+                    '*',
                     src/components/**,
                     src/config/**,
                     src/data/*.ts,

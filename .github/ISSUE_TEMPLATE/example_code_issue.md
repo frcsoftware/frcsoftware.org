@@ -2,7 +2,7 @@
 name: Example Code Issue
 about: Report an issue with the example robot code under the examples/ directory
 title: ''
-labels: Example Code Issue
+labels: Example Code Issue, Java Code
 assignees: ''
 ---
 

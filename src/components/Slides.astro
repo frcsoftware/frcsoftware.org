@@ -311,49 +311,47 @@ const t = Astro.locals.t;
     <div class="slides-main">
         <div class="slides-container">
             <div class="slides-wrapper">
-                {
-                    processedImages.map((slide, index) => (
-                        <div
-                            class={`slide ${index === 0 ? 'active' : ''}`}
-                            data-index={index}
-                        >
-                            <div class="slide-media loading">
-                                <div class="slide-loader">
-                                    <div class="spinner" />
-                                </div>
-                                {slide.type === 'youtube' ? (
-                                    <div class="youtube-wrapper">
-                                        <iframe
-                                            src={slide.url}
-                                            allowfullscreen
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                ) : slide.type === 'video' ? (
-                                    <video controls>
-                                        <source
-                                            src={slide.url}
-                                            type={`video/${slide.url.split('.').pop()}`}
-                                        />
-                                    </video>
-                                ) : slide.optimizedImage ? (
-                                    <Image
-                                        src={slide.optimizedImage}
-                                        alt={slide.alt}
-                                        loading="lazy"
-                                        class="slide-img"
-                                    />
-                                ) : (
-                                    <img
-                                        src={slide.url}
-                                        alt={slide.alt}
-                                        loading="lazy"
-                                    />
-                                )}
+                {processedImages.map((slide, index) => (
+                    <div
+                        class={`slide ${index === 0 ? 'active' : ''}`}
+                        data-index={index}
+                    >
+                        <div class="slide-media loading">
+                            <div class="slide-loader">
+                                <div class="spinner" />
                             </div>
+                            {slide.type === 'youtube' ? (
+                                <div class="youtube-wrapper">
+                                    <iframe
+                                        src={slide.url}
+                                        allowfullscreen
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ) : slide.type === 'video' ? (
+                                <video controls>
+                                    <source
+                                        src={slide.url}
+                                        type={`video/${slide.url.split('.').pop()}`}
+                                    />
+                                </video>
+                            ) : slide.optimizedImage ? (
+                                <Image
+                                    src={slide.optimizedImage}
+                                    alt={slide.alt}
+                                    loading="lazy"
+                                    class="slide-img"
+                                />
+                            ) : (
+                                <img
+                                    src={slide.url}
+                                    alt={slide.alt}
+                                    loading="lazy"
+                                />
+                            )}
                         </div>
-                    ))
-                }
+                    </div>
+                ))}
             </div>
 
             <button
@@ -372,30 +370,26 @@ const t = Astro.locals.t;
         </div>
 
         <div class="slides-caption-container">
-            {
-                processedImages.map((slide, index) => (
-                    <p
-                        class={`slides-caption ${index === 0 ? 'active' : ''}`}
-                        data-caption-index={index}
-                        set:html={slide.caption || '&nbsp;'}
-                    />
-                ))
-            }
+            {processedImages.map((slide, index) => (
+                <p
+                    class={`slides-caption ${index === 0 ? 'active' : ''}`}
+                    data-caption-index={index}
+                    set:html={slide.caption || '&nbsp;'}
+                />
+            ))}
         </div>
 
         <div class="slides-dots">
-            {
-                processedImages.map((_, index) => (
-                    <button
-                        class={`dot ${index === 0 ? 'active' : ''}`}
-                        data-index={index}
-                        aria-label={t('slides.goTo').replace(
-                            '{number}',
-                            String(index + 1),
-                        )}
-                    />
-                ))
-            }
+            {processedImages.map((_, index) => (
+                <button
+                    class={`dot ${index === 0 ? 'active' : ''}`}
+                    data-index={index}
+                    aria-label={t('slides.goTo').replace(
+                        '{number}',
+                        String(index + 1),
+                    )}
+                />
+            ))}
         </div>
     </div>
 
@@ -424,30 +418,26 @@ const t = Astro.locals.t;
             </div>
 
             <div class="lightbox-caption-container">
-                {
-                    processedImages.map((slide, index) => (
-                        <p
-                            class={`lightbox-caption ${index === 0 ? 'active' : ''}`}
-                            data-lightbox-caption-index={index}
-                            set:html={slide.caption || '&nbsp;'}
-                        />
-                    ))
-                }
+                {processedImages.map((slide, index) => (
+                    <p
+                        class={`lightbox-caption ${index === 0 ? 'active' : ''}`}
+                        data-lightbox-caption-index={index}
+                        set:html={slide.caption || '&nbsp;'}
+                    />
+                ))}
             </div>
 
             <div class="lightbox-dots">
-                {
-                    processedImages.map((_, index) => (
-                        <button
-                            class={`dot ${index === 0 ? 'active' : ''}`}
-                            data-index={index}
-                            aria-label={t('slides.goTo').replace(
-                                '{number}',
-                                String(index + 1),
-                            )}
-                        />
-                    ))
-                }
+                {processedImages.map((_, index) => (
+                    <button
+                        class={`dot ${index === 0 ? 'active' : ''}`}
+                        data-index={index}
+                        aria-label={t('slides.goTo').replace(
+                            '{number}',
+                            String(index + 1),
+                        )}
+                    />
+                ))}
             </div>
         </div>
     </div>

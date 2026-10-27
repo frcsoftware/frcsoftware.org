@@ -1,19 +1,28 @@
 import js from '@eslint/js';
+import markdown from '@eslint/markdown';
+import sentencesPerLine from 'eslint-plugin-sentences-per-line';
 import astro from 'eslint-plugin-astro';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 import { defineConfig } from 'eslint/config';
+
+const codeFiles = ['**/*.{js,mjs,cjs,ts,mts,cts,astro}'];
+
 export default defineConfig([
     { ignores: ['dist/', '.astro/', 'node_modules/'] },
 
-    js.configs.recommended,
-
-    ...tseslint.configs.recommended,
-
-    ...astro.configs['flat/recommended'],
+    {
+        files: codeFiles,
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.recommended,
+            astro.configs['flat/recommended'],
+        ],
+    },
 
     {
+        files: codeFiles,
         rules: {
             '@typescript-eslint/no-unused-vars': [
                 'warn',
@@ -31,6 +40,14 @@ export default defineConfig([
                 ...globals.node,
             },
         },
+    },
+    {
+        files: ['src/content/**/*.mdx'],
+        ignores: ['src/content/docs/resources/examples.mdx'],
+        plugins: { markdown, 'sentences-per-line': sentencesPerLine },
+        language: 'markdown/gfm',
+        languageOptions: { frontmatter: 'yaml' },
+        rules: { 'sentences-per-line/one': 'error' },
     },
     {
         // also catch astro virtual files

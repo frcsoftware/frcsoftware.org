@@ -110,6 +110,9 @@ public class Robot extends OpModeRobot {
   public void simulationPeriodic() {
     drivetrainSim.periodic();
     // [/DriveSimPeriodic]
+
+    // [/RobotWithSimPart2]
+
     // [MotorSimPeriodic]
     intakeLauncherSim.periodic();
     feederSim.periodic();
@@ -119,6 +122,5 @@ public class Robot extends OpModeRobot {
     FuelSim.periodic();
     // [/FuelSimPeriodic]
   }
-  // [/RobotWithSimPart2]
 }
 // [/FullRobot]

@@ -42,7 +42,9 @@ const definition =
     t('glossary.definitionNotFound');
 ---
 
-<span class="glossary-term" data-tooltip={definition}>{term.trim()}</span>
+<span class="glossary-term" data-tooltip={definition}>
+    {term.trim()}
+</span>
 
 <style>
     .glossary-term {

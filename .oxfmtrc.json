@@ -1,0 +1,36 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "printWidth": 80,
+    "sortPackageJson": false,
+    "astro": {},
+    "overrides": [
+        {
+            "files": ["*.mdx"],
+            "options": {
+                "proseWrap": "preserve"
+            }
+        }
+    ],
+    "associations": [
+        {
+            "files": ["*.astro"],
+            "language": "astro"
+        },
+        {
+            "files": ["*.jsonc"],
+            "language": "json"
+        }
+    ],
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        ".astro/",
+        ".styles/",
+        "pnpm-lock.yaml",
+        "examples/"
+    ]
+}

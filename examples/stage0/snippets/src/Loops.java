@@ -29,15 +29,15 @@ void main() {
     }
 
     // [whileExample2]
-    int timer = 0;
+    int loopCount = 0;
 
-    while (timer <= 5) {
-      if (timer < 5) {
+    while (loopCount <= 5) {
+      if (loopCount < 5) {
         System.out.println("Drive Forward");
       } else {
         System.out.println("Stop Driving");
       }
-      timer++;
+      loopCount++;
     }
     // [/whileExample2]
 
@@ -60,7 +60,7 @@ void main() {
 
     // [forExample]
     for (int i = 0; i < 5; i++){
-        System.out.println(i); // prints 0, 1, 2, 3, 4
+        System.out.println(i);
     }
     // [/forExample]
 }

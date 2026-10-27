@@ -1,5 +1,5 @@
 import { visit, SKIP } from 'unist-util-visit';
-import type { Root, RootContent, Text } from 'mdast';
+import type { Root, RootContent, Node, Text, Parent } from 'mdast';
 import type { VFile } from 'vfile';
 import type { MdxJsxTextElement } from 'mdast-util-mdx-jsx';
 import { matcherFor } from '../data/loadGlossary';
@@ -12,14 +12,28 @@ export function remarkGlossary() {
         const lang = langFromDocsPath(file.path);
         const { pattern, canonicalFor } = matcherFor(lang);
 
-        visit(tree, 'text', (node: Text, index, parent) => {
+        const seen = new Map<string, boolean>();
+
+        const test = (node: Node) => {
+            return (
+                node.type === 'link' ||
+                node.type === 'heading' ||
+                node.type === 'text'
+            );
+        };
+
+        visit(tree, test, (node: Node, index, parent: Parent) => {
             if (!parent || index === undefined) return;
 
-            if (parent.type === 'link' || parent.type === 'mdxJsxTextElement') {
+            if (node.type === 'link' || node.type === 'heading') {
+                return SKIP;
+            }
+
+            if (parent.type === 'mdxJsxTextElement') {
                 return;
             }
 
-            const text = node.value;
+            const text = (node as Text).value;
             const matches = [...text.matchAll(pattern)];
 
             if (matches.length === 0) return;
@@ -31,6 +45,12 @@ export function remarkGlossary() {
                 const matchStart = match.index;
                 const matchEnd = matchStart + match[0].length;
                 const matchedTerm = match[0];
+
+                const lowered = matchedTerm.toLowerCase();
+                if (seen.has(lowered)) {
+                    return;
+                }
+                seen.set(lowered, true);
 
                 if (matchStart > lastIndex) {
                     newNodes.push({
@@ -75,6 +95,11 @@ export function remarkGlossary() {
 
                 lastIndex = matchEnd;
             });
+
+            if (lastIndex == 0) {
+                // no unseen matches
+                return;
+            }
 
             if (lastIndex < text.length) {
                 newNodes.push({

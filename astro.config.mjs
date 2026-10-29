@@ -105,6 +105,10 @@ export default defineConfig({
                     exclude: ['/discord'],
                 }),
             ],
+            editLink: {
+                baseUrl:
+                    'https://github.com/frcsoftware/frcsoftware.org/edit/main/',
+            },
         }),
     ],
 });

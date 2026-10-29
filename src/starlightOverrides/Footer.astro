@@ -1,6 +1,7 @@
 ---
 import { mdiGithub } from '@mdi/js';
 import MdiIcon from '../components/MdiIcon.astro';
+import EditLink from 'virtual:starlight/components/EditLink';
 import Pagination from 'virtual:starlight/components/Pagination';
 
 const t = Astro.locals.t;
@@ -18,32 +19,37 @@ const mdiDiscord =
 
     <div class="site-footer-inner">
         <div class="footer-startup-status">
-            <a
-                href="https://github.com/frcsoftware/frcsoftware.org"
-                class="footer-social-link"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t('footer.github')}
-            >
-                <MdiIcon
-                    class="footer-social-icon"
-                    path={mdiGithub}
-                    size={28}
-                />
-            </a>
-            <a
-                href="/discord"
-                class="footer-social-link"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t('footer.discord')}
-            >
-                <MdiIcon
-                    class="footer-social-icon"
-                    path={mdiDiscord}
-                    size={28}
-                />
-            </a>
+            <div class="footer-meta">
+                <EditLink />
+            </div>
+            <div class="footer-socials">
+                <a
+                    href="https://github.com/frcsoftware/frcsoftware.org"
+                    class="footer-social-link"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={t('footer.github')}
+                >
+                    <MdiIcon
+                        class="footer-social-icon"
+                        path={mdiGithub}
+                        size={28}
+                    />
+                </a>
+                <a
+                    href="/discord"
+                    class="footer-social-link"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={t('footer.discord')}
+                >
+                    <MdiIcon
+                        class="footer-social-icon"
+                        path={mdiDiscord}
+                        size={28}
+                    />
+                </a>
+            </div>
         </div>
     </div>
 </footer>
@@ -61,6 +67,15 @@ const mdiDiscord =
         padding: 0 2rem;
     }
 
+    .footer-meta {
+        display: flex;
+        font-size: var(--sl-text-sm);
+    }
+
+    .footer-meta:empty {
+        display: none;
+    }
+
     .pagination-wrapper :global(nav) {
         padding-top: 1.5rem;
         border-top: 1px solid var(--sl-color-gray-6);
@@ -76,10 +91,16 @@ const mdiDiscord =
     }
 
     .footer-startup-status {
-        text-align: center;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
         gap: 1rem;
+    }
+
+    .footer-socials {
+        display: flex;
+        gap: 1rem;
+        margin-left: auto;
     }
 
     .footer-powered-label {
@@ -97,7 +118,6 @@ const mdiDiscord =
     }
 
     .footer-social-link {
-        margin-top: 0.9rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;

@@ -89,7 +89,7 @@ public class Intake implements Mechanism {
     static final double PIVOT_kV = 5.621;
     static final double PIVOT_kA = 0.03;
     //        static final double PIVOT_kP = 19; //92
-    static final double PIVOT_kP = 15.85;
+    static final double PIVOT_kP = 20;
     //    static final double PIVOT_kP = 5;
     static final double PIVOT_kI = 0;
     //        static final double PIVOT_kD = 0.2; //0.5
@@ -123,7 +123,7 @@ public class Intake implements Mechanism {
     pivotConfiguration
         .Slot0
         .withKS(Constants.PIVOT_kS)
-        .withKG(Constants.PIVOT_kG)
+        //        .withKG(Constants.PIVOT_kG)
         .withKV(Constants.PIVOT_kV)
         .withKA(Constants.PIVOT_kA)
         .withKP(Constants.PIVOT_kP)

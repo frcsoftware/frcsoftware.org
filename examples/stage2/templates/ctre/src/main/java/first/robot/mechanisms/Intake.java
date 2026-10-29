@@ -28,7 +28,6 @@ import org.wpilib.math.system.Models;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.FlywheelSim;
 import org.wpilib.simulation.SingleJointedArmSim;
-import org.wpilib.system.Notifier;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
@@ -86,9 +85,9 @@ public class Intake implements Mechanism {
     static final double PIVOT_kS = 0;
     static final double PIVOT_kV = 5.621;
     static final double PIVOT_kA = 0.03;
-    static final double PIVOT_kP = 300;
+    static final double PIVOT_kP = 100;
     static final double PIVOT_kI = 0;
-    static final double PIVOT_kD = 5;
+    static final double PIVOT_kD = 3;
 
     static final double PIVOT_POSITION_TOLERANCE = Units.degreesToRotations(5);
 
@@ -133,10 +132,6 @@ public class Intake implements Mechanism {
     pivotConfiguration.withCurrentLimits(currentLimitsConfigs);
 
     pivot.getConfigurator().apply(pivotConfiguration);
-
-    //    pivot.setPosition(Constants.PIVOT_ARM_MAX_ANGLE); // Set starting position of pivot to
-    // fully up
-    //    pivot.setPosition(0.38);
 
     TalonFXConfiguration rollersConfiguration = new TalonFXConfiguration();
     rollersConfiguration.withCurrentLimits(currentLimitsConfigs);
@@ -197,18 +192,12 @@ public class Intake implements Mechanism {
             Models.flywheelFromPhysicalConstants(
                 DCMotor.getKrakenX60(1), Constants.ROLLERS_J, Constants.ROLLERS_RATIO),
             DCMotor.getKrakenX60(1));
-
-    Notifier notifier = new Notifier(this::simPeriodic);
-
-    if (Robot.isSimulation()) {
-      notifier.startPeriodic(0.02 / 4);
-    }
   }
 
   public void periodic() {
     // Update simulation
     if (Robot.isSimulation()) {
-      //      simPeriodic();
+      simPeriodic();
     }
 
     BaseStatusSignal.refreshAll(statusSignals);
@@ -232,7 +221,7 @@ public class Intake implements Mechanism {
 
   public void simPeriodic() {
     pivotSim.setInputVoltage(Math.clamp(pivotSimState.getMotorVoltage(), -12, 12));
-    pivotSim.update(0.02 / 4);
+    pivotSim.update(0.02);
 
     pivotSimState.setRawRotorPosition(
         Units.radiansToRotations(pivotSim.getAngle()) * Constants.PIVOT_RATIO);
@@ -240,7 +229,7 @@ public class Intake implements Mechanism {
         Units.radiansToRotations(pivotSim.getVelocity()) * Constants.PIVOT_RATIO);
 
     rollersSim.setInputVoltage(rollersSimState.getMotorVoltage());
-    rollersSim.update(0.02 / 4);
+    rollersSim.update(0.02);
 
     rollersSimState.setRotorVelocity(
         Units.radiansToRotations(rollersSim.getAngularVelocity()) * Constants.ROLLERS_RATIO);

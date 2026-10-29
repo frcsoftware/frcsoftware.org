@@ -14,40 +14,42 @@ const mdiDiscord =
 <footer class="site-footer">
     <!-- Pagination Navigation -->
     <div class="pagination-wrapper">
-        <div class="footer-meta">
-            <EditLink />
-        </div>
         <Pagination />
     </div>
 
     <div class="site-footer-inner">
         <div class="footer-startup-status">
-            <a
-                href="https://github.com/frcsoftware/frcsoftware.org"
-                class="footer-social-link"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t('footer.github')}
-            >
-                <MdiIcon
-                    class="footer-social-icon"
-                    path={mdiGithub}
-                    size={28}
-                />
-            </a>
-            <a
-                href="https://discord.gg/uUugPrPZFs"
-                class="footer-social-link"
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t('footer.discord')}
-            >
-                <MdiIcon
-                    class="footer-social-icon"
-                    path={mdiDiscord}
-                    size={28}
-                />
-            </a>
+            <div class="footer-meta">
+                <EditLink />
+            </div>
+            <div class="footer-socials">
+                <a
+                    href="https://github.com/frcsoftware/frcsoftware.org"
+                    class="footer-social-link"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={t('footer.github')}
+                >
+                    <MdiIcon
+                        class="footer-social-icon"
+                        path={mdiGithub}
+                        size={28}
+                    />
+                </a>
+                <a
+                    href="https://discord.gg/uUugPrPZFs"
+                    class="footer-social-link"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={t('footer.discord')}
+                >
+                    <MdiIcon
+                        class="footer-social-icon"
+                        path={mdiDiscord}
+                        size={28}
+                    />
+                </a>
+            </div>
         </div>
     </div>
 </footer>
@@ -67,8 +69,6 @@ const mdiDiscord =
 
     .footer-meta {
         display: flex;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
         font-size: var(--sl-text-sm);
     }
 
@@ -91,10 +91,16 @@ const mdiDiscord =
     }
 
     .footer-startup-status {
-        text-align: center;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
         gap: 1rem;
+    }
+
+    .footer-socials {
+        display: flex;
+        gap: 1rem;
+        margin-left: auto;
     }
 
     .footer-powered-label {
@@ -112,7 +118,6 @@ const mdiDiscord =
     }
 
     .footer-social-link {
-        margin-top: 0.9rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;

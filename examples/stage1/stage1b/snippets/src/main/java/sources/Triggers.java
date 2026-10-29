@@ -6,6 +6,7 @@
 package sources;
 
 import org.wpilib.command3.Command;
+import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.command3.Trigger;
 import org.wpilib.command3.button.CommandXboxController;
@@ -111,9 +112,30 @@ class Triggers {
     return null;
   }
 
-  class ExampleMechanism {
+  class ExampleMechanism implements Mechanism {
     Command runAtThrottle(double throttle) {
       return null;
     }
+
+    // [triggerUpdating]
+    private boolean myBool = false;
+    private Trigger myTrigger = new Trigger(() -> myBool);
+
+    public Command myCommand() {
+      return run(coroutine -> {
+            myBool = true;
+            // Because the trigger doesn't update until the next time
+            // `Scheduler.getDefault().run()` is called,
+            // This will print `false`.
+            System.out.println(myTrigger.getAsBoolean());
+
+            coroutine.yield();
+            // Calling `coroutine.yield()` allows for the scheduler
+            // to run 1 more loop, meaning this will print `true`.
+            System.out.println(myTrigger.getAsBoolean());
+          })
+          .named("MyCommand");
+    }
+    // [/triggerUpdating]
   }
 }

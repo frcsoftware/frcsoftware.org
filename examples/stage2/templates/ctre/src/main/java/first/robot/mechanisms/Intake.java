@@ -171,7 +171,6 @@ public class Intake implements Mechanism {
     // Setup sim
 
     pivotSimState = pivot.getSimState();
-    //        pivotSimState.Orientation = ChassisReference.CounterClockwise_Positive;
     pivotSimState.Orientation = ChassisReference.Clockwise_Positive;
     pivotSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
     rollersSimState = rollers.getSimState();
@@ -266,6 +265,14 @@ public class Intake implements Mechanism {
         .named("Set Pivot Position " + position + "rot");
   }
 
+  public Command setState(State state) {
+    return run(coro -> {
+          coro.await(setRollerVoltage(state.rollerVoltage));
+          coro.await(setPivotPosition(state.pivotPosition));
+        })
+        .named("Set Intake State to " + state.name());
+  }
+
   /**
    * @return the current position of the pivot, in rotations
    */
@@ -314,5 +321,19 @@ public class Intake implements Mechanism {
    */
   public boolean isPivotAtSetpoint() {
     return isPivotAtPosition(pivotTargetPosition);
+  }
+
+  public enum State {
+    RETRACTED(0, Constants.PIVOT_ARM_MAX_ANGLE),
+    INTAKING(12, Constants.PIVOT_ARM_MIN_ANGLE),
+    OUTTAKING(-12, Constants.PIVOT_ARM_MIN_ANGLE);
+
+    double rollerVoltage;
+    double pivotPosition;
+
+    State(double rollerVoltage, double pivotPosition) {
+      this.rollerVoltage = rollerVoltage;
+      this.pivotPosition = pivotPosition;
+    }
   }
 }

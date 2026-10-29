@@ -10,15 +10,14 @@ import static org.wpilib.units.Units.Seconds;
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.Drive;
+import first.robot.mechanisms.Intake;
 import first.robot.mechanisms.Superstructure;
-import java.util.ArrayList;
 import java.util.List;
 import org.wpilib.command3.*;
 import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
-import org.wpilib.telemetry.Telemetry;
 
 @Teleop
 public class FullCoralTeleop extends PeriodicOpMode {
@@ -32,6 +31,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
   private Trigger l4Button;
   private Trigger leftAlignButton;
   private Trigger rightAlignButton;
+  private Trigger intakeButton;
 
   private int selectedLevel = 4;
 
@@ -46,6 +46,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
     l4Button = controller.y();
     leftAlignButton = controller.leftBumper();
     rightAlignButton = controller.rightBumper();
+    intakeButton = controller.leftTrigger();
 
     l2Button.onTrue(Command.noRequirements((coro) -> selectedLevel = 2).named("Select L2"));
     l3Button.onTrue(Command.noRequirements((coro) -> selectedLevel = 3).named("Select L3"));
@@ -55,11 +56,25 @@ public class FullCoralTeleop extends PeriodicOpMode {
 
     StateMachine stateMachine = new StateMachine("Teleop State Machine");
 
+    StateMachine.State intaking =
+        stateMachine.addState(
+            Command.noRequirements(
+                    coro -> {
+                      coro.fork(
+                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coro.fork(robot.intake.setState(Intake.State.INTAKING));
+                      coro.fork(robot.indexer.setVoltage(12));
+                      while (true) {
+                        coro.yield();
+                      }
+                    })
+                .named("Intaking"));
     StateMachine.State stowState =
         stateMachine.addState(
             Command.noRequirements(
                     (coro) -> {
-                      coro.await(robot.superstructure.setPosition(Superstructure.Positions.STOW));
+                      coro.fork(robot.superstructure.setPosition(Superstructure.Positions.STOW));
+                      coro.fork(robot.intake.setState(Intake.State.RETRACTED));
                       while (true) {
                         coro.yield();
                       }
@@ -69,13 +84,14 @@ public class FullCoralTeleop extends PeriodicOpMode {
         stateMachine.addState(
             Command.noRequirements(
                     (coro) -> {
+                      coro.fork(robot.indexer.setVoltage(1));
+                      coro.fork(robot.intake.setState(Intake.State.RETRACTED));
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.waitUntil(robot.indexer::hasCoral);
                       coro.await(robot.claw.setVoltage(6));
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
-                      robot.coralSim.attemptHandoff();
                       coro.waitUntil(robot.claw::hasCoral);
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
@@ -129,7 +145,11 @@ public class FullCoralTeleop extends PeriodicOpMode {
 
     stateMachine.setInitialState(stowState);
 
-    stowState.switchTo(handoff).when(robot.indexer::hasCoral);
+    stateMachine.switchFromAny(stowState, intaking).to(handoff).when(robot.indexer::hasCoral);
+
+    stowState
+        .switchTo(intaking)
+        .when(intakeButton.and(new Trigger(robot.indexer::hasCoral).negate()));
 
     stateMachine
         .switchFromAny(stowState, handoff)
@@ -159,7 +179,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
     stateMachine
         .switchFromAny(
             scoreL2Left, scoreL2Right, scoreL3Left, scoreL3Right, scoreL4Left, scoreL4Right)
-        .to(handoff)
+        .to(intaking)
         .whenComplete();
 
     stateMachine
@@ -168,42 +188,12 @@ public class FullCoralTeleop extends PeriodicOpMode {
         .to(stowState)
         .when(leftAlignButton.or(rightAlignButton).negate());
 
-    stateMachine.switchFromAny().to(stowState).when(stowButton);
+    stateMachine
+        .switchFromAny()
+        .to(stowState)
+        .when(stowButton.and(new Trigger(robot.indexer::hasCoral).negate()));
 
-    //        RobotModeTriggers.disabled().onFalse(stateMachine);
     Scheduler.getDefault().schedule(stateMachine);
-    //        RobotModeTriggers.teleop().onTrue(stateMachine);
-
-    Scheduler.getDefault()
-        .addPeriodic(
-            () -> {
-              //            Telemetry.log("State Machine State", stateMachine.)
-
-              var commands = new ArrayList<>(Scheduler.getDefault().getRunningCommands());
-              for (int i = 0; i < commands.size(); i++) {
-                Telemetry.log("ActiveCommands/" + i, commands.get(i).name());
-              }
-              Telemetry.log("StateMachine", stateMachine);
-              Telemetry.log("Selected Coral Level", selectedLevel);
-            });
-
-    Scheduler.getDefault()
-        .addEventListener(
-            (event) -> {
-              if (event instanceof SchedulerEvent.Canceled) {
-                System.out.println(
-                    "CANCELLED: " + ((SchedulerEvent.Canceled) event).command().name());
-              } else if (event instanceof SchedulerEvent.Interrupted) {
-                System.out.println(
-                    "INTERRUPTED: "
-                        + ((SchedulerEvent.Interrupted) event).command().name()
-                        + " by "
-                        + ((SchedulerEvent.Interrupted) event).interrupter().name());
-              } else if (event instanceof SchedulerEvent.Completed) {
-                System.out.println(
-                    "COMPLETED: " + ((SchedulerEvent.Completed) event).command().name());
-              }
-            });
   }
 
   private NeedsNameBuilderStage createScoreCommand(
@@ -233,7 +223,6 @@ public class FullCoralTeleop extends PeriodicOpMode {
           coro.fork(robot.superstructure.setPosition(scorePosition));
           coro.wait(Seconds.of(0.25));
           coro.await(robot.claw.setVoltage(-6));
-          robot.coralSim.attemptScore();
         });
   }
 }

@@ -29,10 +29,18 @@ public class Robot extends OpModeRobot {
     elevator = new Elevator();
     arm = new Arm();
     superstructure = new Superstructure(elevator, arm);
-    coralSim = new CoralSim(drive::getPose, elevator::getPosition, arm::getPosition);
     claw = new Claw();
     intake = new Intake();
     indexer = new Indexer();
+    coralSim =
+        new CoralSim(
+            drive::getPose,
+            elevator::getPosition,
+            arm::getPosition,
+            claw::getAppliedVoltage,
+            intake::getPivotPosition,
+            intake::getRollersAppliedVoltage,
+            indexer::getAppliedVoltage);
 
     robotVisualization =
         new RobotVisualization(

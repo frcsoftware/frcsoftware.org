@@ -50,7 +50,6 @@ public class FullScoringTeleop extends PeriodicOpMode {
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
-                      robot.coralSim.attemptHandoff();
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                     })
@@ -81,7 +80,6 @@ public class FullScoringTeleop extends PeriodicOpMode {
           coro.fork(robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
           coro.wait(Seconds.of(0.25));
           coro.await(robot.claw.setVoltage(-6));
-          robot.coralSim.attemptScore();
         });
   }
 }

@@ -84,7 +84,7 @@ public class Indexer implements Mechanism {
 
     BaseStatusSignal.refreshAll(signals);
 
-    table.log("Applied Voltage", Volts.of(appliedVoltageSignal.getValueAsDouble()));
+    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
     table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
     table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
     table.log("Active Commands", getRunningCommands().toString());
@@ -113,5 +113,9 @@ public class Indexer implements Mechanism {
 
   public boolean hasCoral() {
     return sensor.get();
+  }
+
+  public double getAppliedVoltage() {
+        return appliedVoltageSignal.getValueAsDouble();
   }
 }

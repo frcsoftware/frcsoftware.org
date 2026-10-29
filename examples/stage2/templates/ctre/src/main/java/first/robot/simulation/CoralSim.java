@@ -23,6 +23,10 @@ public class CoralSim {
   private final Supplier<Pose2d> drivePoseSupplier;
   private final DoubleSupplier elevatorHeightSupplier;
   private final DoubleSupplier armAngleSupplier;
+  private final DoubleSupplier clawVoltageSupplier;
+  private final DoubleSupplier intakeAngleSupplier;
+  private final DoubleSupplier intakeVoltageSupplier;
+  private final DoubleSupplier indexerVoltageSupplier;
 
   private final DIOSim clawSensor;
   private final DIOSim indexerSensor;
@@ -46,21 +50,29 @@ public class CoralSim {
         new Pose3d(-7, 3, Units.inchesToMeters(4.5 / 2), Rotation3d.fromDegrees(0, 0, 35)),
       };
   private Transform2d INTAKE_DETECTION_TRANSFORM = new Transform2d(0.6, 0, Rotation2d.ZERO);
-  private double INTAKE_DETECTION_THRESHOLD = 0.3;
   private double INTAKE_TIME_THRESHOLD = 0.5;
-  //    private double INTAKE_TIME_THRESHOLD = 100;
 
   private Transform3d HANDOFF_DETECTION_TRANSFORM =
       new Transform3d(0, 0, 0.201295, new Rotation3d());
   private double HANDOFF_DETECTION_THRESHOLD = 0.05;
 
+  private double CORAL_SCORE_DISTANCE_THRESHOLD = 0.25;
+
   public CoralSim(
       Supplier<Pose2d> drivePoseSupplier,
       DoubleSupplier elevatorHeightSupplier,
-      DoubleSupplier armAngleSupplier) {
+      DoubleSupplier armAngleSupplier,
+      DoubleSupplier clawVoltageSupplier,
+      DoubleSupplier intakeAngleSupplier,
+      DoubleSupplier intakeVoltageSupplier,
+      DoubleSupplier indexerVoltageSupplier) {
     this.drivePoseSupplier = drivePoseSupplier;
     this.elevatorHeightSupplier = elevatorHeightSupplier;
     this.armAngleSupplier = armAngleSupplier;
+    this.clawVoltageSupplier = clawVoltageSupplier;
+    this.intakeAngleSupplier = intakeAngleSupplier;
+    this.intakeVoltageSupplier = intakeVoltageSupplier;
+    this.indexerVoltageSupplier = indexerVoltageSupplier;
 
     indexerSensor = new DIOSim(0);
     clawSensor = new DIOSim(1);
@@ -75,6 +87,8 @@ public class CoralSim {
   public void periodic() {
     List<Pose3d> coralPoses = new ArrayList<>();
 
+    Telemetry.log("CoralSim State", coralState.name());
+
     switch (coralState) {
       case GROUND:
         coralPoses.addAll(Arrays.stream(groundCoralPoses).toList());
@@ -84,29 +98,33 @@ public class CoralSim {
 
         var intakeRect =
             new Rectangle2d(
-                drivePoseSupplier.get().transformBy(INTAKE_DETECTION_TRANSFORM), 0.2, 0.7);
+                drivePoseSupplier.get().transformBy(INTAKE_DETECTION_TRANSFORM), 0.3, 0.7);
 
-        Telemetry.log(
-            "intake detection point",
-            new Pose3d(drivePoseSupplier.get().transformBy(INTAKE_DETECTION_TRANSFORM)));
-
-        for (var pose : groundCoralPoses) {
-          if (intakeRect.contains(pose.getTranslation().toTranslation2d())) {
-            coralState = CoralState.INTAKE;
-            coralIntakeTimer.restart();
+        if (intakeAngleSupplier.getAsDouble() < 0 && intakeVoltageSupplier.getAsDouble() > 6) {
+          for (var pose : groundCoralPoses) {
+            if (intakeRect.contains(pose.getTranslation().toTranslation2d())) {
+              coralState = CoralState.INTAKE;
+              coralIntakeTimer.restart();
+            }
           }
         }
         break;
       case INTAKE:
         var intakePose = new Pose3d(drivePoseSupplier.get()).transformBy(INTAKE_CORAL_TRANSFORM);
         var indexerPose = new Pose3d(drivePoseSupplier.get()).transformBy(INDEXER_CORAL_TRANSFORM);
-        coralPoses.add(
-            intakePose.interpolate(indexerPose, coralIntakeTimer.get() / INTAKE_TIME_THRESHOLD));
+        double coralIntakePercent = coralIntakeTimer.get() / INTAKE_TIME_THRESHOLD;
+        if (indexerVoltageSupplier.getAsDouble() < 6) {
+          coralIntakePercent = Math.min(coralIntakePercent, 0.4);
+        }
+        
+        coralPoses.add(intakePose.interpolate(indexerPose, coralIntakePercent));
 
         indexerSensor.setValue(false);
         clawSensor.setValue(false);
 
-        if (coralIntakeTimer.hasElapsed(INTAKE_TIME_THRESHOLD)) {
+        if (coralIntakeTimer.hasElapsed(INTAKE_TIME_THRESHOLD)
+            && intakeVoltageSupplier.getAsDouble() > 6
+            && indexerVoltageSupplier.getAsDouble() > 6) {
           coralState = CoralState.INDEXER;
         }
         break;
@@ -115,12 +133,44 @@ public class CoralSim {
 
         indexerSensor.setValue(true);
         clawSensor.setValue(false);
+
+        if (clawVoltageSupplier.getAsDouble() > 0.5
+            && new Pose3d(drivePoseSupplier.get())
+                    .transformBy(HANDOFF_DETECTION_TRANSFORM)
+                    .getTranslation()
+                    .getDistance(getClawCoralPose().getTranslation())
+                < HANDOFF_DETECTION_THRESHOLD) {
+          coralState = CoralState.CLAW;
+        }
+
         break;
       case CLAW:
         coralPoses.add(getClawCoralPose());
 
         indexerSensor.setValue(false);
         clawSensor.setValue(true);
+
+        if (clawVoltageSupplier.getAsDouble() < -0.5) {
+          boolean red = drivePoseSupplier.get().getX() < 0;
+          for (int branch = 0; branch < 12; branch++) {
+            for (int level = 2; level <= 4; level++) {
+              if (getCoralPose(red, branch, level)
+                      .getTranslation()
+                      .getDistance(getClawCoralPose().getTranslation())
+                  < CORAL_SCORE_DISTANCE_THRESHOLD) {
+                if (red) {
+                  redScoredCoral[branch][level - 2] = true;
+                } else {
+                  blueScoredCoral[branch][level - 2] = true;
+                }
+
+                coralState = CoralState.GROUND;
+
+                break;
+              }
+            }
+          }
+        }
         break;
     }
 
@@ -136,49 +186,6 @@ public class CoralSim {
     }
 
     Telemetry.log("Coral", coralPoses, Pose3d.class);
-  }
-
-  private double CORAL_SCORE_DISTANCE_THRESHOLD = 0.25;
-
-  public void attemptScore() {
-    boolean red = drivePoseSupplier.get().getX() < 0;
-    topLoop:
-    for (int branch = 0; branch < 12; branch++) {
-      for (int level = 2; level <= 4; level++) {
-        if (getCoralPose(red, branch, level)
-                .getTranslation()
-                .getDistance(getClawCoralPose().getTranslation())
-            < CORAL_SCORE_DISTANCE_THRESHOLD) {
-          if (red) {
-            redScoredCoral[branch][level - 2] = true;
-          } else {
-            blueScoredCoral[branch][level - 2] = true;
-          }
-
-          coralState = CoralState.GROUND;
-
-          break topLoop;
-        }
-      }
-    }
-  }
-
-  public void attemptHandoff() {
-    if (coralState == CoralState.INDEXER) {
-      Telemetry.log(
-          "dist",
-          new Pose3d(drivePoseSupplier.get())
-              .transformBy(HANDOFF_DETECTION_TRANSFORM)
-              .getTranslation()
-              .getDistance(getClawCoralPose().getTranslation()));
-      if (new Pose3d(drivePoseSupplier.get())
-              .transformBy(HANDOFF_DETECTION_TRANSFORM)
-              .getTranslation()
-              .getDistance(getClawCoralPose().getTranslation())
-          < HANDOFF_DETECTION_THRESHOLD) {
-        coralState = CoralState.CLAW;
-      }
-    }
   }
 
   private enum CoralState {

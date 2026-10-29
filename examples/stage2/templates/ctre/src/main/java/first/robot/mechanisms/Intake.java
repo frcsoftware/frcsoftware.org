@@ -15,7 +15,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
@@ -85,16 +84,11 @@ public class Intake implements Mechanism {
             * (42.0 / 10.0); // Three stage, 60:16, 70:18, 42:10 reductions
 
     static final double PIVOT_kS = 0;
-    static final double PIVOT_kG = 0.349;
     static final double PIVOT_kV = 5.621;
     static final double PIVOT_kA = 0.03;
-    //        static final double PIVOT_kP = 19; //92
-    static final double PIVOT_kP = 20;
-    //    static final double PIVOT_kP = 5;
+    static final double PIVOT_kP = 300;
     static final double PIVOT_kI = 0;
-    //        static final double PIVOT_kD = 0.2; //0.5
-    static final double PIVOT_kD = 0.5;
-    //    static final double PIVOT_kD = 0;
+    static final double PIVOT_kD = 5;
 
     static final double PIVOT_POSITION_TOLERANCE = Units.degreesToRotations(5);
 
@@ -123,13 +117,11 @@ public class Intake implements Mechanism {
     pivotConfiguration
         .Slot0
         .withKS(Constants.PIVOT_kS)
-        //        .withKG(Constants.PIVOT_kG)
         .withKV(Constants.PIVOT_kV)
         .withKA(Constants.PIVOT_kA)
         .withKP(Constants.PIVOT_kP)
         .withKI(Constants.PIVOT_kI)
-        .withKD(Constants.PIVOT_kD)
-        .withGravityType(GravityTypeValue.Arm_Cosine);
+        .withKD(Constants.PIVOT_kD);
 
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     currentLimitsConfigs
@@ -186,6 +178,7 @@ public class Intake implements Mechanism {
     pivotSimState = pivot.getSimState();
     //        pivotSimState.Orientation = ChassisReference.CounterClockwise_Positive;
     pivotSimState.Orientation = ChassisReference.Clockwise_Positive;
+    pivotSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
     rollersSimState = rollers.getSimState();
 
     pivotSim =
@@ -245,8 +238,6 @@ public class Intake implements Mechanism {
         Units.radiansToRotations(pivotSim.getAngle()) * Constants.PIVOT_RATIO);
     pivotSimState.setRotorVelocity(
         Units.radiansToRotations(pivotSim.getVelocity()) * Constants.PIVOT_RATIO);
-
-    pivotTable.log("SimPosition", Radians.of(pivotSim.getAngle()));
 
     rollersSim.setInputVoltage(rollersSimState.getMotorVoltage());
     rollersSim.update(0.02 / 4);

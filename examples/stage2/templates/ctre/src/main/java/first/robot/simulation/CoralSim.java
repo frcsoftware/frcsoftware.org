@@ -116,7 +116,7 @@ public class CoralSim {
         if (indexerVoltageSupplier.getAsDouble() < 6) {
           coralIntakePercent = Math.min(coralIntakePercent, 0.4);
         }
-        
+
         coralPoses.add(intakePose.interpolate(indexerPose, coralIntakePercent));
 
         indexerSensor.setValue(false);

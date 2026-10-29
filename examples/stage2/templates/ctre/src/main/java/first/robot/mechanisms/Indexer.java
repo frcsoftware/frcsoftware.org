@@ -116,6 +116,6 @@ public class Indexer implements Mechanism {
   }
 
   public double getAppliedVoltage() {
-        return appliedVoltageSignal.getValueAsDouble();
+    return appliedVoltageSignal.getValueAsDouble();
   }
 }

@@ -1,0 +1,215 @@
+---
+title: Methods and Mutable State（方法与可变状态）
+description: 编写定义类行为的方法，以及状态会随时间变化的类
+codeRegionSources:
+    point: stage0/snippets/src/classes-methods/Point.java
+    tracker: stage0/snippets/src/classes-methods/RobotTracker.java
+    usage: stage0/snippets/src/classes-methods/Usage.java
+---
+
+在[上一课](/learning-course/stage0/classes-objects/)中，我们编写了带有成员变量（field）、constructor（构造函数）和 getter（获取器）的 `Point` 类。
+它可以保存一对坐标，但不能对坐标进行任何计算。
+本节课我们将编写 <strong>methods（方法）</strong>，用来定义类的行为，然后再实现一个状态会随时间变化的类。
+
+## 编写方法
+
+methods（方法）是定义在类内部的一段代码，用来定义这个类的行为。
+我们已经见过两个方法示例：`String` 类中的 `length()`，以及我们在 `Point` 上编写的 getter 方法。
+方法可以有参数，也就是调用方法时传入的值。
+
+方法执行结束后，可以向调用者返回值，这称为返回值。
+想要返回值，需要在方法体需要使用 `return` 关键字，后面跟上要返回的数据。
+一旦 `return` 语句被执行，方法会立刻停止运行，并把该值返回给调用者。
+例如，`String` 类中的 `length()` 方法会返回字符串的长度，并且它没有参数。
+
+方法的一般语法格式为：
+
+{/* rli:ignore */}
+
+```java
+public ReturnType methodName(ParameterType1 param1, ParameterType2 param2, ...) {
+    // method body
+}
+```
+
+一个方法可以拥有任意数量的参数，也可以没有参数，参数也可以是任何类型。
+`ReturnType` 代表方法返回值的类型，例如 `length()` 的返回类型是 `int`。
+方法不是必须返回数据；如果不需要返回任何内容，
+就使用返回类型 `void`。`void` 是一个关键字，表示方法不返回任何值。
+`void` 类型的方法也可以单独写 `return` 后面不带返回值，用来提前终止方法。
+不过这种写法并不常用，大多数情况下直接省略即可 —— 方法执行到末尾就会自动结束。
+
+接下来我们给 `Point` 类添加一些行为，先从 `plus` 方法开始。
+`plus` 方法接收另一个 `Point` 对象作为参数，
+并返回一个全新的 `Point` 对象，这个对象是两个 `Point` 对象之和。
+
+```java {point}#plus
+
+```
+
+这里的 `other` 只是我们给这个方法参数取的名字，代表我们要相加的另一个 `Point` 对象。
+`this` 仍然指调用 `plus` 方法的那个 `Point` 对象，与构造函数中相同。
+因此，`this.x` 和 `this.y` 是调用 `plus` 的那个 `Point` 的坐标，
+`other.x` 和 `other.y` 是传入的 `Point` 的坐标。
+
+在这个方法中，我们使用 `new` 关键字创建一个新的 `Point` 对象。
+因为前面定义的构造函数接收两个参数，
+所以把 `this.x + other.x` 和 `this.y + other.y` 作为实参传给构造函数。
+因此，新的 `Point` 对象会拥有两个 `Point` 对象坐标之和。
+
+`minus` 方法的逻辑与之类似，但它是减去坐标，而不是相加：
+
+```java {point}#minus
+
+```
+
+`minus` 方法得到的结果并不是场地上的一个位置。
+它是一个 <strong>vector（向量）</strong>，也就是带有方向和长度的箭头，例如“向右 3 米、向上 4 米”。
+用这个 `Point` 减去 `other`，得到的是从 `other` 指向这个 `Point` 的向量。
+`Point` 既可以保存位置，也可以保存向量，因为两者都只用 `x` 和 `y` 两个数值描述。
+
+最后定义 `norm` 方法，它返回这个 `Point` 到原点的距离。
+想象一个直角三角形，一个角的顶点在原点，对角的顶点就是当前的这个 `Point`。
+两条直角边的长度分别是 `x` 和 `y`，所以根据勾股定理，斜边长度是 `x² + y²` 的平方根。
+对于点 (3, 4)，结果就是 9 + 16 的平方根，也就是 5。
+向量的长度称为它的 <strong>norm（范数）</strong>，这个方法也因此得名。
+
+```java {point}#norm
+
+```
+
+这个方法定义了一个 <strong>local variable（局部变量）</strong> `sumOfSquares`，用于储存 `x` 和 `y` 这两个成员变量（field）的平方和。
+局部变量只在当前的方法内部访问，
+一般用来保存中间计算结果。
+这个方法还使用 `Math.sqrt()` 方法。
+它是 `Math` 类中的 static（静态）方法，
+作用是返回传入参数的平方根。
+
+<Aside type="note" title="Math 类">
+    `Math` 类内置在 JDK 中，包含一组用于常见数学运算的
+    static（静态）方法和常量，例如 `Math.sqrt()`、`Math.abs()` 和
+    `Math.pow()`，以及 `Math.PI` 这样的常量。 因为这些方法和常量都是
+    static（静态）的，我们只需要通过类名就可以直接访问，就像在 `Point.norm()`
+    方法中调用 `Math.sqrt()` 一样。
+</Aside>
+
+`Point` 现在可以完成这些数学运算了。
+下面是完整的类：
+
+```java {point}#pointFull
+
+```
+
+下面是使用它的示例：
+
+```java {usage}#createAndUse
+
+```
+
+`a.plus(b)` 的含义是“在对象 `a` 上调用 `plus` 方法，并把 `b` 作为实参传入”。
+在 `plus` 方法内部，`a` 就对应关键字 `this`，`b` 对应参数 `other`。
+
+## Mutable State（可变状态）
+
+我们定义的 `Point` 类是 <strong>immutable（不可变）</strong> 的。这意味着 `Point` 对象一旦被创建，
+它的 `x` 和 `y` 值就永远不能改变，因为这些成员变量（field）用了 `final` 修饰。
+不可变类型有很多好处，因为它让类更容易理解：不需要担心成员变量（field）的值会在意外的时候被改变。
+
+不过，有时我们需要一个状态会随时间变化的类。接下来我们定义一个 `RobotTracker` 类，用来跟踪机器人在场地上的当前位置。
+位置从某个地方开始，并随着机器人移动而更新，因此它不能是 `final`：
+
+```java {tracker}#mutableField
+
+```
+
+注意，成员变量（field）的类型不一定非得是 <strong>primitive type（基本类型）</strong>，例如 `double`。
+就像 `x` 和 `y` 是 `double` 类型的成员变量（field）一样，`position` 也是一个成员变量（field），它的类型是我们自己写的 `Point` 类。
+任何类型，无论是 Java 内置的，还是我们自己定义的，都可以用作成员变量（field）的类型。
+
+我们仍然使用 `private`，防止其他类直接修改这个成员变量（field），
+因此改变位置的唯一方式是通过我们定义的方法。
+这很重要，因为 `move`、`distanceTo` 和 `reset` 可以依赖 `position` 始终有效，
+而不用担心另一个类把它设成意外的值。
+如果其他代码可以直接修改 `position` 的值，`RobotTracker` 就无法保证自己的行为。
+
+构造函数的工作方式与之前相同，把 `position` 初始化为给定的起始位置值：
+
+```java {tracker}#robotTrackerConstructor
+
+```
+
+只要每个构造函数接收的参数组合不同，一个类就可以有多个构造函数。
+当存在合理的默认值时，这个特性非常好用：在这里不带参数的 `RobotTracker` 会默认从原点开始。
+我们不用重复写 `this.position = Point.ORIGIN`，而是使用 `this(...)` 的方法来调用另一个构造函数：
+
+```java {tracker}#constructorChaining
+
+```
+
+调用 `move` 方法时，传入一个 `delta`，也就是位置的变化量，这个方法会把它加到当前位置上。
+这就是 <strong>mutation（可变修改）</strong>，方法对 `this.position` 重新赋值，改变了这个对象的状态。
+
+```java {tracker}#stateMutation
+
+```
+
+注意，`move` 方法的返回类型是 `void`。
+这是因为该方法实际上不需要返回任何内容。
+它改变的是自己的内部状态。
+
+`distanceTo` 方法用来计算从当前位置到目标的直线距离。
+它使用一个局部变量 `diff` 保存两点之间的向量，然后再取这个向量的长度：
+
+```java {tracker}#localVariableChain
+
+```
+
+因为 `position` 是私有（private）的，所以我们还需要一个 getter 方法来读取机器人的当前位置：
+
+```java {tracker}#getPosition
+
+```
+
+`reset` 方法把位置设回原点。
+我们不用写 `new Point(0, 0)`，而是复用 `Point.ORIGIN` 常量。
+两种写法都可以，因为 `new Point(0, 0)` 和 `Point.ORIGIN` 的坐标相同。
+但复用 `ORIGIN` 可以避免创建一个多余的对象，也让代码的意图更清楚：
+我们明确指的是原点本身，而不是一个碰巧位于 (0, 0) 的点：
+
+```java {tracker}#useStaticConstant
+
+```
+
+下面是完整的 `RobotTracker` 类：
+
+```java {tracker}#robotTrackerFull
+
+```
+
+下面是使用它的示例：
+
+```java {usage}#trackerUsage
+
+```
+
+<Aside>
+    我们创建的 `Point` 类是 WPILib 的 `Translation2d` 类的简化版本。
+    `Translation2d` 还有许多常用于机器人项目的方法。
+
+    我们创建的 `RobotTracker` 类是 localization（定位）概念的起点。
+    定位指的是解算出机器人在赛场上位置的过程。
+    在课程后面的阶段我们会更详细地探讨这个概念。
+
+</Aside>
+
+## 方法与可变状态练习
+
+<Aside type="exercise" title="Exercise（练习）">
+
+现在，你可以直接打开 `Methods.java`文件开始练习！
+按照注释提示，编写对应的代码来完成目标要求。
+
+完成这个练习后，把修改 commit（提交）并 push（推送）到 GitHub。
+如果需要回顾操作步骤，请查看 [Git - Uploading code（上传代码）](/learning-course/stage0/git/)。
+
+</Aside>

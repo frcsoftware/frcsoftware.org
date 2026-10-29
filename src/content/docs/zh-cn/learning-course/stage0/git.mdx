@@ -1,0 +1,57 @@
+---
+title: Git - Uploading code（上传代码）
+description: Git 入门
+---
+
+在前面的课程中，你已经编写了第一段 Java 代码，学习了一些调试方法，并完成了练习。
+现在需要把这些修改 push（推送）到 GitHub。
+
+Git 是一种版本控制系统。它通过命令记录代码的修改。
+本课程会用到两个命令：commit（提交）和 push（推送）。
+
+<Aside type="note" title="Note（备注）">
+    使用 Git 有多种方式，例如命令行和 GitHub Desktop。 本阶段使用 VS Code 自带的
+    Git 工具。
+</Aside>
+
+## Commit（提交）
+
+commit（提交）是仓库的一份已保存状态。
+每完成一项任务，例如做完一个练习，都应该做一次 commit。
+每次 commit 都要写一段说明，这段说明称为 message（提交说明）。
+提交说明应当能说清这次改了什么，并且不要太长。
+例如，完成 Print.java 练习后，提交说明可以写成 "Completed Print.java"。
+
+## Push（推送）与 Pull（拉取）
+
+push（推送）会把你电脑上的 commit 上传到远程仓库，也就是你 GitHub 账号上的仓库。
+上传到 GitHub 时，要先 commit，再 push。
+
+pull（拉取）会把远程仓库中的修改下载到本地仓库，也就是你电脑上的仓库。
+
+VS Code 里的 Git 不直接使用 push 这个名称，而是使用 "Sync Changes"（同步更改）。它会在 push 你的修改的同时，pull 远程的新修改。
+
+## 上传代码
+
+完成练习后，先保存代码，然后打开 VS Code 左侧的 Source Control（源代码管理）。
+
+<ContentFigure
+    width="650px"
+    alt="VS Code 中用蓝框标出的源代码管理标签"
+    src="/learning-course/stage0/git/vscodeGit.webp"
+/>
+
+这时会打开一个新的侧栏。
+在这里可以看到哪些文件被修改了，以及具体改了什么。
+也可以在这里把修改 commit 并 push 到 GitHub。
+
+在本阶段，每完成一个练习，建议按图中的方式把修改 commit 并 push 到你的仓库。
+
+<ContentFigure
+    width="650px"
+    alt="提交并推送代码"
+    src="/learning-course/stage0/git/commit-push.webm"
+/>
+
+在本课程的其他阶段，建议在完成一项任务后，或准备停下来时，再 push 代码。
+这样可以避免进度丢失。

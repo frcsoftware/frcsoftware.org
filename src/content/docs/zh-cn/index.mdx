@@ -1,0 +1,43 @@
+---
+title: 欢迎来到 FRCSoftware.org
+description: FRC 编程综合学习指南
+template: splash
+hero:
+    tagline: FRC 编程综合学习指南
+    image:
+        html: '<img src="/favicon.svg" alt="FRCSoftware.org 标志" />'
+    actions:
+        - text: 开始学习
+          link: /learning-course/
+---
+
+import HomeCard from '../../../components/HomeCard.astro';
+
+<div class="home-cards-grid">
+
+    <HomeCard
+        title="教师指南"
+        href="/educators-guide/introduction"
+        icon="book"
+        description="帮助教育工作者实施 FRCSoftware 学习课程的指南。"
+    />
+    <HomeCard
+        title="资源"
+        href="/resources/overview"
+        icon="folder"
+        description="汇集代码示例、技术文档、硬件入门等内容的资源库！"
+    />
+    <HomeCard
+        title="最佳实践"
+        href="/best-practices/overview"
+        icon="check"
+        description="有关工具和编程最佳实践的文档。"
+    />
+    <HomeCard
+        description="参与项目贡献！本指南介绍如何为 FRCSoftware 作出贡献。"
+        icon="sourcebranch"
+        href="/contribution/"
+        title="参与贡献"
+    />
+
+</div>

@@ -8,6 +8,7 @@ import first.robot.mechanisms.Drive;
 import first.robot.mechanisms.Intake;
 import first.robot.mechanisms.Superstructure;
 import first.robot.simulation.CoralSim;
+import java.util.List;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.NeedsNameBuilderStage;
 import org.wpilib.command3.Trigger;
@@ -34,43 +35,23 @@ public class FourCoralAuto extends PeriodicOpMode {
         .onTrue(
             Command.noRequirements(
                     coro -> {
-                      coro.await(
-                          createScoreCommand(
-                                  Poses.BLUE_REEF_J,
-                                  Superstructure.Positions.L4_PREP,
-                                  Superstructure.Positions.L4_SCORE)
-                              .named("Score J"));
+                      for (var pose :
+                          List.of(
+                              Poses.BLUE_REEF_J,
+                              Poses.BLUE_REEF_K,
+                              Poses.BLUE_REEF_L,
+                              Poses.BLUE_REEF_I)) {
+                        coro.await(
+                            createScoreCommand(
+                                    pose,
+                                    Superstructure.Positions.L4_PREP,
+                                    Superstructure.Positions.L4_SCORE)
+                                .named("Score J"));
 
-                      coro.await(createDriveTowardsCoralCommand(coralLocation));
-
-                      coro.await(
-                          createScoreCommand(
-                                  Poses.BLUE_REEF_K,
-                                  Superstructure.Positions.L4_PREP,
-                                  Superstructure.Positions.L4_SCORE)
-                              .named("Score K"));
-
-                      coro.await(createDriveTowardsCoralCommand(coralLocation));
-
-                      coro.await(
-                          createScoreCommand(
-                                  Poses.BLUE_REEF_L,
-                                  Superstructure.Positions.L4_PREP,
-                                  Superstructure.Positions.L4_SCORE)
-                              .named("Score L"));
-
-                      coro.await(createDriveTowardsCoralCommand(coralLocation));
-
-                      coro.await(
-                          createScoreCommand(
-                                  Poses.BLUE_REEF_I,
-                                  Superstructure.Positions.L4_PREP,
-                                  Superstructure.Positions.L4_SCORE)
-                              .named("Score I"));
-
-                      coro.await(robot.drive.stop());
+                        coro.await(createDriveTowardsCoralCommand(coralLocation));
+                      }
                     })
-                .named("Simple Auto"));
+                .named("4 Coral Auto"));
 
     new Trigger(robot.indexer::hasCoral)
         .onTrue(

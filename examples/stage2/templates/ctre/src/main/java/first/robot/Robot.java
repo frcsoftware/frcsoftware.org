@@ -10,6 +10,7 @@ import first.robot.simulation.CoralSim;
 import first.robot.simulation.RobotVisualization;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.framework.OpModeRobot;
+import org.wpilib.telemetry.Telemetry;
 
 public class Robot extends OpModeRobot {
 
@@ -66,6 +67,8 @@ public class Robot extends OpModeRobot {
     robotVisualization.periodic();
 
     Scheduler.getDefault().run();
+
+    Telemetry.log("Scheduler", Scheduler.getDefault());
   }
 
   @Override

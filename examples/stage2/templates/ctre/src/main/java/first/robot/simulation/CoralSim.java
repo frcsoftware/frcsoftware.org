@@ -188,7 +188,7 @@ public class CoralSim {
     Telemetry.log("Coral", coralPoses, Pose3d.class);
   }
 
-  private enum CoralState {
+  public enum CoralState {
     GROUND,
     INTAKE,
     INDEXER,
@@ -245,5 +245,10 @@ public class CoralSim {
         .transformBy(elevatorTransform)
         .transformBy(armTransform)
         .transformBy(clawCoralTransform);
+  }
+
+  public void setState(CoralState state) {
+    coralState = state;
+    coralIntakeTimer.restart();
   }
 }

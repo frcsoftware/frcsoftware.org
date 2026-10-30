@@ -43,7 +43,7 @@ public class ArmSim {
             MIN_ANGLE,
             MAX_ANGLE,
             true,
-            -Math.PI / 2);
+            Math.PI * 1.5);
   }
 
   public void periodic() {

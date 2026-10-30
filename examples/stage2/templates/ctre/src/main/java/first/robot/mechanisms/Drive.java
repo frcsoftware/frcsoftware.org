@@ -133,6 +133,10 @@ public class Drive implements Mechanism {
     table.log("Active Commands", getRunningCommands().toString());
   }
 
+  public void setPose(Pose2d pose) {
+    swerve.resetPose(pose);
+  }
+
   /**
    * @return the current pose of the drivetrain
    */
@@ -184,6 +188,11 @@ public class Drive implements Mechanism {
                   new ChassisVelocities(x, y, rotation).toRobotRelative(getHeading()));
             })
         .named("Teleop Drive");
+  }
+
+  public Command stop() {
+    return run((coro) -> swerve.setControl(new SwerveRequest.ApplyRobotVelocity()))
+        .named("Stop Drive");
   }
 
   public static class AutoAlignCommand implements Command {

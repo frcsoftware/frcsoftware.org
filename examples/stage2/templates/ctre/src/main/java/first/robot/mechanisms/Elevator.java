@@ -46,12 +46,12 @@ public class Elevator implements Mechanism {
         24 * 0.005; // Convert 24t pulley to circumference, in m
 
     static final double kS = 0;
-    static final double kG = 0.26;
-    static final double kV = 5.94;
-    static final double kA = 0.03;
-    static final double kP = 18.3;
+    static final double kG = 0.294;
+    static final double kV = 0.118;
+    static final double kA = 0.001;
+    static final double kP = 25;
     static final double kI = 0;
-    static final double kD = 0.7;
+    static final double kD = 3.2;
     ;
 
     static final double POSITION_TOLERANCE = Units.inchesToMeters(0.5);

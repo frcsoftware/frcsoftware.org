@@ -237,7 +237,7 @@ public class CoralSim {
             0,
             0,
             0,
-            new Rotation3d(0, Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
+            new Rotation3d(0, -Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
     var clawCoralTransform =
         new Transform3d(0.68036 - 0.02, 0, 0, new Rotation3d(0, Math.PI / 2, 0));
 

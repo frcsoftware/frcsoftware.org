@@ -61,7 +61,7 @@ public class RobotVisualization {
             0,
             0,
             0,
-            new Rotation3d(0, Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
+            new Rotation3d(0, -Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
     Pose3d armPose = carriagePose.transformBy(ARM_BASE_TRANSFORM).transformBy(armTransform);
 
     Transform3d intakeTransform = new Transform3d(0, 0, 0, new Rotation3d(0, -intakeAngle, 0));

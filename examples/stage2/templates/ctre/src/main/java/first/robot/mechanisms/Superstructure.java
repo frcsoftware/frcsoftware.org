@@ -30,15 +30,15 @@ public class Superstructure implements Mechanism {
   }
 
   public enum Positions {
-    STOW(0, 0.75),
-    HANDOFF_PREP(0.5, 0.25),
-    HANDOFF(0.38, 0.25),
-    L4_PREP(1.2, 0.6),
-    L4_SCORE(1.2, 0.525),
-    L3_PREP(0.5, 0.6),
-    L3_SCORE(0.5, 0.55),
-    L2_PREP(0.1, 0.6),
-    L2_SCORE(0.1, 0.55),
+    STOW(0, -0.75),
+    HANDOFF_PREP(0.5, -0.25),
+    HANDOFF(0.38, -0.25),
+    L4_PREP(1.2, -0.6),
+    L4_SCORE(1.2, -0.525),
+    L3_PREP(0.5, -0.6),
+    L3_SCORE(0.5, -0.55),
+    L2_PREP(0.1, -0.6),
+    L2_SCORE(0.1, -0.55),
     ;
 
     private double elevatorSetpoint;

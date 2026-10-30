@@ -8,7 +8,10 @@ package first.robot.opmode;
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.Drive;
+import first.robot.mechanisms.Intake;
+import first.robot.simulation.CoralSim;
 import org.wpilib.command3.button.CommandXboxController;
+import org.wpilib.command3.button.RobotModeTriggers;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Utility;
 import org.wpilib.tunable.TunableDouble;
@@ -60,13 +63,8 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
                     robot.drive, () -> robot.drive.getPose().nearest(Poses.RED_REEF_RIGHT_POSES))
                 .withRunningContinuously(true));
 
-    //        Scheduler.getDefault().addPeriodic(() -> {
-    //            Telemetry.log("elev", elevatorPositionTunable.hasChanged());
-    //            Telemetry.log("arm", armPositionTunable.hasChanged());
-    //            Telemetry.log("elevSetpoint", elevatorPositionTunable.get());
-    //            Telemetry.log("armSetpoint", armPositionTunable.get());
-    //        });
-
+    RobotModeTriggers.utility().onTrue(robot.intake.setState(Intake.State.INTAKING));
+    robot.coralSim.setState(CoralSim.CoralState.CLAW);
   }
 
   @Override

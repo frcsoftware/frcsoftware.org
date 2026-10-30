@@ -6,7 +6,7 @@
 package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.command3.button.CommandGamepad;
+import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Utility;
 
@@ -14,14 +14,19 @@ import org.wpilib.opmode.Utility;
 public class ArmTest extends PeriodicOpMode {
   private final Robot robot;
 
-  private final CommandGamepad controller;
+  private final CommandXboxController controller;
 
   public ArmTest(Robot robot) {
     this.robot = robot;
 
-    controller = new CommandGamepad(0);
+    controller = new CommandXboxController(0);
 
-    controller.button(0).onTrue(robot.arm.setPosition(1));
-    controller.button(1).onTrue(robot.arm.setPosition(0));
+    controller.a().onTrue(robot.arm.setPosition(0));
+    controller.b().onTrue(robot.arm.setPosition(-0.5));
+    controller.x().onTrue(robot.arm.setPosition(-0.25));
+    controller.y().onTrue(robot.arm.setPosition(-0.75));
+
+    controller.leftBumper().onTrue(robot.arm.setVoltage(-0.756));
+    controller.rightBumper().onTrue(robot.arm.setVoltage(0));
   }
 }

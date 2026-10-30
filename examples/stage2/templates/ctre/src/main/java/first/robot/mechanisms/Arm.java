@@ -43,12 +43,12 @@ public class Arm implements Mechanism {
         (56.0 / 16.0) * (84.0 / 10.0); // Two stage, 56:16, 84:10 reductions
 
     static final double kS = 0;
-    static final double kG = 0.777;
+    static final double kG = 0.78; // 0.756
     static final double kV = 3.464;
     static final double kA = 0.192;
-    static final double kP = 60;
+    static final double kP = 40;
     static final double kI = 0;
-    static final double kD = 7;
+    static final double kD = 6;
 
     static final double POSITION_TOLERANCE = Units.degreesToRotations(3);
   }
@@ -126,7 +126,7 @@ public class Arm implements Mechanism {
   public void periodic() {
     // Update simulation
     if (Robot.isSimulation()) {
-      sim.periodic();
+      //      sim.periodic();
     }
 
     BaseStatusSignal.refreshAll(signals);

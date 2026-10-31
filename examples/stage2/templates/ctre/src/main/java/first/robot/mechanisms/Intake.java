@@ -239,7 +239,10 @@ public class Intake implements Mechanism {
    * @return a command
    */
   public Command setRollerVoltage(double voltage) {
-    return run(coro -> rollers.setControl(rollersVoltageRequest.withOutput(voltage)))
+    return run(coro -> {
+          rollers.setControl(rollersVoltageRequest.withOutput(voltage));
+          coro.park();
+        })
         .named("Set Roller Voltage " + voltage + "V");
   }
 
@@ -248,7 +251,10 @@ public class Intake implements Mechanism {
    * @return a command
    */
   public Command setPivotVoltage(double voltage) {
-    return run(coro -> pivot.setControl(pivotVoltageRequest.withOutput(voltage)))
+    return run(coro -> {
+          pivot.setControl(pivotVoltageRequest.withOutput(voltage));
+          coro.park();
+        })
         .named("Set Pivot Voltage " + voltage + "V");
   }
 
@@ -260,15 +266,15 @@ public class Intake implements Mechanism {
     return run(coro -> {
           pivotTargetPosition = position;
           pivot.setControl(pivotPositionRequest.withPosition(position));
-          coro.waitUntil(() -> isPivotAtPosition(position));
+          coro.park();
         })
         .named("Set Pivot Position " + position + "rot");
   }
 
   public Command setState(State state) {
     return run(coro -> {
-          coro.await(setRollerVoltage(state.rollerVoltage));
-          coro.await(setPivotPosition(state.pivotPosition));
+          coro.fork(setRollerVoltage(state.rollerVoltage));
+          coro.fork(setPivotPosition(state.pivotPosition));
         })
         .named("Set Intake State to " + state.name());
   }

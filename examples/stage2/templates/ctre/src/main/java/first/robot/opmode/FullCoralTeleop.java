@@ -64,9 +64,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.fork(robot.intake.setState(Intake.State.INTAKING));
                       coro.fork(robot.indexer.setVoltage(12));
-                      while (true) {
-                        coro.yield();
-                      }
+                      coro.park();
                     })
                 .named("Intaking"));
     StateMachine.State stowState =
@@ -75,9 +73,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
                     (coro) -> {
                       coro.fork(robot.superstructure.setPosition(Superstructure.Positions.STOW));
                       coro.fork(robot.intake.setState(Intake.State.RETRACTED));
-                      while (true) {
-                        coro.yield();
-                      }
+                      coro.park();
                     })
                 .named("Stow"));
     StateMachine.State handoff =
@@ -86,18 +82,17 @@ public class FullCoralTeleop extends PeriodicOpMode {
                     (coro) -> {
                       coro.fork(robot.indexer.setVoltage(1));
                       coro.fork(robot.intake.setState(Intake.State.RETRACTED));
-                      coro.await(
+                      coro.fork(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
+
                       coro.waitUntil(robot.indexer::hasCoral);
-                      coro.await(robot.claw.setVoltage(6));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
+                      coro.fork(robot.claw.setVoltage(6));
+                      coro.fork(robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
                       coro.waitUntil(robot.claw::hasCoral);
-                      coro.await(
+                      coro.fork(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      while (true) {
-                        coro.yield();
-                      }
+                      coro.park();
                     })
                 .named("Handoff"));
     StateMachine.State scoreL2Left =
@@ -212,7 +207,8 @@ public class FullCoralTeleop extends PeriodicOpMode {
                               .nearest(poses)
                               .transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                   .withRunningContinuously(true));
-          coro.await(robot.superstructure.setPosition(prepPosition));
+          coro.fork(robot.superstructure.setPosition(prepPosition));
+          coro.waitUntil(robot.superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(robot.drive, () -> robot.drive.getPose().nearest(poses))
@@ -221,8 +217,9 @@ public class FullCoralTeleop extends PeriodicOpMode {
           coro.waitUntil(finalAlign::atPosition);
 
           coro.fork(robot.superstructure.setPosition(scorePosition));
+          coro.waitUntil(robot.superstructure::atSetpoint);
+          coro.fork(robot.claw.setVoltage(-6));
           coro.wait(Seconds.of(0.25));
-          coro.await(robot.claw.setVoltage(-6));
         });
   }
 }

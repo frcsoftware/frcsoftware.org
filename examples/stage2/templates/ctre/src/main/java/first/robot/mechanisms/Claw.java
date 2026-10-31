@@ -78,6 +78,8 @@ public class Claw implements Mechanism {
   public Command setVoltage(double voltage) {
     return run((coro) -> {
           motor.setControl(voltageRequest.withOutput(voltage));
+          appliedVoltageSignal.refresh();
+          coro.park();
         })
         .named("Set Voltage: " + voltage + "V");
   }

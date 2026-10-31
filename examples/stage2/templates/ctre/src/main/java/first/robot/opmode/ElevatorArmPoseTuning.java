@@ -45,8 +45,8 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
                     (coro) -> {
                       coro.await(
                           robot.superstructure.setPosition(
-                              Math.clamp(elevatorPositionTunable.get(), 0, 1.347),
-                              Math.clamp(armPositionTunable.get(), 0, 1.5)));
+                              Math.clamp(elevatorPositionTunable.get(), -0, 1.347),
+                              Math.clamp(armPositionTunable.get(), -1.5, 0)));
                     })
                 .named("Set Superstructure Position from Tunables"));
 

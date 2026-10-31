@@ -10,7 +10,7 @@ import first.robot.mechanisms.Superstructure;
 import first.robot.simulation.CoralSim;
 import java.util.List;
 import org.wpilib.command3.Command;
-import org.wpilib.command3.Trigger;
+import org.wpilib.command3.Scheduler;
 import org.wpilib.command3.button.RobotModeTriggers;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -45,8 +45,9 @@ public class FourCoralAuto extends PeriodicOpMode {
                                     robot.drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                                 .withRunningContinuously(true));
                         coro.waitUntil(robot.claw::hasCoral);
-                        coro.await(
+                        coro.fork(
                             robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                        coro.waitUntil(robot.superstructure::atSetpoint);
 
                         Drive.AutoAlignCommand finalAlign =
                             new Drive.AutoAlignCommand(robot.drive, pose)
@@ -57,7 +58,8 @@ public class FourCoralAuto extends PeriodicOpMode {
                         coro.fork(
                             robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
                         coro.wait(Seconds.of(0.25));
-                        coro.await(robot.claw.setVoltage(-6));
+                        var clawCommand = robot.claw.setVoltage(-6);
+                        coro.fork(clawCommand);
 
                         coro.fork(
                             new Drive.AutoAlignCommand(
@@ -79,23 +81,20 @@ public class FourCoralAuto extends PeriodicOpMode {
                             robot.superstructure.setPosition(
                                 Superstructure.Positions.HANDOFF_PREP));
                         coro.waitUntil(robot.indexer::hasCoral);
+                        coro.fork(
+                            Command.noRequirements(
+                                    coro2 -> {
+                                      coro2.waitUntil(robot.indexer::hasCoral);
+                                      Scheduler.getDefault().cancel(clawCommand);
+                                      coro2.fork(robot.claw.setVoltage(6));
+                                      coro2.fork(
+                                          robot.superstructure.setPosition(
+                                              Superstructure.Positions.HANDOFF));
+                                      coro2.waitUntil(robot.claw::hasCoral);
+                                    })
+                                .named("Handoff"));
                       }
                     })
                 .named("4 Coral Auto"));
-
-    new Trigger(robot.indexer::hasCoral)
-        .onTrue(
-            Command.noRequirements(
-                    (coro) -> {
-                      coro.fork(robot.indexer.setVoltage(1));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.waitUntil(robot.indexer::hasCoral);
-                      coro.await(robot.claw.setVoltage(6));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
-                      coro.waitUntil(robot.claw::hasCoral);
-                    })
-                .named("Handoff Coral"));
   }
 }

@@ -107,6 +107,7 @@ public class Indexer implements Mechanism {
   public Command setVoltage(double voltage) {
     return run((coro) -> {
           motor.setControl(voltageRequest.withOutput(voltage));
+          coro.park();
         })
         .named("Set Voltage: " + voltage + "V");
   }

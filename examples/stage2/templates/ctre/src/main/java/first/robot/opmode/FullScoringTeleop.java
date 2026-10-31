@@ -5,11 +5,10 @@
  */
 package first.robot.opmode;
 
-import static org.wpilib.units.Units.Seconds;
-
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.Drive;
+import first.robot.mechanisms.Intake;
 import first.robot.mechanisms.Superstructure;
 import java.util.List;
 import org.wpilib.command3.Command;
@@ -46,14 +45,27 @@ public class FullScoringTeleop extends PeriodicOpMode {
         .onTrue(
             Command.noRequirements(
                     (coro) -> {
+                      coro.fork(
+                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
+                      coro.fork(
+                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF),
+                          robot.claw.setVoltage(6));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
                       coro.await(
                           robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
                     })
                 .named("Handoff Coral"));
+
+    controller
+        .leftTrigger()
+        .onTrue(
+            Command.parallel(
+                    robot.intake.setState(Intake.State.INTAKING),
+                    robot.indexer.setVoltage(12),
+                    robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP))
+                .named("Intake"));
   }
 
   private NeedsNameBuilderStage createScoreCommand(List<Pose2d> poses) {
@@ -69,7 +81,8 @@ public class FullScoringTeleop extends PeriodicOpMode {
                               .nearest(poses)
                               .transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                   .withRunningContinuously(true));
-          coro.await(robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
+          coro.fork(robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
+          coro.waitUntil(robot.superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(robot.drive, () -> robot.drive.getPose().nearest(poses))
@@ -78,8 +91,9 @@ public class FullScoringTeleop extends PeriodicOpMode {
           coro.waitUntil(finalAlign::atPosition);
 
           coro.fork(robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
-          coro.wait(Seconds.of(0.25));
-          coro.await(robot.claw.setVoltage(-6));
+          coro.waitUntil(robot.superstructure::atSetpoint);
+          coro.fork(robot.claw.setVoltage(-6));
+          coro.park();
         });
   }
 }

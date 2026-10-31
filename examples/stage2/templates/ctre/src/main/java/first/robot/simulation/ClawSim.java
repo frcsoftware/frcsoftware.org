@@ -30,6 +30,7 @@ public class ClawSim {
     motorSim = motor.getSimState();
 
     motorSim.Orientation = ChassisReference.Clockwise_Positive;
+    motorSim.setMotorType(TalonFXSimState.MotorType.KrakenX44);
 
     sim =
         new FlywheelSim(

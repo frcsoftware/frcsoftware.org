@@ -5,8 +5,6 @@
  */
 package first.robot.simulation;
 
-import static org.wpilib.units.Units.Radians;
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -14,7 +12,6 @@ import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.SingleJointedArmSim;
 import org.wpilib.system.Notifier;
-import org.wpilib.telemetry.Telemetry;
 
 public class ArmSim {
 
@@ -65,7 +62,5 @@ public class ArmSim {
 
     double motorVelocity = sim.getVelocity() / (Math.PI * 2) * GEAR_RATIO;
     motorSim.setRotorVelocity(motorVelocity);
-
-    Telemetry.log("Arm/simpos", Radians.of(sim.getAngle()));
   }
 }

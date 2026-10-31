@@ -145,6 +145,7 @@ public class Arm implements Mechanism {
   public Command setVoltage(double voltage) {
     return run(coro -> {
           motor.setControl(voltageRequest.withOutput(voltage));
+          coro.park();
         })
         .named("Set Voltage " + voltage + "V");
   }
@@ -159,7 +160,7 @@ public class Arm implements Mechanism {
           motor.setControl(positionRequest.withPosition(position));
           table.log("Setpoint", Rotations.of(position));
 
-          coro.waitUntil(() -> isAtPosition(position));
+          coro.park();
         })
         .named("Set Position " + position + "rot");
   }

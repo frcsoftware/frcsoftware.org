@@ -11,6 +11,7 @@ import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.Drive.AutoAlignCommand;
 import first.robot.mechanisms.Superstructure;
+import first.robot.simulation.CoralSim;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
@@ -39,8 +40,8 @@ public class BasicScoringTeleop extends PeriodicOpMode {
                                   robot.drive,
                                   Poses.BLUE_REEF_A.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                               .withRunningContinuously(true));
-                      coro.await(
-                          robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                      coro.fork(robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
 
                       AutoAlignCommand finalAlign =
                           new AutoAlignCommand(robot.drive, Poses.BLUE_REEF_A)
@@ -50,9 +51,15 @@ public class BasicScoringTeleop extends PeriodicOpMode {
 
                       coro.fork(
                           robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
-                      coro.wait(Seconds.of(0.25));
-                      coro.await(robot.claw.setVoltage(-6));
+                      coro.waitUntil(robot.superstructure::atSetpoint);
+                      coro.fork(robot.claw.setVoltage(-6));
                     })
                 .named("AutoAlign and Score"));
+
+    controller
+        .x()
+        .onTrue(
+            Command.noRequirements(coro -> robot.coralSim.setState(CoralSim.CoralState.CLAW))
+                .named("Put coral in claw"));
   }
 }

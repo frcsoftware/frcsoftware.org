@@ -152,8 +152,16 @@ public class CoralSim {
 
         if (clawVoltageSupplier.getAsDouble() < -0.5) {
           boolean red = drivePoseSupplier.get().getX() < 0;
+          double mindist = 100;
+
           for (int branch = 0; branch < 12; branch++) {
             for (int level = 2; level <= 4; level++) {
+              mindist =
+                  Math.min(
+                      mindist,
+                      getCoralPose(red, branch, level)
+                          .getTranslation()
+                          .getDistance(getClawCoralPose().getTranslation()));
               if (getCoralPose(red, branch, level)
                       .getTranslation()
                       .getDistance(getClawCoralPose().getTranslation())

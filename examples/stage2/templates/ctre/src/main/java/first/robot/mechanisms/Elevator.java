@@ -166,6 +166,8 @@ public class Elevator implements Mechanism {
   public Command setVoltage(double voltage) {
     return run(coro -> {
           leader.setControl(voltageRequest.withOutput(voltage));
+
+          coro.park();
         })
         .named("Set Voltage " + voltage + "V");
   }
@@ -181,7 +183,7 @@ public class Elevator implements Mechanism {
               positionRequest.withPosition(position / Constants.PULLEY_CIRCUMFERENCE));
           table.log("Setpoint", Meters.of(position));
 
-          coro.waitUntil(() -> isAtPosition(position));
+          coro.park();
         })
         .named("Set Position " + position + "m");
   }

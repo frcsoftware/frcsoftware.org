@@ -15,8 +15,6 @@ import org.wpilib.simulation.FlywheelSim;
 
 public class ClawSim {
 
-  private final TalonFX motor;
-
   private final TalonFXSimState motorSim;
 
   private final FlywheelSim sim;
@@ -25,8 +23,6 @@ public class ClawSim {
   private final double J = 0.00001;
 
   public ClawSim(TalonFX motor) {
-    this.motor = motor;
-
     motorSim = motor.getSimState();
 
     motorSim.Orientation = ChassisReference.Clockwise_Positive;

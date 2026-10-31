@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import first.robot.Robot;
 import first.robot.simulation.ElevatorSim;
 import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
@@ -55,33 +56,27 @@ public class Elevator {
     static final double POSITION_TOLERANCE = Units.inchesToMeters(0.5);
   }
 
-  private final TalonFX leader;
-  private final TalonFX follower;
+  private final TalonFX leader = new TalonFX(Constants.LEADER_ID, Constants.BUS);
+  private final TalonFX follower = new TalonFX(Constants.FOLLOWER_ID, Constants.BUS);
 
-  private final ElevatorSim sim;
+  private final ElevatorSim sim = new ElevatorSim(leader, follower);
 
-  private final VoltageOut voltageRequest;
-  private final PositionVoltage positionRequest;
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+  private final PositionVoltage positionRequest = new PositionVoltage(0);
 
-  private final StatusSignal<Voltage> appliedVoltageSignal;
-  private final StatusSignal<Angle> positionSignal;
-  private final StatusSignal<AngularVelocity> velocitySignal;
-  private final StatusSignal<Current> leaderStatorCurrentSignal;
-  private final StatusSignal<Current> followerStatorCurrentSignal;
-  private final StatusSignal<Current> leaderSupplyCurrentSignal;
-  private final StatusSignal<Current> followerSupplyCurrentSignal;
-
-  private final BaseStatusSignal[] signals;
+  private final StatusSignal<Voltage> appliedVoltageSignal = leader.getMotorVoltage();
+  private final StatusSignal<Angle> positionSignal = leader.getPosition();
+  private final StatusSignal<AngularVelocity> velocitySignal = leader.getVelocity();
+  private final StatusSignal<Current> leaderStatorCurrentSignal = leader.getStatorCurrent();
+  private final StatusSignal<Current> followerStatorCurrentSignal = follower.getStatorCurrent();
+  private final StatusSignal<Current> leaderSupplyCurrentSignal = leader.getSupplyCurrent();
+  private final StatusSignal<Current> followerSupplyCurrentSignal = follower.getSupplyCurrent();
 
   private double setpoint = 0;
 
   private TelemetryTable table = Telemetry.getTable("Elevator");
 
   public Elevator() {
-    // Construct and configure motors
-    leader = new TalonFX(Constants.LEADER_ID, Constants.BUS);
-    follower = new TalonFX(Constants.FOLLOWER_ID, Constants.BUS);
-
     TalonFXConfiguration leaderConfiguration = new TalonFXConfiguration();
     leaderConfiguration
         .MotorOutput
@@ -113,33 +108,6 @@ public class Elevator {
     follower.getConfigurator().apply(currentLimitsConfigs);
 
     follower.setControl(new Follower(leader.getDeviceID(), Constants.FOLLOWER_ALIGNMENT));
-
-    // Set up simulation
-    sim = new ElevatorSim(leader, follower);
-
-    // Set up requests
-    voltageRequest = new VoltageOut(0);
-    positionRequest = new PositionVoltage(0);
-
-    // Set up status signals
-    appliedVoltageSignal = leader.getMotorVoltage();
-    positionSignal = leader.getPosition();
-    velocitySignal = leader.getVelocity();
-    leaderStatorCurrentSignal = leader.getStatorCurrent();
-    followerStatorCurrentSignal = follower.getStatorCurrent();
-    leaderSupplyCurrentSignal = leader.getSupplyCurrent();
-    followerSupplyCurrentSignal = follower.getSupplyCurrent();
-
-    signals =
-        new BaseStatusSignal[] {
-          appliedVoltageSignal,
-          positionSignal,
-          velocitySignal,
-          leaderStatorCurrentSignal,
-          followerStatorCurrentSignal,
-          leaderSupplyCurrentSignal,
-          followerSupplyCurrentSignal
-        };
   }
 
   public void periodic() {
@@ -148,7 +116,14 @@ public class Elevator {
       sim.periodic();
     }
 
-    BaseStatusSignal.refreshAll(signals);
+    BaseStatusSignal.refreshAll(
+        appliedVoltageSignal,
+        positionSignal,
+        velocitySignal,
+        leaderStatorCurrentSignal,
+        followerStatorCurrentSignal,
+        leaderSupplyCurrentSignal,
+        followerSupplyCurrentSignal);
 
     table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
     table.log("Position", Meters.of(getPosition()));
@@ -198,7 +173,7 @@ public class Elevator {
    * @return whether the elevator is at that position
    */
   public boolean isAtPosition(double position) {
-    return Math.abs(getPosition() - position) < Constants.POSITION_TOLERANCE;
+    return MathUtil.isNear(getPosition(), position, Constants.POSITION_TOLERANCE);
   }
 
   /**

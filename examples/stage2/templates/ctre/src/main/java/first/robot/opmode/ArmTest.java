@@ -12,14 +12,8 @@ import org.wpilib.opmode.Utility;
 
 @Utility
 public class ArmTest extends PeriodicOpMode {
-  private final Robot robot;
-
-  private final CommandXboxController controller;
-
   public ArmTest(Robot robot) {
-    this.robot = robot;
-
-    controller = new CommandXboxController(0);
+    CommandXboxController controller = new CommandXboxController(0);
 
     controller.a().onTrue(robot.superstructure.setArmPosition(0));
     controller.b().onTrue(robot.superstructure.setArmPosition(-0.5));

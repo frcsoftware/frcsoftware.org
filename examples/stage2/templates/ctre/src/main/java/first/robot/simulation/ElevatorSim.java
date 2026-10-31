@@ -12,13 +12,10 @@ import org.wpilib.math.system.DCMotor;
 
 public class ElevatorSim {
 
-  private TalonFX leader;
-  private TalonFX follower;
+  private final TalonFXSimState leaderSim;
+  private final TalonFXSimState followerSim;
 
-  private TalonFXSimState leaderSim;
-  private TalonFXSimState followerSim;
-
-  private org.wpilib.simulation.ElevatorSim sim;
+  private final org.wpilib.simulation.ElevatorSim sim;
 
   private final double GEAR_RATIO =
       (44.0 / 14.0) * (42.0 / 22.0); // Two stage, 14:44, 22:44 reductions
@@ -29,9 +26,6 @@ public class ElevatorSim {
   private final double MAX_HEIGHT = 1.347; // m
 
   public ElevatorSim(TalonFX leader, TalonFX follower) {
-    this.leader = leader;
-    this.follower = follower;
-
     leaderSim = leader.getSimState();
     followerSim = follower.getSimState();
 

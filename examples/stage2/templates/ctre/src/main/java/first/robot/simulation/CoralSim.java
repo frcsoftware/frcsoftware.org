@@ -39,24 +39,24 @@ public class CoralSim {
   private CoralState coralState = CoralState.GROUND;
   private final Timer coralIntakeTimer = new Timer();
 
-  private boolean[][] redScoredCoral = new boolean[12][3];
-  private boolean[][] blueScoredCoral = new boolean[12][3];
+  private final boolean[][] redScoredCoral = new boolean[12][3];
+  private final boolean[][] blueScoredCoral = new boolean[12][3];
 
-  private Pose3d[] groundCoralPoses =
+  private final Pose3d[] groundCoralPoses =
       new Pose3d[] {
         new Pose3d(7, 3, Units.inchesToMeters(4.5 / 2), Rotation3d.fromDegrees(0, 0, -35)),
         new Pose3d(7, -3, Units.inchesToMeters(4.5 / 2), Rotation3d.fromDegrees(0, 0, 35)),
         new Pose3d(-7, -3, Units.inchesToMeters(4.5 / 2), Rotation3d.fromDegrees(0, 0, -35)),
         new Pose3d(-7, 3, Units.inchesToMeters(4.5 / 2), Rotation3d.fromDegrees(0, 0, 35)),
       };
-  private Transform2d INTAKE_DETECTION_TRANSFORM = new Transform2d(0.6, 0, Rotation2d.ZERO);
-  private double INTAKE_TIME_THRESHOLD = 0.5;
+  private final Transform2d INTAKE_DETECTION_TRANSFORM = new Transform2d(0.6, 0, Rotation2d.ZERO);
+  private final double INTAKE_TIME_THRESHOLD = 0.5;
 
-  private Transform3d HANDOFF_DETECTION_TRANSFORM =
+  private final Transform3d HANDOFF_DETECTION_TRANSFORM =
       new Transform3d(0, 0, 0.201295, new Rotation3d());
-  private double HANDOFF_DETECTION_THRESHOLD = 0.05;
+  private final double HANDOFF_DETECTION_THRESHOLD = 0.05;
 
-  private double CORAL_SCORE_DISTANCE_THRESHOLD = 0.25;
+  private final double CORAL_SCORE_DISTANCE_THRESHOLD = 0.25;
 
   public CoralSim(
       Supplier<Pose2d> drivePoseSupplier,
@@ -221,7 +221,7 @@ public class CoralSim {
         new Pose2d(
             reefCenter,
             Rotation2d.fromDegrees(60)
-                .times(branch / 2)
+                .times(branch >> 1)
                 .plus(red ? Rotation2d.k180deg : Rotation2d.ZERO));
     var shiftedCenter =
         new Pose3d(reefCenterPointed)

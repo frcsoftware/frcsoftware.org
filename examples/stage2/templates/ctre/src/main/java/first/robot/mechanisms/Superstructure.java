@@ -13,8 +13,8 @@ import org.wpilib.telemetry.TelemetryTable;
 
 public class Superstructure implements Mechanism {
 
-  private final Elevator elevator;
-  private final Arm arm;
+  private final Elevator elevator = new Elevator();
+  private final Arm arm = new Arm();
 
   private static final double HEIGHT_MARGIN = 0.05;
   private static final double ANGLE_MARGIN = 0.005;
@@ -22,12 +22,7 @@ public class Superstructure implements Mechanism {
   private double elevatorSetpoint = 0;
   private double armSetpoint = 0;
 
-  private TelemetryTable table = Telemetry.getTable("Superstructure");
-
-  public Superstructure() {
-    this.elevator = new Elevator();
-    this.arm = new Arm();
-  }
+  private final TelemetryTable table = Telemetry.getTable("Superstructure");
 
   public void periodic() {
     elevator.periodic();

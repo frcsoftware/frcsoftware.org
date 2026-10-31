@@ -6,8 +6,6 @@
 package first.robot.simulation;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
@@ -16,7 +14,6 @@ import org.wpilib.telemetry.Telemetry;
 
 public class RobotVisualization {
 
-  private final Supplier<Pose2d> drivePoseSupplier;
   private final DoubleSupplier elevatorHeightSupplier;
   private final DoubleSupplier armAngleSupplier;
   private final DoubleSupplier intakeAngleSupplier;
@@ -30,11 +27,9 @@ public class RobotVisualization {
   private final Pose3d INTAKE_BASE_POSE = new Pose3d(0.3210, 0, 0.29837, new Rotation3d());
 
   public RobotVisualization(
-      Supplier<Pose2d> drivePoseSupplier,
       DoubleSupplier elevatorHeightSupplier,
       DoubleSupplier armAngleSupplier,
       DoubleSupplier intakeAngleSupplier) {
-    this.drivePoseSupplier = drivePoseSupplier;
     this.elevatorHeightSupplier = elevatorHeightSupplier;
     this.armAngleSupplier = armAngleSupplier;
     this.intakeAngleSupplier = intakeAngleSupplier;

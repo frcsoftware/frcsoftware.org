@@ -7,8 +7,7 @@ package first.robot.opmode;
 
 import first.robot.Poses;
 import first.robot.Robot;
-import first.robot.mechanisms.Drive;
-import first.robot.mechanisms.Intake;
+import first.robot.mechanisms.*;
 import first.robot.simulation.CoralSim;
 import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.command3.button.RobotModeTriggers;
@@ -19,19 +18,21 @@ import org.wpilib.tunable.Tunables;
 
 @Utility
 public class ElevatorArmPoseTuning extends PeriodicOpMode {
-  private final Robot robot;
+  Drive drive;
+  Superstructure superstructure;
+  Intake intake;
 
-  private final CommandXboxController controller;
-
-  private final TunableDouble elevatorPositionTunable;
-  private final TunableDouble armPositionTunable;
+  final TunableDouble elevatorPositionTunable;
+  final TunableDouble armPositionTunable;
 
   public ElevatorArmPoseTuning(Robot robot) {
-    this.robot = robot;
+    drive = robot.drive;
+    superstructure = robot.superstructure;
+    intake = robot.intake;
 
-    controller = new CommandXboxController(0);
+    CommandXboxController controller = new CommandXboxController(0);
 
-    robot.drive.setDefaultCommand(robot.drive.getDriveCommand(controller));
+    drive.setDefaultCommand(drive.getDriveCommand(controller));
 
     elevatorPositionTunable = Tunables.addDouble("Elevator Setpoint", 0);
     armPositionTunable = Tunables.addDouble("Arm Setpoint", 0);
@@ -44,7 +45,7 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
                 .run(
                     (coro) -> {
                       coro.await(
-                          robot.superstructure.setPosition(
+                          superstructure.setPosition(
                               Math.clamp(elevatorPositionTunable.get(), -0, 1.347),
                               Math.clamp(armPositionTunable.get(), -1.5, 0)));
                     })
@@ -54,16 +55,16 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
         .leftBumper()
         .whileTrue(
             new Drive.AutoAlignCommand(
-                    robot.drive, () -> robot.drive.getPose().nearest(Poses.RED_REEF_LEFT_POSES))
+                    drive, () -> drive.getPose().nearest(Poses.RED_REEF_LEFT_POSES))
                 .withRunningContinuously(true));
     controller
         .rightBumper()
         .whileTrue(
             new Drive.AutoAlignCommand(
-                    robot.drive, () -> robot.drive.getPose().nearest(Poses.RED_REEF_RIGHT_POSES))
+                    drive, () -> drive.getPose().nearest(Poses.RED_REEF_RIGHT_POSES))
                 .withRunningContinuously(true));
 
-    RobotModeTriggers.utility().onTrue(robot.intake.setState(Intake.State.INTAKING));
+    RobotModeTriggers.utility().onTrue(intake.setState(Intake.State.INTAKING));
     robot.coralSim.setState(CoralSim.CoralState.CLAW);
   }
 

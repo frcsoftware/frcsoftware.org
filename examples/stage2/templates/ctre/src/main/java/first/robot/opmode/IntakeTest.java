@@ -14,14 +14,9 @@ import org.wpilib.opmode.Utility;
 
 @Utility
 public class IntakeTest extends PeriodicOpMode {
-  private final Robot robot;
-
-  private final CommandXboxController controller;
 
   public IntakeTest(Robot robot) {
-    this.robot = robot;
-
-    controller = new CommandXboxController(0);
+    CommandXboxController controller = new CommandXboxController(0);
 
     controller
         .a()
@@ -29,8 +24,6 @@ public class IntakeTest extends PeriodicOpMode {
             Command.noRequirements(
                     coro -> {
                       coro.await(robot.intake.setRollerVoltage(12));
-                      //
-                      // coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(0)));
                       coro.await(robot.intake.setPivotPosition(Units.degreesToRotations(-3.206)));
                     })
                 .named("Deploy intake"));

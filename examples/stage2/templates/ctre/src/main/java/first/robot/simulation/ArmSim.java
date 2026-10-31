@@ -11,11 +11,8 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.SingleJointedArmSim;
-import org.wpilib.system.Notifier;
 
 public class ArmSim {
-
-  private final TalonFX motor;
 
   private final TalonFXSimState motorSim;
 
@@ -28,11 +25,7 @@ public class ArmSim {
   private final double MAX_ANGLE = 0;
   private final double MIN_ANGLE = -1.5 * Math.PI * 2;
 
-  double dt = 1.0 / 50.0 / 5.0;
-
   public ArmSim(TalonFX motor) {
-    this.motor = motor;
-
     motorSim = motor.getSimState();
 
     motorSim.Orientation = ChassisReference.Clockwise_Positive;
@@ -48,14 +41,11 @@ public class ArmSim {
             MAX_ANGLE,
             true,
             -Math.PI * 1.5);
-
-    Notifier notifier = new Notifier(this::periodic);
-    notifier.startPeriodic(dt);
   }
 
   public void periodic() {
     sim.setInputVoltage(motorSim.getMotorVoltage());
-    sim.update(dt);
+    sim.update(0.02);
 
     double motorPosition = sim.getAngle() / (Math.PI * 2) * GEAR_RATIO;
     motorSim.setRawRotorPosition(motorPosition);

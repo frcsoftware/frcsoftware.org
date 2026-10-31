@@ -24,36 +24,18 @@ import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
 public class Claw implements Mechanism {
-  private final TalonFX motor;
-  private final DigitalInput sensor;
+  private final TalonFX motor = new TalonFX(23, new CANBus(CANPort.CAN_S2));
+  private final DigitalInput sensor = new DigitalInput(1);
 
-  private final ClawSim sim;
+  private final ClawSim sim = new ClawSim(motor);
 
-  private VoltageOut voltageRequest;
+  private final VoltageOut voltageRequest = new VoltageOut(0);
 
-  private StatusSignal<Voltage> appliedVoltageSignal;
-  private StatusSignal<Current> statorCurrentSignal;
-  private StatusSignal<Current> supplyCurrentSignal;
+  private final StatusSignal<Voltage> appliedVoltageSignal = motor.getMotorVoltage();
+  private final StatusSignal<Current> statorCurrentSignal = motor.getStatorCurrent();
+  private final StatusSignal<Current> supplyCurrentSignal = motor.getSupplyCurrent();
 
-  private BaseStatusSignal[] signals;
-
-  private TelemetryTable table = Telemetry.getTable("Claw");
-
-  public Claw() {
-    motor = new TalonFX(23, new CANBus(CANPort.CAN_S2));
-    sensor = new DigitalInput(1);
-
-    sim = new ClawSim(motor);
-
-    voltageRequest = new VoltageOut(0);
-
-    appliedVoltageSignal = motor.getMotorVoltage();
-    statorCurrentSignal = motor.getStatorCurrent();
-    supplyCurrentSignal = motor.getSupplyCurrent();
-
-    signals =
-        new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
-  }
+  private final TelemetryTable table = Telemetry.getTable("Claw");
 
   public void periodic() {
     // Update simulation
@@ -61,7 +43,7 @@ public class Claw implements Mechanism {
       sim.periodic();
     }
 
-    BaseStatusSignal.refreshAll(signals);
+    BaseStatusSignal.refreshAll(appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal);
 
     table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
     table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
@@ -78,7 +60,6 @@ public class Claw implements Mechanism {
   public Command setVoltage(double voltage) {
     return run((coro) -> {
           motor.setControl(voltageRequest.withOutput(voltage));
-          appliedVoltageSignal.refresh();
           coro.park();
         })
         .named("Set Voltage: " + voltage + "V");

@@ -41,7 +41,6 @@ public class Robot extends OpModeRobot {
 
     robotVisualization =
         new RobotVisualization(
-            drive::getPose,
             superstructure::getElevatorPosition,
             superstructure::getArmPosition,
             intake::getPivotPosition);

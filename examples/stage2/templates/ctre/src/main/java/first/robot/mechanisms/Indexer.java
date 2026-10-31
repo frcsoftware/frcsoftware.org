@@ -28,23 +28,6 @@ import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
 public class Indexer implements Mechanism {
-  private final TalonFX motor;
-  private final DigitalInput sensor;
-
-  private final TalonFXSimState simState;
-
-  private final FlywheelSim sim;
-
-  private final VoltageOut voltageRequest;
-
-  private final StatusSignal<Voltage> appliedVoltageSignal;
-  private final StatusSignal<Current> statorCurrentSignal;
-  private final StatusSignal<Current> supplyCurrentSignal;
-
-  private BaseStatusSignal[] signals;
-
-  private TelemetryTable table = Telemetry.getTable("Indexer");
-
   private static class Constants {
     static final int MOTOR_ID = 35;
     static final CANBus BUS = new CANBus(CANPort.CAN_S1);
@@ -54,27 +37,27 @@ public class Indexer implements Mechanism {
     static final double J = 0.00001;
   }
 
+  private final TalonFX motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
+  private final DigitalInput sensor = new DigitalInput(0);
+
+  private final TalonFXSimState simState = motor.getSimState();
+
+  private final FlywheelSim sim =
+      new FlywheelSim(
+          Models.flywheelFromPhysicalConstants(
+              DCMotor.getKrakenX44(2), Constants.J, Constants.GEAR_RATIO),
+          DCMotor.getKrakenX44(1));
+
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+
+  private final StatusSignal<Voltage> appliedVoltageSignal = motor.getMotorVoltage();
+  private final StatusSignal<Current> statorCurrentSignal = motor.getStatorCurrent();
+  private final StatusSignal<Current> supplyCurrentSignal = motor.getSupplyCurrent();
+
+  private final TelemetryTable table = Telemetry.getTable("Indexer");
+
   public Indexer() {
-    motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
-    sensor = new DigitalInput(0);
-
-    simState = motor.getSimState();
     simState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
-
-    sim =
-        new FlywheelSim(
-            Models.flywheelFromPhysicalConstants(
-                DCMotor.getKrakenX44(2), Constants.J, Constants.GEAR_RATIO),
-            DCMotor.getKrakenX44(1));
-
-    voltageRequest = new VoltageOut(0);
-
-    appliedVoltageSignal = motor.getMotorVoltage();
-    statorCurrentSignal = motor.getStatorCurrent();
-    supplyCurrentSignal = motor.getSupplyCurrent();
-
-    signals =
-        new BaseStatusSignal[] {appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal};
   }
 
   public void periodic() {
@@ -83,7 +66,7 @@ public class Indexer implements Mechanism {
       simPeriodic();
     }
 
-    BaseStatusSignal.refreshAll(signals);
+    BaseStatusSignal.refreshAll(appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal);
 
     table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
     table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));

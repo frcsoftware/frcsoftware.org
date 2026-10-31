@@ -21,6 +21,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import first.robot.Robot;
 import first.robot.simulation.ArmSim;
 import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
@@ -51,28 +52,24 @@ public class Arm {
     static final double POSITION_TOLERANCE = Units.degreesToRotations(3);
   }
 
-  private TalonFX motor;
-  private ArmSim sim;
+  private final TalonFX motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
+  ;
+  private final ArmSim sim = new ArmSim(motor);
 
-  private VoltageOut voltageRequest;
-  private PositionVoltage positionRequest;
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+  private final PositionVoltage positionRequest = new PositionVoltage(0);
 
-  private StatusSignal<Voltage> appliedVoltageSignal;
-  private StatusSignal<Angle> positionSignal;
-  private StatusSignal<AngularVelocity> velocitySignal;
-  private StatusSignal<Current> statorCurrentSignal;
-  private StatusSignal<Current> supplyCurrentSignal;
-
-  private BaseStatusSignal[] signals;
+  private final StatusSignal<Voltage> appliedVoltageSignal = motor.getMotorVoltage();
+  private final StatusSignal<Angle> positionSignal = motor.getPosition();
+  private final StatusSignal<AngularVelocity> velocitySignal = motor.getVelocity();
+  private final StatusSignal<Current> statorCurrentSignal = motor.getStatorCurrent();
+  private final StatusSignal<Current> supplyCurrentSignal = motor.getSupplyCurrent();
 
   private double setpoint = 0;
 
-  private TelemetryTable table = Telemetry.getTable("Arm");
+  private final TelemetryTable table = Telemetry.getTable("Arm");
 
   public Arm() {
-    // Construct and configure motors
-    motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
-
     TalonFXConfiguration configuration = new TalonFXConfiguration();
     configuration.MotorOutput.withNeutralMode(NeutralModeValue.Brake)
         .withInverted(Constants.MOTOR_INVERSION);
@@ -96,38 +93,20 @@ public class Arm {
     configuration.withCurrentLimits(currentLimitsConfigs);
 
     motor.getConfigurator().apply(configuration);
-
-    // Set up simulation
-    sim = new ArmSim(motor);
-
-    // Set up requests
-    voltageRequest = new VoltageOut(0);
-    positionRequest = new PositionVoltage(0);
-
-    // Set up status signals
-    appliedVoltageSignal = motor.getMotorVoltage();
-    positionSignal = motor.getPosition();
-    velocitySignal = motor.getVelocity();
-    statorCurrentSignal = motor.getStatorCurrent();
-    supplyCurrentSignal = motor.getSupplyCurrent();
-
-    signals =
-        new BaseStatusSignal[] {
-          appliedVoltageSignal,
-          positionSignal,
-          velocitySignal,
-          statorCurrentSignal,
-          supplyCurrentSignal
-        };
   }
 
   public void periodic() {
     // Update simulation
     if (Robot.isSimulation()) {
-      //      sim.periodic();
+      sim.periodic();
     }
 
-    BaseStatusSignal.refreshAll(signals);
+    BaseStatusSignal.refreshAll(
+        appliedVoltageSignal,
+        positionSignal,
+        velocitySignal,
+        statorCurrentSignal,
+        supplyCurrentSignal);
 
     table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
     table.log("Position", Rotations.of(getPosition()));
@@ -177,7 +156,7 @@ public class Arm {
    * @return whether the arm is at that positoin
    */
   public boolean isAtPosition(double position) {
-    return Math.abs(getPosition() - position) < Constants.POSITION_TOLERANCE;
+    return MathUtil.isNear(getPosition(), position, Constants.POSITION_TOLERANCE);
   }
 
   /**

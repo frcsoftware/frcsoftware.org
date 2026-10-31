@@ -36,39 +36,6 @@ import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
 public class Intake implements Mechanism {
-  private final TalonFX pivot;
-  private final TalonFX rollers;
-
-  // Sim stuff
-  private final TalonFXSimState pivotSimState;
-  private final TalonFXSimState rollersSimState;
-
-  private final SingleJointedArmSim pivotSim;
-  private final FlywheelSim rollersSim;
-
-  private double pivotTargetPosition = 0;
-
-  private final StatusSignal<Voltage> pivotAppliedVoltageSignal;
-  private final StatusSignal<Current> pivotStatorCurrentSignal;
-  private final StatusSignal<Current> pivotSupplyCurrentSignal;
-  private final StatusSignal<Angle> pivotPositionSignal;
-  private final StatusSignal<AngularVelocity> pivotVelocitySignal;
-
-  private final StatusSignal<Voltage> rollersAppliedVoltageSignal;
-  private final StatusSignal<Current> rollersStatorCurrentSignal;
-  private final StatusSignal<Current> rollersSupplyCurrentSignal;
-  private final StatusSignal<AngularVelocity> rollersVelocitySignal;
-
-  private final BaseStatusSignal[] statusSignals;
-
-  private final VoltageOut pivotVoltageRequest = new VoltageOut(0);
-  private final PositionVoltage pivotPositionRequest = new PositionVoltage(0);
-  private final VoltageOut rollersVoltageRequest = new VoltageOut(0);
-
-  private final TelemetryTable table = Telemetry.getTable("Intake");
-  private final TelemetryTable pivotTable = table.getTable("Pivot");
-  private final TelemetryTable rollersTable = table.getTable("Rollers");
-
   private static class Constants {
     static final int PIVOT_ID = 30;
     static final int ROLLERS_ID = 31;
@@ -103,10 +70,51 @@ public class Intake implements Mechanism {
     static final double ROLLERS_J = 0.0002;
   }
 
-  public Intake() {
-    pivot = new TalonFX(Constants.PIVOT_ID, Constants.BUS);
-    rollers = new TalonFX(Constants.ROLLERS_ID, Constants.BUS);
+  private final TalonFX pivot = new TalonFX(Constants.PIVOT_ID, Constants.BUS);
+  private final TalonFX rollers = new TalonFX(Constants.ROLLERS_ID, Constants.BUS);
 
+  // Sim stuff
+  private final TalonFXSimState pivotSimState = pivot.getSimState();
+  private final TalonFXSimState rollersSimState = rollers.getSimState();
+
+  private final SingleJointedArmSim pivotSim =
+      new SingleJointedArmSim(
+          DCMotor.getKrakenX44(1),
+          Constants.PIVOT_RATIO,
+          SingleJointedArmSim.estimateMOI(Constants.PIVOT_ARM_LENGTH, Constants.PIVOT_ARM_MASS),
+          Constants.PIVOT_ARM_LENGTH,
+          Units.rotationsToRadians(Constants.PIVOT_ARM_MIN_ANGLE),
+          Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE),
+          true,
+          Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE));
+  private final FlywheelSim rollersSim =
+      new FlywheelSim(
+          Models.flywheelFromPhysicalConstants(
+              DCMotor.getKrakenX60(1), Constants.ROLLERS_J, Constants.ROLLERS_RATIO),
+          DCMotor.getKrakenX60(1));
+
+  private double pivotTargetPosition = 0;
+
+  private final StatusSignal<Voltage> pivotAppliedVoltageSignal = pivot.getMotorVoltage();
+  private final StatusSignal<Current> pivotStatorCurrentSignal = pivot.getStatorCurrent();
+  private final StatusSignal<Current> pivotSupplyCurrentSignal = pivot.getSupplyCurrent();
+  private final StatusSignal<Angle> pivotPositionSignal = pivot.getPosition();
+  private final StatusSignal<AngularVelocity> pivotVelocitySignal = pivot.getVelocity();
+
+  private final StatusSignal<Voltage> rollersAppliedVoltageSignal = rollers.getMotorVoltage();
+  private final StatusSignal<Current> rollersStatorCurrentSignal = rollers.getStatorCurrent();
+  private final StatusSignal<Current> rollersSupplyCurrentSignal = rollers.getSupplyCurrent();
+  private final StatusSignal<AngularVelocity> rollersVelocitySignal = rollers.getVelocity();
+
+  private final VoltageOut pivotVoltageRequest = new VoltageOut(0);
+  private final PositionVoltage pivotPositionRequest = new PositionVoltage(0);
+  private final VoltageOut rollersVoltageRequest = new VoltageOut(0);
+
+  private final TelemetryTable table = Telemetry.getTable("Intake");
+  private final TelemetryTable pivotTable = table.getTable("Pivot");
+  private final TelemetryTable rollersTable = table.getTable("Rollers");
+
+  public Intake() {
     TalonFXConfiguration pivotConfiguration = new TalonFXConfiguration();
     pivotConfiguration
         .MotorOutput
@@ -142,56 +150,12 @@ public class Intake implements Mechanism {
 
     rollers.getConfigurator().apply(rollersConfiguration);
 
-    // Create status signals
-
-    pivotAppliedVoltageSignal = pivot.getMotorVoltage();
-    pivotStatorCurrentSignal = pivot.getStatorCurrent();
-    pivotSupplyCurrentSignal = pivot.getSupplyCurrent();
-    pivotPositionSignal = pivot.getPosition();
-    pivotVelocitySignal = pivot.getVelocity();
-
-    rollersAppliedVoltageSignal = rollers.getMotorVoltage();
-    rollersStatorCurrentSignal = rollers.getStatorCurrent();
-    rollersSupplyCurrentSignal = rollers.getSupplyCurrent();
-    rollersVelocitySignal = rollers.getVelocity();
-
-    statusSignals =
-        new BaseStatusSignal[] {
-          pivotAppliedVoltageSignal,
-          pivotStatorCurrentSignal,
-          pivotSupplyCurrentSignal,
-          pivotPositionSignal,
-          pivotVelocitySignal,
-          rollersAppliedVoltageSignal,
-          rollersStatorCurrentSignal,
-          rollersSupplyCurrentSignal,
-          rollersVelocitySignal
-        };
-
     // Setup sim
 
-    pivotSimState = pivot.getSimState();
     pivotSimState.Orientation = ChassisReference.Clockwise_Positive;
     pivotSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
-    rollersSimState = rollers.getSimState();
+
     rollersSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-
-    pivotSim =
-        new SingleJointedArmSim(
-            DCMotor.getKrakenX44(1),
-            Constants.PIVOT_RATIO,
-            SingleJointedArmSim.estimateMOI(Constants.PIVOT_ARM_LENGTH, Constants.PIVOT_ARM_MASS),
-            Constants.PIVOT_ARM_LENGTH,
-            Units.rotationsToRadians(Constants.PIVOT_ARM_MIN_ANGLE),
-            Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE),
-            true,
-            Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE));
-
-    rollersSim =
-        new FlywheelSim(
-            Models.flywheelFromPhysicalConstants(
-                DCMotor.getKrakenX60(1), Constants.ROLLERS_J, Constants.ROLLERS_RATIO),
-            DCMotor.getKrakenX60(1));
   }
 
   public void periodic() {
@@ -200,7 +164,16 @@ public class Intake implements Mechanism {
       simPeriodic();
     }
 
-    BaseStatusSignal.refreshAll(statusSignals);
+    BaseStatusSignal.refreshAll(
+        pivotAppliedVoltageSignal,
+        pivotStatorCurrentSignal,
+        pivotSupplyCurrentSignal,
+        pivotPositionSignal,
+        pivotVelocitySignal,
+        rollersAppliedVoltageSignal,
+        rollersStatorCurrentSignal,
+        rollersSupplyCurrentSignal,
+        rollersVelocitySignal);
 
     pivotTable.log("Applied Voltage", Volts.of(getPivotAppliedVoltage()));
     pivotTable.log("Stator Current", Amps.of(pivotStatorCurrentSignal.getValueAsDouble()));

@@ -12,14 +12,9 @@ import org.wpilib.opmode.Utility;
 
 @Utility
 public class ElevatorTest extends PeriodicOpMode {
-  private final Robot robot;
-
-  private final CommandXboxController controller;
 
   public ElevatorTest(Robot robot) {
-    this.robot = robot;
-
-    controller = new CommandXboxController(0);
+    CommandXboxController controller = new CommandXboxController(0);
 
     controller.a().onTrue(robot.superstructure.setElevatorPosition(0));
     controller.b().onTrue(robot.superstructure.setElevatorPosition(1));

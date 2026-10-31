@@ -37,11 +37,18 @@ public class Superstructure implements Mechanism {
   }
 
   public Command setArmVoltage(double voltage) {
-    return run(coro -> arm.setVoltage(voltage)).named("Set Arm Voltage: " + voltage + "V");
+    return run(coro -> {
+          arm.setVoltage(voltage);
+          coro.park();
+        })
+        .named("Set Arm Voltage: " + voltage + "V");
   }
 
   public Command setArmPosition(double armPosition) {
-    return run(coro -> arm.setPosition(armPosition))
+    return run(coro -> {
+          arm.setPosition(armPosition);
+          coro.park();
+        })
         .named("Set Arm Position: " + armPosition + "rot");
   }
 

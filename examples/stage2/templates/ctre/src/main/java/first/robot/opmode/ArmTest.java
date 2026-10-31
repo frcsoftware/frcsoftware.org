@@ -21,12 +21,12 @@ public class ArmTest extends PeriodicOpMode {
 
     controller = new CommandXboxController(0);
 
-    controller.a().onTrue(robot.arm.setPosition(0));
-    controller.b().onTrue(robot.arm.setPosition(-0.5));
-    controller.x().onTrue(robot.arm.setPosition(-0.25));
-    controller.y().onTrue(robot.arm.setPosition(-0.75));
+    controller.a().onTrue(robot.superstructure.setArmPosition(0));
+    controller.b().onTrue(robot.superstructure.setArmPosition(-0.5));
+    controller.x().onTrue(robot.superstructure.setArmPosition(-0.25));
+    controller.y().onTrue(robot.superstructure.setArmPosition(-0.75));
 
-    controller.leftBumper().onTrue(robot.arm.setVoltage(-0.756));
-    controller.rightBumper().onTrue(robot.arm.setVoltage(0));
+    controller.leftBumper().onTrue(robot.superstructure.setArmVoltage(-0.756));
+    controller.rightBumper().onTrue(robot.superstructure.setArmVoltage(0));
   }
 }

@@ -174,6 +174,7 @@ public class Intake implements Mechanism {
     pivotSimState.Orientation = ChassisReference.Clockwise_Positive;
     pivotSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
     rollersSimState = rollers.getSimState();
+    rollersSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
     pivotSim =
         new SingleJointedArmSim(

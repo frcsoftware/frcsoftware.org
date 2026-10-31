@@ -21,8 +21,8 @@ public class ElevatorTest extends PeriodicOpMode {
 
     controller = new CommandXboxController(0);
 
-    controller.a().onTrue(robot.elevator.setPosition(0));
-    controller.b().onTrue(robot.elevator.setPosition(1));
-    controller.x().onTrue(robot.elevator.setPosition(0.25));
+    controller.a().onTrue(robot.superstructure.setElevatorPosition(0));
+    controller.b().onTrue(robot.superstructure.setElevatorPosition(1));
+    controller.x().onTrue(robot.superstructure.setElevatorPosition(0.25));
   }
 }

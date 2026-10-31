@@ -17,8 +17,6 @@ public class Robot extends OpModeRobot {
   public final CoralSim coralSim;
 
   public final Drive drive;
-  public final Elevator elevator;
-  public final Arm arm;
   public final Superstructure superstructure;
   public final Claw claw;
   public final Intake intake;
@@ -27,17 +25,15 @@ public class Robot extends OpModeRobot {
 
   public Robot() {
     drive = new Drive();
-    elevator = new Elevator();
-    arm = new Arm();
-    superstructure = new Superstructure(elevator, arm);
+    superstructure = new Superstructure();
     claw = new Claw();
     intake = new Intake();
     indexer = new Indexer();
     coralSim =
         new CoralSim(
             drive::getPose,
-            elevator::getPosition,
-            arm::getPosition,
+            superstructure::getElevatorPosition,
+            superstructure::getArmPosition,
             claw::getAppliedVoltage,
             intake::getPivotPosition,
             intake::getRollersAppliedVoltage,
@@ -45,21 +41,16 @@ public class Robot extends OpModeRobot {
 
     robotVisualization =
         new RobotVisualization(
-            drive::getPose, elevator::getPosition, arm::getPosition, intake::getPivotPosition);
-    //    robotVisualization = new RobotVisualization(drive::getPose, () -> 0, () -> 0, () -> 0);
-    //    robotVisualization = new RobotVisualization(drive::getPose, () -> Math.max(0,
-    // Math.sin(Timer.getTimestamp()) * 2), () -> Timer.getTimestamp()/2 * Math.PI, () ->
-    // Math.sin(Timer.getTimestamp()) * Math.PI);
-    //    robotVisualization =
-    //        new RobotVisualization(drive::getPose, elevator::getPosition, arm::getPosition, () ->
-    // 0);
+            drive::getPose,
+            superstructure::getElevatorPosition,
+            superstructure::getArmPosition,
+            intake::getPivotPosition);
   }
 
   @Override
   public void robotPeriodic() {
     drive.periodic();
-    elevator.periodic();
-    arm.periodic();
+    superstructure.periodic();
     claw.periodic();
     intake.periodic();
     indexer.periodic();

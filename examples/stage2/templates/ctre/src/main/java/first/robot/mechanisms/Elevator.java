@@ -22,15 +22,13 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import first.robot.Robot;
 import first.robot.simulation.ElevatorSim;
-import org.wpilib.command3.Command;
-import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.*;
 
-public class Elevator implements Mechanism {
+public class Elevator {
 
   private static class Constants {
     static final int LEADER_ID = 20;
@@ -156,36 +154,22 @@ public class Elevator implements Mechanism {
     table.log("Position", Meters.of(getPosition()));
     table.log("Velocity", MetersPerSecond.of(getVelocity()));
     table.log("At Setpoint", isAtSetpoint());
-    table.log("Active Commands", getRunningCommands().toString());
   }
 
   /**
    * @param voltage the voltage to apply to the motors
-   * @return a command
    */
-  public Command setVoltage(double voltage) {
-    return run(coro -> {
-          leader.setControl(voltageRequest.withOutput(voltage));
-
-          coro.park();
-        })
-        .named("Set Voltage " + voltage + "V");
+  public void setVoltage(double voltage) {
+    leader.setControl(voltageRequest.withOutput(voltage));
   }
 
   /**
    * @param position the position for the elevator to target, in meters
-   * @return a command
    */
-  public Command setPosition(double position) {
-    return run(coro -> {
-          setpoint = position;
-          leader.setControl(
-              positionRequest.withPosition(position / Constants.PULLEY_CIRCUMFERENCE));
-          table.log("Setpoint", Meters.of(position));
-
-          coro.park();
-        })
-        .named("Set Position " + position + "m");
+  public void setPosition(double position) {
+    setpoint = position;
+    leader.setControl(positionRequest.withPosition(position / Constants.PULLEY_CIRCUMFERENCE));
+    table.log("Setpoint", Meters.of(position));
   }
 
   /**

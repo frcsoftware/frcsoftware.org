@@ -59,6 +59,7 @@ public class Indexer implements Mechanism {
     sensor = new DigitalInput(0);
 
     simState = motor.getSimState();
+    simState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
 
     sim =
         new FlywheelSim(

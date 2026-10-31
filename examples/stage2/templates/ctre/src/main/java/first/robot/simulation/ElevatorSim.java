@@ -36,6 +36,8 @@ public class ElevatorSim {
     followerSim = follower.getSimState();
 
     leaderSim.Orientation = ChassisReference.Clockwise_Positive;
+    leaderSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+    followerSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
     sim =
         new org.wpilib.simulation.ElevatorSim(

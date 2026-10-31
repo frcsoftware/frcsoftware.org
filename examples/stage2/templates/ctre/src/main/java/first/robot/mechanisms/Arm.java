@@ -20,8 +20,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import first.robot.Robot;
 import first.robot.simulation.ArmSim;
-import org.wpilib.command3.Command;
-import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
@@ -31,7 +29,7 @@ import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 
-public class Arm implements Mechanism {
+public class Arm {
 
   private static class Constants {
     static final int MOTOR_ID = 22;
@@ -135,34 +133,22 @@ public class Arm implements Mechanism {
     table.log("Position", Rotations.of(getPosition()));
     table.log("Velocity", RotationsPerSecond.of(getVelocity()));
     table.log("At Setpoint", isAtSetpoint());
-    table.log("Active Commands", getRunningCommands().toString());
   }
 
   /**
    * @param voltage the voltage to apply to the motor
-   * @return a command
    */
-  public Command setVoltage(double voltage) {
-    return run(coro -> {
-          motor.setControl(voltageRequest.withOutput(voltage));
-          coro.park();
-        })
-        .named("Set Voltage " + voltage + "V");
+  public void setVoltage(double voltage) {
+    motor.setControl(voltageRequest.withOutput(voltage));
   }
 
   /**
    * @param position the position for the arm to target, in rotations
-   * @return a command
    */
-  public Command setPosition(double position) {
-    return run(coro -> {
-          setpoint = position;
-          motor.setControl(positionRequest.withPosition(position));
-          table.log("Setpoint", Rotations.of(position));
-
-          coro.park();
-        })
-        .named("Set Position " + position + "rot");
+  public void setPosition(double position) {
+    setpoint = position;
+    motor.setControl(positionRequest.withPosition(position));
+    table.log("Setpoint", Rotations.of(position));
   }
 
   /**

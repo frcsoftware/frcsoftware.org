@@ -8,6 +8,8 @@ package first.robot.mechanisms;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.math.util.MathUtil;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 public class Superstructure implements Mechanism {
 
@@ -20,9 +22,37 @@ public class Superstructure implements Mechanism {
   private double elevatorSetpoint = 0;
   private double armSetpoint = 0;
 
-  public Superstructure(Elevator elevator, Arm arm) {
-    this.elevator = elevator;
-    this.arm = arm;
+  private TelemetryTable table = Telemetry.getTable("Superstructure");
+
+  public Superstructure() {
+    this.elevator = new Elevator();
+    this.arm = new Arm();
+  }
+
+  public void periodic() {
+    elevator.periodic();
+    arm.periodic();
+
+    table.log("Active Commands", getRunningCommands().toString());
+  }
+
+  public Command setArmVoltage(double voltage) {
+    return run(coro -> arm.setVoltage(voltage)).named("Set Arm Voltage: " + voltage + "V");
+  }
+
+  public Command setArmPosition(double armPosition) {
+    return run(coro -> arm.setPosition(armPosition))
+        .named("Set Arm Position: " + armPosition + "rot");
+  }
+
+  public Command setElevatorVoltage(double voltage) {
+    return run(coro -> elevator.setVoltage(voltage))
+        .named("Set Elevator Voltage: " + voltage + "V");
+  }
+
+  public Command setElevatorPosition(double position) {
+    return run(coro -> elevator.setPosition(position))
+        .named("Set Elevator Position: " + position + "m");
   }
 
   //  public Command setPosition(double elevatorPosition, double armPosition) {
@@ -33,60 +63,59 @@ public class Superstructure implements Mechanism {
   //  }
 
   public Command setPosition(double elevatorPosition, double armPosition) {
-    return Command.requiring(arm, elevator)
-        .executing(
-            (coro) -> {
-              elevatorSetpoint = elevatorPosition;
-              armSetpoint = armPosition;
+    return run((coro) -> {
+          elevatorSetpoint = elevatorPosition;
+          armSetpoint = armPosition;
 
-              double maxHeightOfRange =
-                  CollisionProfile.minHeightBetween(arm.getPosition(), armPosition, ANGLE_MARGIN);
+          double maxHeightOfRange =
+              CollisionProfile.minHeightBetween(arm.getPosition(), armPosition, ANGLE_MARGIN);
 
-              boolean elevatorStartsLow = elevator.getPosition() < maxHeightOfRange;
-              boolean elevatorEndsLow = elevatorPosition < maxHeightOfRange;
-              boolean armMoves = MathUtil.isNear(arm.getPosition(), armPosition, 0.01);
+          boolean elevatorStartsLow = elevator.getPosition() < maxHeightOfRange;
+          boolean elevatorEndsLow = elevatorPosition < maxHeightOfRange;
+          boolean armMoves = MathUtil.isNear(arm.getPosition(), armPosition, 0.01);
 
-              if (!elevatorStartsLow && !elevatorEndsLow) {
-                // If the elevator starts and ends above the collision zone, just move the
-                // arm+elevator at once
-                coro.fork(elevator.setPosition(elevatorPosition), arm.setPosition(armPosition));
-              } else if (!elevatorStartsLow && elevatorEndsLow) {
-                // The elevator starts clear, but ends below
-                // Part 1: arm+elevator to top of safe zone
-                // Part 2: move elevator down
+          if (!elevatorStartsLow && !elevatorEndsLow) {
+            // If the elevator starts and ends above the collision zone, just move the
+            // arm+elevator at once
+            elevator.setPosition(elevatorPosition);
+            arm.setPosition(armPosition);
+          } else if (!elevatorStartsLow && elevatorEndsLow) {
+            // The elevator starts clear, but ends below
+            // Part 1: arm+elevator to top of safe zone
+            // Part 2: move elevator down
 
-                coro.fork(
-                    elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN),
-                    arm.setPosition(armPosition));
+            elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN);
+            arm.setPosition(armPosition);
 
-                coro.waitUntil(arm::isAtSetpoint);
+            coro.waitUntil(arm::isAtSetpoint);
 
-                coro.fork(elevator.setPosition(elevatorPosition));
-              } else if (elevatorStartsLow && !elevatorEndsLow) {
-                // The elevator starts low, but ends clear
-                // Part 1: move elevator up to top of safe zone
-                // Part 2: move arm+elevator to final position
+            elevator.setPosition(elevatorPosition);
+          } else if (elevatorStartsLow && !elevatorEndsLow) {
+            // The elevator starts low, but ends clear
+            // Part 1: move elevator up to top of safe zone
+            // Part 2: move arm+elevator to final position
 
-                coro.fork(elevator.setPosition(elevatorPosition));
+            elevator.setPosition(elevatorPosition);
 
-                coro.waitUntil(() -> elevator.getPosition() >= maxHeightOfRange);
+            coro.waitUntil(() -> elevator.getPosition() >= maxHeightOfRange);
 
-                coro.fork(arm.setPosition(armPosition));
-              } else {
-                // The elevator starts and ends low, so we need a fully sequenced move
-                // Part 1: move elevator up to top of safe zone
-                // Part 2: swing arm over
-                // Part 3: drop elevator to final position
+            arm.setPosition(armPosition);
+          } else {
+            // The elevator starts and ends low, so we need a fully sequenced move
+            // Part 1: move elevator up to top of safe zone
+            // Part 2: swing arm over
+            // Part 3: drop elevator to final position
 
-                coro.fork(elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN));
-                coro.waitUntil(elevator::isAtSetpoint);
+            elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN);
+            coro.waitUntil(elevator::isAtSetpoint);
 
-                coro.fork(arm.setPosition(armPosition));
-                coro.waitUntil(arm::isAtSetpoint);
+            arm.setPosition(armPosition);
+            coro.waitUntil(arm::isAtSetpoint);
 
-                coro.fork(elevator.setPosition(elevatorPosition));
-              }
-            })
+            elevator.setPosition(elevatorPosition);
+          }
+          coro.park();
+        })
         .named("Set Position");
   }
 
@@ -96,6 +125,14 @@ public class Superstructure implements Mechanism {
 
   public Command setPosition(Positions position) {
     return setPosition(position.elevatorSetpoint, position.armSetpoint);
+  }
+
+  public double getElevatorPosition() {
+    return elevator.getPosition();
+  }
+
+  public double getArmPosition() {
+    return arm.getPosition();
   }
 
   public enum Positions {

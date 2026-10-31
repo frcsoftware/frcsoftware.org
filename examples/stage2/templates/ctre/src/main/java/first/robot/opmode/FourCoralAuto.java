@@ -10,7 +10,6 @@ import first.robot.mechanisms.Superstructure;
 import first.robot.simulation.CoralSim;
 import java.util.List;
 import org.wpilib.command3.Command;
-import org.wpilib.command3.NeedsNameBuilderStage;
 import org.wpilib.command3.Trigger;
 import org.wpilib.command3.button.RobotModeTriggers;
 import org.wpilib.math.geometry.Pose2d;
@@ -41,14 +40,45 @@ public class FourCoralAuto extends PeriodicOpMode {
                               Poses.BLUE_REEF_K,
                               Poses.BLUE_REEF_L,
                               Poses.BLUE_REEF_I)) {
+                        coro.fork(
+                            new Drive.AutoAlignCommand(
+                                    robot.drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
+                                .withRunningContinuously(true));
+                        coro.waitUntil(robot.claw::hasCoral);
                         coro.await(
-                            createScoreCommand(
-                                    pose,
-                                    Superstructure.Positions.L4_PREP,
-                                    Superstructure.Positions.L4_SCORE)
-                                .named("Score J"));
+                            robot.superstructure.setPosition(Superstructure.Positions.L4_PREP));
 
-                        coro.await(createDriveTowardsCoralCommand(coralLocation));
+                        Drive.AutoAlignCommand finalAlign =
+                            new Drive.AutoAlignCommand(robot.drive, pose)
+                                .withRunningContinuously(true);
+                        coro.fork(finalAlign);
+                        coro.waitUntil(finalAlign::atPosition);
+
+                        coro.fork(
+                            robot.superstructure.setPosition(Superstructure.Positions.L4_SCORE));
+                        coro.wait(Seconds.of(0.25));
+                        coro.await(robot.claw.setVoltage(-6));
+
+                        coro.fork(
+                            new Drive.AutoAlignCommand(
+                                robot.drive,
+                                () ->
+                                    new Pose2d(
+                                        coralLocation,
+                                        robot
+                                            .drive
+                                            .getPose()
+                                            .getTranslation()
+                                            .minus(coralLocation)
+                                            .getAngle()
+                                            .get()
+                                            .plus(Rotation2d.k180deg))));
+                        coro.fork(robot.intake.setState(Intake.State.INTAKING));
+                        coro.fork(robot.indexer.setVoltage(12));
+                        coro.fork(
+                            robot.superstructure.setPosition(
+                                Superstructure.Positions.HANDOFF_PREP));
+                        coro.waitUntil(robot.indexer::hasCoral);
                       }
                     })
                 .named("4 Coral Auto"));
@@ -67,52 +97,5 @@ public class FourCoralAuto extends PeriodicOpMode {
                       coro.waitUntil(robot.claw::hasCoral);
                     })
                 .named("Handoff Coral"));
-  }
-
-  private NeedsNameBuilderStage createScoreCommand(
-      Pose2d pose, Superstructure.Positions prepPosition, Superstructure.Positions scorePosition) {
-    return Command.noRequirements(
-        (coro) -> {
-          coro.fork(
-              new Drive.AutoAlignCommand(
-                      robot.drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                  .withRunningContinuously(true));
-          coro.waitUntil(robot.claw::hasCoral);
-          coro.await(robot.superstructure.setPosition(prepPosition));
-
-          Drive.AutoAlignCommand finalAlign =
-              new Drive.AutoAlignCommand(robot.drive, pose).withRunningContinuously(true);
-          coro.fork(finalAlign);
-          coro.waitUntil(finalAlign::atPosition);
-
-          coro.fork(robot.superstructure.setPosition(scorePosition));
-          coro.wait(Seconds.of(0.25));
-          coro.await(robot.claw.setVoltage(-6));
-        });
-  }
-
-  private Command createDriveTowardsCoralCommand(Translation2d coralLocation) {
-    return Command.noRequirements(
-            coro -> {
-              coro.fork(
-                  new Drive.AutoAlignCommand(
-                      robot.drive,
-                      () ->
-                          new Pose2d(
-                              coralLocation,
-                              robot
-                                  .drive
-                                  .getPose()
-                                  .getTranslation()
-                                  .minus(coralLocation)
-                                  .getAngle()
-                                  .get()
-                                  .plus(Rotation2d.k180deg))));
-              coro.fork(robot.intake.setState(Intake.State.INTAKING));
-              coro.fork(robot.indexer.setVoltage(12));
-              coro.fork(robot.superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-              coro.waitUntil(robot.indexer::hasCoral);
-            })
-        .named("Intake Coral");
   }
 }

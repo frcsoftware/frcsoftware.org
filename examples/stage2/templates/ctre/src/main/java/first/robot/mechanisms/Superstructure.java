@@ -53,12 +53,18 @@ public class Superstructure implements Mechanism {
   }
 
   public Command setElevatorVoltage(double voltage) {
-    return run(coro -> elevator.setVoltage(voltage))
+    return run(coro -> {
+          elevator.setVoltage(voltage);
+          coro.park();
+        })
         .named("Set Elevator Voltage: " + voltage + "V");
   }
 
   public Command setElevatorPosition(double position) {
-    return run(coro -> elevator.setPosition(position))
+    return run(coro -> {
+          elevator.setPosition(position);
+          coro.park();
+        })
         .named("Set Elevator Position: " + position + "m");
   }
 

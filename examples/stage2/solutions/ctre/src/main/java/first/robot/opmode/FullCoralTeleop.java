@@ -143,9 +143,17 @@ public class FullCoralTeleop extends PeriodicOpMode {
     var rightScoreStates = List.of(scoreL2Right, scoreL3Right, scoreL4Right);
 
     for (int i = 0; i <= 2; i++) {
-      int finalI = i; // Needed as this variable is going into the lambda, and it changing later would not be good
-      stateMachine.switchFromAny(stow, handoff).to(leftScoreStates.get(i)).when(leftAlignButton.and(() -> selectedLevel == finalI +2).and(claw::hasCoral));
-      stateMachine.switchFromAny(stow, handoff).to(rightScoreStates.get(i)).when(rightAlignButton.and(() -> selectedLevel == finalI +2).and(claw::hasCoral));
+      int finalI =
+          i; // Needed as this variable is going into the lambda, and it changing later would not be
+      // good
+      stateMachine
+          .switchFromAny(stow, handoff)
+          .to(leftScoreStates.get(i))
+          .when(leftAlignButton.and(() -> selectedLevel == finalI + 2).and(claw::hasCoral));
+      stateMachine
+          .switchFromAny(stow, handoff)
+          .to(rightScoreStates.get(i))
+          .when(rightAlignButton.and(() -> selectedLevel == finalI + 2).and(claw::hasCoral));
     }
 
     stateMachine
@@ -179,7 +187,8 @@ public class FullCoralTeleop extends PeriodicOpMode {
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                  .withRunningContinuously(true),superstructure.setPosition(prepPosition));
+                  .withRunningContinuously(true),
+              superstructure.setPosition(prepPosition));
           coro.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =

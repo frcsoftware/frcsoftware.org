@@ -64,7 +64,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
                       coro.park();
                     })
                 .named("Intaking"));
-    StateMachine.State stowState =
+    StateMachine.State stow =
         stateMachine.addState(
             Command.noRequirements(
                     (coro) -> {
@@ -133,36 +133,20 @@ public class FullCoralTeleop extends PeriodicOpMode {
                     Superstructure.Positions.L4_SCORE)
                 .named("Score L4 Right"));
 
-    stateMachine.setInitialState(stowState);
+    stateMachine.setInitialState(stow);
 
-    stateMachine.switchFromAny(stowState, intaking).to(handoff).when(indexer::hasCoral);
+    stateMachine.switchFromAny(stow, intaking).to(handoff).when(indexer::hasCoral);
 
-    stowState.switchTo(intaking).when(intakeButton.and(new Trigger(indexer::hasCoral).negate()));
+    stow.switchTo(intaking).when(intakeButton.and(() -> !indexer.hasCoral()));
 
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL2Left)
-        .when(leftAlignButton.and(() -> selectedLevel == 2).and(claw::hasCoral));
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL2Right)
-        .when(rightAlignButton.and(() -> selectedLevel == 2).and(claw::hasCoral));
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL3Left)
-        .when(leftAlignButton.and(() -> selectedLevel == 3).and(claw::hasCoral));
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL3Right)
-        .when(rightAlignButton.and(() -> selectedLevel == 3).and(claw::hasCoral));
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL4Left)
-        .when(leftAlignButton.and(() -> selectedLevel == 4).and(claw::hasCoral));
-    stateMachine
-        .switchFromAny(stowState, handoff)
-        .to(scoreL4Right)
-        .when(rightAlignButton.and(() -> selectedLevel == 4).and(claw::hasCoral));
+    var leftScoreStates = List.of(scoreL2Left, scoreL3Left, scoreL4Left);
+    var rightScoreStates = List.of(scoreL2Right, scoreL3Right, scoreL4Right);
+
+    for (int i = 0; i <= 2; i++) {
+      int finalI = i; // Needed as this variable is going into the lambda, and it changing later would not be good
+      stateMachine.switchFromAny(stow, handoff).to(leftScoreStates.get(i)).when(leftAlignButton.and(() -> selectedLevel == finalI +2).and(claw::hasCoral));
+      stateMachine.switchFromAny(stow, handoff).to(rightScoreStates.get(i)).when(rightAlignButton.and(() -> selectedLevel == finalI +2).and(claw::hasCoral));
+    }
 
     stateMachine
         .switchFromAny(
@@ -173,12 +157,12 @@ public class FullCoralTeleop extends PeriodicOpMode {
     stateMachine
         .switchFromAny(
             scoreL2Left, scoreL2Right, scoreL3Left, scoreL3Right, scoreL4Left, scoreL4Right)
-        .to(stowState)
+        .to(stow)
         .when(leftAlignButton.or(rightAlignButton).negate());
 
     stateMachine
         .switchFromAny()
-        .to(stowState)
+        .to(stow)
         .when(stowButton.and(new Trigger(indexer::hasCoral).negate()));
 
     RobotModeTriggers.teleop().onTrue(stateMachine);
@@ -195,8 +179,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                  .withRunningContinuously(true));
-          coro.fork(superstructure.setPosition(prepPosition));
+                  .withRunningContinuously(true),superstructure.setPosition(prepPosition));
           coro.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =

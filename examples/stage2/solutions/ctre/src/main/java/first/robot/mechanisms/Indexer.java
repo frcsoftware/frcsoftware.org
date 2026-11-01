@@ -1,0 +1,106 @@
+/*
+ * Copyright 2026 FRCSoftware
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+package first.robot.mechanisms;
+
+import static org.wpilib.units.Units.*;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import first.robot.Robot;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Mechanism;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.hardware.discrete.DigitalInput;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.system.Models;
+import org.wpilib.math.util.Units;
+import org.wpilib.simulation.FlywheelSim;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
+import org.wpilib.units.measure.Current;
+import org.wpilib.units.measure.Voltage;
+
+public class Indexer implements Mechanism {
+  private static class Constants {
+    static final int MOTOR_ID = 35;
+    static final CANBus BUS = new CANBus(CANPort.CAN_S1);
+
+    static final double GEAR_RATIO = (48.0 / 12.0); // One stage, 48:12 reduction
+
+    static final double J = 0.00001;
+  }
+
+  private final TalonFX motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
+  private final DigitalInput sensor = new DigitalInput(0);
+
+  private final TalonFXSimState simState = motor.getSimState();
+
+  private final FlywheelSim sim =
+      new FlywheelSim(
+          Models.flywheelFromPhysicalConstants(
+              DCMotor.getKrakenX44(2), Constants.J, Constants.GEAR_RATIO),
+          DCMotor.getKrakenX44(1));
+
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+
+  private final StatusSignal<Voltage> appliedVoltageSignal = motor.getMotorVoltage();
+  private final StatusSignal<Current> statorCurrentSignal = motor.getStatorCurrent();
+  private final StatusSignal<Current> supplyCurrentSignal = motor.getSupplyCurrent();
+
+  private final TelemetryTable table = Telemetry.getTable("Indexer");
+
+  public Indexer() {
+    simState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
+  }
+
+  public void periodic() {
+    // Update simulation
+    if (Robot.isSimulation()) {
+      simPeriodic();
+    }
+
+    BaseStatusSignal.refreshAll(appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal);
+
+    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
+    table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
+    table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
+    table.log("Active Commands", getRunningCommands().toString());
+
+    table.log("Has Coral", sensor.get());
+  }
+
+  public void simPeriodic() {
+    sim.setInputVoltage(simState.getMotorVoltage());
+    sim.update(0.02);
+
+    simState.setRotorVelocity(
+        Units.radiansToRotations(sim.getAngularVelocity()) * Constants.GEAR_RATIO);
+  }
+
+  /**
+   * @param voltage the voltage to apply to the motors
+   * @return a command
+   */
+  public Command setVoltage(double voltage) {
+    return run((coro) -> {
+          motor.setControl(voltageRequest.withOutput(voltage));
+          coro.park();
+        })
+        .named("Set Voltage: " + voltage + "V");
+  }
+
+  public boolean hasCoral() {
+    return sensor.get();
+  }
+
+  public double getAppliedVoltage() {
+    return appliedVoltageSignal.getValueAsDouble();
+  }
+}

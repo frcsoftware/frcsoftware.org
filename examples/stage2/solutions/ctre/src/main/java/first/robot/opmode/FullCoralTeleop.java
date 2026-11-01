@@ -7,12 +7,14 @@ package first.robot.opmode;
 
 import static org.wpilib.units.Units.Seconds;
 
+import first.robot.FieldConstants;
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.*;
 import java.util.List;
 import org.wpilib.command3.*;
 import org.wpilib.command3.button.CommandXboxController;
+import org.wpilib.command3.button.RobotModeTriggers;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
@@ -91,42 +93,42 @@ public class FullCoralTeleop extends PeriodicOpMode {
     StateMachine.State scoreL2Left =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_LEFT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_LEFT_POSES),
                     Superstructure.Positions.L2_PREP,
                     Superstructure.Positions.L2_SCORE)
                 .named("Score L2 Left"));
     StateMachine.State scoreL2Right =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_RIGHT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_RIGHT_POSES),
                     Superstructure.Positions.L2_PREP,
                     Superstructure.Positions.L2_SCORE)
                 .named("Score L2 Right"));
     StateMachine.State scoreL3Left =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_LEFT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_LEFT_POSES),
                     Superstructure.Positions.L3_PREP,
                     Superstructure.Positions.L3_SCORE)
                 .named("Score L2 Left"));
     StateMachine.State scoreL3Right =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_RIGHT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_RIGHT_POSES),
                     Superstructure.Positions.L3_PREP,
                     Superstructure.Positions.L3_SCORE)
                 .named("Score L3 Right"));
     StateMachine.State scoreL4Left =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_LEFT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_LEFT_POSES),
                     Superstructure.Positions.L4_PREP,
                     Superstructure.Positions.L4_SCORE)
                 .named("Score L4 Left"));
     StateMachine.State scoreL4Right =
         stateMachine.addState(
             createScoreCommand(
-                    Poses.RED_REEF_RIGHT_POSES,
+                    FieldConstants.handleFlip(Poses.BLUE_REEF_RIGHT_POSES),
                     Superstructure.Positions.L4_PREP,
                     Superstructure.Positions.L4_SCORE)
                 .named("Score L4 Right"));
@@ -179,7 +181,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
         .to(stowState)
         .when(stowButton.and(new Trigger(indexer::hasCoral).negate()));
 
-    Scheduler.getDefault().schedule(stateMachine);
+    RobotModeTriggers.teleop().onTrue(stateMachine);
   }
 
   private NeedsNameBuilderStage createScoreCommand(

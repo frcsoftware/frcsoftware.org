@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 import org.wpilib.command3.*;
 import org.wpilib.command3.button.CommandXboxController;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.controller.ProfiledPIDController;
 import org.wpilib.math.geometry.Pose2d;
@@ -176,8 +178,17 @@ public class Drive implements Mechanism {
               var request = new SwerveRequest.FieldCentric();
               request.withForwardPerspective(
                   SwerveRequest.ForwardPerspectiveValue.OperatorPerspective);
-              request.withVelocityX(x);
-              request.withVelocityY(y);
+
+              // TODO: Remove when fixed
+              if (MatchState.getAlliance().isPresent()
+                  && MatchState.getAlliance().get() == Alliance.RED) {
+                request.withVelocityX(x);
+                request.withVelocityY(y);
+              } else {
+                request.withVelocityX(-x);
+                request.withVelocityY(-y);
+              }
+
               request.withRotationalRate(rotation);
               request.withDeadband(0.1 * 4.54);
 

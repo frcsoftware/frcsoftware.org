@@ -5,6 +5,7 @@
  */
 package first.robot.opmode;
 
+import first.robot.FieldConstants;
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.*;
@@ -38,11 +39,13 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
     controller
         .leftBumper()
         .whileTrue(
-            createScoreCommand(Poses.BLUE_REEF_LEFT_POSES).named("Autoalign and score (left)"));
+            createScoreCommand(FieldConstants.handleFlip(Poses.BLUE_REEF_LEFT_POSES))
+                .named("Autoalign and score (left)"));
     controller
         .rightBumper()
         .whileTrue(
-            createScoreCommand(Poses.BLUE_REEF_RIGHT_POSES).named("Autoalign and score (right)"));
+            createScoreCommand(FieldConstants.handleFlip(Poses.BLUE_REEF_RIGHT_POSES))
+                .named("Autoalign and score (right)"));
 
     controller
         .a()

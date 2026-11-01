@@ -44,3 +44,38 @@ Can you spot the error?
     ```
 
 </Aside>
+
+### Exercise 3: Extra Spice
+
+We have the following code for an arm mechanism:
+
+```java #triggerUpdatesBug
+
+```
+
+Assume that in your teleop opmode/robot class, you have the call
+`xbox.a().whileTrue(arm.subOptimalSetAngle(0.5))`.
+Also assume
+that the motor starts at a position of 0.1 rotations.
+
+You hold down the A button, and the arm doesn't move.
+You release the button and hold it down again, and the arm moves.
+Why?
+
+<Aside type="answer">
+    Triggers only update at the beginning of every robot loop cycle.
+    Before `subOptimalSetAngle` is called, the trigger `hasNotHitTarget` evaluates to `false`,
+    since `0.1`, the motor's position, is not greater than `target` (which currently has a value of 0).
+
+    When the command is run, it sets `target` to `0.5`, and immediately evaluates
+    `hasNotHitTarget.getAsBoolean()` without waiting 1 loop. Because the trigger's internal
+    value hasn't updated, the trigger still evaluates to `false`.
+    So, the while loop is skipped and the motor throttle is immediately set back to 0.
+
+    On the second press, the same problem occurs; but this time, `hasNotHitTarget`
+    is `true` since the trigger had time to update. So, the command runs normally.
+
+    To avoid this, simply add `coroutine.yield()` before the while loop. This effectively
+    waits for 1 loop cycle before starting the while loop.
+
+</Aside>

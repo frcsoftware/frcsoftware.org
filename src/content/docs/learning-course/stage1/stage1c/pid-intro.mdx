@@ -7,7 +7,7 @@ import ContentImage from '@components/ContentImage.astro';
 
 With FRC games, it's common for teams to have their robot auto align to a goal which makes scoring more efficient.
 Robots auto align by turning a certain amount of degrees towards the goal then take the steps needed to score the game piece.
-In 2026, the kitbot might auto align to the goal by turning a certain amount of degrees to the left or the right.
+In 2026, the kitbot might auto align to the goal by turning to a certain angle on the field.
 The kitbot can't turn too far to the left or too far to the right because then it might miss the goal.
 It has to turn just the right amount.
 How do teams make sure that happens?
@@ -16,24 +16,23 @@ It's with a feedback controller called PID.
 ## Feedback Controller
 
 A feedback controller uses sensors and equations to figure out what the mechanism is currently doing,
-and correct the mechanism's actions so the mechanism moves to where we want it to be.
+and controls the mechanism's output to make it do what we want it do.
 What the mechanism is currently doing, the information from the sensors, is called the **output**.
 Where we want the mechanism to be is called the **setpoint**.
 
-With kitbot's auto align, the **output** is the information from the sensor on what the robot's current angle is.
-The **setpoint** can be a target angle that points the kitbot towards the goal.
+In the case of the kitbot's auto align, the **output** is the information from the sensor on what the robot's current angle is.
+The **setpoint** is a target angle, perhaps pointing the kitbot towards the goal.
 
 <Aside type="note">
     We're able to get the kitbot's angle through Systemcore's built in IMU,
-    Inertial Measurement Unit. This is a sensor that allows the robot to
-    accurately track its 3D rotation which are roll, pitch, and yaw.
+    or Inertial Measurement Unit. This is a sensor that allows the robot to
+    accurately track its orientation in 3D space, returning this in the form of 3 angles, roll, pitch, and yaw.
 </Aside>
 
-Feedback controllers are used outside of FRC.
+Feedback controllers are also used outside of FRC.
 One example is an air conditioner.
-An air conditioner has a sensor that compares the current temperature with the temperature that
-someone entered.
-Then the air conditioner runs its mechanisms in a way which allows the air to get to the entered temperature.
+An air conditioner has a sensor that compares the current temperature with the desired temperature.
+Then the air conditioner directs the airflow in a way which allows the air to get to the desired temperature.
 
 A type of feedback controller is PID.
 This stage will use PID to help the kitbot auto align and drive towards the goal.
@@ -41,9 +40,9 @@ This stage will use PID to help the kitbot auto align and drive towards the goal
 ## PID
 
 PID is a type of feedback controller that uses three terms: proportional, integral, and derivative.
-Together the three terms are P, I and D, which is how PID gets its name.
+Together the three terms are P, I, and D, which is how PID gets its name.
 
-PID works by constantly comparing where you are to where you want to be and adjusting the terms to get to the setpoint.
+PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
 
 - Proportional (P) is what gets you close to the setpoint.
 - Integral (I) helps carefully creep the rest of the way to the setpoint.
@@ -100,7 +99,8 @@ Now the output matches up with the setpoint!
 ### Tuning PID
 
 Adjusting the three terms to get the desired output is called **tuning**.
-Tuning PID is necessary because without it, the mechanism will never perform the expected action.
+Tuning PID is necessary because every mechanism is different and behaves differently.
+Even two theoretically identical robots may require different PID constants, as they may be small mechanical differences that impact how mechanisms behave.
 
 <Aside type="tip">
     When increasing PID values start small and increase carefully. Starting with
@@ -130,8 +130,8 @@ Let's look at an example of this in action.
 In the simulation below, there is a water tank that is filling up with water.
 The water tank has a fill line to show where the water should stop, this is the setpoint.
 The graph below shows the output (labeled "actual") and the setpoint.
-To ensure that the water stops at the setpoint, PID can be used to adjust the flow.
-Tune the P, I and D values until the water stops at the water line.
+To ensure that the water stops at the setpoint, PID can be used to adjust the flow into the tank.
+Tune the P, I, and D values until the water stops at the water line.
 The graph can be used to help!
 
 <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
@@ -157,7 +157,7 @@ The graph can be used to help!
 
 ## PID and The Kitbot
 
-Similar to the graph in the water tank example, FRC teams use AdvantageScope, and it's Line Graph tab, to create graphs to help tune PID.
+Similar to the graph in the water tank example, FRC teams use AdvantageScope and its Line Graph tab to create graphs to help tune PID.
 By reading the information from a sensor, a similar graph can be made that shows the setpoint and output.
 
 <ContentFigure

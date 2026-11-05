@@ -1,0 +1,109 @@
+---
+title: FRCSoftware 学习课程
+description: 学习 FRC 编程的引导式课程
+---
+
+import CourseSection from '@components/CourseSection.astro';
+
+欢迎参加 FRCSoftware 学习课程！
+本课程旨在帮助不同技能水平的学生学习如何为 FRC 机器人编程。
+课程从学习编写 Java 开始，逐步进阶到为复杂度不断提高的机器人编程。
+我们会先以 FRC Kitbot 为例学习机器人的单个机构，再学习更复杂的机器人。
+
+FRC 软件一直在不断变化！
+如果你有反馈或建议，欢迎通过 [GitHub](https://github.com/frcsoftware/frcsoftware.org)
+或 [Discord](https://discord.com/invite/uUugPrPZFs) 与我们交流。
+
+<Aside type="tip" title="Tip（提示）">
+    强烈建议按顺序学习本课程。各个阶段经过精心设计，以循序渐进的方式培养技能。跳过某些阶段会使后续学习变得困难。
+</Aside>
+
+<CourseSection
+    title="课程准备"
+    href="/learning-course/getting-started/required-tools"
+    image="/learning-course/wpilblogo.webp"
+    imageAlt="VS Code 的截图"
+>
+    <p>
+        课程准备介绍如何下载完成本学习课程所需的工具，以及如何浏览和使用这些工具。如果你刚开始学习 FRC 编程，可以从这里入手。
+
+        - 必备工具：下载本学习课程所需的工具。
+        - VS Code 概述：进一步了解本课程使用的代码编辑器 VS Code。
+        - 派生仓库与克隆仓库：学习如何使用 Git 进行 fork（派生仓库）和 clone（克隆）。这些操作对于获取课程中使用的模板十分重要。
+
+    </p>
+
+</CourseSection>
+
+<CourseSection
+    title="阶段 0"
+    href="/learning-course/stage0/stage-overview"
+    imageAlt="课程准备"
+>
+    <p>
+        阶段 0 介绍为简单 FRC 机器人 Kitbot 编程所需的 Java
+        基础知识，其中包括：
+        <ul>
+            <li>Java基础</li>
+            <li>Operators（运算符）</li>
+            <li>Conditionals（条件语句）</li>
+            <li>Loops（循环）</li>
+            <li>Classes and Objects（类与对象）</li>
+            <li>Methods and Mutable State（方法与可变状态）</li>
+            <li>Arrays and For-Each Loops（数组与 for-each 循环）</li>
+            <li>Interfaces, Generics, and Lists（接口、泛型与列表）</li>
+        </ul>
+    </p>
+
+</CourseSection>
+
+<CourseSection
+    title="阶段 1"
+    href="/learning-course/stage1/stage-overview"
+    image="/learning-course/Kitbot.webp"
+    imageAlt="课程准备"
+>
+    <p>
+        阶段 1 将开始为 Kitbot 编程。Kitbot 是一种常用于学习 FRC 基础技能的入门机器人。
+
+        <Aside type="caution" title="Warning（警告）">阶段 1 的代码只能在 Systemcore 上运行。
+        请注意，这些代码只在 Simulation（仿真）中进行过测试，尚未在真实的 Kitbot 上测试。
+        代码可能无法按预期运行。</Aside>
+
+        <ul>
+            <li>
+                阶段 1A：使用 `Robot` 类为 Kitbot 编程，学习 FRC 编程的基础技能。
+            </li>
+            <li>
+                阶段 1B：在 1A 编写的代码中加入 Command-Based Programming（基于命令的编程）文件结构，学习如何为 FRC 机器人编程。
+            </li>
+            <li>
+                {' '}
+
+                 <Aside type="wip" title="Work in Progress（正在完善）">阶段 1C：学习如何使用 Telemetry（遥测）记录机器人数据，以及如何使用 PID controller（PID 控制器）进行基础的机器人控制。{' '}</Aside>
+            </li>
+        </ul>
+    </p>
+
+</CourseSection>
+
+<CourseSection
+    title="阶段 2"
+    href="/learning-course/stage2/stage-overview"
+    image="/learning-course/stage2/midtide.webp"
+    imageAlt="MIDTIDE 机器人"
+>
+    <p>
+        <Aside type="wip" title="Work in Progress（正在完善）">
+            阶段 2 将在阶段 1 所学内容的基础上，为复杂的
+            FRC 机器人编程：4322 Clockwork 队的 2025 年休赛期机器人 MIDTIDE。
+            学生将为
+            Elevator（升降机构）、Arm（机械臂）、Claw（夹爪）、Intake（拾取机构）和
+            Indexer（输送机构）编程，学习
+            feedforward（前馈）控制，进一步练习使用 PID controller（PID
+            控制器），开发带有自动化和驾驶员辅助功能的
+            Teleop（遥控模式），并学习如何有效组织机器人程序。
+        </Aside>
+    </p>
+
+</CourseSection>

@@ -1,0 +1,245 @@
+---
+title: Interfaces, Generics, and Lists（接口、泛型与列表）
+description: 介绍 Java 中的接口、泛型方法，以及 List 接口
+codeRegionSources:
+    sensor: stage0/snippets/src/interfaces-lists/DistanceSensor.java
+    ultrasonic: stage0/snippets/src/interfaces-lists/UltrasonicSensor.java
+    lidar: stage0/snippets/src/interfaces-lists/LidarSensor.java
+    tracker: stage0/snippets/src/interfaces-lists/RobotHistoryTracker.java
+    usage: stage0/snippets/src/interfaces-lists/InterfacesListsUsage.java
+    pair: stage0/snippets/src/interfaces-lists/Pair.java
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+在前面的课程中，我们编写了 `Point` 和 `RobotTracker` 这样的类，用来表示程序中的事物。
+本节课我们将学习 <strong>interfaces（接口）</strong>。接口用来描述一个类能做什么，而不规定具体实现方式。
+还要学习 <strong>generics（泛型）</strong>，让同一段代码可以用于不止一种类型。
+以及 <strong>List</strong> 接口，它比数组更灵活。
+
+## 为什么使用接口？
+
+假设机器人需要在 autonomous（自动模式）期间测量自己与墙壁的距离。
+某一年，队伍可能使用超声波传感器；下一年，可能换成激光测距传感器。
+两者都测量距离，但它们是不同的硬件，由不同的代码控制。
+
+如果机器人的其余代码只能配合某一个具体的传感器类工作，更换硬件就意味着重写所有使用它的代码。
+接口可以描述传感器能做什么，而不指明它具体是哪一种传感器，这样就解决了这个问题：
+
+```java {sensor}#distanceSensorInterface
+
+```
+
+接口看起来和类很像，但它的方法没有方法体，只有一个以分号结尾的 signature（方法签名）。
+它相当于是一份约定：任何 <strong>implements（实现）</strong> `DistanceSensor` 的类都必须提供 `getDistanceMeters()` 方法。
+
+下面是两个各自以不同方式实现这份约定的传感器类：
+
+```java {ultrasonic}#ultrasonicSensorClass
+
+```
+
+```java {lidar}#lidarSensorClass
+
+```
+
+这里使用 `implements` 关键字告诉 Java：`UltrasonicSensor` 和 `LidarSensor` 实现了 `DistanceSensor`。
+如果我们写了 `implements DistanceSensor`，却没有添加 `getDistanceMeters()` 方法，编译器就会报错。
+我们还使用 `@Override` 注解告诉编译器，我们正在 <strong>overriding（重写）</strong> `getDistanceMeters()` 方法。
+重写方法是改变父类或接口中已有方法行为的一种方式。
+
+<Aside type="note" title="Note（备注）">
+    真实传感器的 `getDistanceMeters()` 会从硬件读取数值。
+    这些简化版本只返回一个固定数字，这样我们就可以把注意力放在接口本身。
+</Aside>
+
+因为这两个类都实现了 `DistanceSensor`，只依赖 `DistanceSensor` 的代码就可以使用其中任意一个传感器，
+例如这个用来判断我们是否离物体太近的方法：
+
+```java {usage}#isTooClose
+
+```
+
+这里，`isTooClose` 的形参类型是 `DistanceSensor`，所以传入 `UltrasonicSensor` 还是 `LidarSensor` 都没有关系：
+
+```java {usage}#distanceSensorCall
+
+```
+
+如果队伍在下个赛季更换传感器，这个方法完全不需要修改，因为它只依赖 `DistanceSensor` 接口。
+
+## 泛型方法
+
+接口让一段代码可以用于几种相关的类型。
+泛型更进一步，让一个方法可以用于任何类型。
+下面这个方法返回数组的最后一个元素，无论数组里是什么类型：
+
+```java {usage}#genericLast
+
+```
+
+返回类型前面的 `<T>` 引入一个 <strong>type parameter（类型参数）</strong>，它是一个占位符，直到方法被调用时才确定具体类型。
+在方法内部，`T` 像真实类型一样使用：参数的类型是 `T[]`，返回类型是 `T`。
+
+我们可以用完全不同的数组类型调用 `last`，两种情况都可以正常执行：
+
+```java {usage}#genericLastCall
+
+```
+
+调用 `last(path)` 时，Java 把 `T` 填成 `Point`；调用 `last(sensors)` 时，Java 把 `T` 填成 `DistanceSensor`。
+我们不需要为每种类型单独写一个方法。
+
+类或接口也可以是泛型的。
+例如，如果想从一个方法返回两个值，可以编写一个 `Pair<A, B>` 类：
+
+```java {pair}#pairClass
+
+```
+
+这样我们就可以创建存放任意两种类型的 `Pair` 对象：
+
+```java {usage}#pairCall
+
+```
+
+## 包与导入
+
+到目前为止，我们编写的每个类都没有制定包，所以各个类之间可以直接使用，完全不需要 `import` 语句。
+不过，大多数真实项目会把许多类组织到不同目录中，
+因此我们需要一种方式，告诉 Java 去哪里找到这些类，以及它们依赖的类。
+Java Development Kit（Java 开发工具包，JDK）内置的类、WPILib 等第三方库中的类，
+以及你自己的机器人项目中的类，都被组织成 <strong>packages（包）</strong>：包就是一组相关类的命名集合。
+
+包名与类所在的目录对应，用 `.` 代替斜杠。
+`ArrayList` 位于 JDK 的 `java/util/` 目录中，所以它的包是 `java.util`，完整名称是 `java.util.ArrayList`。
+机器人代码遵循同样的规则，通常位于 `first.robot` 包中。开始本课程的阶段 1 时就会看到：
+
+{/* prettier-ignore */}
+<FileTree>
+- src/main/java
+    - first
+        - robot
+            - Robot.java
+            - subsystems
+                - Drivetrain.java
+        - Main.java
+</FileTree>
+
+包中的每个文件都在第一行声明自己属于哪个包。
+`Drivetrain.java` 位于 `first/robot/subsystems/`，所以它这样开头：
+
+{/* rli: ignore */}
+
+```java
+package first.robot.subsystems;
+```
+
+同一个包中的类可以直接互相使用。
+要使用另一个包中的类，需要在 package 声明下面写一条 `import` 语句，并写明要使用的具体类：
+
+```java {usage}#importList
+
+```
+
+这会从 `java.util` 包导入 `ArrayList` 和 `List`，接下来就会用到它们。
+课程后面，你也会用同样的方式从 WPILib 包导入类，例如 `org.wpilib.math.geometry.Translation2d`。
+
+<Aside type="note" title="为什么 `String` 不需要 import？">
+    `java.lang` 包中的类，例如 `String`、`Math` 和 `System`，会被自动导入。
+    其他类都需要显式的 `import`。
+</Aside>
+
+## `List` 接口与 `ArrayList`
+
+在[上一课](/learning-course/stage0/arrays/)中，我们使用数组把多个值存放在一起。
+数组一旦创建，大小就固定了。当你确切知道需要多少个元素时，例如一条固定的自动路径，这种方式很合适。
+但有些场景下，你事先不知道需要多少元素。例如，你想在整场比赛期间，每当机器人移动就记录一次它的位置。
+
+`List<T>` 是一个接口，和 `DistanceSensor` 一样。它描述一个可以增大和缩小的 collection（集合）。
+`ArrayList<T>` 是实现 `List<T>` 的类：
+
+```java {usage}#historyList
+
+```
+
+就像 `DistanceSensor sensor = new UltrasonicSensor();` 一样，声明的类型（`List<Point>`）是接口，而我们创建的对象（`new ArrayList<>()`）是它的一种具体实现。
+`<Point>` 告诉 Java，这个 `List` 保存的是 `Point`。`List` 本身是泛型的，和 `Pair` 一样。
+
+`List` 没有固定长度。你可以随时向它添加元素，它会自动扩容来容纳新数据：
+
+```java {usage}#historyAdd
+
+```
+
+<Aside type="caution" title="使用 `size()`，而不是 `length`">
+    `List` 的元素个数用方法 `size()` 读取，而不是数组中见过的成员变量`length`。
+</Aside>
+
+如果一开始就知道每一个元素，例如上一课里那条固定的自动路径，`List.of` 可以用一行代码创建包含这些元素的 `List`：
+
+```java {usage}#listOf
+
+```
+
+`List.of` 返回一个 `List<Point>`，但不会告诉你是哪个类实现了它。
+它返回的对象并不是 `ArrayList`。
+这里它是 `ImmutableCollections$ListN`。这是 JDK 内部的一个类，类名不需要自己输入。
+这样是可以的，因为我们只通过 `List` 接口使用它，就像 `isTooClose` 只使用 `DistanceSensor` 接口一样。
+
+### `List` 的可变性
+
+在[前面的课程](/learning-course/stage0/classes-methods/)中，我们看到有些类是 mutable（可变）的，也就是创建之后状态还可以改变，有些类则是 immutable（不可变）的。
+列表也是如此。
+因为 `List` 是接口，某个列表能不能改变，取决于实现它的是哪个类：
+
+- `ArrayList` 是 mutable（可变）的，所以可以随时添加、删除和替换元素。
+- `List.of` 创建的列表是 immutable（不可变）的。
+  它的元素在创建时就固定了，对它调用 `add` 或 `remove` 会抛出 `UnsupportedOperationException`。
+
+编译器无法区分这两者，因为它们都被声明为 `List`。
+只有程序运行、`add` 抛出异常时，才会出现这个错误。
+
+不能把 immutable（不可变）列表变成 mutable（可变）列表，但可以基于它创建一份可变副本。
+把已有的列表传给 `new ArrayList<>(...)`，就能生成一个初始元素和原列表完全一致的新 `ArrayList`：
+
+```java {usage}#copyList
+
+```
+
+`editablePath` 是和 `autoPath` 两个相互独立的对象，往 `editablePath` 里新增路径点，不会改变 `autoPath`。
+
+## 给 `RobotTracker` 增加历史记录功能
+
+[上一课](/learning-course/stage0/classes-methods/)中的 `RobotTracker` 会跟踪机器人的当前位置，但无法记录走过的轨迹。
+。现在我们借助 `List<Point>`，让它记录机器人到访过的每一个坐标，而不只是当前位置：
+
+```java {tracker}#robotHistoryTrackerClass
+
+```
+
+<Aside type="note" title="Note（备注）">
+    你也可以不创建新类，而是把这些新的成员变量和方法添加到 `RobotTracker` 类中。
+</Aside>
+
+`getHistory()` 按顺序返回 `move` 曾经移动到的每个位置组成的 `List<Point>`。
+我们可以用 for-each 循环遍历它，方式和上一课遍历数组相同：
+
+```java {usage}#forEachHistory
+
+```
+
+即使每次调用 `move` 时 `history` 的元素都会增加，for-each 循环也不需要事先知道将要访问多少个位置。它会依次访问其中的每一个位置。
+
+## 接口、泛型与列表练习
+
+<Aside type="exercise" title="Exercise（练习）">
+    ### 练习
+
+    现在，你可以直接打开 `InterfacesAndLists.java`文件开始练习！
+    按照注释提示，编写对应的代码来完成目标要求。
+
+    完成这个练习后，把修改 commit（提交）并 push（推送）到 GitHub。
+    如果需要回顾操作步骤，请查看 [Git - Uploading code（上传代码）](/learning-course/stage0/git/)。
+
+</Aside>

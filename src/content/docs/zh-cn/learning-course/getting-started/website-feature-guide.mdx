@@ -1,0 +1,87 @@
+---
+title: 网站功能指南
+description: 了解 FRCSoftware 的各项功能，以便高效浏览内容
+---
+
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+在开始学习之前，需要先了解网站中的一些功能，否则可能难以高效地完成课程。
+下面通过示例介绍这些功能，帮助你在浏览网站前快速掌握它们。
+
+## 全站功能
+
+- [链接](/learning-course/)以紫色文字显示。
+- 点击图片可将其放大，并在适用时显示说明文字。
+  按 `Esc` 键可再次缩小图片。
+- 网站提供与课程内容相关的[术语表](/resources/glossary/)。
+  术语表中的词语在网站中出现时会带有下划线。
+  将鼠标悬停在这些带下划线的词语上，即可快速查看定义（例如 PDH、SPARK MAX）。
+- 部分信息隐藏在下拉框中。
+  请尽量查看其中的大部分内容！
+
+<Aside type="hint" title="Hint（提示）">
+    问题的提示隐藏在这样的 Hint（提示）下拉框中。
+</Aside>
+
+<Aside type="answer" title="Answer（答案）">
+    问题的答案隐藏在这样的 Answer（答案）下拉框中。
+</Aside>
+
+FRCSoftware 主要介绍针对不同电机编写代码的两种方式。
+在后续阶段中，将使用标签页来区分这些差异。
+要查看基于 REV 电机的代码，请点击 REV 标签页。
+要查看基于 CTRE 电机的代码，请点击 CTRE 标签页。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">这里将显示 CTRE 代码</TabItem>
+    <TabItem label="REV">这里将显示 REV 代码</TabItem>
+</Tabs>
+
+### 提示框
+
+<Aside type="tip" title="Tip（提示）">
+    简短提示会显示在这样的 Tip（提示）框中。
+</Aside>
+
+<Aside type="note" title="Note（备注）">
+其他补充说明会显示在这样的 Note（备注）框中。
+
+</Aside>
+
+<Aside type="caution" title="Warning（警告）">
+请留意显示在这种 Warning（警告）框中的所有内容。
+
+</Aside>
+
+<Aside type="exercise" title="Exercise（练习）">
+不同概念的练习会显示在这样的 Exercise（练习）框中。
+
+</Aside>
+
+<Aside type="example" title="Example（示例）">
+不同概念的示例会显示在这样的 Example（示例）框中。
+
+</Aside>
+
+## 学习课程
+
+### 幻灯片
+
+<Slides>
+![幻灯片 1](/learning-course/getting-started/website-feature-guide/slide1.webp) 点击两侧的箭头浏览幻灯片。
+
+![幻灯片 2](/learning-course/getting-started/website-feature-guide/slide2.webp) 说明文字下方的圆点表示当前所在的幻灯片。
+也可以点击这些圆点切换幻灯片。
+
+</Slides>
+
+<Aside type="caution" title="Warning（警告）">
+你可能需要关闭广告拦截器，才能正常加载部分内容（本站不展示任何广告）。
+
+</Aside>
+
+<Aside type="tip" title="Tip（提示）">
+如果幻灯片加载出现问题，请重新加载网页，通常即可解决。
+
+</Aside>

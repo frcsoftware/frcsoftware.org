@@ -1,0 +1,25 @@
+---
+title: 派生仓库与克隆仓库
+description: 介绍如何派生并克隆用于个人工作的 GitHub 仓库
+---
+
+import ContentFigure from '@components/ContentFigure.astro';
+
+## Forking（派生仓库）
+
+开始之前，需要为相关的 repository（仓库）创建自己的 fork（派生仓库）。
+在此之前，需要先按照“必备工具”部分的说明完成准备工作。
+要创建 fork，请访问需要复制的仓库（例如 [Stage 0 Template](https://github.com/frcsoftware/Stage0-Template)），然后点击右上角的“Fork”按钮。
+这会在自己的 GitHub 账户下创建该仓库的副本，以便在不影响原仓库的情况下进行修改。
+
+<ContentFigure src="/learning-course/getting-started/forking-and-cloning/Fork.webm" />
+
+## Cloning（克隆）
+
+要 clone（克隆）刚刚创建的 repository（仓库），请打开 VS Code。
+然后复制刚刚派生的仓库 URL。
+在 VS Code 中打开左上角的 Source Control（源代码管理）侧栏，然后选择“Clone Repository”（克隆仓库）。
+粘贴派生仓库的 URL，并选择用于存放该仓库的本地目录。
+这会在计算机上创建仓库的本地副本，以便处理其中的代码。
+
+<ContentFigure src="/learning-course/getting-started/forking-and-cloning/Clone.webm" />

@@ -1,0 +1,278 @@
+---
+title: Java基础
+description: 介绍 Java 语法、变量、打印语句和注释
+codeRegionSources:
+    default: stage0/snippets/src/JavaFundamentals.java
+---
+
+欢迎来到阶段 0 的第一课！
+我们会先学习编写 Java 代码的规则，然后学习如何用变量保存信息、用打印语句显示信息，以及用注释说明代码。
+
+## Syntax（语法）
+
+<strong>Syntax（语法）</strong>是一门编程语言中所有代码都必须遵守的规则。
+可以把它理解成语法规则，就像英文句子以大写字母开头、以句号结尾一样，Java
+代码也有类似的规则，并且 Java 对这些规则要求严格，违反规则的代码完全无法运行。
+这类错误称为 <strong>syntax errors（语法错误）</strong>，也是你最常遇到的错误。
+每当本课程介绍一种新语法时，都要仔细留意。
+
+## Variables（变量）
+
+<strong>Variable（变量）</strong>是程序中有名字的容器，用来保存一条信息。
+变量可以保存温度、电机速度，或储球仓里的球数。
+
+**声明**一个变量，也就是创建它，需要五个部分：
+
+1. 数据类型
+2. 变量名
+3. 等号
+4. 变量值
+5. 分号
+
+下面逐一说明。
+
+### Data Types（数据类型）
+
+变量的 <strong>data type（数据类型）</strong>告诉 Java 这个变量保存哪种值，以及你可以对它做什么。
+与 Python 等某些编程语言不同，Java 要求每个变量都必须有类型。
+编译器会检查这些类型，所以如果你试图把 `"fast"` 存进一个 `int` 变量，代码还没运行就会报错。
+
+FRC 编程中常用的一些数据类型包括：
+
+- `int`：整数，可以是正数或负数，没有小数部分。
+  示例：`12`
+- `double`：可以带小数的正数或负数。
+  示例：`34.1`
+- `boolean`：值为 `true` 或 `false`。
+- `String`：一串字符，用双引号（`"`）括起来。
+  示例：`"Hello World"`
+
+<Aside type="note" title="Note（备注）">
+    `String` 的 S 必须大写！ `string robotName = "Plunk";` 会报错，但 `String
+    robotName = "Plunk";` 不会。
+</Aside>
+
+### 名称
+
+变量名可以包含字母、数字和下划线（`_`），但不能以数字开头。
+除此之外，变量的命名由你决定，只要它能说明这个变量保存的是什么。
+有描述性的名字会让你自己和帮助你的人更容易看懂代码。
+
+Java 代码常用两种命名风格：
+
+- <strong>Camel case（驼峰命名法）</strong>
+  ：除第一个单词外，其余每个单词的首字母大写，例如
+  `frontLeftDrive`、`currentTemperature` 和 `targetPosition`。
+  大多数变量使用驼峰命名法。
+- <strong>Upper snake case（大写下划线命名法）</strong>
+  ：每个字母都大写，单词之间用下划线分隔，例如 `BACK_LEFT_DRIVE` 和
+  `GEAR_RATIO`。 这种写法用于 <strong>constants（常量）</strong>
+  ，也就是整个程序共用的固定值，例如齿轮比。
+
+<Aside type="note" title="Case sensitivity（区分大小写）">
+    Java 是 <strong>case-sensitive（区分大小写）</strong>
+    的，所以大写字母和小写字母算作不同的字符。 `MotorID` 和 `motorID`
+    是两个不同的名字。 如果你创建了名为 `MotorID` 的变量，之后却写成
+    `motorID`，编译器就会报错。
+</Aside>
+
+给变量起名字是编程里有趣的部分之一，Java 也完全允许你把变量命名为 `bingo`。
+不过阅读你代码的队友就不会那么高兴了，因为 `bingo` 看不出这个变量保存的是什么。
+以拾取机构的电机为例，下面列出一些不合适和合适的变量名：
+
+<table class="Variable Names">
+    <thead>
+        <tr>
+            <th>不合适的变量名</th>
+            <th>合适的变量名</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                `f` 避免使用过短或只有一个字母的变量名。
+                这样的名称没有描述性，无法清楚说明变量的用途。
+            </td>
+            <td>`frontLeftMotor` 清楚说明了变量的用途，并且易于阅读。</td>
+        </tr>
+        <tr>
+            <td>`bingo` 避免使用随意的单词。这样很难知道变量的用途。</td>
+            <td>`backLeftMotor` 变量名易于阅读，并且具有描述性。</td>
+        </tr>
+        <tr>
+            <td>`motor` 机器人上有许多电机。这样无法说明这台电机的用途。</td>
+            <td>
+                `intakeMotor` 加入机构名称后，就能清楚表明这台电机属于拾取机构。
+            </td>
+        </tr>
+        <tr>
+            <td>
+                `intakeMotorForTheTopIntakeRoller`
+                描述过多，名称也太长，因此难以阅读。
+            </td>
+            <td>`intakeTopMotor` 变量名更短，但仍能清楚说明用途。</td>
+        </tr>
+    </tbody>
+</table>
+
+### 分号
+
+在 Java 中，分号（`;`）用来标记一条 <strong>statement（语句）</strong>的结束。语句就是一条指令，就像句号用来结束一个句子。
+Java 不关心 <strong>whitespace（空白）</strong>，例如空格、换行和缩进；空白多一点或少一点，并不会改变代码的作用。
+Java 用分号来区分各条语句，所以漏写分号通常会导致错误。
+
+### 合在一起
+
+下面是四个变量，每个都使用不同的数据类型：
+
+```java #variables
+
+```
+
+## Print Statements（打印语句）
+
+<Aside type="note" title="Note（备注）">
+    在 FRC
+    中，我们通常使用其他工具而不是打印语句来查看代码在做什么，本课程后面会介绍这些工具。
+    目前，打印语句是查看代码运行情况最简单的方法。
+</Aside>
+
+**打印语句**会在终端中显示信息。
+它可以把信息显示给正在运行程序的人，也可以用来检查代码在做什么，例如电机被要求以多快的速度旋转。
+Java 中的打印语句如下所示：
+
+```java #printLiteral
+
+```
+
+这会把文本 `hello!` 打印到终端。
+`"hello!"` 两侧的引号告诉 Java 把它当作文本，按原样处理。
+如果没有引号，Java 会把 `hello!` 当作代码，并且报错，因为它不是一个有效的变量名或值。
+
+<Aside type="note" title="Did you know?（你知道吗？）">
+    打印 "Hello, World!" 是人们用一门新语言编写第一个程序时的传统。 它可以追溯到
+    Bell Labs 的 Brian Kernighan 在 1972 年编写的一份教程，并在他与 Dennis
+    Ritchie 于 1978 年出版的 C 语言著作中广为人知。 下面的示例里也会出现它。
+</Aside>
+
+要打印变量的值，去掉引号，使用变量名即可：
+
+```java #printVariable
+
+```
+
+### 组合文字和值
+
+当程序打印很多信息时，给每个值加上标签会更清楚。
+可以用 `+` 运算符把一个 `String` 和一个值组合起来，这称为 **字符串拼接**：
+
+```java #stringConcatenation1
+
+```
+
+这会打印 `Left Motor Speed 1.0`。
+因为 `speed` 是 `double`，即使我们写成 `1`，打印出来也会带小数点。
+注意 `"Left Motor Speed "` 末尾的空格。
+如果没有这个空格，打印结果会是 `Left Motor Speed1.0`。
+
+也可以在一条打印语句里组合多个值。
+不运行代码的话，下面这行会打印出什么？
+
+```java #stringConcatenation2
+
+```
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    会打印 `6 12.5`。因为 `" "` 是一个 `String`，Java
+    会把它两侧的值都转成文本，再用一个空格把所有内容连在一起。
+</Aside>
+
+## Comments（注释）
+
+<strong>Comment（注释）</strong>
+是写在代码里的笔记，是写给人看的，不是写给计算机的。
+注释用来说明为什么要写这段代码，既给你的队友看，也给几周后的你自己看。
+编译器会忽略注释，因此也可以把代码变成注释，让它不再运行。
+
+Java 中的注释有两种：单行注释和多行注释。
+
+### 单行注释
+
+**单行注释**以 `//` 开头，这一行里它后面的所有内容都属于注释：
+
+```java #singleLineComment
+
+```
+
+注释也可以写在一行代码的末尾：
+
+```java #inlineComment
+
+```
+
+两个示例做的是同一件事。
+把注释放在代码前面，还是写在同一行，由你决定。
+
+### 多行注释
+
+**多行注释**以 `/*` 开始，以 `*/` 结束。两者之间的所有内容都属于注释，即使跨了好几行也一样。
+多行注释适合写较长的说明，或者把一大段代码变成注释：
+
+```java #multiLineComment
+
+```
+
+### 编写有用的注释
+
+好的注释解释代码存在的原因，而不是重复代码本身在做什么。
+这条注释是有用的，因为它说明了代码的目的：
+
+```java #goodComment
+
+```
+
+这条注释没有用，因为它只是重复了代码已经表达的内容：
+
+```java #badComment
+
+```
+
+不必为每一行代码都写注释。
+但如果某些内容可能会让别人，或者以后的你感到困惑，就留下一条注释！
+
+## 运行代码
+
+在这个阶段，你会根据每个练习中的说明编写代码。
+写完之后，需要运行代码，确认它能正常工作。
+要运行代码，点击 VS Code 右上角的三角形箭头按钮。
+
+显示出来的信息会出现在终端中，终端位于 Panel（面板）里。
+
+<ContentFigure src="/learning-course/stage0/java-fundamentals/RunCode.webm" />
+
+<Aside type="note" title="Note（备注）">
+    在后面的阶段运行机器人代码时，要使用 WPILib Command
+    Palette（命令面板），而不是运行按钮。 当你编写第一个机器人程序时，阶段 1
+    会介绍这些步骤。
+</Aside>
+
+## Java 基础练习
+
+<Aside type="caution" title="做练习前先阅读">
+    阶段 0 的练习必须在 WPILib VS Code 中打开才能运行。如果还没有安装 WPILib VS
+    Code，请按照[开发必备工具](/learning-course/getting-started/required-tools)中的说明操作。
+</Aside>
+
+<Aside type="exercise" title="Exercise（练习）">
+  ### 任务 1：准备工作
+
+如果还没有做，请先 Fork（派生仓库），再 Clone（克隆）[Stage 0 Template](https://github.com/frcsoftware/Stage0-Template)。
+
+如果需要设置 repository（仓库）方面的帮助，请阅读[派生仓库与克隆仓库指南](/learning-course/getting-started/forking-and-cloning/)。
+
+### 任务 2：练习
+
+现在可以直接打开 `Print.java`！
+按照注释编写相应代码，以完成目标。
+
+</Aside>

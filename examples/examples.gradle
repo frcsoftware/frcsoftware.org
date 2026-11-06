@@ -1,3 +1,77 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+// Each example project gets the contents of the shared/ directories listed here, so its build
+// scripts and Gradle wrapper are identical everywhere. Edit the files in shared/ and run
+// `./gradlew copySharedFiles`; `./gradlew checkSharedFiles` fails if a project is out of date.
+def sharedProjects = [
+    'stage0/solutions'                 : ['wrapper', 'stage0'],
+    'stage0/templates'                 : ['wrapper', 'stage0'],
+    'stage0/snippets'                  : ['wrapper', 'stage0'],
+    'stage1/templates/ctre'            : ['wrapper', 'stage1'],
+    'stage1/templates/rev'             : ['wrapper', 'stage1'],
+    'stage1/stage1a/solutions/ctre'    : ['wrapper', 'stage1'],
+    'stage1/stage1a/solutions/rev'     : ['wrapper', 'stage1'],
+    'stage1/stage1b/solutions/ctre'    : ['wrapper', 'stage1'],
+    'stage1/stage1b/solutions/rev'     : ['wrapper', 'stage1'],
+    'stage1/stage1b/snippets'          : ['wrapper', 'stage1'],
+]
+
+// [source path, destination path] for every shared file in every project.
+def sharedFilePairs = []
+def sharedRoot = file('shared').toPath()
+sharedProjects.each { projectDir, sharedDirs ->
+    def target = file(projectDir).toPath()
+    sharedDirs.each { sharedDir ->
+        def source = sharedRoot.resolve(sharedDir)
+        source.toFile().eachFileRecurse(groovy.io.FileType.FILES) { sourceFile ->
+            // Skip Gradle's own cache directories
+            if (source.relativize(sourceFile.toPath()).startsWith('.gradle')) return
+            def dest = target.resolve(source.relativize(sourceFile.toPath()))
+            sharedFilePairs << [sourceFile.toString(), dest.toString()]
+        }
+    }
+}
+
+gradle.rootProject { root ->
+    root.tasks.register('copySharedFiles') {
+        group = 'build setup'
+        description = 'Copies shared/ build scripts and the Gradle wrapper into every example project.'
+        def pairs = sharedFilePairs
+        doLast {
+            pairs.each { sourcePath, destPath ->
+                def source = new File(sourcePath)
+                def dest = new File(destPath)
+                if (dest.exists() && dest.bytes == source.bytes) return
+                Files.createDirectories(dest.toPath().parent)
+                Files.copy(source.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES)
+                logger.lifecycle("Updated ${dest}")
+            }
+        }
+    }
+
+    root.tasks.register('checkSharedFiles') {
+        group = 'verification'
+        description = 'Fails if any example project differs from the shared/ files.'
+        def pairs = sharedFilePairs
+        def rootPath = root.projectDir.toPath()
+        doLast {
+            def stale = pairs.findAll { sourcePath, destPath ->
+                def dest = new File(destPath)
+                !dest.exists() || dest.bytes != new File(sourcePath).bytes
+            }
+            if (stale) {
+                def list = stale.collect { '  ' + rootPath.relativize(new File(it[1]).toPath()) }.join('\n')
+                throw new GradleException("Files differ from shared/. Run './gradlew copySharedFiles'.\n${list}")
+            }
+        }
+    }
+
+    root.tasks.matching { it.name in ['build', 'clean', 'spotlessCheck', 'spotlessApply'] }.configureEach {
+        dependsOn 'copySharedFiles'
+    }
+}
+
 // Auto-discover subprojects by scanning for build.gradle files
 // Excludes build artifacts, hidden dirs, and the root itself
 ext.exampleProjectDirs = []
@@ -11,4 +85,4 @@ def scanForProjects(File dir, ArrayList<String> excluded, boolean isInitial) {
     dir.eachDir { subDir -> scanForProjects(subDir, excluded, false) }
 }
 
-scanForProjects(file(rootDir), ['build', '.gradle', 'bin', 'gradle', 'node_modules'], true)
+scanForProjects(file(rootDir), ['build', '.gradle', 'bin', 'gradle', 'node_modules', 'shared'], true)

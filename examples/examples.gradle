@@ -38,6 +38,9 @@ gradle.rootProject { root ->
         group = 'build setup'
         description = 'Copies shared/ build scripts and the Gradle wrapper into every example project.'
         def pairs = sharedFilePairs
+        mustRunAfter 'checkSharedFiles'
+        inputs.files(pairs.collect { it[0] }).withPropertyName('sharedFiles')
+        outputs.files(pairs.collect { it[1] }).withPropertyName('projectCopies')
         doLast {
             pairs.each { sourcePath, destPath ->
                 def source = new File(sourcePath)
@@ -55,6 +58,9 @@ gradle.rootProject { root ->
         description = 'Fails if any example project differs from the shared/ files.'
         def pairs = sharedFilePairs
         def rootPath = root.projectDir.toPath()
+        inputs.files(pairs.collect { it[0] }).withPropertyName('sharedFiles')
+        inputs.files(pairs.collect { it[1] }).withPropertyName('projectCopies')
+        outputs.upToDateWhen { true }
         doLast {
             def stale = pairs.findAll { sourcePath, destPath ->
                 def dest = new File(destPath)

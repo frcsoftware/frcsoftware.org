@@ -83,7 +83,7 @@ As I increases, the oscillations get bigger.
 <Aside type="note">
     In FRC, using I is **not** recommended. Instead, it's recommended to use
     another controller type called FeedForward. This will be covered in Stage 2
-    and it is not needed for 1C. I is explained in this page for the purposes of
+    and is not needed for 1C. I is explained in this page for the purposes of
     understanding PID.
 </Aside>
 
@@ -113,7 +113,7 @@ Now the output matches up with the setpoint!
 
 Adjusting the three terms to get the desired output is called **tuning**.
 Tuning PID is necessary because every mechanism is different and behaves differently.
-Even two theoretically identical robots may require different PID constants, as they may be small mechanical differences that impact how mechanisms behave.
+Even two theoretically identical robots may require different PID constants, as there may be small mechanical differences that impact how mechanisms behave.
 
 <Aside type="tip">
     When increasing PID values start small and increase carefully. Starting with
@@ -126,10 +126,10 @@ The first value that you want to tune is P.
 Increase P until the output is near the setpoint but it starts to oscillate.
 
 If the output is close to the target but just misses it, I can be increased to push it towards the set point.
-However, in FRC, this part is commonly skipped.
+In FRC, this part is commonly skipped.
 
 If there are any oscillations, D can be introduced.
-By increasing D, it can help smooth out the oscillations.
+Increasing D, can help smooth out the oscillations.
 However, make sure that it isn't increased so much that it causes jittering.
 
 Similar to the examples, graphs are used to tune PID.
@@ -139,9 +139,9 @@ the output matches the setpoint.
 ### PID Exercise
 
 In the simulation below, there is a water tank that is filling up with water.
-The water tank has a fill line to show where the water should stop, this is the setpoint.
+The water tank has a fill line to show where the water should stop. This is the setpoint.
 The graph below shows the output (labeled "actual") and the setpoint.
-To ensure that the water stops at the setpoint, PID can be used to adjust the flow into the tank.
+To ensure that the water stops at the setpoint, PID can be used to adjust the flow of water into the tank.
 Tune the P, I, and D values until the water stops at the water line.
 The graph can be used to help!
 
@@ -180,4 +180,4 @@ By reading the information from a sensor, a similar graph can be made that shows
 
 To get to tuning the kitbot's PID, the PID controllers have set up in code to control the motors.
 The rest of this section will explain
-how to add the PID libraries and how to put the information into AdvantageScope so the PID can be tuned.
+how to add the PID libraries and how to put the data into AdvantageScope so the PID can be tuned.

@@ -3,9 +3,13 @@ title: Exercise - Kitbot Rewrite, Pt. 2
 description: Rewriting the kitbot code in stage 1A to command-based
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbotPt2.java
+    checkUpDrivetrainCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/Drivetrain.java
+    checkUpDrivetrainREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/Drivetrain.java
 ---
 
 import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
 
 ### What You'll Accomplish
 
@@ -89,6 +93,26 @@ Now that we have a `Drivetrain` class, we need to set it up to be used in our ro
     The `setDefaultCommand()` call in `MyTeleop.java` will only be active while
     the MyTeleop opmode is selected. In all other circumstances, the default
     command set in the constructor (`idle()`) will apply.
+</Aside>
+
+### Check Up
+
+By now your Drivetrain mechanism should look like this and VS code should not be giving you any errors.
+
+<Aside type="answer" title="Solution">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+            ```java {checkUpDrivetrainCTRE}#CheckUpDrivetrain
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+            ```java {checkUpDrivetrainREV}#CheckUpDrivetrain
+            ```
+
+        </TabItem>
+    </Tabs>
+
 </Aside>
 
 ### Task 4: Create Auto Mode Files

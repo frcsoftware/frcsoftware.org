@@ -14,7 +14,7 @@ import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.framework.RobotBase;
 import org.wpilib.hardware.bus.CANPort;
-
+// [CheckupIntake]
 public class IntakeLauncher implements Mechanism {
   private final SparkMax motor = new SparkMax(CANPort.CAN_S0, 4, MotorType.kBrushless);
   private final SingleFlywheelSim sim = SingleFlywheelSim.forIntakeLauncher(motor);
@@ -70,3 +70,4 @@ public class IntakeLauncher implements Mechanism {
     }
   }
 }
+// [/CheckupIntake]

@@ -13,6 +13,7 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.framework.RobotBase;
 import org.wpilib.hardware.bus.CANPort;
 
+// [CheckupFeeder]
 public class Feeder implements Mechanism {
   private final TalonFX motor = new TalonFX(5, new CANBus(CANPort.CAN_S0));
   private final SingleFlywheelSim sim = SingleFlywheelSim.forFeeder(motor);
@@ -67,3 +68,4 @@ public class Feeder implements Mechanism {
     }
   }
 }
+// [/CheckupFeeder]

@@ -44,12 +44,15 @@ class SuppliersInCommandBased {
             })
             .named("Run Intake");
       }
+
       // [/runAtThrottleSupplier]
 
       // [untilModifier]
       // From the Intake class mentioned earlier
       public Command fullThrottleUntilRobotDisabled() {
-        return fullThrottle().until(() -> RobotState.isDisabled()).named("Full Throttle Until Disable");
+        return fullThrottle()
+            .until(() -> RobotState.isDisabled())
+            .named("Full Throttle Until Disable");
       }
 
       private Command fullThrottle() {

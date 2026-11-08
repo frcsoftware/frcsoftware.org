@@ -1,6 +1,7 @@
-import { readFileSync, readdirSync } from 'fs';
-import { basename, join, relative } from 'path';
+import { existsSync, readFileSync, readdirSync } from 'fs';
+import { basename, join, relative, sep } from 'path';
 import { fileURLToPath } from 'url';
+import { localeDirs } from '../src/config/locales';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const EXAMPLES_DIR = join(ROOT, 'examples');
@@ -11,7 +12,7 @@ const START_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[(\w+)\]\s*$/;
 const END_RE = /^\s*(?:\/\/|#|--|<!--|-->)?\s*\[\/(\w+)\]\s*$/;
 const CODEBLOCK_RE = /^\s*```(?:\w+)?\s*(?:\{(\w+)\}|(\S*))?#(\w+)/;
 
-const FRONTMATTER_RE = /^---\n([\s\S]*?)\n---/;
+const FRONTMATTER_RE = /^---(?:\n|\r\n)([\s\S]*?)(?:\n|\r\n)---/;
 const CODE_REGION_SOURCES_KEY_RE = /^codeRegionSources:\s*$/;
 const CODE_REGION_SOURCE_ENTRY_RE = /^\s+([\w-]+):\s*(.+?)\s*$/;
 
@@ -47,6 +48,19 @@ function parseCodeRegionSources(content: string): Map<string, string> {
 
 const referencedRegions = new Map<string, Set<string>>();
 
+function localeOf(mdxPath: string): string | undefined {
+    const segment = relative(DOCS_DIR, mdxPath).split(sep)[0];
+    return segment && localeDirs.includes(segment) ? segment : undefined;
+}
+
+// use localized code regions first, then fall back to default examples if not found
+function resolveSource(filePath: string, locale: string | undefined): string {
+    if (locale && existsSync(join(EXAMPLES_DIR, locale, filePath))) {
+        return `${locale}/${filePath}`;
+    }
+    return filePath;
+}
+
 function walkMdx(dir: string) {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const full = join(dir, entry.name);
@@ -59,6 +73,7 @@ function walkMdx(dir: string) {
         } else if (entry.name.endsWith('.mdx')) {
             const content = readFileSync(full, 'utf-8');
             const codeRegionSources = parseCodeRegionSources(content);
+            const locale = localeOf(full);
 
             for (const line of content.split('\n')) {
                 const m = line.match(CODEBLOCK_RE);
@@ -94,10 +109,11 @@ function walkMdx(dir: string) {
                     }
                 }
 
-                if (!referencedRegions.has(filePath)) {
-                    referencedRegions.set(filePath, new Set());
+                const source = resolveSource(filePath, locale);
+                if (!referencedRegions.has(source)) {
+                    referencedRegions.set(source, new Set());
                 }
-                referencedRegions.get(filePath)!.add(regionName!);
+                referencedRegions.get(source)!.add(regionName!);
             }
         }
     }

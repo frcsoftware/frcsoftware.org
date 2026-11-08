@@ -1,8 +1,6 @@
 ---
 title: Suppliers in Command-Based
 description: The basics of suppliers and their use in command-based programming
-prev: learning-course/stage1/stage1b/command-based-kitbot
-next: learning-course/stage1/stage1b/command-based-kitbot-pt2
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/SuppliersInCommandBased.java
 ---
@@ -37,10 +35,9 @@ When you run the preceding code, what happens?
    on the left is pushed.
 3. The intake does nothing.
 
-<details class="accordion">
-    <summary>Solution</summary>
+<Aside type="answer" title="Solution">
     #3: The intake does nothing.
-</details>
+</Aside>
 
 ### But Why?
 
@@ -90,7 +87,7 @@ we define `Trigger`s with that syntax:
 
 ```
 
-Notice, however, that the expression to the left of the `() ->` statement is
+Notice, however, that the expression after the `() ->` statement is
 a `boolean` instead of a `double`.
 As it turns out, the constructor for a `Trigger`
 takes a `BooleanSupplier`.

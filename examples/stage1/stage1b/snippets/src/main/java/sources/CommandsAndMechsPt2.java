@@ -30,17 +30,20 @@ class CommandsAndMechsPt2 {
           .named("Idle");
     }
   }
+
   // [/defaultCommand]
 
   // [noRequirementsCommand]
   class Robot {
     public Command justPrintHi() {
-      return Command.noRequirements(coroutine -> {
-            System.out.println("Hello World!");
-          })
+      return Command.noRequirements(
+              coroutine -> {
+                System.out.println("Hello World!");
+              })
           .named("Hello World!");
     }
   }
+
   // [/noRequirementsCommand]
 
   class CommandUsages implements Mechanism {
@@ -52,6 +55,7 @@ class CommandsAndMechsPt2 {
           })
           .named("Wait 5 Secs, Then Print Hi");
     }
+
     // [/delayCommand]
 
     // [timeoutCommand]
@@ -62,6 +66,7 @@ class CommandsAndMechsPt2 {
     public Command fullThrottle() {
       return null; // placeholder for actual command
     }
+
     // [/timeoutCommand]
 
     // [parallelCommands]

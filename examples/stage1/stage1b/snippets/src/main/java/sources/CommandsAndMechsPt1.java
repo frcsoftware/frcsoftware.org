@@ -69,6 +69,7 @@ class CommandsAndMechsPt1 implements Mechanism {
           .named("Set to Full Throttle");
     }
   }
+
   // [/fullThrottleIntake]
 
   // [runAtThrottleCommand]
@@ -82,6 +83,7 @@ class CommandsAndMechsPt1 implements Mechanism {
         })
         .named("Set Throttle to " + throttle);
   }
+
   // [/runAtThrottleCommand]
 
   // [commandAwait]
@@ -93,6 +95,7 @@ class CommandsAndMechsPt1 implements Mechanism {
         })
         .named("Set to Full Throttle & Print Hi");
   }
+
   // [/commandAwait]
 
   // [commandSequence]

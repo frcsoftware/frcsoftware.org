@@ -36,7 +36,7 @@ void main() {
     // order to perform the division and preserve the decimal part.
     double quotient2 = 5.0 / 3;
     System.out.println(quotient2);
-    
+
     // Convert `rawEncoderDegrees` to its corresponding degree amount on a scale
     // from 0 to 360, using an arithmetic operator, and store this value in a
     // variable `normalizedAngle`. Then print the value of `normalizedAngle`.

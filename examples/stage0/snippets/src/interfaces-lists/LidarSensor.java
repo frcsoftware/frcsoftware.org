@@ -6,10 +6,10 @@
 
 // [lidarSensorClass]
 class LidarSensor implements DistanceSensor {
-    @Override
-    public double getDistanceMeters() {
-        // In real life, this would actually interact with hardware
-        return 1.2;
-    }
+  @Override
+  public double getDistanceMeters() {
+    // In real life, this would actually interact with hardware
+    return 1.2;
+  }
 }
 // [/lidarSensorClass]

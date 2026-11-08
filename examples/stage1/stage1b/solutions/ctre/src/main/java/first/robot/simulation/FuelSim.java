@@ -12,9 +12,8 @@ import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.networktables.NetworkTable;
-import org.wpilib.networktables.NetworkTableInstance;
-import org.wpilib.networktables.StructArrayPublisher;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 public class FuelSim {
   private enum Mode {
@@ -23,38 +22,33 @@ public class FuelSim {
     OUTTAKE
   }
 
-  private static final double SHOT_DT = 0.1,
-      SHOT_VELOCITY_X = -2,
-      SHOT_VELOCITY_Z = 5.5,
-      SPEED_EPSILON = 20;
-  private static final Transform3d
-      FIRST_ROW_POSE = new Transform3d(-0.22, 0, 0.35, Rotation3d.ZERO),
-      SECOND_ROW_POSE = new Transform3d(-0.08, 0, 0.3, Rotation3d.ZERO),
-      THIRD_ROW_POSE = new Transform3d(0.06, 0, 0.25, Rotation3d.ZERO),
-      SHOT_ORIGIN = new Transform3d(0.2, 0, 0.5, Rotation3d.ZERO);
+  private static final double SHOT_DT = 0.1;
+  private static final double SHOT_VELOCITY_X = -2;
+  private static final double SHOT_VELOCITY_Z = 5.5;
 
-  private static final NetworkTable logTable =
-      NetworkTableInstance.getDefault().getTable("FuelSim");
-  private static final StructArrayPublisher<Pose3d>
-      row1FuelPub = logTable.getStructArrayTopic("Row1Fuel", Pose3d.struct).publish(),
-      row2FuelPub = logTable.getStructArrayTopic("Row2Fuel", Pose3d.struct).publish(),
-      row3FuelPub = logTable.getStructArrayTopic("Row3Fuel", Pose3d.struct).publish(),
-      parabolaFuelPub = logTable.getStructArrayTopic("ParabolaFuel", Pose3d.struct).publish();
+  private static final Transform3d FIRST_ROW_POSE =
+      new Transform3d(-0.22, 0, 0.35, Rotation3d.ZERO);
+  private static final Transform3d SECOND_ROW_POSE =
+      new Transform3d(-0.08, 0, 0.3, Rotation3d.ZERO);
+  private static final Transform3d THIRD_ROW_POSE = new Transform3d(0.06, 0, 0.25, Rotation3d.ZERO);
+  private static final Transform3d SHOT_ORIGIN = new Transform3d(0.2, 0, 0.5, Rotation3d.ZERO);
+
+  private static final TelemetryTable table = Telemetry.getTable("FuelSim");
   private static Mode mode = null;
   private static boolean isPaused = false;
-  private static double rowsOfFuel = 0;
+  private static double rowsOfFuel = 3;
 
   /** A supplier that fetches the velocity of the feeder. */
-  static DoubleSupplier feederSpeedSupplier = () -> 0;
+  static DoubleSupplier feederVoltsSupplier = () -> 0;
 
   /** A supplier that fetches the velocity of the intake. */
-  static DoubleSupplier intakeLauncherSpeedSupplier = () -> 0;
+  static DoubleSupplier intakeLauncherVoltsSupplier = () -> 0;
 
   /** A supplier that fetches the robot pose. */
   static Supplier<Pose2d> robotPoseSupplier = () -> Pose2d.ZERO;
 
   /** Updates the fuel sim. */
-  public static void update() {
+  public static void periodic() {
     updateMode();
     updateVisualization();
   }
@@ -85,14 +79,14 @@ public class FuelSim {
   }
 
   private static void updateMode() {
-    double intakeLauncherSpeed = intakeLauncherSpeedSupplier.getAsDouble();
-    double feederSpeed = feederSpeedSupplier.getAsDouble();
+    double intakeLauncherVolts = intakeLauncherVoltsSupplier.getAsDouble();
+    double feederVolts = feederVoltsSupplier.getAsDouble();
     isPaused = false;
-    if (intakeLauncherSpeed > SPEED_EPSILON && feederSpeed > SPEED_EPSILON) {
+    if (intakeLauncherVolts > 0 && feederVolts > 0) {
       mode = Mode.SHOOT;
-    } else if (intakeLauncherSpeed < SPEED_EPSILON && feederSpeed > SPEED_EPSILON) {
+    } else if (intakeLauncherVolts < 0 && feederVolts > 0) {
       mode = Mode.OUTTAKE;
-    } else if (intakeLauncherSpeed > SPEED_EPSILON && feederSpeed < SPEED_EPSILON) {
+    } else if (intakeLauncherVolts > 0 && feederVolts < 0) {
       mode = Mode.INTAKE;
     } else {
       isPaused = true;
@@ -102,9 +96,9 @@ public class FuelSim {
   private static void updateVisualization() {
     var robotPose = new Pose3d(robotPoseSupplier.get());
     if (mode == Mode.SHOOT && rowsOfFuel > 0 && !isPaused) {
-      parabolaFuelPub.set(basicParabola(robotPose.plus(SHOT_ORIGIN)));
+      table.log("ParabolaFuel", basicParabola(robotPose.plus(SHOT_ORIGIN)), Pose3d.struct);
     } else {
-      parabolaFuelPub.set(new Pose3d[0]);
+      table.log("ParabolaFuel", new Pose3d[0], Pose3d.struct);
     }
 
     if (!isPaused) {
@@ -112,8 +106,17 @@ public class FuelSim {
       rowsOfFuel = Math.clamp(rowsOfFuel, 0, 3);
     }
 
-    row1FuelPub.set(rowsOfFuel >= 1 ? fuelRow(robotPose.plus(FIRST_ROW_POSE)) : new Pose3d[0]);
-    row2FuelPub.set(rowsOfFuel >= 2 ? fuelRow(robotPose.plus(SECOND_ROW_POSE)) : new Pose3d[0]);
-    row3FuelPub.set(rowsOfFuel >= 3 ? fuelRow(robotPose.plus(THIRD_ROW_POSE)) : new Pose3d[0]);
+    table.log(
+        "Row1Fuel",
+        rowsOfFuel >= 1 ? fuelRow(robotPose.plus(FIRST_ROW_POSE)) : new Pose3d[0],
+        Pose3d.struct);
+    table.log(
+        "Row2Fuel",
+        rowsOfFuel >= 2 ? fuelRow(robotPose.plus(SECOND_ROW_POSE)) : new Pose3d[0],
+        Pose3d.struct);
+    table.log(
+        "Row3Fuel",
+        rowsOfFuel >= 3 ? fuelRow(robotPose.plus(THIRD_ROW_POSE)) : new Pose3d[0],
+        Pose3d.struct);
   }
 }

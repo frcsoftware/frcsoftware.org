@@ -1,8 +1,6 @@
 ---
 title: Commands & Mechanisms, Part 1
 description: The basics of defining mechanisms and writing commands
-prev: learning-course/stage1/stage1b/the-command-body
-next: learning-course/stage1/stage1b/why-mechanisms
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandsAndMechsPt1.java
 ---
@@ -25,8 +23,8 @@ in your robot class:
 ```
 
 <Aside type="note">
-    **Ignore this if you haven't used Commands V2!** Mechanisms in Commands V3
-    are identical to Subsystems in Commands V2. The difference is that you have
+    **Ignore this if you haven't used Commands v2!** Mechanisms in Commands v3
+    are identical to Subsystems in Commands v2. The difference is that you have
     to define your own `periodic()` method while calling it manually in
     `robotPeriodic()`, instead of overriding a method from `SubsystemBase`.
 </Aside>
@@ -58,7 +56,7 @@ you call `named()`:
 ```
 
 <Aside type="note">
-    **Ignore this if you haven't used Commands V2!** Unlike in Commands V2, the
+    **Ignore this if you haven't used Commands v2!** Unlike in Commands v2, the
     code inside of a `run()` method won't run repeatedly! Use while loops inside
     of the `run()` method to run code repeatedly.
 </Aside>
@@ -101,24 +99,23 @@ public Command printHiThenFullThrottle() {
 
 Calling the `fullThrottle()`
 method, as shown, doesn't spin the motor, but instead creates a `Command` object that must be run separately.
-The java
-compiler will catch this and throw a compile-time error.
+The Java compiler will catch this and throw a compile-time error.
 
 <Aside type="note">
     Can you figure out why the error message says "bind it to a trigger"?
     This is left as an exercise to the reader.
 
-    <details class="accordion">
-        <summary>JK, we'll give you the solution</summary>
+    <Aside type="answer" title="JK, we'll give you the solution">
         Remember that in the command-based overview section, we mentioned how
         `Trigger`s are the stimuli that cause actions, or commands, to run.
-    </details>
+    </Aside>
 
 </Aside>
 
 <Aside type="note">
-    Note that "forking", in this error message, means to schedule a command.
-    It's not the same as the "git fork" terminal command.
+    Note that "forking", in this error message, means to schedule a command. For
+    those who are familiar with Git command line, it's not the same as the `gh
+    repo fork` command.
 </Aside>
 
 ### Command Sequences
@@ -136,4 +133,4 @@ That means you can run multiple commands in sequence:
 
 ```
 
-[^1]: WPILib JavaDocs for [`NeedsNameBuilderStage.named()`](<https://github.wpilib.org/allwpilib/docs/2027/java/org/wpilib/command3/NeedsNameBuilderStage.html#named(java.lang.String)>)
+[^1]: WPILib JavaDocs for [`NeedsNameBuilderStage.named()`](<https://github.wpilib.org/allwpilib/docs/beta/java/wpilib.command3/org/wpilib/command3/NeedsNameBuilderStage.html#named(java.lang.String)>)

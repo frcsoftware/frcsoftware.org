@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-
 // [pairClass]
 public class Pair<A, B> {
   private final A first;

@@ -1,8 +1,6 @@
 ---
 title: Triggers and Scheduling
 description: How commands are scheduled, with and without triggers
-prev: learning-course/stage1/stage1b/commands-and-mechanisms
-next: learning-course/stage1/stage1b/commands-and-mechanisms-pt2
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/Triggers.java
 ---
@@ -16,9 +14,8 @@ We say that `Trigger`s "schedule" `Command`s.
 
 ### How triggers are defined
 
-sources/Triggers, at their core, are methods that return a boolean - true for active, and false for inactive.
-You can fetch
-a trigger's active status with the `getAsBoolean()` method:
+Triggers, at their core, are methods that return a boolean - true for active, and false for inactive.
+You can fetch a trigger's active status with the `getAsBoolean()` method:
 
 ```java #motorTooFastTrigger
 
@@ -49,8 +46,17 @@ Triggers can schedule commands in two ways:
     ```
 
 </Aside>
+<Aside type="caution">
+    In Commands V3, triggers only update *once* per loop, when `Scheduler.getDefault().run()` is called!
+    This is very different to the triggers in Commands v2.
 
-### Controller-based sources/Triggers
+    This can lead to unexpected behavior, like so:
+    ```java #triggerUpdating
+    ```
+
+</Aside>
+
+### Controller-based Triggers
 
 A common stimulus for robot behavior is the buttons on a controller.
 For instance, shooting balls

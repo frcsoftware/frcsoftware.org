@@ -51,6 +51,7 @@ class SpotTheError {
           .named("Intake");
     }
   }
+
   // [/intakeClass]
 
   void intakeClassWithDefaultCmd() {

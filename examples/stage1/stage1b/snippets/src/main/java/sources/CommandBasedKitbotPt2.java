@@ -30,6 +30,7 @@ class CommandBasedKitbotPt2 {
     @Override
     public void start() {}
   }
+
   // [/opModeSkeleton]
 
   class AutoModeExampleCode extends PeriodicOpMode {
@@ -40,6 +41,7 @@ class CommandBasedKitbotPt2 {
     public void start() {
       Scheduler.getDefault().schedule(myAutoCommand);
     }
+
     // [/startMethod]
 
     public AutoModeExampleCode(Robot robot) {
@@ -52,7 +54,8 @@ class CommandBasedKitbotPt2 {
 
       var driveCmdWithTimeout =
           // [4SecDriveCommand]
-          robot.drivetrain
+          robot
+              .drivetrain
               .arcadeDrive(forwardThrottle, rotationThrottle)
               .withTimeout(Seconds.of(4));
       // [/4SecDriveCommand]
@@ -65,7 +68,8 @@ class CommandBasedKitbotPt2 {
 
   class DriveCommandExamples implements Mechanism {
     private final OnboardIMU imu = new OnboardIMU(MountOrientation.FLAT);
-    private final DifferentialDrive differentialDrive = new DifferentialDrive(throttle -> {}, throttle -> {});
+    private final DifferentialDrive differentialDrive =
+        new DifferentialDrive(throttle -> {}, throttle -> {});
 
     Command arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle) {
       return run(coroutine -> {

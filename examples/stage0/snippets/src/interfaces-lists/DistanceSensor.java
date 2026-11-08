@@ -6,6 +6,6 @@
 
 // [distanceSensorInterface]
 interface DistanceSensor {
-    double getDistanceMeters();
+  double getDistanceMeters();
 }
 // [/distanceSensorInterface]

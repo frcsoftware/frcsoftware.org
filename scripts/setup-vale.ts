@@ -8,8 +8,9 @@ import {
 } from 'fs';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { parse } from 'yaml';
 import { pipeline } from 'stream/promises';
+import { defaultLang } from '../src/config/locales';
+import { glossaryFor, glossaryLangs } from '../src/data/loadGlossary';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 
@@ -17,12 +18,15 @@ const DICT_DIR = resolve(ROOT, '.styles/config/dictionaries');
 const DIC_PATH = resolve(DICT_DIR, 'en_US.dic');
 const AFF_PATH = resolve(DICT_DIR, 'en_US.aff');
 
-const GLOSSARY_PATH = resolve(ROOT, 'src/data/glossary.yaml');
 const ACCEPT_WORDS_PATH = resolve(ROOT, 'vale-accept-words.txt');
 const SPELLING_RULE_PATH = resolve(ROOT, 'scripts/vale-spelling-rule.yml');
 
-const VOCAB_DIR = resolve(ROOT, '.styles/config/vocabularies/Frcsoftware');
+const VOCABS_DIR = resolve(ROOT, '.styles/config/vocabularies');
 const STYLE_DIR = resolve(ROOT, '.styles/Frcsoftware');
+
+function vocabName(lang: string): string {
+    return lang === defaultLang ? 'Frcsoftware' : `Frcsoftware-${lang}`;
+}
 
 async function downloadFile(url: string, path: string) {
     const response = await fetch(url);
@@ -104,16 +108,18 @@ function loadAcceptWords(): AcceptWord[] {
     return words;
 }
 
-function loadGlossaryTerms(): AcceptWord[] {
-    const glossary = parse(readFileSync(GLOSSARY_PATH, 'utf-8')) as Record<
-        string,
-        { definition: string; caseSensitive?: boolean }
-    >;
+// A locale's prose uses its translated terms and often the English ones too, so
+// both are accepted. The lists stay per-language: translated terms in the
+// English vocabulary would be accepted in English prose.
+function loadGlossaryTerms(lang: string): AcceptWord[] {
+    const words: AcceptWord[] = [];
 
-    return Object.entries(glossary).map(([term, { caseSensitive }]) => ({
-        term,
-        caseSensitive: caseSensitive ?? false,
-    }));
+    for (const { key, term, caseSensitive } of glossaryFor(lang)) {
+        words.push({ term, caseSensitive });
+        if (term !== key) words.push({ term: key, caseSensitive });
+    }
+
+    return words;
 }
 
 // Builds Vale's Vocab accept list (`.styles/config/vocabularies/Frcsoftware/accept.txt`)
@@ -125,11 +131,14 @@ function loadGlossaryTerms(): AcceptWord[] {
 // lowercase form is itself a real English word (e.g. "CAN"), in which case
 // enforcing casing would flag ordinary prose ("can you...") as an error, so it
 // falls back to case-insensitive acceptance.
-function buildAcceptEntries(dictionaryWords: Set<string>): string[] {
+function buildAcceptEntries(
+    dictionaryWords: Set<string>,
+    lang: string,
+): string[] {
     const entries = new Set<string>();
 
     for (const { term, caseSensitive } of [
-        ...loadGlossaryTerms(),
+        ...loadGlossaryTerms(lang),
         ...loadAcceptWords(),
     ]) {
         const enforceCase =
@@ -146,13 +155,21 @@ function buildAcceptEntries(dictionaryWords: Set<string>): string[] {
 
 await ensureDictionaries();
 
-const acceptEntries = buildAcceptEntries(loadDictionaryWords());
-mkdirSync(VOCAB_DIR, { recursive: true });
-writeFileSync(
-    resolve(VOCAB_DIR, 'accept.txt'),
-    acceptEntries.join('\n') + '\n',
-);
-console.log(`Wrote ${acceptEntries.length} accepted terms to Vale vocabulary.`);
+const dictionaryWords = loadDictionaryWords();
+
+for (const lang of glossaryLangs) {
+    const acceptEntries = buildAcceptEntries(dictionaryWords, lang);
+    const vocabDir = resolve(VOCABS_DIR, vocabName(lang));
+
+    mkdirSync(vocabDir, { recursive: true });
+    writeFileSync(
+        resolve(vocabDir, 'accept.txt'),
+        acceptEntries.join('\n') + '\n',
+    );
+    console.log(
+        `Wrote ${acceptEntries.length} accepted terms to the ${vocabName(lang)} Vale vocabulary.`,
+    );
+}
 
 mkdirSync(STYLE_DIR, { recursive: true });
 copyFileSync(SPELLING_RULE_PATH, resolve(STYLE_DIR, 'Spelling.yml'));

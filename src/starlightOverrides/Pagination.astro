@@ -1,52 +1,46 @@
 ---
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 import MdiIcon from '../components/MdiIcon.astro';
-import { getPrevNextLinks } from '../config/sidebarConfig';
 
-const pathname = Astro.url.pathname;
-const { prev, next } = getPrevNextLinks(pathname);
+const { prev, next } = Astro.locals.starlightRoute.pagination;
+const t = Astro.locals.t;
+
+const prevLabel = prev?.label ?? null;
+const nextLabel = next?.label ?? null;
 ---
 
-{
-    (prev || next) && (
-        <div class="pagination-links" dir="ltr">
-            {prev && (
-                <a
-                    href={prev.href}
-                    rel="prev"
-                    class="pagination-link prev-link"
-                >
-                    <MdiIcon
-                        class="pagination-arrow"
-                        path={mdiChevronLeft}
-                        size={24}
-                    />
-                    <span>
-                        <span class="pagination-label">Previous</span>
-                        <span class="pagination-title">{prev.label}</span>
+{(prev || next) && (
+    <div class="pagination-links" dir="ltr">
+        {prev && (
+            <a href={prev.href} rel="prev" class="pagination-link prev-link">
+                <MdiIcon
+                    class="pagination-arrow"
+                    path={mdiChevronLeft}
+                    size={24}
+                />
+                <span>
+                    <span class="pagination-label">
+                        {t('page.previousLink')}
                     </span>
-                </a>
-            )}
-            {next && (
-                <a
-                    href={next.href}
-                    rel="next"
-                    class="pagination-link next-link"
-                >
-                    <span>
-                        <span class="pagination-label">Next</span>
-                        <span class="pagination-title">{next.label}</span>
-                    </span>
-                    <MdiIcon
-                        class="pagination-arrow"
-                        path={mdiChevronRight}
-                        size={24}
-                    />
-                </a>
-            )}
-        </div>
-    )
-}
+                    <span class="pagination-title">{prevLabel}</span>
+                </span>
+            </a>
+        )}
+        {next && (
+            <a href={next.href} rel="next" class="pagination-link next-link">
+                <span>
+                    <span class="pagination-label">{t('page.nextLink')}</span>
+                    <span class="pagination-title">{nextLabel}</span>
+                </span>
+                <MdiIcon
+                    class="pagination-arrow"
+                    path={mdiChevronRight}
+                    size={24}
+                />
+            </a>
+        )}
+    </div>
+)}
 
 <style>
     .pagination-links {

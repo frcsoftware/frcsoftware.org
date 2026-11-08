@@ -300,99 +300,101 @@ const slidesDataForClient = processedImages.map((slide) => ({
     attrs: slide.attrs,
 }));
 const slidesData = JSON.stringify(slidesDataForClient);
-const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
+const t = Astro.locals.t;
 ---
 
 <div
     class="slides-component"
     data-slides={slidesData}
-    data-slide-id={slideId}
     style={`--slides-scale: ${scalePercent};`}
 >
     <div class="slides-main">
         <div class="slides-container">
             <div class="slides-wrapper">
-                {
-                    processedImages.map((slide, index) => (
-                        <div
-                            class={`slide ${index === 0 ? 'active' : ''}`}
-                            data-index={index}
-                        >
-                            <div class="slide-media loading">
-                                <div class="slide-loader">
-                                    <div class="spinner" />
-                                </div>
-                                {slide.type === 'youtube' ? (
-                                    <div class="youtube-wrapper">
-                                        <iframe
-                                            src={slide.url}
-                                            allowfullscreen
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                ) : slide.type === 'video' ? (
-                                    <video controls>
-                                        <source
-                                            src={slide.url}
-                                            type={`video/${slide.url.split('.').pop()}`}
-                                        />
-                                    </video>
-                                ) : slide.optimizedImage ? (
-                                    <Image
-                                        src={slide.optimizedImage}
-                                        alt={slide.alt}
-                                        loading="lazy"
-                                        class="slide-img"
-                                    />
-                                ) : (
-                                    <img
-                                        src={slide.url}
-                                        alt={slide.alt}
-                                        loading="lazy"
-                                    />
-                                )}
+                {processedImages.map((slide, index) => (
+                    <div
+                        class={`slide ${index === 0 ? 'active' : ''}`}
+                        data-index={index}
+                    >
+                        <div class="slide-media loading">
+                            <div class="slide-loader">
+                                <div class="spinner" />
                             </div>
+                            {slide.type === 'youtube' ? (
+                                <div class="youtube-wrapper">
+                                    <iframe
+                                        src={slide.url}
+                                        allowfullscreen
+                                        loading="lazy"
+                                    />
+                                </div>
+                            ) : slide.type === 'video' ? (
+                                <video controls>
+                                    <source
+                                        src={slide.url}
+                                        type={`video/${slide.url.split('.').pop()}`}
+                                    />
+                                </video>
+                            ) : slide.optimizedImage ? (
+                                <Image
+                                    src={slide.optimizedImage}
+                                    alt={slide.alt}
+                                    loading="lazy"
+                                    class="slide-img"
+                                />
+                            ) : (
+                                <img
+                                    src={slide.url}
+                                    alt={slide.alt}
+                                    loading="lazy"
+                                />
+                            )}
                         </div>
-                    ))
-                }
+                    </div>
+                ))}
             </div>
 
-            <button class="slides-nav slides-prev" aria-label="Previous slide">
+            <button
+                class="slides-nav slides-prev"
+                aria-label={t('slides.previous')}
+            >
                 <MdiIcon path={mdiChevronLeft} size={24} />
             </button>
 
-            <button class="slides-nav slides-next" aria-label="Next slide">
+            <button
+                class="slides-nav slides-next"
+                aria-label={t('slides.next')}
+            >
                 <MdiIcon path={mdiChevronRight} size={24} />
             </button>
         </div>
 
         <div class="slides-caption-container">
-            {
-                processedImages.map((slide, index) => (
-                    <p
-                        class={`slides-caption ${index === 0 ? 'active' : ''}`}
-                        data-caption-index={index}
-                        set:html={slide.caption || '&nbsp;'}
-                    />
-                ))
-            }
+            {processedImages.map((slide, index) => (
+                <p
+                    class={`slides-caption ${index === 0 ? 'active' : ''}`}
+                    data-caption-index={index}
+                    set:html={slide.caption || '&nbsp;'}
+                />
+            ))}
         </div>
 
         <div class="slides-dots">
-            {
-                processedImages.map((_, index) => (
-                    <button
-                        class={`dot ${index === 0 ? 'active' : ''}`}
-                        data-index={index}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))
-            }
+            {processedImages.map((_, index) => (
+                <button
+                    class={`dot ${index === 0 ? 'active' : ''}`}
+                    data-index={index}
+                    aria-label={t('slides.goTo').replace(
+                        '{number}',
+                        String(index + 1),
+                    )}
+                />
+            ))}
         </div>
     </div>
 
     <div class="lightbox" aria-hidden="true">
-        <button class="lightbox-close" aria-label="Close lightbox">
+        <button class="lightbox-close" aria-label={t('slides.closeLightbox')}>
             <MdiIcon path={mdiClose} size={24} />
         </button>
 
@@ -400,7 +402,7 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
             <div class="lightbox-media-container">
                 <button
                     class="lightbox-nav lightbox-prev"
-                    aria-label="Previous slide"
+                    aria-label={t('slides.previous')}
                 >
                     <MdiIcon path={mdiChevronLeft} size={24} />
                 </button>
@@ -409,34 +411,33 @@ const slideId = `slides-${Math.random().toString(36).substring(2, 11)}`;
 
                 <button
                     class="lightbox-nav lightbox-next"
-                    aria-label="Next slide"
+                    aria-label={t('slides.next')}
                 >
                     <MdiIcon path={mdiChevronRight} size={24} />
                 </button>
             </div>
 
             <div class="lightbox-caption-container">
-                {
-                    processedImages.map((slide, index) => (
-                        <p
-                            class={`lightbox-caption ${index === 0 ? 'active' : ''}`}
-                            data-lightbox-caption-index={index}
-                            set:html={slide.caption || '&nbsp;'}
-                        />
-                    ))
-                }
+                {processedImages.map((slide, index) => (
+                    <p
+                        class={`lightbox-caption ${index === 0 ? 'active' : ''}`}
+                        data-lightbox-caption-index={index}
+                        set:html={slide.caption || '&nbsp;'}
+                    />
+                ))}
             </div>
 
             <div class="lightbox-dots">
-                {
-                    processedImages.map((_, index) => (
-                        <button
-                            class={`dot ${index === 0 ? 'active' : ''}`}
-                            data-index={index}
-                            aria-label={`Go to slide ${index + 1}`}
-                        />
-                    ))
-                }
+                {processedImages.map((_, index) => (
+                    <button
+                        class={`dot ${index === 0 ? 'active' : ''}`}
+                        data-index={index}
+                        aria-label={t('slides.goTo').replace(
+                            '{number}',
+                            String(index + 1),
+                        )}
+                    />
+                ))}
             </div>
         </div>
     </div>

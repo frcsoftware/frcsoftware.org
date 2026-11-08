@@ -22,28 +22,30 @@ class CommandBody {
     }
     // [/triangleLoop]
 
-    var exampleCommand = Command.noRequirements(coroutine -> {
-          var motor = new ExampleMotor();
-          var differentialDrive = new DifferentialDrive(throttle -> {}, throttle -> {});
+    var exampleCommand =
+        Command.noRequirements(
+                coroutine -> {
+                  var motor = new ExampleMotor();
+                  var differentialDrive = new DifferentialDrive(throttle -> {}, throttle -> {});
 
-          // [rotate90CommandBody]
-          double targetDirection = getCurrentYaw() + 90;
-          while (getCurrentYaw() < targetDirection) {
-            differentialDrive.arcadeDrive(0, 0.5);
-            coroutine.yield();
-          }
-          differentialDrive.arcadeDrive(0, 0);
-          // [/rotate90CommandBody]
+                  // [rotate90CommandBody]
+                  double targetDirection = getCurrentYaw() + 90;
+                  while (getCurrentYaw() < targetDirection) {
+                    differentialDrive.arcadeDrive(0, 0.5);
+                    coroutine.yield();
+                  }
+                  differentialDrive.arcadeDrive(0, 0);
+                  // [/rotate90CommandBody]
 
-          // [fullThrottleCmdBody]
-          System.out.println("Full Speed Baby!");
-          while (true) {
-            motor.setThrottle(1.0);
-            coroutine.yield(); // Confused? We'll explain this in the section below
-          }
-          // [/fullThrottleCmdBody]
-        })
-        .named("Example!");
+                  // [fullThrottleCmdBody]
+                  System.out.println("Full Speed Baby!");
+                  while (true) {
+                    motor.setThrottle(1.0);
+                    coroutine.yield(); // Confused? We'll explain this in the section below
+                  }
+                  // [/fullThrottleCmdBody]
+                })
+            .named("Example!");
   }
 
   private double getCurrentYaw() {

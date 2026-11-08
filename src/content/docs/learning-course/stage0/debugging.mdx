@@ -1,0 +1,176 @@
+---
+title: Debugging
+description: An introduction to syntax, runtime, and logic errors, and how to find and fix them
+codeRegionSources:
+    default: stage0/snippets/src/Debugging.java
+---
+
+In the [previous lesson](/learning-course/stage0/java-fundamentals/), you wrote your first Java code, and you probably ran into a few errors along the way.
+If everything worked on the first try, you're either very lucky or you haven't tested it enough yet.
+Finding and fixing those errors is called **debugging**, and you'll do a lot of it.
+In this lesson, we're going to learn about the three kinds of errors you'll run into, and how to track each one down.
+
+<Aside type="note" title="Did you know?">
+    The word "bug" for an error in a program was popularized by Grace Hopper, an
+    American computer scientist. While she and her team were working on the Mark
+    II computer, they traced an error to a moth stuck inside it. They taped the
+    moth into their logbook with the note "First actual case of bug being
+    found."
+</Aside>
+
+## Types of Errors
+
+Errors come in three main kinds, and each one shows up at a different time:
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>When it happens</th>
+            <th>Symptoms</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Syntax error</td>
+            <td>Compile time</td>
+            <td>
+                The compiler displays an error message, and your code doesn't
+                finish building
+            </td>
+        </tr>
+        <tr>
+            <td>Runtime error</td>
+            <td>Run time</td>
+            <td>
+                The program crashes and displays an error message. On a robot,
+                the code then restarts
+            </td>
+        </tr>
+        <tr>
+            <td>Logic error</td>
+            <td>Run time</td>
+            <td>The code runs, but doesn't do what you intended</td>
+        </tr>
+    </tbody>
+</table>
+
+## Syntax Errors
+
+Before your code can run, a program called the **compiler** translates it into instructions the computer can understand.
+Just like English has grammar rules, Java has **syntax** rules, which make sure the compiler can understand the code you've written.
+If your code breaks one of those rules, the compiler gives you a **syntax error** instead of building your code.
+Because this happens while the compiler is translating the code, before it ever runs, we say it happens at **compile time**.
+
+VS Code shows syntax errors by putting a red line under the part of the code it thinks is wrong, just like a typo in Google Docs.
+For example, misspelling `System` is a syntax error:
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError1.webp"
+    alt=" int number = 4; Systme.out.println(number); // <- System is misspelled!"
+    width="600px"
+    height="800px"
+/>
+
+So is leaving out part of a statement, like the equals sign in a variable declaration:
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError2.webp"
+    alt=" int number 4; // <- missing the equal sign! System.out.println(number); "
+    width="600px"
+    height="800px"
+/>
+
+If you hover over a red line, VS Code tells you more about the error.
+For example, if we misspell a variable name, hovering over the error shows `numer cannot be resolved to a variable`.
+This means the compiler is looking for a variable called `numer`, but it can't find one.
+Technically, this isn't a syntax error, since the code follows Java's grammar,
+but the compiler still catches it at compile time and shows it the same way.
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError3.webp"
+    alt=" int number = 4; System.out.println(numer); // <- number is misspelled! with numer cannot be resolved to a variable, on the top"
+    width="600px"
+    height="800px"
+/>
+
+<Aside type="note" title="Yellow Lines">
+    A yellow line under your code is a **warning**, not an error. Your code will
+    still build, but the warning usually points at a real problem, like a
+    variable you created and never used.
+</Aside>
+
+When you build your code, the same error message also appears in the terminal.
+The real mistake isn't always where the compiler points.
+A missing semicolon or curly brace on one line can cause an error a few lines later, so look at the lines around the error too before you start changing things.
+
+## Runtime Errors
+
+The compiler can't catch every error.
+Some code follows all of Java's rules, and the problem only shows up once the code runs.
+These are called **runtime errors**.
+One common runtime error is dividing by zero:
+
+{/* rli:ignore */}
+
+```java
+int answer = 10 / 0;
+System.out.println(answer);
+```
+
+This code compiles, but when it runs, it crashes with an error like this one:
+
+{/* rli:ignore */}
+
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+    at Main.main(Main.java:5)
+```
+
+This message is called a **stack trace**, because it traces the error back to the spot in the program where it happened.
+The first line says what went wrong.
+An `ArithmeticException` is a math error, and `/ by zero` says which one.
+The second line says where it happened, and `(Main.java:5)` means line 5 of `Main.java`.
+To fix it, change the code so it never divides by zero.
+
+## Logic Errors
+
+Sometimes, the code compiles and runs without crashing, but doesn't do what you wanted.
+This is a **logic error**.
+The computer doesn't know what you meant, so it does what the code says, even when that's wrong.
+
+This code is supposed to calculate the area of a rectangle that's 2 wide and 5 tall.
+Without running it, can you spot the mistake?
+
+```java #logicError1
+
+```
+
+<Aside type="tip" title="Answer" collapse>
+    The area of a rectangle is its width _times_ its height, but the code adds
+    them instead. It prints `Area of the rectangle is 7` instead of `10`.
+    Changing `+` to `*` fixes it.
+</Aside>
+
+There's no error message for a logic error, so you have to find it yourself.
+Read through the code, and check that what it _says_ matches what you _meant_.
+Printing values with `System.out.println()` at different points in the program also helps.
+The first print that shows a value you didn't expect tells you roughly where the mistake is.
+Real logic errors are usually harder to spot than this one.
+
+## Tips for Avoiding and Fixing Errors
+
+You'll never write code without any errors, but you can make them rarer and easier to find:
+
+- Use variable names that describe what the variable holds.
+- Split complicated code into smaller, simpler pieces.
+- Keep your code easy to read.
+- Test each small piece of code as you write it.
+  Don't wait until everything is written to test it all at once.
+
+When you do hit an error, read the error message carefully.
+If you're stuck, search for the error message online.
+Someone else has probably run into it before.
+
+VS Code also has accessibility features that can make code easier to read and debug.
+For example, some people find it easier to spot errors in a different font, like Comic Sans.

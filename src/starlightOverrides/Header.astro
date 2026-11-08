@@ -2,12 +2,26 @@
 import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
 import Search from '@astrojs/starlight/components/Search.astro';
 import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import LanguageSelect from '@astrojs/starlight/components/LanguageSelect.astro';
+import { isMultilingual } from '../config/locales';
 
 const props = Astro.props;
 const { hasSidebar } = Astro.locals.starlightRoute;
+const t = Astro.locals.t;
+
+const ISSUE_URL = 'https://github.com/frcsoftware/frcsoftware.org/issues/new';
+
+// The banner wraps a link mid-sentence, and languages put it in different
+// places, so the string carries a `{link}` placeholder rather than being split
+// into fixed-order fragments.
+const [bannerBefore = '', bannerAfter = ''] =
+    t('banner.development').split('{link}');
 ---
 
-<div class="header-wrapper">
+<div
+    class="header-wrapper"
+    data-close-lightbox-label={t('slides.closeLightbox')}
+>
     <div class="site-header">
         <div class="site-header-inner">
             <div class="header-top-row">
@@ -15,32 +29,42 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                     <SiteTitle {...props} />
                 </div>
 
-                {
-                    hasSidebar && (
-                        <button
-                            type="button"
-                            class="mobile-menu-toggle"
-                            aria-label="Toggle navigation menu"
-                            aria-expanded="false"
-                            aria-controls="starlight__sidebar"
-                            data-mobile-menu-toggle
-                        >
-                            <span class="hamburger-line" />
-                            <span class="hamburger-line" />
-                            <span class="hamburger-line" />
-                        </button>
-                    )
-                }
+                {hasSidebar && (
+                    <button
+                        type="button"
+                        class="mobile-menu-toggle"
+                        aria-label={t('header.menuToggle')}
+                        popovertarget="starlight__sidebar"
+                    >
+                        <span class="hamburger-line" />
+                        <span class="hamburger-line" />
+                        <span class="hamburger-line" />
+                    </button>
+                )}
 
                 <div class="header-actions-section">
                     <div
                         class:list={[
-                            'theme-select-wrapper',
+                            'header-select',
                             { 'has-mobile-fallback': hasSidebar },
                         ]}
                     >
                         <ThemeSelect />
                     </div>
+
+                    {
+                        // only render when there are actually language options
+                        isMultilingual && (
+                            <div
+                                class:list={[
+                                    'header-select',
+                                    { 'has-mobile-fallback': hasSidebar },
+                                ]}
+                            >
+                                <LanguageSelect />
+                            </div>
+                        )
+                    }
 
                     <div class="search-wrapper">
                         <Search {...props} />
@@ -49,13 +73,10 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             </div>
         </div>
 
-        <div class="beta-banner">
-            This website is still in beta. If you find any errors, please report
-            them{' '}
-            <a href="https://github.com/frcsoftware/frcsoftware.org/issues/new">
-                here
-            </a>
-            .
+        <div class="development-banner">
+            {bannerBefore}
+            <a href={ISSUE_URL}>{t('banner.developmentLinkText')}</a>
+            {bannerAfter}
         </div>
     </div>
 </div>
@@ -96,8 +117,12 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             if (!tmp) {
                 lightbox.id = 'global-image-lightbox';
                 lightbox.className = 'global-image-lightbox';
+                const closeLabel =
+                    document
+                        .querySelector('.header-wrapper')
+                        ?.getAttribute('data-close-lightbox-label') ?? '';
                 lightbox.innerHTML = `
-          <button class="global-lightbox-close" aria-label="Close lightbox">
+          <button class="global-lightbox-close" aria-label="${closeLabel}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
           </button>
           <div class="global-lightbox-content">
@@ -171,28 +196,73 @@ const { hasSidebar } = Astro.locals.starlightRoute;
 
 <script is:inline>
     (() => {
-        const initMobileMenuToggle = () => {
-            const toggle = document.querySelector('[data-mobile-menu-toggle]');
-            const nativeButton = document.querySelector(
-                'starlight-menu-button',
-            );
-            const nativeInnerButton = nativeButton?.querySelector('button');
+        const storageKey = 'starlight-theme';
 
-            if (!toggle || !nativeButton || !nativeInnerButton) return;
+        const getStoredTheme = () => {
+            try {
+                return localStorage.getItem(storageKey);
+            } catch {
+                return null;
+            }
+        };
+        const setStoredTheme = (/** @type {'light' | 'dark'} */ value) => {
+            try {
+                localStorage.setItem(storageKey, value);
+            } catch {
+                /* ignore */
+            }
+        };
 
-            toggle.addEventListener('click', () => nativeInnerButton.click());
+        const applyTheme = (
+            /** @type {'light' | string} */ theme,
+            store = false,
+        ) => {
+            const html = document.documentElement;
+            const normalized = theme === 'light' ? 'light' : 'dark';
 
-            const syncExpanded = () => {
-                toggle.setAttribute(
-                    'aria-expanded',
-                    nativeButton.getAttribute('aria-expanded') || 'false',
-                );
+            html.dataset.theme = normalized;
+            // Only persist an explicit user choice. Browser-derived themes must
+            // stay un-stored so the site keeps following the OS/browser setting.
+            if (store) setStoredTheme(normalized);
+            if (window.StarlightThemeProvider?.updatePickers) {
+                window.StarlightThemeProvider.updatePickers(normalized);
+            }
+        };
+
+        const colorScheme = window.matchMedia('(prefers-color-scheme: light)');
+        const getPreferredTheme = () =>
+            colorScheme.matches ? 'light' : 'dark';
+
+        const init = () => {
+            const stored = getStoredTheme();
+            const explicit =
+                stored === 'light' || stored === 'dark' ? stored : null;
+
+            applyTheme(explicit || getPreferredTheme());
+
+            // Follow OS/browser changes unless the user has explicitly chosen a theme.
+            const onSchemeChange = () => {
+                const stored = getStoredTheme();
+                if (stored !== 'light' && stored !== 'dark') {
+                    applyTheme(getPreferredTheme());
+                }
             };
+            if (!explicit) {
+                if (typeof colorScheme.addEventListener === 'function') {
+                    colorScheme.addEventListener('change', onSchemeChange);
+                } else if (typeof colorScheme.addListener === 'function') {
+                    colorScheme.addListener(onSchemeChange);
+                }
+            }
 
-            syncExpanded();
-            new MutationObserver(syncExpanded).observe(nativeButton, {
-                attributes: true,
-                attributeFilter: ['aria-expanded'],
+            document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const current =
+                        document.documentElement.dataset.theme ||
+                        getPreferredTheme();
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    applyTheme(next, true);
+                });
             });
         };
 
@@ -200,11 +270,10 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             document.readyState === 'complete' ||
             document.readyState === 'interactive'
         ) {
-            initMobileMenuToggle();
+            init();
         } else {
-            document.addEventListener('DOMContentLoaded', initMobileMenuToggle);
+            document.addEventListener('DOMContentLoaded', init);
         }
-        document.addEventListener('astro:page-load', initMobileMenuToggle);
     })();
 </script>
 
@@ -232,7 +301,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         padding: 0.5rem 1.5rem;
     }
 
-    .beta-banner {
+    .development-banner {
         text-align: center;
         font-size: 0.8rem;
         line-height: 1.5;
@@ -240,7 +309,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         background: var(--accent-color-dark);
     }
 
-    .beta-banner a {
+    .development-banner a {
         color: #ffffff;
         font-weight: 600;
         text-decoration: underline;
@@ -285,31 +354,31 @@ const { hasSidebar } = Astro.locals.starlightRoute;
         min-width: 0;
     }
 
-    .theme-select-wrapper {
+    .header-select {
         flex: 0 0 auto;
     }
 
     @media not all and (min-width: 50rem) {
-        .theme-select-wrapper.has-mobile-fallback {
+        .header-select.has-mobile-fallback {
             display: none;
         }
     }
 
-    .theme-select-wrapper :global(label),
-    .theme-select-wrapper :global(label:hover) {
+    .header-select :global(label),
+    .header-select :global(label:hover) {
         color: #ffffff;
     }
 
-    .theme-select-wrapper :global(select) {
+    .header-select :global(select) {
         font-size: 0.8rem;
     }
 
-    .theme-select-wrapper :global(select:focus-visible) {
+    .header-select :global(select:focus-visible) {
         outline: 2px solid rgba(255, 255, 255, 0.9);
         outline-offset: 2px;
     }
 
-    .theme-select-wrapper :global(option) {
+    .header-select :global(option) {
         background-color: var(--sl-color-bg);
         color: var(--sl-color-text);
     }
@@ -419,18 +488,24 @@ const { hasSidebar } = Astro.locals.starlightRoute;
             bottom: 11px;
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(1) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(1) {
             top: 50%;
             margin-top: -1.5px;
             transform: rotate(45deg);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(2) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(2) {
             opacity: 0;
             transform: scale(0);
         }
 
-        .mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(3) {
+        :global(body:has(#starlight__sidebar:popover-open))
+            .mobile-menu-toggle
+            .hamburger-line:nth-child(3) {
             bottom: auto;
             top: 50%;
             margin-top: -1.5px;

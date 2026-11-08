@@ -38,26 +38,25 @@ if (caption) wrapperClasses.push('gif-with-caption');
 
 // Build media styles
 const mediaStyles = scale ? `max-width: ${scale};` : '';
+const t = Astro.locals.t;
 ---
 
 <figure class={wrapperClasses.join(' ')}>
-    {
-        isVideo ? (
-            <video
-                autoplay
-                loop
-                muted
-                playsinline
-                style={mediaStyles}
-                aria-label={alt}
-            >
-                <source src={src} type="video/webm" />
-                Your browser does not support the video tag.
-            </video>
-        ) : (
-            <img src={src} alt={alt} loading="lazy" style={mediaStyles} />
-        )
-    }
+    {isVideo ? (
+        <video
+            autoplay
+            loop
+            muted
+            playsinline
+            style={mediaStyles}
+            aria-label={alt}
+        >
+            <source src={src} type="video/webm" />
+            {t('video.unsupported')}
+        </video>
+    ) : (
+        <img src={src} alt={alt} loading="lazy" style={mediaStyles} />
+    )}
     {caption && <figcaption set:html={caption} />}
 </figure>
 

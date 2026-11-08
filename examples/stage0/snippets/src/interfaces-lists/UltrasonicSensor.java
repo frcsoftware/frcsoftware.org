@@ -6,10 +6,10 @@
 
 // [ultrasonicSensorClass]
 class UltrasonicSensor implements DistanceSensor {
-    @Override
-    public double getDistanceMeters() {
-        // In real life, this would actually interact with hardware
-        return 1.5;
-    }
+  @Override
+  public double getDistanceMeters() {
+    // In real life, this would actually interact with hardware
+    return 1.5;
+  }
 }
 // [/ultrasonicSensorClass]

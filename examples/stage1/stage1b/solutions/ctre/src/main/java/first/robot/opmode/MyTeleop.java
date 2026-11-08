@@ -6,14 +6,14 @@
 package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop
 public class MyTeleop extends PeriodicOpMode {
   private final Robot robot;
-  private final CommandNiDsXboxController xbox = new CommandNiDsXboxController(0);
+  private final CommandXboxController xbox = new CommandXboxController(0);
 
   public MyTeleop(Robot robot) {
     this.robot = robot;

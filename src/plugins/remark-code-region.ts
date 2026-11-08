@@ -1,12 +1,15 @@
 import { visit } from 'unist-util-visit';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import type { Root } from 'mdast';
 import { VFile } from 'vfile';
+import { localeDirFromDocsPath } from '../config/locales';
 
 export default function remarkCodeRegion() {
     return (tree: Root, file: VFile) => {
         const examplesDir = resolve(process.cwd(), 'examples');
+        // check locale directory for code region sources first, then fall back to default examples dir
+        const localeDir = localeDirFromDocsPath(file.path);
         let codeRegionSources = file.data.astro?.frontmatter?.codeRegionSources;
         if (
             codeRegionSources == null ||
@@ -43,7 +46,20 @@ export default function remarkCodeRegion() {
 
             node.meta = meta.slice(raw.length).trim();
 
-            const srcPath = resolve(examplesDir, filePath);
+            const candidates = localeDir
+                ? [
+                      resolve(examplesDir, localeDir, filePath),
+                      resolve(examplesDir, filePath),
+                  ]
+                : [resolve(examplesDir, filePath)];
+            const srcPath = candidates.find(existsSync);
+            if (!srcPath) {
+                throw Error(
+                    `Code region source "${filePath}" not found for ${file.path ?? 'unknown file'} ` +
+                        `(looked in ${candidates.join(', ')})`,
+                );
+            }
+
             const content = readFileSync(srcPath, 'utf-8');
             const lines = content.split('\n');
 
@@ -81,12 +97,16 @@ export default function remarkCodeRegion() {
                 if (inRegion && !markerRE.test(line)) regionLines.push(line);
             }
 
+            const referencedBy = `referenced by ${file.path ?? 'unknown file'}`;
+
             if (!found)
-                throw Error(`Region "${regionName}" not found in ${srcPath}`);
+                throw Error(
+                    `Region "${regionName}" not found in ${srcPath} (${referencedBy})`,
+                );
 
             if (inRegion)
                 throw Error(
-                    `Unclosed region "${regionName}" in ${srcPath} — missing [/${regionName}]`,
+                    `Unclosed region "${regionName}" in ${srcPath} — missing [/${regionName}] (${referencedBy})`,
                 );
 
             node.value = dedent(regionLines.join('\n'));

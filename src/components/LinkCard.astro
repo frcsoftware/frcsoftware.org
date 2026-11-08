@@ -16,13 +16,11 @@ const { title, description, img, imgAlt = '', ...attributes } = Astro.props;
 ---
 
 <div class="sl-link-card">
-    {
-        img && (
-            <div class="card-media">
-                <Image src={img} alt={imgAlt} />
-            </div>
-        )
-    }
+    {img && (
+        <div class="card-media">
+            <Image src={img} alt={imgAlt} />
+        </div>
+    )}
 
     {img && <hr class="card-divider" />}
 

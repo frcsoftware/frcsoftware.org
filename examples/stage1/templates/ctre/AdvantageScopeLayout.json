@@ -9,11 +9,11 @@
                 "sidebar": {
                     "width": 300,
                     "expanded": [
-                        "/DrivetrainSim",
-                        "/IntakeLauncher",
-                        "/Feeder",
-                        "/Drivetrain",
-                        "/FuelSim"
+                        "/Telemetry",
+                        "/Telemetry/IntakeLauncher",
+                        "/Telemetry/Feeder",
+                        "/Telemetry/Drivetrain",
+                        "/Telemetry/FuelSim"
                     ]
                 },
                 "tabs": {
@@ -34,7 +34,7 @@
                                 "leftSources": [
                                     {
                                         "type": "stepped",
-                                        "logKey": "NT:/IntakeLauncher/MotorVoltage",
+                                        "logKey": "NT:/Telemetry/IntakeLauncher/MotorVoltage",
                                         "logType": "Number",
                                         "visible": true,
                                         "options": {
@@ -44,7 +44,7 @@
                                     },
                                     {
                                         "type": "stepped",
-                                        "logKey": "NT:/Feeder/MotorVoltage",
+                                        "logKey": "NT:/Telemetry/Feeder/MotorVoltage",
                                         "logType": "Number",
                                         "visible": true,
                                         "options": {
@@ -56,7 +56,7 @@
                                 "rightSources": [
                                     {
                                         "type": "stepped",
-                                        "logKey": "NT:/IntakeLauncher/MotorVelocity",
+                                        "logKey": "NT:/Telemetry/IntakeLauncher/MotorVelocity",
                                         "logType": "Number",
                                         "visible": true,
                                         "options": {
@@ -66,7 +66,7 @@
                                     },
                                     {
                                         "type": "stepped",
-                                        "logKey": "NT:/Feeder/MotorVelocity",
+                                        "logKey": "NT:/Telemetry/Feeder/MotorVelocity",
                                         "logType": "Number",
                                         "visible": true,
                                         "options": {
@@ -101,7 +101,7 @@
                                 "sources": [
                                     {
                                         "type": "robot",
-                                        "logKey": "NT:/Drivetrain/Pose",
+                                        "logKey": "NT:/Telemetry/Drivetrain/Pose",
                                         "logType": "Pose2d",
                                         "visible": true,
                                         "options": {
@@ -124,7 +124,7 @@
                                 "sources": [
                                     {
                                         "type": "robot",
-                                        "logKey": "NT:/Drivetrain/Pose",
+                                        "logKey": "NT:/Telemetry/Drivetrain/Pose",
                                         "logType": "Pose2d",
                                         "visible": true,
                                         "options": {
@@ -133,7 +133,7 @@
                                     },
                                     {
                                         "type": "gamePiece",
-                                        "logKey": "NT:/FuelSim/ParabolaFuel",
+                                        "logKey": "NT:/Telemetry/FuelSim/ParabolaFuel",
                                         "logType": "Pose3d[]",
                                         "visible": true,
                                         "options": {
@@ -142,7 +142,7 @@
                                     },
                                     {
                                         "type": "gamePiece",
-                                        "logKey": "NT:/FuelSim/Row1Fuel",
+                                        "logKey": "NT:/Telemetry/FuelSim/Row1Fuel",
                                         "logType": "Pose3d[]",
                                         "visible": true,
                                         "options": {
@@ -151,7 +151,7 @@
                                     },
                                     {
                                         "type": "gamePiece",
-                                        "logKey": "NT:/FuelSim/Row2Fuel",
+                                        "logKey": "NT:/Telemetry/FuelSim/Row2Fuel",
                                         "logType": "Pose3d[]",
                                         "visible": true,
                                         "options": {
@@ -160,7 +160,7 @@
                                     },
                                     {
                                         "type": "gamePiece",
-                                        "logKey": "NT:/FuelSim/Row3Fuel",
+                                        "logKey": "NT:/Telemetry/FuelSim/Row3Fuel",
                                         "logType": "Pose3d[]",
                                         "visible": true,
                                         "options": {

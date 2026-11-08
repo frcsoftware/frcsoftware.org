@@ -1,8 +1,6 @@
 ---
 title: Exercise - Kitbot Rewrite, Pt. 2
 description: Rewriting the kitbot code in stage 1A to command-based
-prev: learning-course/stage1/stage1b/suppliers-in-command-based
-next: learning-course/stage1/stage1b/spot-the-error-pt2
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbotPt2.java
 ---
@@ -30,10 +28,7 @@ Then, do the following:
 3. Initialize an `OnboardIMU` object named `imu`.
 4. Initialize a `DrivetrainSim` object named `drivetrainSim` and make a method named `periodic()` that runs the drivetrain sim `periodic()` method.
 
-<details class="accordion">
-    <summary>Hint</summary>
-    Refer back to Stage 1A for how to do these steps.
-</details>
+<Aside type="hint">Refer back to Stage 1A for how to do these steps.</Aside>
 
 ### Task 2: Controlling the Drivetrain
 
@@ -45,18 +40,15 @@ To do that, write the following:
 2. An `idle()` command that commands `0.0` speed and `0.0` rotation, and is set as the default command in the constructor.
 3. An `arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle)` command that continuously updates the drive motor speeds using the values from the suppliers.
 
-<details class="accordion">
-    <summary>Item 1, Hint 1</summary>
+<Aside type="hint" title="Item 1, Hint 1">
     The constructor of the `Robot` class in stage 1A contains the code to
     configure the drivetrain motors.
-</details>
-<details class="accordion">
-    <summary>Item 1, Hint 2</summary>
+</Aside>
+<Aside type="hint" title="Item 1, Hint 2">
     We want to configure our motors when a new `Drivetrain` instance is created.
     What Java declaration defines the code that runs when a class is instantiated?
-</details>
-<details class="accordion">
-    <summary>Item 3 Hint</summary>
+</Aside>
+<Aside type="hint" title="Item 3 Hint">
     Since the joystick values change constantly, you must fetch the speed and
     rotation from the suppliers inside the command's loop. You should have the
     following inside of your command's body: 
@@ -64,7 +56,7 @@ To do that, write the following:
 
     ```
 
-</details>
+</Aside>
 
 ### Task 3: Using the Drivetrain
 
@@ -77,21 +69,19 @@ Now that we have a `Drivetrain` class, we need to set it up to be used in our ro
    In the constructor, set the drivetrain's default command to `arcadeDrive`.
    Pass lambda expressions that read from your controller's joystick axes.
 
-<details class="accordion">
-    <summary>Hint 1</summary>
+<Aside type="hint" title="Hint 1">
     You can create an arcade drive command like so:
     ```java #driveCommand
     
     ```
     Can you figure out the expressions to replace `forwardThrottle` and `rotationThrottle` with?
-</details>
-<details class="accordion">
-    <summary>Hint 2</summary>
+</Aside>
+<Aside type="hint" title="Hint 2">
     The expression for the `forwardThrottle` argument is `() -> -xbox.getLeftY()`, since we 
     want to recompute the value of `-xbox.getLeftY()` while the `arcadeDrive` command is running. <br /> <br />
     Can you figure out the expression for the `rotationThrottle` argument, considering
     that the goal is to recompute the value of `xbox.getRightX()`?
-</details>
+</Aside>
 
 <Aside type="note">
     You might notice that we're calling `setDefaultCommand` twice - once in
@@ -127,16 +117,14 @@ Then, do the following:
    This `arcadeDrive` command should have a constant forward throttle of `0.5`
    and a constant rotational throttle of `0`.
 
-<details class="accordion">
-    <summary>Hint 1</summary>
+<Aside type="hint" title="Hint 1">
     To schedule a command without a trigger, use `Scheduler.getDefault().schedule(Command)`:
     ```java #startMethod
     
     ```
     Can you figure out what `myAutoCommand` should be? 
-</details>
-<details class="accordion">
-    <summary>Hint 2</summary>
+</Aside>
+<Aside type="hint" title="Hint 2">
     A `DoubleSupplier` with syntax `() -> 0.5` will always return 
     0.5 when its `getAsDouble()` method is called. <br /> <br />
     Use this information to complete the following `Command` by
@@ -145,11 +133,11 @@ Then, do the following:
     
     ```
 
-</details>
+</Aside>
 
 ### Task 6: Drive Back then Shoot Autonomous
 
-Driving back and shooting is a common auto found in the 2026 game, rebuilt.
+Driving back and shooting is a common auto found in the 2026 game, REBUILT.
 At the start
 of auto, the drive team would line up the kitbot to the wall of the scoring location.
 The kitbot would then drive backwards, and finally shoot the preloaded balls.
@@ -162,34 +150,52 @@ Create a `Command`-returning method named `autoCommand()`, with the following re
 
 Then, in the `start()` method of the OpMode, schedule the `autoCommand()` we just created.
 
-<details class="accordion">
-    <summary>Hint 1</summary>
+<Aside type="hint" title="Hint 1">
     ```java #autoCmdDef
     ```
-</details>
-<details class="accordion">
-    <summary>Hint 2</summary>
+</Aside>
+<Aside type="hint" title="Hint 2">
     What should you put in the curly brackets? <br />
     `Command.noRequirements(coroutine -> {}).named("Drive Back Then Shoot")`
-</details>
-<details class="accordion">
-    <summary>Hint 3</summary>
+</Aside>
+<Aside type="hint" title="Hint 3">
     `coroutine.await(Command)` runs a command from start to finish inside of another.
-</details>
-<details class="accordion">
-    <summary>Hint 4</summary>
+</Aside>
+<Aside type="hint" title="Hint 4">
     Look at the `DriveStraight.java` class. There, you wrote a command to drive forward,
     at a throttle of 0.5, for 4 seconds. Try copy-pasting that command into a
     `coroutine.await()` call, while changing some parameters.
-</details>
-<details class="accordion">
-    <summary>Hint 5</summary>
+</Aside>
+<Aside type="hint" title="Hint 5">
     To run 2 commands simultaneously, call `coroutine.awaitAll(command1, command2)` inside
     of another command.
-</details>
+</Aside>
 
-# Solution
+# Running everything in sim
+
+Just like in stage 1A, you can press `W` to drive forward, `S` to drive backward,
+`A` and `D` to rotate, `E` to intake and `R` to outtake.
+
+Shooting is still mapped to the `Q` button; however, you now have to hold the button down
+for >2 seconds before a shooting animation appears.
+Commands v3 has made it easier
+for us to program a "spinup" sequence, where the launcher can get up to speed for 2 secs
+before balls are serialized through it.
+
+<Aside type="note">
+    For instructions on how to setup sim, see
+    [here](/learning-course/stage1/stage1a/drivetrain-sim/#simulating-code) and
+    [here](/learning-course/stage1/stage1a/kitbot-additional-motors/#3d-sim).
+</Aside>
+
+# Solutions
 
 The solutions to this stage can be found below:
 [CTRE](https://github.com/frcsoftware/Stage1B-Solution-CTRE)
 [REV](https://github.com/frcsoftware/Stage1B-Solution-REV)
+
+<Aside type="tip">
+    Before going to the next step, commit and push your changes to GitHub! If
+    you need a reminder on how to do so, review [Git-Uploading
+    Code.](/learning-course/stage0/git/)
+</Aside>

@@ -75,6 +75,10 @@ const learningCourse: SidebarTopic = {
                     slug: 'learning-course/stage0/debugging',
                 },
                 {
+                    label: 'Git - Uploading code',
+                    slug: 'learning-course/stage0/git',
+                },
+                {
                     label: 'Operators',
                     slug: 'learning-course/stage0/operators',
                 },

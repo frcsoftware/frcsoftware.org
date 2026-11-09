@@ -29,20 +29,18 @@ const [bannerBefore = '', bannerAfter = ''] =
                     <SiteTitle {...props} />
                 </div>
 
-                {
-                    hasSidebar && (
-                        <button
-                            type="button"
-                            class="mobile-menu-toggle"
-                            aria-label={t('header.menuToggle')}
-                            popovertarget="starlight__sidebar"
-                        >
-                            <span class="hamburger-line" />
-                            <span class="hamburger-line" />
-                            <span class="hamburger-line" />
-                        </button>
-                    )
-                }
+                {hasSidebar && (
+                    <button
+                        type="button"
+                        class="mobile-menu-toggle"
+                        aria-label={t('header.menuToggle')}
+                        popovertarget="starlight__sidebar"
+                    >
+                        <span class="hamburger-line" />
+                        <span class="hamburger-line" />
+                        <span class="hamburger-line" />
+                    </button>
+                )}
 
                 <div class="header-actions-section">
                     <div

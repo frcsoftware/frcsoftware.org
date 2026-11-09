@@ -6,7 +6,7 @@ const gradlew = resolve(
     platform === 'win32' ? 'gradlew.bat' : 'gradlew',
 );
 
-const runPrettierOn =
+const runOxfmtOn =
     '**/*.{' +
     [
         'js',
@@ -26,11 +26,12 @@ const runPrettierOn =
 
 /** @type {import('lint-staged').Configuration} */
 export default {
-    [runPrettierOn]: (files) =>
-        `prettier --write --ignore-unknown ${files.join(' ')}`,
+    [runOxfmtOn]: (files) =>
+        `oxfmt --write --no-error-on-unmatched-pattern ${files.join(' ')}`,
     '{src,public}/**/*.{png,jpg,jpeg,webp}': (images) =>
         `node scripts/images.lint.js ${images.join(' ')}`,
     '**/*.{astro,ts,mjs,js}': (files) => `eslint --fix ${files.join(' ')}`,
+    'src/content/**/*.mdx': (files) => `eslint --fix ${files.join(' ')}`,
     'src/content/**/*.{md,mdx}': (files) => [
         `pnpm remark ${files.join(' ')} --ext mdx --frail --no-stdout --quiet`,
     ],

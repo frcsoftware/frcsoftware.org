@@ -96,7 +96,7 @@ All content must pass the project's linting and formatting checks before merging
 
 Every sentence in `.mdx` and `.md` files must be on its own line.
 This ensures cleaner diffs and easier review.
-Enforced by `prettier-plugin-sentences-per-line`.
+Enforced by `eslint-plugin-sentences-per-line`, which `pnpm lint` checks and `pnpm format` fixes.
 
 #### Running the checks
 
@@ -104,7 +104,7 @@ Enforced by `prettier-plugin-sentences-per-line`.
 | ------------------- | ----------------------------------------------------------------------- |
 | `pnpm lint`         | Run all lint steps (ESLint, remark, region validation, vale, typecheck) |
 | `pnpm format`       | Auto-fix all formatting and sentence-per-line issues                    |
-| `pnpm format:check` | Prettier check — all file types (includes sentence-per-line)            |
+| `pnpm format:check` | Oxfmt check — all file types                                            |
 
 Run all checks locally before pushing:
 
@@ -114,7 +114,7 @@ Run all checks locally before pushing:
 pnpm lint && pnpm format:check
 ```
 
-If `pnpm format:check` fails, run `pnpm prettier --write .` to auto-fix.
+If `pnpm format:check` fails, run `pnpm format` to auto-fix.
 
 #### RLI (region-based code fences)
 

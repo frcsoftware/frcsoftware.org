@@ -23,16 +23,14 @@ const terms = (await getCollection('glossary'))
 ---
 
 <dl class="glossary-list">
-    {
-        terms.map(({ data }) => (
-            <div class="glossary-entry">
-                <dt id={data.term.toLowerCase().replace(/\s+/g, '-')}>
-                    {data.term}
-                </dt>
-                <dd>{data.definition}</dd>
-            </div>
-        ))
-    }
+    {terms.map(({ data }) => (
+        <div class="glossary-entry">
+            <dt id={data.term.toLowerCase().replace(/\s+/g, '-')}>
+                {data.term}
+            </dt>
+            <dd>{data.definition}</dd>
+        </div>
+    ))}
 </dl>
 
 <style>

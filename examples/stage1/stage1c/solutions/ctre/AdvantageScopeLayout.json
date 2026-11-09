@@ -1,0 +1,120 @@
+{
+    "hubs": [
+        {
+            "x": 328,
+            "y": 194,
+            "width": 1101,
+            "height": 652,
+            "state": {
+                "sidebar": {
+                    "width": 300,
+                    "expanded": ["/DrivetrainSim"]
+                },
+                "tabs": {
+                    "selected": 1,
+                    "tabs": [
+                        {
+                            "type": 0,
+                            "title": "",
+                            "controller": null,
+                            "controllerUUID": "vlfwq7pm9tlj70qdvvq45nifwex34k2g",
+                            "renderer": "",
+                            "controlsHeight": 0
+                        },
+                        {
+                            "type": 1,
+                            "title": "Line Graph",
+                            "controller": {
+                                "leftSources": [
+                                    {
+                                        "type": "stepped",
+                                        "logKey": "NT:/intake/MotorVoltage",
+                                        "logType": "Number",
+                                        "visible": true,
+                                        "options": {
+                                            "color": "#2b66a2",
+                                            "size": "normal"
+                                        }
+                                    },
+                                    {
+                                        "type": "stepped",
+                                        "logKey": "NT:/shooter/MotorVoltage",
+                                        "logType": "Number",
+                                        "visible": true,
+                                        "options": {
+                                            "color": "#e5b31b",
+                                            "size": "normal"
+                                        }
+                                    }
+                                ],
+                                "rightSources": [
+                                    {
+                                        "type": "stepped",
+                                        "logKey": "NT:/intake/MotorVelocity",
+                                        "logType": "Number",
+                                        "visible": true,
+                                        "options": {
+                                            "color": "#af2437",
+                                            "size": "normal"
+                                        }
+                                    },
+                                    {
+                                        "type": "stepped",
+                                        "logKey": "NT:/shooter/MotorVelocity",
+                                        "logType": "Number",
+                                        "visible": true,
+                                        "options": {
+                                            "color": "#80588e",
+                                            "size": "normal"
+                                        }
+                                    }
+                                ],
+                                "discreteSources": [],
+                                "leftLockedRange": null,
+                                "rightLockedRange": null,
+                                "leftUnitConversion": {
+                                    "autoTarget": null,
+                                    "preset": null
+                                },
+                                "rightUnitConversion": {
+                                    "autoTarget": null,
+                                    "preset": null
+                                },
+                                "leftFilter": 0,
+                                "rightFilter": 0
+                            },
+                            "controllerUUID": "2htqlla9hnswdie42z4tmy5c6xlm59sh",
+                            "renderer": null,
+                            "controlsHeight": 200
+                        },
+                        {
+                            "type": 2,
+                            "title": "2D Field",
+                            "controller": {
+                                "sources": [
+                                    {
+                                        "type": "robot",
+                                        "logKey": "NT:SimPose",
+                                        "logType": "Pose2d",
+                                        "visible": true,
+                                        "options": {
+                                            "bumpers": ""
+                                        }
+                                    }
+                                ],
+                                "field": "FRC:2026 Field",
+                                "orientation": 3,
+                                "size": "large"
+                            },
+                            "controllerUUID": "9ukgi1echibr7o0wodpgms6ajn3yic95",
+                            "renderer": null,
+                            "controlsHeight": 200
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "satellites": [],
+    "version": "27.0.0-alpha-4"
+}

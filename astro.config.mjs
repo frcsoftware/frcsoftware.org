@@ -99,8 +99,16 @@ export default defineConfig({
                     exclude: excludedFromTopics,
                 }),
                 // untranslated pages are fallbacks and we don't want to error if a translation isn't complete yet
-                starlightLinksValidator({ errorOnFallbackPages: false }),
+                starlightLinksValidator({
+                    errorOnFallbackPages: false,
+                    // exclude the discord link since it's created in cloudflare
+                    exclude: ['/discord'],
+                }),
             ],
+            editLink: {
+                baseUrl:
+                    'https://github.com/frcsoftware/frcsoftware.org/edit/main/',
+            },
         }),
     ],
 });

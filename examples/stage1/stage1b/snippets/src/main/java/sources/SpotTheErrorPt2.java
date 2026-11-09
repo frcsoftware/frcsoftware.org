@@ -5,10 +5,13 @@
  */
 package sources;
 
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.function.DoubleSupplier;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
+import org.wpilib.command3.Trigger;
 import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.drive.DifferentialDrive;
 import org.wpilib.framework.OpModeRobot;
@@ -71,6 +74,28 @@ public class SpotTheErrorPt2 {
   }
 
   // [/robotPeriodicBug]
+
+  // [triggerUpdatesBug]
+  public class Arm implements Mechanism {
+    private double target = 0;
+    private final TalonFX motor = new TalonFX(0, CANBus.systemcore(0));
+    private final Trigger hasNotHitTarget =
+        new Trigger(() -> motor.getPosition().getValueAsDouble() < target);
+
+    public Command subOptimalSetAngle(double targetRotations) {
+      return run(coroutine -> {
+            target = targetRotations;
+            motor.setThrottle(0.1);
+            while (hasNotHitTarget.getAsBoolean()) {
+              coroutine.yield();
+            }
+            motor.setThrottle(0);
+          })
+          .named("Use PID instead(you'll learn this in Stage 1C!)");
+    }
+  }
+
+  // [/triggerUpdatesBug]
 
   class RobotFixed extends OpModeRobot {
     private final Drivetrain drivetrain = new Drivetrain();

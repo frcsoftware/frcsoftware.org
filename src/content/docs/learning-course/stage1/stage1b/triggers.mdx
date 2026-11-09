@@ -46,6 +46,15 @@ Triggers can schedule commands in two ways:
     ```
 
 </Aside>
+<Aside type="caution">
+    In Commands V3, triggers only update *once* per loop, when `Scheduler.getDefault().run()` is called!
+    This is very different to the triggers in Commands v2.
+
+    This can lead to unexpected behavior, like so:
+    ```java #triggerUpdating
+    ```
+
+</Aside>
 
 ### Controller-based Triggers
 

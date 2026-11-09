@@ -1,0 +1,145 @@
+---
+title: VS Code 概述
+description: 介绍使用 WPILib 时所需的 VS Code 程序及其界面
+---
+
+## 什么是 VS Code
+
+Visual Studio Code（VS Code）是 Microsoft 开发的一款免费开源代码编辑器。
+它支持 Windows、macOS 和 Linux，并可通过 Extension Marketplace（扩展市场）中的扩展支持几乎所有编程语言。
+它还集成了 Git，可以直接在编辑器的 Source Control（源代码管理）面板中进行暂存、commit（提交）、push（推送）、pull（拉取）和查看 diff（差异）等操作。
+
+在之前的页面中，你安装了包含 WPILib VS Code 的 WPILib 工具。
+在 FRC 中，应当使用这个版本的 VS Code。
+WPILib VS Code 会随其他 WPILib 工具一起安装，并作为单独的应用程序运行。
+如果之前安装过普通版 VS Code，请确保使用 WPILib 专用版本为机器人编程。
+
+WPILib VS Code 与普通版 VS Code 使用不同的图标。
+如下图所示，WPILib VS Code 使用 WPILib 标志，而普通版 VS Code 使用蓝色标志。
+
+<ContentFigure
+    width="200px"
+    height="200px"
+    alt="VS Code 界面"
+    src="/learning-course/getting-started/vscode-overview/wpilib-vscode.webp"
+/>
+
+<Aside type="caution" title="Warning（警告）">
+    在 MacOS 上，图标没有改成 WPILib 图标，名称仍然显示为 Visual Studio Code。
+    请记下这个程序的安装目录。它不会出现在启动台中。 可以把 WPILib VS Code
+    固定到程序坞。
+</Aside>
+
+## 欢迎界面
+
+首次打开 WPILib VS Code 时，会显示包含多个选项的欢迎界面。
+在这里选择 `File`，即可打开文件菜单。
+菜单中有许多选项，其中最常用的是：
+
+1. `New file`
+2. `Open file`
+3. `Open folder`
+
+<ContentFigure
+    width="564px"
+    height="300px"
+    alt="显示文件下拉菜单的 VS Code 欢迎界面"
+    src="/learning-course/getting-started/vscode-overview/welcomescreen.webp"
+/>
+
+<Aside type="note" title="Note（备注）">
+    打开新文件夹时，VS Code 会询问：“Do you trust the authors of the files in
+    this folder?”（你是否信任此文件夹中文件的作者？）
+    在本网站的课程中，可以点击“Yes, I trust the authors”（是，我信任作者）。
+</Aside>
+
+<Aside type="caution" title="Warning（警告）">
+    创建新的机器人项目时，不要将其保存到 OneDrive！ 不支持在 OneDrive
+    中创建新项目。
+</Aside>
+
+## 浏览界面
+
+VS Code 的布局可以划分为几个主要区域：
+
+1. <strong>Activity Bar（活动栏）</strong>
+   位于最左侧，由一列垂直图标组成，用于切换主要视图，包括
+   Explorer（资源管理器）、Search（搜索）、Source Control（源代码管理）、Run &
+   Debug（运行和调试）以及 Extensions（扩展）。
+2. <strong>Side Bar（侧栏）</strong>
+   位于活动栏旁边，用于显示当前所选视图的详细内容，例如 Explorer 中的文件树。
+3. <strong>Panel（面板）</strong>位于屏幕底部。 它包含
+   Terminal（终端）、Problems（问题）、Output（输出）和 Debug
+   Console（调试控制台）四个主要视图。
+4. <strong>Editor（编辑器）</strong>位于中央区域。
+   编辑器是主要工作区域，可以在其中查看和编辑文件。
+5. <strong>Command Palette（命令面板）</strong>可通过 `Ctrl+Shift+P` /
+   `Cmd+Shift+P` 打开，也可通过顶部工具栏中的 WPILib 按钮打开，用于搜索和运行 VS
+   Code 中的任何命令。
+
+<ContentFigure
+    width="564px"
+    height="300px"
+    alt="VS Code 界面"
+    src="/learning-course/getting-started/vscode-overview/vscode-explained.webp"
+/>
+
+### WPILib Command Palette（WPILib 命令面板）
+
+WPILib VS Code 的一项重要功能是提供 FRC 专用命令，例如：<strong>Build（构建）</strong>，用于编译机器人代码并检查设备上的错误；<strong>Deploy（部署）</strong>，用于构建代码并通过与机器人的网络连接将代码发送到 Systemcore；以及 <strong>Simulate（仿真）</strong>，用于通过内置仿真工具在计算机上测试代码。
+这些命令都可以通过 Command Palette（命令面板）运行。
+
+<ContentFigure
+    width="564px"
+    height="300px"
+    alt="WPILib 命令面板"
+    src="/learning-course/getting-started/vscode-overview/commandpalette.webp"
+/>
+
+## 保存和打开文件
+
+### 打开文件
+
+- 打开单个文件：`File > Open File...` 或 `Ctrl+O` / `Cmd+O`
+- 打开文件夹或项目：`File > Open Folder...` 或 `Ctrl+K Ctrl+O` / `Cmd+K Cmd+O`
+- 快速打开文件：按 `Ctrl+P` / `Cmd+P`，然后开始输入文件名
+- 重新打开最近关闭的文件：`Ctrl+Shift+T` / `Cmd+Shift+T`
+
+### 保存文件
+
+- 保存当前文件：`Ctrl+S` / `Cmd+S`
+- 另存为新的名称或位置：`Ctrl+Shift+S` / `Cmd+Shift+S`
+- 保存所有已打开的文件：`Ctrl+K S` / `Cmd+K S`
+
+<Aside type="tip" title="Tip（提示）">可以通过 `File > Auto Save` 启用 <strong>Auto Save（自动保存）</strong>。暂停操作一段时间后，VS Code 会自动保存内容，从而大幅降低工作内容丢失的可能性。</Aside>
+
+文件标签页上的圆点表示存在**未保存的更改**。
+保存文件后，圆点会消失并变为“X”关闭图标。
+
+<ContentFigure
+    width="600px"
+    height="600px"
+    alt="左侧的 DriveTrain.java 文件名旁显示圆点，右侧的同一文件名旁显示 X"
+    src="/learning-course/getting-started/vscode-overview/savedunsaved.webp"
+/>
+
+## 键盘快捷键
+
+VS Code 提供了许多实用的键盘快捷键。
+
+- [Windows 键盘快捷键](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf)
+- [MacOS 键盘快捷键](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf)
+
+其中最常用的快捷键包括：
+
+- `Ctrl+P` / `Cmd+P`：打开 Quick Open（快速打开），可以按名称打开任意文件
+- `Ctrl+Shift+P` / `Cmd+Shift+P`：打开 Command Palette（命令面板）
+- `` Ctrl+` ``：快速打开或关闭集成终端
+- `Ctrl+B` / `Cmd+B`：切换侧栏的显示状态
+- `Ctrl+Tab`：在已打开的编辑器之间切换
+
+<Aside type="tip" title="Tip（提示）">
+    VS Code 提供了许多可能有帮助的无障碍功能。 有关这些功能的更多信息，请参阅
+    [VS Code
+    无障碍功能文档](https://code.visualstudio.com/docs/configure/accessibility/accessibility)。
+</Aside>

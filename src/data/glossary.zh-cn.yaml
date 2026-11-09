@@ -1,0 +1,75 @@
+# 简体中文术语和缩写表
+#
+# 键必须与 glossary.yaml 中的英文规范术语一致。
+# `term` 是中文正文中匹配和显示的术语；省略时沿用英文术语。
+# `definition` 是中文定义。未填写的条目会回退到英文。
+
+# 电子器件
+PDH:
+    definition: 配电中心（Power Distribution Hub）
+
+SPARK MAX:
+    definition: 用于控制 REV 电机的电机控制器
+
+Talon FX:
+    definition: 用于控制 CTRE 电机的电机控制器
+
+Systemcore:
+    definition: 运行机器人代码的主处理器，提供多种 I/O 接口
+
+CAN:
+    definition: >-
+        控制器局域网（Controller Area Network）：通常使用黄绿线连接电机控制器和传感器；
+        可以采用多种拓扑结构进行布线，而不必将每根线缆都单独接回 Systemcore
+
+PWM:
+    definition: >-
+        脉宽调制（Pulse Width Modulation）：一种用于与电机控制器和传感器通信的规范，
+        设备需要连接回 Systemcore
+
+Main Breaker:
+    term: 主断路器
+    definition: 机器人的电源开关
+
+Limit Switch:
+    term: 限位开关
+    definition: >-
+        一种在受到物理接触或磁力触发时动作的传感器，可用于在信号上升沿或下降沿触发操作，
+        也可用于检查机构的状态
+
+Throughbore Encoder:
+    term: 通孔编码器
+    definition: 一种允许轴穿过其中心，并记录角位置的编码器
+
+Magnetic Encoder:
+    term: 磁编码器
+    definition: 一种使用接收器和磁体测量位置与运动状态的编码器
+
+# 软件
+Repository:
+    term: 仓库
+    definition: >-
+        用于存放代码及相关资源的位置，常用于 Git 等版本控制系统。
+        仓库本质上是包含文件和子文件夹的文件夹，也可托管在 GitHub 等平台上，
+        以便开展协作和管理版本
+
+CI:
+    definition: >-
+        持续集成（Continuous Integration）：一种软件开发实践。
+        开发者频繁地将代码变更合并到共享仓库中，并由此触发自动构建和测试，
+        以确保代码库保持稳定
+
+WPILib:
+    definition: >-
+        WPILib 是为队伍提供的标准软件库和工具集，用于编写、测试和调试
+        FIRST® Robotics Competition 与 FIRST® Tech Challenge 机器人的代码
+
+AprilTag:
+    definition: >-
+        一种类似二维码的基准标记。WPILib 和厂商提供的视觉工具可以检测 AprilTag，
+        从而确定相机相对于标记的位置和朝向
+
+GitHub:
+    definition: >-
+        GitHub 类似于用于代码的 Google Drive。
+        它可以托管 Git 仓库，并通过拉取请求和议题等功能改善项目协作和版本跟踪

@@ -4,23 +4,34 @@ description: An overview of Feedback Controllers and PID
 ---
 
 import ContentImage from '@components/ContentImage.astro';
+import ContentRow from '@components/ContentRow.astro';
+import ContentRowCaption from '@components/ContentRow.astro';
 
 With FRC games, it's common for teams to have a mechanism move to a desired position or move the robot to a desired position or angle.
 One example is auto aligning.
 Robots auto align by turning a certain amount of degrees towards the goal then taking the steps needed to score the game piece.
-This helps makes scoring more efficient.
+Scoring with auto alignment is faster and more efficient than your driver lining up with the goal by hand.
+
 In 2026, the kitbot might auto align to the goal by turning to a certain angle on the field.
 The kitbot can't turn too far to the left or too far to the right because then it might miss the goal.
 It has to turn just the right amount.
 How do teams make sure that happens?
-It's with a feedback controller called PID.
+This is done with PID.
 
 ## Feedback Controller
 
+PID is a type of feedback controller.
 A feedback controller uses sensors and equations to figure out what the mechanism is currently doing,
 and controls the mechanism's output to make it do what we want it do.
-The mechanisms's current state is called the **output**.
-The desired state of the mechanism, where we want it to be, is called the **setpoint**.
+The mechanism's current state is called the **output**.
+We're able to get the current state through sensors.
+One example of a sensor is an encoder.
+Encoders are used to measure a motor's rotation.
+In this stage, the Kitbot has encoders on its drivetrain.
+We can take information from the encoders to figure out how far the kitbot has driven.
+
+Code can be written to define the desired state, or where we want it to be.
+This desired state is called the **setpoint**.
 
 In the case of the kitbot's auto align, the **output** is the information from the sensor on what the robot's current angle is.
 The **setpoint** is a target angle, perhaps pointing the kitbot towards the goal.
@@ -28,8 +39,9 @@ The **setpoint** is a target angle, perhaps pointing the kitbot towards the goal
 <Aside type="note">
     We're able to get the kitbot's angle through Systemcore's built in IMU, or
     Inertial Measurement Unit. This is a sensor that allows the robot to
-    accurately track its orientation in 3D space, returning this in the form of
-    3 angles, roll, pitch, and yaw.
+    accurately track its orientation in 3D space. One of the angles that it
+    returns is yaw, which is the robot's side to side movement on the vertical
+    axis. This is when the robot turns left and right.
 </Aside>
 
 Feedback controllers are also used outside of FRC.
@@ -46,14 +58,11 @@ PID is a type of feedback controller that uses three terms: proportional, integr
 Together the three terms are P, I, and D, which is how PID gets its name.
 
 PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
-The difference between the outpoint to the setpoint is called the error.
+The difference between the output to the setpoint is called the error.
 
 - Proportional (P) is what gets you close to the setpoint.
-  It's proportional to the error.
 - Integral (I) helps carefully creep the rest of the way to the setpoint.
-  It's the integral of the error.
 - Derivative (D) is a braking force to stop or “dampen” any oscillations.
-  It's the derivative of the error
 
 In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
 The k stands for constants.
@@ -62,18 +71,47 @@ The k stands for constants.
 
 PID constantly compares where you are to where you want to be and adjusts.
 This is possible because each term is working to help adjust.
-The example shows the three terms working to get the output to match the setpoint.
+
+Adjusting the three terms to get the desired output is called **tuning**.
+To tune PID, the output and setpoint's information is put into a graph to help figure out how to tune each term.
+When tuning PID, the output isn't always a clean line.
+As the values are adjusted, the output line takes on different shapes which can help determine which value needs to be adjusted and how.
+
+When the output passes the set point, this is called **overshoot**.
+When the output goes up, then down, up again, and repeats, this is called **oscillating**.
+
+<ContentRow>
+    <ContentFigure
+        src="/learning-course/stage1/stage1c/overshoot.webp"
+        alt="A graph where the output overshoots"
+        width="40%"
+    >
+        Overshoot
+    </ContentFigure>
+    <ContentFigure
+        src="/learning-course/stage1/stage1c/oscillating.webp"
+        alt="A graph where the output is oscillating"
+        width="30%"
+    >
+        Oscillating
+    </ContentFigure>
+</ContentRow>
+
+## PID Example
+
+The example shows the three terms being tuned to work to get the output to match the setpoint.
 
 First we start off with tuning P.
-As P increases, the output overshoots and oscillates.
-Overshooting is when the output passes the setpoint, and oscillating means it passes the setpoint repeatedly.
+As P increases, the output gets closer to the setpoint.
+However, it's not quite there yet.
+The output starts to overshoot and then slightly oscillates.
 
 <ContentFigure
     width="550px"
     alt="A graph where the P term increases"
     src="/learning-course/stage1/stage1c/pid_p.webm"
 >
-    Photo Credit: Wikipedia
+    Credit: Wikipedia
 </ContentFigure>
 
 P gets the output close to the setpoint but it's not there yet.
@@ -92,7 +130,7 @@ As I increases, the oscillations get bigger.
     alt="A graph where the I term increases"
     src="/learning-course/stage1/stage1c/pid_i.webm"
 >
-    Photo Credit: Wikipedia
+    Credit: Wikipedia
 </ContentFigure>
 
 P and I have both been added but the output doesn't match the setpoint.
@@ -106,12 +144,11 @@ Now the output matches up with the setpoint!
     alt="A graph where the D term increases"
     src="/learning-course/stage1/stage1c/pid_d.webm"
 >
-    Photo Credit: Wikipedia
+    Credit: Wikipedia
 </ContentFigure>
 
 ### Tuning PID
 
-Adjusting the three terms to get the desired output is called **tuning**.
 Tuning PID is necessary because every mechanism is different and behaves differently.
 Even two theoretically identical robots may require different PID constants, as there may be small mechanical differences that impact how mechanisms behave.
 
@@ -139,7 +176,8 @@ the output matches the setpoint.
 ### PID Exercise
 
 In the simulation below, there is a water tank that is filling up with water.
-The water tank has a fill line to show where the water should stop. This is the setpoint.
+The water tank has a fill line to show where the water should stop.
+This is the setpoint.
 The graph below shows the output (labeled "actual") and the setpoint.
 To ensure that the water stops at the setpoint, PID can be used to adjust the flow of water into the tank.
 Tune the P, I, and D values until the water stops at the water line.

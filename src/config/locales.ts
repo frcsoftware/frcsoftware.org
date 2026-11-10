@@ -4,9 +4,12 @@
 export const defaultLang = 'en';
 
 // adding a new locale requires adding a directory under src/content/docs/ and
-// adding an entry here. The directory name must match `lang`.
+// adding an entry here. The directory name must match the locale key; `lang`
+// is the BCP-47 tag written to the page. Starlight lowercases route IDs, so
+// region-tagged locales should use a lowercase key such as `zh-cn`.
 const configuredLocales: Record<string, { label: string; lang: string }> = {
     root: { label: 'English', lang: defaultLang },
+    'zh-cn': { label: '简体中文', lang: 'zh-CN' },
 };
 
 export const langByLocaleDir: Record<string, string> = Object.fromEntries(
@@ -61,14 +64,20 @@ function isPageUrl(url: string): boolean {
  * Prefixes a root-relative page URL with a locale directory. Anything already
  * in the locale, external, or pointing at public/ is returned unchanged.
  *
- * `localeDir` doubles as the BCP-47 tag, so `Astro.currentLocale` can be passed
- * straight in.
+ * Accepts either a locale directory (such as `zh-cn`) or its BCP-47 language
+ * tag (such as `zh-CN`), so `Astro.currentLocale` can be passed straight in.
  */
-export function localizeHref(
-    href: string,
-    localeDir: string | undefined,
-): string {
-    if (!localeDir || !(localeDir in langByLocaleDir)) return href;
+export function localizeHref(href: string, locale: string | undefined): string {
+    if (!locale) return href;
+
+    const localeDir =
+        locale in langByLocaleDir
+            ? locale
+            : Object.entries(langByLocaleDir).find(
+                  ([, lang]) => lang === locale,
+              )?.[0];
+
+    if (!localeDir) return href;
     if (!isPageUrl(href)) return href;
 
     const [path = ''] = href.split(/[?#]/);

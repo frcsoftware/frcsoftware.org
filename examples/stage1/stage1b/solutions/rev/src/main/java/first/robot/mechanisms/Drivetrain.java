@@ -20,6 +20,7 @@ import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
+// [CheckUpDrivetrain]
 public class Drivetrain implements Mechanism {
   private final SparkMax leftLeader = new SparkMax(CANPort.CAN_S0, 0, MotorType.kBrushless);
   private final SparkMax leftFollower = new SparkMax(CANPort.CAN_S0, 1, MotorType.kBrushless);
@@ -79,3 +80,4 @@ public class Drivetrain implements Mechanism {
     }
   }
 }
+// [/CheckUpDrivetrain]

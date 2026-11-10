@@ -3,6 +3,10 @@ title: Exercise - Kitbot Rewrite, Pt. 1
 description: Rewriting the kitbot code in stage 1A to command-based
 codeRegionSources:
     default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbot.java
+    checkUpFeederCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/Feeder.java
+    checkUpFeederREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/Feeder.java
+    checkUpIntakeCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/IntakeLauncher.java
+    checkUpIntakeREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/IntakeLauncher.java
 ---
 
 import Aside from '@components/Aside.astro';
@@ -42,7 +46,7 @@ Then, navigate to the `Robot` class under `src/main/java/first/robot`.
 For commands to function, you must call `Scheduler.getDefault().run()` in
 the robot class' `robotPeriodic()` method.
 
-```java #robotDef
+```java {default}#robotDef
 
 ```
 
@@ -64,7 +68,7 @@ The `Feeder` class should implement `Mechanism`.
 
 <Aside type="hint">
     A mechanism is defined as a class with the `implements Mechanism` keyword at the end.
-    ```java #feederDef
+    ```java {default}#feederDef
 
     ```
 
@@ -137,7 +141,7 @@ Then, add the following:
 After completing all of that, copy-paste the following code into the `Feeder` class
 to allow for simulation to work:
 
-```java #feederSim
+```java {default}#feederSim
 
 ```
 
@@ -257,6 +261,32 @@ Which method should it be?
 
 <Aside type="hint">
     What method in the `Robot` class has the word `periodic` in it?
+</Aside>
+
+### Check Up
+
+By now your Feeder and IntakeLauncher mechanisms should look like this and VS code should not be giving you any errors.
+
+<Aside type="answer" title="Solution: Feeder.java">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+            ```java {checkUpFeederCTRE}#CheckupFeeder ```
+        </TabItem>
+        <TabItem label="REV">
+            ```java {checkUpFeederREV}#CheckupFeeder ```
+        </TabItem>
+    </Tabs>
+</Aside>
+
+<Aside type="answer" title="Solution: IntakeLauncher.java">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+            ```java {checkUpIntakeCTRE}#CheckupIntake ```
+        </TabItem>
+        <TabItem label="REV">
+            ```java {checkUpIntakeREV}#CheckupIntake ```
+        </TabItem>
+    </Tabs>
 </Aside>
 
 ### Task 5: Finish the teleop OpMode

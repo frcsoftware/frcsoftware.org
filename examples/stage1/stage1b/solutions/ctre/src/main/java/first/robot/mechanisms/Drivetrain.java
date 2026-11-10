@@ -21,6 +21,7 @@ import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.hardware.imu.OnboardIMU;
 import org.wpilib.hardware.imu.OnboardIMU.MountOrientation;
 
+// [CheckUpDrivetrain]
 public class Drivetrain implements Mechanism {
   private static final int leftLeaderID = 0, rightLeaderID = 2;
   private final TalonFX leftLeader = new TalonFX(leftLeaderID, new CANBus(CANPort.CAN_S0));
@@ -76,3 +77,4 @@ public class Drivetrain implements Mechanism {
     }
   }
 }
+// [/CheckUpDrivetrain]

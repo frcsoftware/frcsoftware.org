@@ -17,19 +17,8 @@ interface Props {
 const { href, blank = true, center = false } = Astro.props;
 ---
 
-{
-    center ? (
-        <div class="link-button-center">
-            <a
-                href={href}
-                class="link-button"
-                target={blank ? '_blank' : undefined}
-                rel={blank ? 'noopener noreferrer' : undefined}
-            >
-                <slot />
-            </a>
-        </div>
-    ) : (
+{center ? (
+    <div class="link-button-center">
         <a
             href={href}
             class="link-button"
@@ -38,8 +27,17 @@ const { href, blank = true, center = false } = Astro.props;
         >
             <slot />
         </a>
-    )
-}
+    </div>
+) : (
+    <a
+        href={href}
+        class="link-button"
+        target={blank ? '_blank' : undefined}
+        rel={blank ? 'noopener noreferrer' : undefined}
+    >
+        <slot />
+    </a>
+)}
 
 <style>
     .link-button-center {

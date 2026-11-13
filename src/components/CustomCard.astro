@@ -20,22 +20,20 @@ const t = Astro.locals.t;
         </a>
         {subTitle && <span class="card-subtitle" set:html={subTitle} />}
 
-        {
-            href && (
-                <button
-                    class="copy-btn"
-                    data-href={href}
-                    aria-label={t('card.copyLink')}
-                >
-                    <span class="icon-default">
-                        <MdiIcon path={mdiLinkVariant} size={18} />
-                    </span>
-                    <span class="icon-copied">
-                        <MdiIcon path={mdiCheck} size={18} />
-                    </span>
-                </button>
-            )
-        }
+        {href && (
+            <button
+                class="copy-btn"
+                data-href={href}
+                aria-label={t('card.copyLink')}
+            >
+                <span class="icon-default">
+                    <MdiIcon path={mdiLinkVariant} size={18} />
+                </span>
+                <span class="icon-copied">
+                    <MdiIcon path={mdiCheck} size={18} />
+                </span>
+            </button>
+        )}
     </div>
     <div class="card-body">
         <slot />

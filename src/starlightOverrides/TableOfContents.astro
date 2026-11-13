@@ -55,21 +55,16 @@ showToc =
     (frontmatterEnabled || directoryEnabled);
 ---
 
-{
-    showToc && (
-        <starlight-toc
-            data-min-h={minHeadingLevel}
-            data-max-h={maxHeadingLevel}
-        >
-            <nav aria-labelledby="starlight__on-this-page">
-                <h2 id="starlight__on-this-page">
-                    {t('tableOfContents.onThisPage')}
-                </h2>
-                <TableOfContentsList items={items} />
-            </nav>
-        </starlight-toc>
-    )
-}
+{showToc && (
+    <starlight-toc data-min-h={minHeadingLevel} data-max-h={maxHeadingLevel}>
+        <nav aria-labelledby="starlight__on-this-page">
+            <h2 id="starlight__on-this-page">
+                {t('tableOfContents.onThisPage')}
+            </h2>
+            <TableOfContentsList items={items} />
+        </nav>
+    </starlight-toc>
+)}
 
 <script>
     const PAGE_TITLE_ID = '_top';

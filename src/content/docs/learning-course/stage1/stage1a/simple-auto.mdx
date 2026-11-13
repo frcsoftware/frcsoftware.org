@@ -22,7 +22,7 @@ An autonomous routine is simply an OpMode that gets run during the autonomous po
 When writing an OpMode that will be run during the autonomous mode, there is an `@Autonomous` annotation that is added directly before the class definition.
 This annotation tells the Driver Station to place the OpMode under the autonomous selector.
 This OpMode will use a `Timer` to base its behavior off of the time elapsed from the beginning of the autonomous period.
-Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions
+Time-based autos trade off simplicity for reliability, since slight variations in starting configuration could cause your robot to take more or less time to perform different actions.
 The code for the auto will be added to the `MyAuto.java` file inside the opmode folder.
 
 To write a time based auto, a `Timer` must be created to keep track of how long the auto has run.
@@ -43,6 +43,13 @@ Inside the `MyAuto` class, construct a `Timer` instance.
     </TabItem>
 
 </Tabs>
+
+<Aside type="note">
+    When adding in `Timer`, there will be an error. This error is an import
+    error and can be fixed through Quick Fix. When using Quick Fix, there will
+    usually be many options. For `Timer`, select `import
+    org.wpilib.system.Timer;`
+</Aside>
 
 With the code as it is now, this timer will keep track of the time since the autonomous was selected in the driver station.
 However, the timer needs to keep track of the time since the robot is enabled.
@@ -119,3 +126,9 @@ Now when the robot is enabled the auto should run.
 Try adding on to this auto yourself.
 For example, the robot could drive forward at half speed for four seconds, turn counter clockwise for two seconds, then drive forward at full speed for three seconds.
 You could also try creating additional autonomous OpModes so you can select between the different autos you have created.
+
+<Aside type="tip">
+    Before going to the next step, commit and push your changes to GitHub! If
+    you need a reminder on how to do so, review [Git-Uploading
+    Code.](/learning-course/stage0/git/)
+</Aside>

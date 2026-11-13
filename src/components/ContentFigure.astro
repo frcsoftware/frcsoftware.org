@@ -174,63 +174,59 @@ const t = Astro.locals.t;
     class:list={['content-figure', className]}
     style={`max-width: ${width}; margin: ${marginStyle};`}
 >
-    {
-        isYouTubeVideo ? (
-            <div
-                class:list={['content-figure-video']}
-                style={hasBorder ? `border: ${borderStyle};` : undefined}
+    {isYouTubeVideo ? (
+        <div
+            class:list={['content-figure-video']}
+            style={hasBorder ? `border: ${borderStyle};` : undefined}
+        >
+            <iframe
+                src={embedUrl}
+                title={t('video.youTubeTitle')}
+                style="border: none;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+            />
+        </div>
+    ) : isLocalVideo ? (
+        <div
+            class:list={['content-figure-video']}
+            style={hasBorder ? `border: ${borderStyle};` : undefined}
+        >
+            <video
+                src={src as string}
+                controls
+                autoplay={autoplay}
+                loop
+                muted
+                playsinline
+                preload="metadata"
             >
-                <iframe
-                    src={embedUrl}
-                    title={t('video.youTubeTitle')}
-                    style="border: none;"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
+                {t('video.unsupported')}
+            </video>
+        </div>
+    ) : (
+        <div
+            class:list={['content-figure-image']}
+            style={hasBorder ? `border: ${borderStyle};` : undefined}
+        >
+            {optimizedImage ? (
+                <Image src={optimizedImage} alt={alt} class="figure-img" />
+            ) : (
+                <img
+                    src={typeof src === 'string' ? src : ''}
+                    alt={alt}
+                    class="figure-img"
                     loading="lazy"
                 />
-            </div>
-        ) : isLocalVideo ? (
-            <div
-                class:list={['content-figure-video']}
-                style={hasBorder ? `border: ${borderStyle};` : undefined}
-            >
-                <video
-                    src={src as string}
-                    controls
-                    autoplay={autoplay}
-                    loop
-                    muted
-                    playsinline
-                    preload="metadata"
-                >
-                    {t('video.unsupported')}
-                </video>
-            </div>
-        ) : (
-            <div
-                class:list={['content-figure-image']}
-                style={hasBorder ? `border: ${borderStyle};` : undefined}
-            >
-                {optimizedImage ? (
-                    <Image src={optimizedImage} alt={alt} class="figure-img" />
-                ) : (
-                    <img
-                        src={typeof src === 'string' ? src : ''}
-                        alt={alt}
-                        class="figure-img"
-                        loading="lazy"
-                    />
-                )}
-            </div>
-        )
-    }
-    {
-        hasCaption && (
-            <figcaption class="content-figure-caption">
-                <slot />
-            </figcaption>
-        )
-    }
+            )}
+        </div>
+    )}
+    {hasCaption && (
+        <figcaption class="content-figure-caption">
+            <slot />
+        </figcaption>
+    )}
 </figure>
 
 <style>

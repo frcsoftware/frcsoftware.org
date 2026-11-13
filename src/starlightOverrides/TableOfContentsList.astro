@@ -17,18 +17,16 @@ const { items, depth = 0 } = Astro.props;
 ---
 
 <ul style={`--depth: ${depth}`}>
-    {
-        items.map((heading) => (
-            <li>
-                <a href={'#' + heading.slug}>
-                    <span>{heading.text}</span>
-                </a>
-                {heading.children.length > 0 && (
-                    <Astro.self items={heading.children} depth={depth + 1} />
-                )}
-            </li>
-        ))
-    }
+    {items.map((heading) => (
+        <li>
+            <a href={'#' + heading.slug}>
+                <span>{heading.text}</span>
+            </a>
+            {heading.children.length > 0 && (
+                <Astro.self items={heading.children} depth={depth + 1} />
+            )}
+        </li>
+    ))}
 </ul>
 
 <style>

@@ -11,4 +11,6 @@ const { isPageWithTopic } = Astro.locals.starlightSidebarTopics;
 ---
 
 {hasSidebar && isPageWithTopic && <TopicsDropdown />}
-<Default><slot /></Default>
+<Default>
+    <slot />
+</Default>

@@ -1,8 +1,8 @@
 ---
-name: Website issue
+name: Website Technical Issue
 about: Report an issue with the website (content, components, styling, navigation, build, etc.)
 title: ''
-labels: website
+labels: Backend
 assignees: ''
 ---
 

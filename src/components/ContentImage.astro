@@ -81,21 +81,19 @@ if (width) {
 }
 ---
 
-{
-    optimizedImage ? (
-        <Image
-            src={optimizedImage}
-            alt={alt}
-            style={inlineStyle || undefined}
-            class={className}
-        />
-    ) : (
-        <img
-            src={src}
-            alt={alt}
-            style={inlineStyle || undefined}
-            class={className}
-            loading="lazy"
-        />
-    )
-}
+{optimizedImage ? (
+    <Image
+        src={optimizedImage}
+        alt={alt}
+        style={inlineStyle || undefined}
+        class={className}
+    />
+) : (
+    <img
+        src={src}
+        alt={alt}
+        style={inlineStyle || undefined}
+        class={className}
+        loading="lazy"
+    />
+)}

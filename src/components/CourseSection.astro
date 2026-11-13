@@ -34,38 +34,32 @@ const localizedHref = localizeHref(href, Astro.currentLocale);
         !hasImage && 'no-image',
     ]}
 >
-    {
-        hasImage && imageSide === 'left' && (
-            <div class="course-section-image">
-                <ContentFigure src={image!} alt={imageAlt} />
-            </div>
-        )
-    }
+    {hasImage && imageSide === 'left' && (
+        <div class="course-section-image">
+            <ContentFigure src={image!} alt={imageAlt} />
+        </div>
+    )}
 
     <div class="course-section-content">
         <h3 class="course-section-title">
             <a href={localizedHref}>{title}</a>
-            {
-                underConstruction && (
-                    <span class="under-construction">
-                        {' '}
-                        {t('courseSection.underConstruction')}
-                    </span>
-                )
-            }
+            {underConstruction && (
+                <span class="under-construction">
+                    {' '}
+                    {t('courseSection.underConstruction')}
+                </span>
+            )}
         </h3>
         <ul class="course-section-list">
             <slot />
         </ul>
     </div>
 
-    {
-        hasImage && imageSide === 'right' && (
-            <div class="course-section-image">
-                <ContentFigure src={image!} alt={imageAlt} />
-            </div>
-        )
-    }
+    {hasImage && imageSide === 'right' && (
+        <div class="course-section-image">
+            <ContentFigure src={image!} alt={imageAlt} />
+        </div>
+    )}
 </section>
 
 <style>

@@ -26,6 +26,9 @@ jobs:
                   cache: true
                   require-lockfile: true
 
+            - name: Test image attribute plugin
+              run: pnpm exec tsx --test tests/remark-image-attributes.test.ts
+
             - name: Build site
               run: pnpm build
 

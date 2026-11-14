@@ -27,7 +27,7 @@ import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
 
-  //[checkin]
+// [checkin]
 public class Drivetrain implements Mechanism {
   private final SparkMax leftLeader = new SparkMax(CANPort.CAN_S0, 0, MotorType.kBrushless);
   private final SparkMax leftFollower = new SparkMax(CANPort.CAN_S0, 1, MotorType.kBrushless);
@@ -54,7 +54,7 @@ public class Drivetrain implements Mechanism {
   private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
   // [/sensors]
-  
+
   private final TelemetryTable table = Telemetry.getTable("Drive");
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
@@ -78,14 +78,14 @@ public class Drivetrain implements Mechanism {
 
     setDefaultCommand(idle());
 
-    //[pidController2]
+    // [pidController2]
     driveDistanceController.setTolerance(0.05, 0.05);
     headingController.setTolerance(0.05, 0.2);
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-    //[/pidController2]
+    // [/pidController2]
   }
 
-  //[/checkin]
+  // [/checkin]
   public Command idle() {
     return run(coroutine -> {
           while (true) {

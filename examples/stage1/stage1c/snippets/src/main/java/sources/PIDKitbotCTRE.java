@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 package sources;
+
 import static org.wpilib.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
@@ -31,7 +32,7 @@ import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 
-  //[checkin]
+// [checkin]
 public class Drivetrain implements Mechanism {
   private static final int leftLeaderID = 0, rightLeaderID = 2;
   private final TalonFX leftLeader = new TalonFX(leftLeaderID, new CANBus(CANPort.CAN_S0));
@@ -64,13 +65,12 @@ public class Drivetrain implements Mechanism {
   private final StatusSignal<AngularVelocity> rightVelocitySignal = rightLeader.getVelocity();
   // [/sensorsTwo]
 
-
   private final TelemetryTable table = Telemetry.getTable("Drive");
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
   public Drivetrain() {
-    //[gearRatio2]
+    // [gearRatio2]
     var leftConfig = new TalonFXConfiguration();
     leftConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
     // adds the GEAR_RATIO
@@ -82,19 +82,20 @@ public class Drivetrain implements Mechanism {
     // adds the GEAR_RATIO
     rightConfig.Feedback.withSensorToMechanismRatio(GEAR_RATIO);
     rightLeader.getConfigurator().apply(rightConfig);
-    //[/gearRatio2]
+    // [/gearRatio2]
     leftFollower.setControl(new Follower(leftLeaderID, MotorAlignmentValue.Aligned));
     rightFollower.setControl(new Follower(rightLeaderID, MotorAlignmentValue.Aligned));
 
     setDefaultCommand(idle());
 
-    //[pidController2]
+    // [pidController2]
     driveDistanceController.setTolerance(0.05, 0.05);
     headingController.setTolerance(0.05, 0.2);
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-     //[/pidController2]
+    // [/pidController2]
   }
-  //[/checkin]
+
+  // [/checkin]
   public Command idle() {
     return run(coroutine -> {
           while (true) {

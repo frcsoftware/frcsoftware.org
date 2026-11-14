@@ -3,9 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-package first.robot.mechanisms;
-
-import static org.wpilib.units.Units.*;
+package sources;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;

@@ -1,0 +1,183 @@
+---
+title: Controls Introduction
+description: An overview of Feedback Controllers and PID
+---
+
+import ContentImage from '@components/ContentImage.astro';
+
+With FRC games, it's common for teams to have a mechanism move to a desired position or move the robot to a desired position or angle.
+One example is auto aligning.
+Robots auto align by turning a certain amount of degrees towards the goal then take the steps needed to score the game piece.
+This helps makes scoring more efficient.
+In 2026, the kitbot might auto align to the goal by turning to a certain angle on the field.
+The kitbot can't turn too far to the left or too far to the right because then it might miss the goal.
+It has to turn just the right amount.
+How do teams make sure that happens?
+It's with a feedback controller called PID.
+
+## Feedback Controller
+
+A feedback controller uses sensors and equations to figure out what the mechanism is currently doing,
+and controls the mechanism's output to make it do what we want it do.
+The mechanisms's current state is called the **output**.
+The desired state of the mechanism, where we want it to be, is called the **setpoint**.
+
+In the case of the kitbot's auto align, the **output** is the information from the sensor on what the robot's current angle is.
+The **setpoint** is a target angle, perhaps pointing the kitbot towards the goal.
+
+<Aside type="note">
+    We're able to get the kitbot's angle through Systemcore's built in IMU, or
+    Inertial Measurement Unit. This is a sensor that allows the robot to
+    accurately track its orientation in 3D space, returning this in the form of
+    3 angles, roll, pitch, and yaw.
+</Aside>
+
+Feedback controllers are also used outside of FRC.
+One example is an air conditioner.
+An air conditioner has a sensor that compares the current temperature with the desired temperature.
+Then the air conditioner directs the airflow in a way which allows the air to get to the desired temperature.
+
+A type of feedback controller is PID.
+This stage will use PID to help the kitbot auto align and drive towards the goal.
+
+## PID
+
+PID is a type of feedback controller that uses three terms: proportional, integral, and derivative.
+Together the three terms are P, I, and D, which is how PID gets its name.
+
+PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
+The difference between the outpoint to the setpoint is called the error.
+
+- Proportional (P) is what gets you close to the setpoint.
+  It's proportional to the error.
+- Integral (I) helps carefully creep the rest of the way to the setpoint.
+  It's the integral of the error.
+- Derivative (D) is a braking force to stop or “dampen” any oscillations.
+  It's the derivative of the error
+
+In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
+The k stands for constants.
+
+### How does P, I, and D work together?
+
+PID is constantly comparing where you are to where you want to be and adjusting.
+This is possible because each term is working to help adjust.
+The example shows the three terms working to get the output to match the setpoint.
+
+First we start off with tuning P.
+As P increases, the output overshoots and oscillates.
+Overshooting is when the output passes the setpoint, and oscillating means it passes the setpoint repeatedly.
+
+<ContentFigure
+    width="550px"
+    alt="A graph where the P term increases"
+    src="/learning-course/stage1/stage1c/pid_p.webm"
+>
+    Photo Credit: Wikipedia
+</ContentFigure>
+
+P gets the output close to the setpoint but it's not there yet.
+Therefore the example introduces I.
+As I increases, the oscillations get bigger.
+
+<Aside type="note">
+    In FRC, using I is **not** recommended. Instead, it's recommended to use
+    another controller type called FeedForward. This will be covered in Stage 2
+    and it is not needed for 1C. I is explained in this page for the purposes of
+    understanding PID.
+</Aside>
+
+<ContentFigure
+    width="550px"
+    alt="A graph where the I term increases"
+    src="/learning-course/stage1/stage1c/pid_i.webm"
+>
+    Photo Credit: Wikipedia
+</ContentFigure>
+
+P and I have both been added but the output doesn't match the setpoint.
+However, there are still oscillations and the output still overshoots.
+To solve this, the example introduces D.
+As D increases, the oscillations smooth out and the output slowly stops overshooting.
+Now the output matches up with the setpoint!
+
+<ContentFigure
+    width="550px"
+    alt="A graph where the D term increases"
+    src="/learning-course/stage1/stage1c/pid_d.webm"
+>
+    Photo Credit: Wikipedia
+</ContentFigure>
+
+### Tuning PID
+
+Adjusting the three terms to get the desired output is called **tuning**.
+Tuning PID is necessary because every mechanism is different and behaves differently.
+Even two theoretically identical robots may require different PID constants, as they may be small mechanical differences that impact how mechanisms behave.
+
+<Aside type="tip">
+    When increasing PID values start small and increase carefully. Starting with
+    huge numbers or increasing in big jumps can make it difficult to get the
+    desired outcome.
+</Aside>
+
+When tuning PID, the first step is to set all three terms to 0.
+The first value that you want to tune is P.
+Increase P until the output is near the setpoint but it starts to oscillate.
+
+If the output is close to the target but just misses it, I can be increased to push it towards the set point.
+However, in FRC, this part is commonly skipped.
+
+If there are any oscillations, D can be introduced.
+By increasing D, it can help smooth out the oscillations.
+However, make sure that it isn't increased so much that it causes jittering.
+
+Similar to the examples, graphs are used to tune PID.
+By using a graph, we can see the mechanism's output, compare it to the setpoint, and adjust the different terms until
+the output matches the setpoint.
+
+### PID Exercise
+
+In the simulation below, there is a water tank that is filling up with water.
+The water tank has a fill line to show where the water should stop, this is the setpoint.
+The graph below shows the output (labeled "actual") and the setpoint.
+To ensure that the water stops at the setpoint, PID can be used to adjust the flow into the tank.
+Tune the P, I, and D values until the water stops at the water line.
+The graph can be used to help!
+
+<div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
+    <iframe
+        src="https://www.educational-animation.org/web-animations/pid-controller/en/pid-controller.html"
+        title="Interactive Animation: PID Controller"
+        style={{
+            position: 'absolute',
+            inset: '0',
+            width: '100%',
+            height: '100%',
+            border: '0',
+        }}
+        allowFullScreen
+        loading="lazy"
+    />
+</div>
+<p>
+    [Source: PID Controller –
+    educational-animation.org](https://www.educational-animation.org/en/pid-controller)
+</p>
+
+<Aside type="answer">kp = 3.0, ki = 0.51, and kd = 0.31</Aside>
+
+## PID and The Kitbot
+
+Similar to the graph in the water tank example, FRC teams use AdvantageScope and its Line Graph tab to create graphs to help tune PID.
+By reading the information from a sensor, a similar graph can be made that shows the setpoint and output.
+
+<ContentFigure
+    width="650px"
+    alt="a screenshot of AdvantageScope and AdvantageScope has the graph tab open"
+    src="/learning-course/stage1/stage1c/graph.webp"
+/>
+
+To get to tuning the kitbot's PID, the PID controllers have set up in code to control the motors.
+The rest of this section will explain
+how to add the PID libraries and how to put the information into AdvantageScope so the PID can be tuned.

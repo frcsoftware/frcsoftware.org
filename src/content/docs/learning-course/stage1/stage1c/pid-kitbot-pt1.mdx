@@ -1,0 +1,232 @@
+---
+title: PID Kitbot
+description: An overview of Feedback Controllers and PID
+codeRegionSources:
+    ctreRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotCTRE.java
+    revRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotREV.java
+---
+
+import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+### What You'll Accomplish
+
+You will add code that steps up PID in Kitbot's drivetrain.
+Then you will add a driveDistance command that makes kitbot drive forward a desired distance.
+
+### Task 1: Setup
+
+Use git to fork and clone the stage 1C template code.
+If you need help, read over [the Forking and Cloning guide](/learning-course/getting-started/forking-and-cloning/).
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        Fork then clone the [CTRE Template](https://github.com/frcsoftware/Stage1C-Template-CTRE)
+    </TabItem>
+    <TabItem label="REV">
+       Fork, then clone the [REV Template](https://github.com/frcsoftware/Stage1C-Template-REV)
+    </TabItem>
+
+</Tabs>
+
+## Task 2: Setting Up
+
+As mentioned on the previous page, PID uses sensor data to gather information about the mechanism.
+This helps the PID controller determine the mechanism's current state and how to apply PID.
+Therefore, `Drivetrain.java` needs information about the wheels, gearboxes, and encoders.
+
+### Wheels
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        The first piece of information is the wheel circumference.
+        By knowing the wheel circumference, we can figure out how much the robot moves per wheel rotation.
+        A double can be created to hold the wheel circumference. 
+        This double will be called `WHEEL_CIRCUMFERENCE`.
+        The diameter of the kitbot wheel is 6.0 inches. To find the circumference of the wheel, the diameter is multiplied by `Math.PI`.
+         
+        Since WPILib uses metric units, the units have to be converted to meters using `Units.inchesToMeters()`.
+        Therefore, together `WHEEL_CIRCUMFERENCE` is set to `Units.inchesToMeters(6.0) * Math.PI;`
+        The following can be added underneath the `drivetrainSim` object.
+
+        ```java {ctreRobot}#wheel
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        The first piece of information is the wheel radius.
+        By knowing the wheel radius, we can figure out how much the robot moves per wheel rotation.
+        A double can be created to hold the wheel radius.
+        This double will be called `WHEEL_RADIUS`.
+        The radius of a kitbot wheel is 3.0 inches.
+
+        Since WPILib uses metric units, the units have to be converted to meters using `Units.inchesToMeters()`.
+        Therefore, together `WHEEL_RADIUS` is set to `Units.inchesToMeters(3.0)`
+        The following can be added underneath the `drivetrainSim` object.
+           ```java {revRobot}#wheel
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+### Gearboxes
+
+The second piece of information that we need to state is the gear ratio.
+The kitbot's drivetrain uses gearboxes.
+Gearboxes are mechanisms that motors are attached to.
+They can help teams change the motor speed or torque.
+The kitbot has gearboxes with a 10.71:1 gear ratio.
+This means that the motor has to spin 10.71 times for the wheel to rotate once.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+    The `GEAR_RATIO` double can be added under the `WHEEL_CIRCUMFERENCE` variable.
+
+         ```java {ctreRobot}#gearRatio
+
+        ```
+        When measuring rotations, we want to measure how many rotations the wheel has completed.
+        The motors have built-in encoders, which measure the rotation of the motor's shaft.
+        However, the wheel is connected to the gearbox's output shaft, which spins at a different speed than the motor's shaft.
+        Therefore, we need to account for this reduction in the motor configs.
+        This can be done using `Feedback.withSensorToMechanismRatio(GEAR_RATIO)`.
+        In this context, `GEAR_RATIO` is the ratio between the shaft the encoder is connected to (the motor shaft) and the shaft you want to measure (the wheel shaft).
+
+        Later in the `Drivetrain.java` file, the motor configurations are set up through the `leftConfig` and `rightConfig` objects.
+        Add `Feedback.withSensorToMechanismRatio(GEAR_RATIO);` to both `leftConfig` and `rightConfig` as shown below:
+        ```java {ctreRobot}#gearRatio2
+
+        ```
+    </TabItem>
+
+    <TabItem label="REV">
+        The `GEAR_RATIO` double can be added under the `WHEEL_RADIUS` variable.
+
+        ```java {revRobot}#gearRatio
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+### Encoders
+
+The last piece of information that we need to provide the robot is the sensor data.
+We want to know what the wheels' current state is so we can figure out if the Kitbot drivetrain has reached the set point.
+To get this information, we're going to use the drivetrain encoders.
+
+Encoders are sensors that measure how far the motor has traveled by keeping track of
+the motor's rotations.
+Then they report back the position.
+The Kitbot has motors on the left and right sides of the drivetrain.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        CTRE uses `StatusSignal` objects to read data from sensors.
+        Therefore, we will create two `StatusSignal` objects to track their positions, one for `leftLeader`'s encoder and one for `rightLeader`'s encoder.
+        The two objects will be created under 
+        The `leftLeader`'s signal will be called `leftDistanceSignal` and will be set equal to `leftLeader.getPosition()`. 
+        This gets the position of the wheel in rotations.
+        `<Angle>` is what sets the units to be an angular measurement, which are rotations or degrees.
+        Next, the same will be added for the right side.
+        Similarly, `rightLeader`'s signal will be called `rightDistanceSignal`, and it will be set equal to `rightLeader.getPosition()`
+        
+        ```java {ctreRobot}#sensors
+
+        ```
+        The encoders are also helpful for tracking the drive motor's velocity.
+        Similar to creating the position signals, two `StatusSignal` objects can be made to track `leftLeader` and `rightLeader`'s velocity.
+        The `leftLeader`'s signal will be called `leftVelocitySignal` and will be set equal to `leftLeader.getVelocity()`.
+        `<AngularVelocity>` specifies that the unit is an angular velocity measurement.
+        Since this is CTRE, this means that the units are in rotations per second.
+        ```java {ctreRobot}#sensorsTwo
+
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+        REV uses `RelativeEncoder` objects to interact with and read data from built-in motor encoders.
+        Therefore, we will create two `RelativeEncoder` objects to track their positions, one for `leftLeader`'s encoder and one for `rightLeader`'s encoder.
+
+        ```java {revRobot}#sensors
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+### PID Controllers
+
+Now that information about the wheels, gearboxes, and encoders has been added, it's time to add PID.
+
+To implement PID, the WPILib `PIDController` class is used.
+Creating a `PIDController` object lets the `kp`, `ki`, and `kd` calculate the corrections needed based on the sensor readings.
+We will be making two `PIDController` objects: `driveDistanceController` and `headingController`
+
+- `driveDistanceController` adjusts the robot's distance
+- `headingController` adjusts the robot's angle
+  Under `GEAR_RATIO`, add the two objects.
+  For now, the parameters can be all set to 0.
+  These will be tuned later.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#pidController
+
+        ```
+    </TabItem>
+
+    <TabItem label="REV">
+        ```java {revRobot}#pidController
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+To make the `PIDController`s work, we have to add tolerance and enable the continuous input.
+
+First, we need to add tolerances for both `driveDistanceController` and `headingController`.
+Setting the tolerance is important because it defines the margin of error around the setpoint that is considered "close enough" to stop adjusting.
+
+Now we have to enable the continuous input on `headingController`.
+Enabling continuous input helps the `PIDController` to figure out the shortest turn to the target angle.
+This prevents the motor from taking the longer way around.
+
+In the `Drivetrain()` constructor, under `setDefaultCommand(idle())` add the tolerance and continuous input settings.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#pidController2
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java {revRobot}#pidController2
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+## Check Up
+
+Your `Drivetrain.java` file should look like this:
+
+<Aside type="answer">
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#checkin
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java {revRobot}#checkin
+
+        ```
+    </TabItem>
+
+</Tabs>
+</Aside>

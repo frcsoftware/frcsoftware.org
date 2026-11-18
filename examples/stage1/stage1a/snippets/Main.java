@@ -3,8 +3,6 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
-// [main]
 import org.wpilib.framework.RobotBase;
 
 public final class Main {

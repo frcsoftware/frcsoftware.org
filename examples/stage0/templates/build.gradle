@@ -20,9 +20,9 @@ sourceSets {
     }
 }
 
-def templateFiles = fileTree('src') { include '**/*.java' }.files
-def runnableFiles = templateFiles.findAll { it.text.contains('void main(') }
-def templateRunTasks = runnableFiles.collect { src ->
+def sourceFiles = fileTree('src') { include '**/*.java' }.files
+def runnableFiles = sourceFiles.findAll { it.text.contains('void main(') }
+def runTasks = runnableFiles.collect { src ->
     def className = src.name - '.java'
     tasks.register("run${className}", JavaExec) {
         dependsOn 'compileJava'
@@ -31,8 +31,8 @@ def templateRunTasks = runnableFiles.collect { src ->
     }
 }
 
-tasks.register('runTemplates') {
-    dependsOn templateRunTasks
+tasks.register('runAll') {
+    dependsOn runTasks
 }
 
 def allJavaFiles = fileTree(".") {
@@ -83,5 +83,5 @@ tasks.named('compileJava') {
 }
 
 tasks.named('check') {
-    dependsOn 'runTemplates'
+    dependsOn 'runAll'
 }

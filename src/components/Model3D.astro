@@ -1,0 +1,44 @@
+---
+/**
+ * Model3D component - Show a 3D model that the user can rotate and zoom.
+ *
+ * The model file must be glTF (.glb or .gltf) and must be in `public/`.
+ *
+ * Usage:
+ * <Model3D src="/learning-course/stage2/midtide.glb" alt="MIDTIDE robot" />
+ */
+
+interface Props {
+    src: string;
+    alt: string;
+}
+
+const { src, alt } = Astro.props;
+---
+
+<model-viewer
+    src={src}
+    alt={alt}
+    camera-controls
+    touch-action="pan-y"
+    auto-rotate
+    rotation-per-second="20deg"
+    shadow-intensity="1"></model-viewer>
+
+<script
+    is:inline
+    type="module"
+    src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"
+></script>
+
+<style>
+    model-viewer {
+        display: block;
+        margin: 1.5rem auto;
+        width: 100%;
+        max-width: 800px;
+        height: 400px;
+        border-radius: 0.25rem;
+        background: var(--sl-color-gray-6);
+    }
+</style>

@@ -46,10 +46,12 @@ programming structures: while loops, variables, method calls, and more.
 
 ### The Meaning of `coroutine.yield();`
 
-`coroutine.yield()` is a special statement that must be called inside of while loops.
+`coroutine.yield()` is a special statement that must be called inside of while loops that are inside of a command.
+
 It allows for commands to run in parallel, while ensuring that background tasks
 (like motor safety checks) are run.
-An analogy would be the sips of water you take while you finish your homework.
+
+An analogy would be taking turns in a bowling alley, where players (commands) take turns one at a time to bowl the ball (run the command) for each mechanism, and each mechanism is its own lane.
 
 The `coroutine` object contains many other useful methods that can only be called
 inside of commands.

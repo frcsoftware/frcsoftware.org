@@ -7,16 +7,14 @@ import ContentImage from '@components/ContentImage.astro';
 import ContentRow from '@components/ContentRow.astro';
 import ContentRowCaption from '@components/ContentRow.astro';
 
-With FRC games, it's common for teams to have a mechanism move to a desired position or move the robot to a desired position or angle.
-One example is auto aligning.
-Robots auto align by turning a certain amount of degrees towards the goal then taking the steps needed to score the game piece.
+FRC robots commonly have a mechanism that needs to be controlled to a precise setpoint, such as position or velocity.
+One example is aiming your robot at a scoring goal.
+Robots align themselves by measuring their current angle with a target angle, and adjusting until the two are equal/
 Scoring with auto alignment is faster and more efficient than your driver lining up with the goal by hand.
 
-In 2026, the kitbot might auto align to the goal by turning to a certain angle on the field.
-The kitbot can't turn too far to the left or too far to the right because then it might miss the goal.
-It has to turn just the right amount.
-How do teams make sure that happens?
-This is done with PID.
+In this section, we will cover the basics of using measurements from sensors on the robot to help position mechanisms precisely.
+This type of control that incorporates _feedback_ from sensors into the movement of the mechanisms is called a _feedback controller_.
+The most common feedback controller in FRC, and the one you will be learning about today, is a PID Controller.
 
 ## Feedback Controller
 
@@ -54,7 +52,8 @@ This stage will use PID to help the kitbot auto align and drive towards the goal
 
 ## PID
 
-PID is a type of feedback controller that uses three terms: proportional, integral, and derivative.
+PID is an acronym that stands for **P**roportional, **I**ntegral, and **D**erivative.
+These are the three gains that the controller sums together in order to calculate the output to the motor.
 Together the three terms are P, I, and D, which is how PID gets its name.
 
 PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
@@ -67,12 +66,12 @@ The difference between the output to the setpoint is called the error.
 In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
 The k stands for constants.
 
-### How does P, I, and D work together?
+### How do P, I, and D work together?
 
 PID constantly compares where you are to where you want to be and adjusts.
 This is possible because each term is working to help adjust.
 
-Adjusting the three terms to get the desired output is called **tuning**.
+Tuning is the process of selecting the P, I, and D gains to achieve the desired mechanism control.
 To tune PID, the output and setpoint's information is put into a graph to help figure out how to tune each term.
 When tuning PID, the output isn't always a clean line.
 As the values are adjusted, the output line takes on different shapes which can help determine which value needs to be adjusted and how.
@@ -218,4 +217,4 @@ By reading the information from a sensor, a similar graph can be made that shows
 
 To get to tuning the kitbot's PID, the PID controllers have set up in code to control the motors.
 The rest of this section will explain
-how to add the PID libraries and how to put the data into AdvantageScope so the PID can be tuned.
+how to add the PID libraries and how to visualize the data in AdvantageScope so the PID can be tuned.

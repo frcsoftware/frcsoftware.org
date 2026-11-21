@@ -13,13 +13,10 @@ class ScoreKeeper {
     // A team's score can never drop below zero. Declare a
     // constant named `MIN_SCORE`, equal to `0`, to represent
     // that floor.
-
-
+    
     // Write a no-argument constructor `ScoreKeeper()` that starts the score
-    // at `MIN_SCORE`. Instead of repeating the constructor logic, use
-    // `this(...)` to call the other constructor below, passing `MIN_SCORE`
-    // as the argument.
-
+    // at `MIN_SCORE`.
+    
 
     // Write a constructor `ScoreKeeper(int startingScore)` that sets `score`
     // to `startingScore`.

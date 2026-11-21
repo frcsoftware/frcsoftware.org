@@ -7,7 +7,7 @@
 // Complete the class definition below. First, add two private final fields:
 // `x` and `y`, both of type `double`. Then, define a public constructor
 // `Point(double x, double y)`, and getter methods `getX()` and `getY()`.
-// Lastly, below the definitions of the `x` and `y` fields, define a static final
+// Lastly, below the definitions of the `x` and `y` fields, define a public final
 // field `ORIGIN`, of type `Point`, and assign to it a new `Point` instance
 // with x = 0 and y = 0.
 

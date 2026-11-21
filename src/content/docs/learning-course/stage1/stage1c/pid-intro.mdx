@@ -59,13 +59,15 @@ Together the three terms are P, I, and D, which is how PID gets its name.
 PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
 The difference between the output to the setpoint is called the error.
 
-- Proportional (P) is what gets you close to the setpoint.
-- Integral (I) helps carefully creep the rest of the way to the setpoint.
-- Derivative (D) is a braking force to stop or “dampen” any oscillations.
+- The Proportional (P) gain scales the output linearly with the error. The further away from the setpoint, the stronger the effect of the proportional gain. It is analogous to a spring.
+- The Integral (I) gain scales with the sum of the error over time. The longer the mechanism spends not at the setpoint, the stronger the effect of the integral gain. It is often unused in FRC due to a side effect called _integral windup_. 
+- The Derivative (D) gain scales with the rate of change of the error. The faster your mechanism approaches the setpoint, the stronger the derivative term tries to slow it down. It is analogous to a dashpot,
 
 In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
-The k stands for constants.
+k is a common prefix for constants and coefficients.
+The full equation of a PID controller function is 
 
+output = kP * error + kI * \integral(error dt) + kD * de/dt.
 ### How do P, I, and D work together?
 
 PID constantly compares where you are to where you want to be and adjusts.

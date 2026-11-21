@@ -9,10 +9,17 @@ stage1a_dest_ctre_solution  = "https://github.com/frcsoftware/stage1a-solution-c
 stage1b_dest_rev_solution  = "https://github.com/frcsoftware/stage1b-solution-rev.git"
 stage1b_dest_ctre_solution = "https://github.com/frcsoftware/stage1b-solution-ctre.git"
 
+stage1c_dest_rev_solution   = "https://github.com/frcsoftware/stage1c-solution-rev.git"
+stage1c_dest_ctre_solution  = "https://github.com/frcsoftware/stage1c-solution-ctre.git"
+
 stage1a_dest_rev_template  = "https://github.com/frcsoftware/stage1a-template-rev.git"
 stage1a_dest_ctre_template = "https://github.com/frcsoftware/stage1a-template-ctre.git"
+
 stage1b_dest_rev_template  = "https://github.com/frcsoftware/stage1b-template-rev.git"
 stage1b_dest_ctre_template = "https://github.com/frcsoftware/stage1b-template-ctre.git"
+
+stage1c_dest_rev_template  = "https://github.com/frcsoftware/stage1c-template-rev.git"
+stage1c_dest_ctre_template = "https://github.com/frcsoftware/stage1c-template-ctre.git"
 
 def create_workflow(name, source_path, dest_url):
     core.workflow(
@@ -81,6 +88,18 @@ create_workflow(
 )
 
 create_workflow(
+    name = "stage1c_ctre_solution",
+    source_path = "examples/stage1/stage1c/solutions/ctre",
+    dest_url = stage1c_dest_ctre_solution
+)
+
+create_workflow(
+    name = "stage1c_rev_solution",
+    source_path = "examples/stage1/stage1c/solutions/rev",
+    dest_url = stage1c_dest_rev_solution
+)
+
+create_workflow(
     name = "stage1a_ctre_template",
     source_path = "examples/stage1/templates/ctre",
     dest_url = stage1a_dest_ctre_template
@@ -102,4 +121,16 @@ create_workflow(
     name = "stage1b_rev_template",
     source_path = "examples/stage1/templates/rev",
     dest_url = stage1b_dest_rev_template
+)
+
+create_workflow(
+    name = "stage1c_rev_template",
+    source_path = "examples/stage1/stage1c/templates/rev",
+    dest_url = stage1c_dest_rev_template
+)
+
+create_workflow(
+    name = "stage1c_ctre_template",
+    source_path = "examples/stage1/stage1c/templates/ctre",
+    dest_url = stage1c_dest_rev_template
 )

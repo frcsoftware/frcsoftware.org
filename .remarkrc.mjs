@@ -30,6 +30,7 @@ export default {
                           'https://www.conventionalcommits.org/en/v1.0.0/',
                           'https://vale.sh/',
                           'https://squoosh.app/',
+                          'https://www.educational-animation.org/en/pid-controller/',
                       ], // Add known flaky URL patterns here
                   },
               ]

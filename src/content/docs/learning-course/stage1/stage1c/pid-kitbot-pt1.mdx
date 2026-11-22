@@ -34,7 +34,7 @@ If you need help, read over [the Forking and Cloning guide](/learning-course/get
 
 As mentioned on the previous page, PID uses sensor data to gather information about the mechanism.
 This helps the PID controller determine the mechanism's current state and how to apply PID.
-Therefore, `Drivetrain.java` needs information about the wheels, gearboxes, and encoders.
+`Drivetrain.java` needs to know the robot's wheel radius, drive gear ratio, and have access to its encoders in order to calculate the robot's position based on incoming sensor data.
 
 ### Wheels
 
@@ -43,11 +43,11 @@ Therefore, `Drivetrain.java` needs information about the wheels, gearboxes, and 
         The first piece of information is the wheel circumference.
         By knowing the wheel circumference, we can figure out how much the robot moves per wheel rotation.
         A double can be created to hold the wheel circumference. 
-        This double will be called `WHEEL_CIRCUMFERENCE`.
-        The diameter of the kitbot wheel is 6.0 inches. To find the circumference of the wheel, the diameter is multiplied by `Math.PI`.
+        Create a double `WHEEL_CIRCUMFERENCE` to hold the wheel's circumference.
+        The diameter of the kitbot wheel is 6.0 inches. To find the circumference of the wheel, multiply the diameter by `Math.PI`.
          
         Since WPILib uses metric units, the units have to be converted to meters using `Units.inchesToMeters()`.
-        Therefore, together `WHEEL_CIRCUMFERENCE` is set to `Units.inchesToMeters(6.0) * Math.PI;`
+        Putting this all together, `WHEEL_CIRCUMFERENCE` should be set to `Units.inchesToMeters(6.0) * Math.PI;`
         The following can be added underneath the `drivetrainSim` object.
 
         ```java {ctreRobot}#wheel
@@ -73,7 +73,7 @@ Therefore, `Drivetrain.java` needs information about the wheels, gearboxes, and 
 
 ### Gearboxes
 
-The second piece of information that we need to state is the gear ratio.
+The second piece of information that we need is the drivetrain's gear ratio.
 The kitbot's drivetrain uses gearboxes.
 Gearboxes are mechanisms that motors are attached to.
 They can help teams change the motor speed or torque.
@@ -87,7 +87,7 @@ This means that the motor has to spin 10.71 times for the wheel to rotate once.
          ```java {ctreRobot}#gearRatio
 
         ```
-        When measuring rotations, we want to measure how many rotations the wheel has completed.
+        We want to measure how many rotations the wheel has completed in order to determine how far the robot has moved.
         The motors have built-in encoders, which measure the rotation of the motor's shaft.
         However, the wheel is connected to the gearbox's output shaft, which spins at a different speed than the motor's shaft.
         Therefore, we need to account for this reduction in the motor configs.
@@ -140,7 +140,7 @@ The Kitbot has motors on the left and right sides of the drivetrain.
         Similar to creating the position signals, two `StatusSignal` objects can be made to track `leftLeader` and `rightLeader`'s velocity.
         The `leftLeader`'s signal will be called `leftVelocitySignal` and will be set equal to `leftLeader.getVelocity()`.
         `<AngularVelocity>` specifies that the unit is an angular velocity measurement.
-        Since this is CTRE, this means that the units are in rotations per second.
+        CTRE returns velocity as rotations per second.
         ```java {ctreRobot}#sensorsTwo
 
         ```
@@ -162,7 +162,7 @@ The Kitbot has motors on the left and right sides of the drivetrain.
 Now that information about the wheels, gearboxes, and encoders has been added, it's time to add PID.
 
 To implement PID, the WPILib `PIDController` class is used.
-Creating a `PIDController` object lets the `kp`, `ki`, and `kd` calculate the corrections needed based on the sensor readings.
+We'll implement PID using WPILib's `PIDController` class. The `PIDController` lets you set `kp`, `ki`, and `kd` to  calculate the corrections needed based on the sensor readings.
 We will be making two `PIDController` objects: `driveDistanceController` and `headingController`
 
 - `driveDistanceController` adjusts the robot's distance
@@ -186,14 +186,14 @@ We will be making two `PIDController` objects: `driveDistanceController` and `he
 
 </Tabs>
 
-To make the `PIDController`s work, we have to add tolerance and enable the continuous input.
+To make the `PIDControllers` work, we have to add tolerance and enable  continuous input.
 
 First, we need to add tolerances for both `driveDistanceController` and `headingController`.
 Setting the tolerance is important because it defines the margin of error around the setpoint that is considered "close enough" to stop adjusting.
 
-Now we have to enable the continuous input on `headingController`.
+Now we have to enable continuous input on `headingController`.
 Enabling continuous input helps the `PIDController` to figure out the shortest turn to the target angle.
-This prevents the motor from taking the longer way around.
+This prevents the robot from taking the longer way around to turn towards the target angle.
 
 In the `Drivetrain()` constructor, under `setDefaultCommand(idle())` add the tolerance and continuous input settings.
 

@@ -218,7 +218,7 @@ const learningCourse: SidebarTopic = {
                             slug: 'learning-course/stage1/stage1c/stage-overview',
                         },
                         {
-                            label: 'Controls Intro',
+                            label: 'PID Intro',
                             slug: 'learning-course/stage1/stage1c/pid-intro',
                         },
                     ],

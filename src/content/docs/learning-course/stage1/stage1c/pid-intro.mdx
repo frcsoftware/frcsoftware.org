@@ -1,5 +1,5 @@
 ---
-title: Controls Introduction
+title: PID Introduction
 description: An overview of Feedback Controllers and PID
 ---
 
@@ -41,7 +41,7 @@ This stage will use PID to help the kitbot auto align and drive towards the goal
 ## PID
 
 PID is an acronym that stands for **P**roportional, **I**ntegral, and **D**erivative.
-These are the three gains that the controller sums together in order to calculate the output to the motor.
+These are the three gains that the controller sums together to calculate the output to the motor.
 Together the three terms are P, I, and D, which is how PID gets its name.
 
 PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
@@ -162,7 +162,7 @@ When tuning PID, the first step is to set all three terms to 0.
 The first value that you want to tune is P.
 Increase P until the output is near the setpoint but it starts to oscillate.
 
-If the output is close to the target but just misses it, I can be increased to push it towards the set point.
+If the output is close to the target but slightly misses it, I can be increased to push it towards the set point.
 In FRC, this part is commonly skipped.
 
 If there are any oscillations, D can be introduced.

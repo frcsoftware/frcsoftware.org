@@ -9,45 +9,33 @@ import ContentRowCaption from '@components/ContentRow.astro';
 
 FRC robots commonly have a mechanism that needs to be controlled to a precise setpoint, such as position or velocity.
 One example is aiming your robot at a scoring goal.
-Robots align themselves by measuring their current angle with a target angle, and adjusting until the two are equal/
+Robots align themselves by measuring their current angle with a target angle, and adjusting until the two are equal.
 Scoring with auto alignment is faster and more efficient than your driver lining up with the goal by hand.
 
 In this section, we will cover the basics of using measurements from sensors on the robot to help position mechanisms precisely.
-This type of control that incorporates _feedback_ from sensors into the movement of the mechanisms is called a _feedback controller_.
-The most common feedback controller in FRC, and the one you will be learning about today, is a PID Controller.
+This type of control that incorporates feedback from sensors into the movement of the mechanisms is called a **feedback controller**.
+The most common feedback controller in FRC, and the one you will be learning about in this section, is a PID Controller.
 
 ## Feedback Controller
 
 PID is a type of feedback controller.
-A feedback controller uses sensors and equations to figure out what the mechanism is currently doing,
-and controls the mechanism's output to make it do what we want it do.
-The mechanism's current state is called the **output**.
-We're able to get the current state through sensors.
-One example of a sensor is an encoder.
-Encoders are used to measure a motor's rotation.
-In this stage, the Kitbot has encoders on its drivetrain.
-We can take information from the encoders to figure out how far the kitbot has driven.
+A feedback controller uses sensors and math to determine what the mechanism is currently doing and adjust its power to keep it on target.
 
-Code can be written to define the desired state, or where we want it to be.
-This desired state is called the **setpoint**.
+The mechanism’s current state is called the **output**.
+The target state that we want it to reach is called the **setpoint**.
 
-In the case of the kitbot's auto align, the **output** is the information from the sensor on what the robot's current angle is.
-The **setpoint** is a target angle, perhaps pointing the kitbot towards the goal.
-
-<Aside type="note">
-    We're able to get the kitbot's angle through Systemcore's built in IMU, or
-    Inertial Measurement Unit. This is a sensor that allows the robot to
-    accurately track its orientation in 3D space. One of the angles that it
-    returns is yaw, which is the robot's side to side movement on the vertical
-    axis. This is when the robot turns left and right.
-</Aside>
+For this stage, the kitbot’s auto align will drive a certain distance, then turn.
+Let’s look at the driving part.
+To make the kitbot drive a certain distance, we can use the kitbot’s drivetrain encoders.
+Encoders are sensors that measure the motor’s rotation, which report how far the robot has driven.
+In this example, the output is how far the robot has actually driven.
+The setpoint is the target distance, such as 1 meter towards the goal.
 
 Feedback controllers are also used outside of FRC.
 One example is an air conditioner.
 An air conditioner has a sensor that compares the current temperature with the desired temperature.
 Then the air conditioner directs the airflow in a way which allows the air to get to the desired temperature.
 
-A type of feedback controller is PID.
 This stage will use PID to help the kitbot auto align and drive towards the goal.
 
 ## PID
@@ -59,27 +47,32 @@ Together the three terms are P, I, and D, which is how PID gets its name.
 PID works by constantly comparing the current output to the setpoint and changing the control effort, or in our case, the voltage, commanded to the motor.
 The difference between the output to the setpoint is called the error.
 
-- The Proportional (P) gain scales the output linearly with the error. The further away from the setpoint, the stronger the effect of the proportional gain. It is analogous to a spring.
-- The Integral (I) gain scales with the sum of the error over time. The longer the mechanism spends not at the setpoint, the stronger the effect of the integral gain. It is often unused in FRC due to a side effect called _integral windup_. 
-- The Derivative (D) gain scales with the rate of change of the error. The faster your mechanism approaches the setpoint, the stronger the derivative term tries to slow it down. It is analogous to a dashpot,
+- The Proportional (P) gain scales the output linearly with the error.
+  The further away from the setpoint, the stronger the effect of the proportional gain.
+  It is analogous to a spring.
+- The Integral (I) gain scales with the sum of the error over time.
+  The longer the mechanism spends not at the setpoint, the stronger the effect of the integral gain.
+  It is often unused in FRC due to a side effect called _integral windup_.
+- The Derivative (D) gain scales with the rate of change of the error.
+  The faster your mechanism approaches the setpoint, the stronger the derivative term tries to slow it down.
+  It is analogous to a dashpot,
 
 In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
 k is a common prefix for constants and coefficients.
-The full equation of a PID controller function is 
 
-output = kP * error + kI * \integral(error dt) + kD * de/dt.
+<Aside type="note">
+    The equation for PID is: `output = kP * error + kI * \integral(error dt) +
+    kD * de/dt.` While it's helpful to use the equation to see how the terms add
+    up and what the gains do, understanding the equation isn't required.
+</Aside>
+
 ### How do P, I, and D work together?
 
-PID constantly compares where you are to where you want to be and adjusts.
-This is possible because each term is working to help adjust.
-
-Tuning is the process of selecting the P, I, and D gains to achieve the desired mechanism control.
-To tune PID, the output and setpoint's information is put into a graph to help figure out how to tune each term.
-When tuning PID, the output isn't always a clean line.
-As the values are adjusted, the output line takes on different shapes which can help determine which value needs to be adjusted and how.
-
-When the output passes the set point, this is called **overshoot**.
-When the output goes up, then down, up again, and repeats, this is called **oscillating**.
+Now that we know what P,I, and D are, lets look at how the three terms work together to reach a setpoint.
+As PID are adjusted to reach the setpoint, the mechanism's output can act in different ways.
+Two things to look out for are **overshooting** and **oscillating**.
+When the output passes the setpoint, this is called overshoot.
+When the output goes up, then down, up again, and repeats, this is called oscillating.
 
 <ContentRow>
     <ContentFigure
@@ -98,14 +91,14 @@ When the output goes up, then down, up again, and repeats, this is called **osci
     </ContentFigure>
 </ContentRow>
 
-## PID Example
-
-The example shows the three terms being tuned to work to get the output to match the setpoint.
+When oscillations and overshooting happens, the terms can be adjusted to smoothen or remove the behavior.
+The example below shows how P, I, and D are tuned together to match the output to the setpoint without overshooting or oscillating.
 
 First we start off with tuning P.
 As P increases, the output gets closer to the setpoint.
 However, it's not quite there yet.
-The output starts to overshoot and then slightly oscillates.
+The output starts to overshoot which is when the output goes past the set point.
+The output also starts to slightly oscillate.
 
 <ContentFigure
     width="550px"
@@ -150,8 +143,14 @@ Now the output matches up with the setpoint!
 
 ### Tuning PID
 
-Tuning PID is necessary because every mechanism is different and behaves differently.
+Tuning is the process of selecting the P, I, and D gains to achieve the desired mechanism control.
+
+This process is necessary because every mechanism is different and behaves differently.
 Even two theoretically identical robots may require different PID constants, as there may be small mechanical differences that impact how mechanisms behave.
+
+To tune PID, the output and setpoint's information is put into a graph to help figure out how to tune each term.
+When tuning PID, the output isn't always a clean line.
+As the values are adjusted, the output line takes on different shapes which can help determine which value needs to be adjusted and how.
 
 <Aside type="tip">
     When increasing PID values start small and increase carefully. Starting with

@@ -1,0 +1,61 @@
+---
+title: 命令与机构（第二部分）
+description: 命令与机构的进阶用法
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/CommandsAndMechsPt2.java
+---
+
+import ContentImage from '@components/ContentImage.astro';
+
+### Default Commands（默认命令）
+
+大多数机构都会定义一个“默认命令”，当没有其他占用该机构的命令处于活动状态时，就运行它。
+例如，拾取机构或发射机构的默认命令，就是把所有电机的输出比例永远设为 0。
+
+<Aside type="note" title="Note（备注）">
+    对人来说，这就像大脑在手臂不用的时候，让它们自然垂在肩膀下面。
+</Aside>
+
+要设置机构的默认命令，只需调用 `setDefaultCommand(Command)`，它是所有机构都有的实例方法：
+
+```java #defaultCommand
+
+```
+
+### 为命令添加延时
+
+在命令体中，可以使用 `coroutine.wait()` 等待一段预先设定的时间：
+
+```java #delayCommand
+
+```
+
+也可以用 `withTimeout()` 这个 modifier（修饰方法）为已有的命令设置超时时间：
+
+```java #timeoutCommand
+
+```
+
+### 更多关于命令的信息
+
+下面的内容在阶段 1B 的练习中并不是必需的；但对于以后的练习和为真实机器人编写代码会非常有用。
+
+#### 不占用机构的命令
+
+有时，你需要创建一个不占用任何机构的命令。
+为此，可以把 `run(...)` 换成 `Command.noRequirements(...)`。
+
+```java #noRequirementsCommand
+
+```
+
+#### 并行运行命令
+
+`coroutine.awaitAll(a, b, c)` 会并行运行命令 a、b 和 c，等这 3 个命令全部完成后再继续。
+
+```java #parallelCommands
+
+```
+
+另一方面，`coroutine.awaitAny(a, b, c)` 会并行运行 a、b 和 c，直到其中任意一个完成。
+然后，它会取消其余的命令。

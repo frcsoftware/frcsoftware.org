@@ -1,0 +1,106 @@
+---
+title: 触发器与调度
+description: 命令如何被调度，包括使用和不使用触发器两种方式
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/Triggers.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### 快速回顾
+
+还记得吗？`Trigger` 是触发机器人行为的刺激，而这些行为我们称为 `Command`。
+我们说 `Trigger` 会“调度” `Command`。
+
+### 如何定义触发器
+
+触发器本质上是返回 boolean 的方法：true 表示激活，false 表示未激活。
+可以用 `getAsBoolean()` 方法获取触发器的激活状态：
+
+```java #motorTooFastTrigger
+
+```
+
+触发器可以通过两种方式调度命令：
+
+1. `trigger.onTrue(Command)`：当触发器从未激活变为激活时，调度一个命令。
+   在下面的示例中，选择并启用手动操控模式后，`runAtThrottle` 命令就会运行。
+
+```java #teleopEnabledRobot
+
+```
+
+2. `trigger.whileTrue(Command)`：与 onTrue 相同，但当触发器再次变为未激活时，会取消正在运行的命令。
+   如果把 `teleopEnabledTrigger.onTrue(...)` 改为 `teleopEnabledTrigger.whileTrue(...)`，那么在 Driver Station（操控站）上停用手动操控模式时，正在运行的 `runAtThrottle` 命令会被中途取消。
+
+<Aside type="note" title="Note（备注）">
+    可以把多个命令绑定到同一个触发器上！
+    ```java #multiBindingsVerbose
+
+    ```
+
+    也可以连续调用 `whileTrue()` 和 `onTrue()`：
+    ```java #multiBindings
+
+    ```
+
+</Aside>
+<Aside type="caution" title="Warning（警告）">
+    在 Commands V3 中，触发器每个循环只更新*一次*，也就是在调用 `Scheduler.getDefault().run()` 时！
+    这与 Commands v2 中的触发器非常不同。
+
+    这可能会导致意想不到的行为，例如：
+    ```java #triggerUpdating
+    ```
+
+</Aside>
+
+### 基于控制器的触发器
+
+控制器上的按键是触发机器人行为的一种常见刺激。
+例如，按住操作手控制器上的 X 键时发射球。
+你可能还记得阶段 1A 中介绍过，可以这样获取按键的状态：
+
+```java #xboxGetAButton
+
+```
+
+其中，按键被按住时，`getAButton()` 方法返回 `true`，否则返回 `false`。
+因此，可以像下面这样创建一个对应 A 键的触发器：
+
+```java #triggerAButton
+
+```
+
+不过，这种用法非常常见，所以命令框架提供了一个专门的类 `CommandXboxController`，让基于命令的编程更容易使用控制器按键。
+
+```java #commandXboxController
+
+```
+
+### 手动调度命令
+
+你也可以选择立即运行一个命令，完全绕过触发器，像这样：
+
+```java #scheduleAndPrint
+
+```
+
+可以把调用 `schedule()` 想象成让机器人开始洗碗，但不等它洗完。
+在这个例子中，`println("Hello!")` 语句会在自动命令完成之前执行。
+
+<Aside type="note" title="Note（备注）">
+    除了为自动模式运行命令之外，一般不建议这样做。
+</Aside>
+
+在 `TimedRobot` 中的用法示例：
+
+```java #timedRobotExample
+
+```
+
+在 `OpMode` 中的用法示例：
+
+```java #opModeExample
+
+```

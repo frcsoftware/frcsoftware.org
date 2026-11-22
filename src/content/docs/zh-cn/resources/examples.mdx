@@ -1,0 +1,136 @@
+---
+title: 示例
+description: 编程参考资料，收录 FRC 机器人代码仓库、最佳实践和创新做法
+---
+
+export const kitbots = [
+    {
+        title: '2024 Kitbot',
+        category: 'Commands v2',
+        image: '/examples/2024-kitbot.webp',
+        imageAlt: '2024 Kitbot 渲染图',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2024',
+        guide: 'https://github.com/frcsoftware/Kitbot-Examples/blob/main/2024/Java/Kitbot%20Java%20Code%20Guide.pdf',
+    },
+    {
+        title: '2025 Kitbot',
+        category: 'Commands v2',
+        image: '/examples/2025-kitbot.webp',
+        imageAlt: '2025 Kitbot 渲染图',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2025',
+        guide: 'https://github.com/frcsoftware/Kitbot-Examples/blob/main/2025/Java/KitBot_Java_Software_Guide.pdf',
+    },
+    {
+        title: '2026 Kitbot',
+        category: 'Commands v2',
+        image: '/examples/2026-kitbot.webp',
+        imageAlt: '2026 Kitbot 渲染图',
+        code: 'https://github.com/frcsoftware/Kitbot-Examples/tree/main/2026',
+        guide: 'https://github.com/frcsoftware/Kitbot-Examples/blob/main/2026/Java/2026-kitbot-java-guide.pdf',
+
+    },
+
+];
+//
+export const examples = [
+{
+title: "9496 队的 2026 年代码",
+category: 'Commands v2',
+image: '/examples/9496-2026-robot.webp',
+imageAlt: '9496 队 2026 年机器人的照片',
+description: 'Commands v2 最佳实践、自动化决策和模块化的自动程序',
+repo: 'https://github.com/LynkRobotics/RobotCode2026Public',
+chiefdelphi: 'https://www.chiefdelphi.com/t/lynk-9496-build-log-2026/511797',
+},
+{
+title: "1678 队的 2026 年代码",
+category: 'Commands v2',
+image: '/examples/1678-2026-robot.webp',
+imageAlt: '1678 队 2026 年机器人渲染图',
+description:
+'队伍自有的代码库、自定义瞄准系统和自定义功率分析器',
+repo: 'https://github.com/frc1678/C2026-Public',
+chiefdelphi:
+'https://www.chiefdelphi.com/t/1678-citrus-circuits-2026-cad-and-robot-code-release/521535',
+},
+{
+title: "581 队的 2026 年代码",
+category: 'Commands v2',
+image: '/examples/581-2026-robot.webp',
+imageAlt: '581 队 2026 年机器人渲染图',
+description:
+'进阶的软件实践、自动化，以及队伍的编程文档',
+repo: 'https://github.com/team581/frc-2026',
+chiefdelphi:
+'https://www.chiefdelphi.com/t/581-blazing-bulldogs-2026-cad-and-code-release/521762',
+},
+];
+
+<p>
+    示例是很好的学习资源。
+    你可以通过它们了解其他队伍如何解决不同的问题，也可以把它们当作参考。
+    阅读代码并尝试理解它是如何工作的，也是学习 FRC 编程的好方法。
+    本页提供往年 Kitbot 的链接，以及其他 FRC 队伍的代码。
+
+    如果你有兴趣添加机器人代码，请查看[贡献方式页面。](/contribution/methodsofcontributing/)
+
+</p>
+
+<section class="mechanism-section">
+  <div class="section-heading">
+    <p class="mechanism-eyebrow">入门级</p>
+    <h2>Kitbot 示例</h2>  
+    <p>Kitbot 是一种入门机器人，所以它的代码是非常适合初学者的资源。</p>
+  </div>
+
+  <div class="featured-grid">
+    {kitbots.map((example) => (
+      <article class="featured-card">
+        {example.image && (
+          <div class="featured-image">
+            <img src={example.image} alt={example.imageAlt} loading="lazy" />
+          </div>
+        )}
+        <div class="featured-body">
+          <p class="category-label">{example.category}</p>
+          <h3>{example.title}</h3>
+        </div>
+        <div class="featured-links">
+          <a href={example.code} target="_blank">代码</a>
+          <a href={example.guide} target="_blank">Java 指南</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section class="mechanism-section">
+  <div class="section-heading">
+    <p class="mechanism-eyebrow">队伍代码库</p>
+    <h2>进阶示例</h2>
+    <p>这些机器人的代码超出了基础内容，因为它们有更复杂的机构。</p>
+  </div>
+
+  <div class="featured-grid">
+    {examples.map((example) => (
+      <article class="featured-card">
+        {example.image && (
+          <div class="featured-image">
+            <img src={example.image} alt={example.imageAlt} loading="lazy" />
+          </div>
+        )}
+        <div class="featured-body">
+          <p class="category-label">{example.category}</p>
+          <h3>{example.title}</h3>
+          <p>{example.description}</p>
+        </div>
+        <div class="featured-links">
+          <a href={example.repo} target="_blank">代码仓库</a>
+          {example.chiefdelphi && (
+            <a href={example.chiefdelphi} target="_blank">详细介绍</a>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

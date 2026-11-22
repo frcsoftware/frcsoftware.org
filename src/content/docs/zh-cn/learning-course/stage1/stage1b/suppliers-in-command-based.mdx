@@ -1,0 +1,95 @@
+---
+title: 基于命令的编程中的 Suppliers（供给器）
+description: Supplier 的基础知识，以及它在基于命令的编程中的用法
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/SuppliersInCommandBased.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### 一个小谜题
+
+假设我们定义了一个 `Intake` 机构：
+
+```java #runAtThrottleDouble
+
+```
+
+并在 Robot.java 中写了下面的代码：
+
+```java #incorrectCommand
+
+```
+
+<Aside type="note" title="Note（备注）">
+    如果你忘了：`getLeftY()` 返回 -1 到 1 之间的值。
+    如果完全没有推动左摇杆，`getLeftY()` 返回
+    0；如果把它推到最上方，`getLeftY()` 返回 1；如果把它推到最下方，`getLeftY()`
+    返回 -1。
+</Aside>
+
+运行上面的代码时，会发生什么？
+
+1. 拾取机构先跳一小段舞，再为你的编程技术欢呼。
+2. 拾取机构的运行速度取决于左摇杆向上或向下推动的程度。
+3. 拾取机构什么也不做。
+
+<Aside type="answer" title="Solution（参考答案）">
+    #3：拾取机构什么也不做。
+</Aside>
+
+### 为什么？
+
+回想一下，`Robot` 类的构造函数是在机器人代码首次加载时调用的，而不是在机器人启用时调用的。
+这时，你的手甚至还没有放到控制器上，所以 `controllerOutput` 的值是 0。
+
+机器人启用后，`getLeftY()` 的值会变化；但是，传给 `runAtThrottle` 命令的 `throttle` 参数的值不会变化，因为它的值在命令开始之前就已经确定了。
+
+### 解决问题
+
+在 Java 中，我们使用 `DoubleSupplier`（双精度浮点值提供接口）来表示一个不断变化的 `double` 类型的值。
+调用 `getAsDouble()` 可以获取它的当前值。
+
+```java #runAtThrottleSupplier
+
+```
+
+`DoubleSupplier` 实例使用 `() -> expression` 语法创建，前提是这个表达式必须返回 `double`。
+调用 `getAsDouble()` 时会计算这个表达式。
+
+```java #doubleSupplierExample
+
+```
+
+<Aside type="note" title="Note（备注）">
+用来定义 `DoubleSupplier` 的 `() -> ...` 语法也称为 <em>lambda expression（Lambda 表达式）</em>。
+</Aside>
+
+下面是在前面的例子中定义和使用 `DoubleSupplier` 的方法：
+
+```java #correctCommand
+
+```
+
+### `BooleanSupplier` 与 `until()` 命令修饰方法
+
+你可能认出了定义 `DoubleSupplier` 时用到的 `() ->` 语法。
+实际上，我们也是用这种语法来定义 `Trigger` 的：
+
+```java #triggerBooleanSupplier
+
+```
+
+不过要注意，`() ->` 后面的表达式是 `boolean`，而不是 `double`。
+实际上，`Trigger` 的构造函数接收的是一个 `BooleanSupplier`（布尔值提供接口）。
+
+<Aside type="note" title="Note（备注）">
+    要获取 `BooleanSupplier` 的最新值，需要改为调用 `getAsBoolean()`。
+</Aside>
+
+`BooleanSupplier` 还用在另一个地方：为命令添加停止条件。
+可以使用 `until(BooleanSupplier)` 方法为命令添加任意的停止条件：
+
+```java #untilModifier
+
+```

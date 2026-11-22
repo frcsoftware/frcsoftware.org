@@ -1,0 +1,126 @@
+---
+title: 找出代码错误
+description: 阶段 1B 的复习练习
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/SpotTheError.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### 本节的目的
+
+通过阅读使用基于命令的编程、但存在 bug 的代码片段，希望你能更直观地发现常见 bug，并写出更好的代码。
+如果你对自己的能力有信心，可以直接跳到阶段 1B 的练习，但课程作者仍然强烈建议你完成本节。
+
+<Aside type="note" title="Note（备注）">
+    除非另有说明，本节中的代码片段都没有编译时错误。
+</Aside>
+
+### 练习 1
+
+这段代码的目的是：按住左肩键时让拾取机构转动。
+松开肩键时，拾取机构应该停止。
+它也能正常编译。
+
+```java #intakeOnTrueBug
+
+```
+
+你能找出错误吗？
+
+<Aside type="answer" title="Answer（答案）">
+    `onTrue()` 绑定只会在第一次按下肩键时调度一次命令。
+    即使松开肩键，命令也会继续运行。
+    应该改用 `whileTrue()`，它会在触发器激活期间一直运行命令：
+
+    ```java #intakeWhileTrue
+
+    ```
+
+</Aside>
+
+### 练习 2
+
+`aButtonTrigger` 的目的是在按住 A 键时运行一个命令。
+代码能正常编译。
+
+```java #triggerCapturedValueBug
+
+```
+
+你能找出错误吗？
+
+<Aside type="answer" title="Answer（答案）">
+    按键的状态只在创建触发器之前读取了一次。
+    触发器每次检查的都是同一个保存下来的值，所以命令要么永远运行，要么根本不运行。
+    应该改为在触发器的 lambda 中读取按键：
+
+    ```java #triggerCapturedValueFix
+
+    ```
+
+</Aside>
+
+### 练习 3
+
+这段代码无法编译，错误信息见注释。
+它还有一个逻辑错误。
+
+{/* rli:ignore */}
+
+```java
+class Intake implements Mechanism {
+  private final ExampleMotor motor = new ExampleMotor();
+
+  Command runAtThrottle(double throttle) {
+    return Command.noRequirements(coroutine -> {
+        while (false) { // Compile-time error: Unreachable statement
+          motor.setThrottle(throttle);
+          coroutine.yield();
+        }
+      })
+      .named("Intake");
+  }
+}
+```
+
+你能修复这个编译时错误和逻辑错误吗？
+
+<Aside type="answer" title="Answer（答案）">
+    目标是让命令永远设置电机的输出比例，所以应该使用 `while (true)`，而不是 `while (false)`。
+    `while (false)` 语句永远不会执行！
+
+    此外，`intake()` 命令需要占用 `Intake` 机构。
+    因此，应该用 `run(coroutine -> {})` 代替 `Command.noRequirements(coroutine -> {})`。
+
+    ```java #intakeClass
+
+    ```
+
+</Aside>
+
+### 练习 4
+
+你已经修好了拾取机构（展开练习 3 的答案可以看到完整的类），并用下面的代码在按住左肩键时运行它：
+
+```java #intakeWhileTrue
+
+```
+
+按住左肩键，拾取机构开始转动；但松开后，拾取机构并没有停止。
+你能找出错误吗？
+
+<Aside type="hint" title="Hint（解题提示）">
+    设置 Intake 的默认命令可能会有帮助。但为什么呢？
+</Aside>
+<Aside type="answer" title="Answer（答案）">
+    调用 `motor.setThrottle(double)` 后，即使不再调用 `setThrottle`，电机也会一直转动。
+    松开左肩键会取消 `runAtThrottle` 命令，但不会让电机停止。
+
+    要解决这个问题，我们设置一个默认命令，用它来定义机构的空闲状态。
+    这里，当没有其他占用拾取机构的命令运行时，拾取机构应该停止。
+    ```java #intakeClassWithDefaultCmd
+
+    ```
+
+</Aside>

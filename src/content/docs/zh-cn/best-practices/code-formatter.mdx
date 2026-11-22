@@ -1,0 +1,14 @@
+---
+title: 代码格式化器
+description: 使用代码格式化器的最佳实践
+---
+
+Code formatters（代码格式化器）可以帮助确保整个代码库中的代码风格保持一致。
+[Spotless](https://github.com/diffplug/spotless) 是一个 Gradle 插件，可以按照可配置的选项自动格式化代码。
+配置 Spotless 的步骤见 [WPILib 文档中的 Using a Code Formatter](https://docs.wpilib.org/en/stable/docs/software/advanced-gradlerio/code-formatting.html)。
+
+## Spotless 的 Gradle 命令
+
+`./gradlew spotlessCheck` 会检查格式问题，如果代码格式不正确就会失败。
+
+`./gradlew spotlessApply` 会应用格式规则，修正代码的风格。

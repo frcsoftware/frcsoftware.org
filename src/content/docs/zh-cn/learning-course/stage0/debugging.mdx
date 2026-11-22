@@ -14,7 +14,7 @@ codeRegionSources:
     用 “bug” 表示程序中的错误，这一用法因美国计算机科学家 Grace Hopper
     而广为人知。 她和团队在研制 Mark II
     计算机时，把一个错误追溯到一只卡在计算机里的飞蛾。
-    他们把这只飞蛾夹进笔记本，并写下 “First actual case of bug being
+    他们用胶带把这只飞蛾贴在工作日志里，并写下 “First actual case of bug being
     found.”（发现 bug 的第一个真实案例）。
 </Aside>
 
@@ -139,14 +139,14 @@ Exception in thread "main" java.lang.ArithmeticException: / by zero
 ```
 
 <Aside type="tip" title="Answer（答案）" collapse>
-    矩形面积是宽度乘以高度，但代码把它们相加了。它会打印 `Area of the rectangle
+    矩形面积是宽度乘以高度，但代码把它们相加了。它会输出 `Area of the rectangle
     is 7`，而不是 `10`。把 `+` 改成 `*` 就能修好。
 </Aside>
 
 逻辑错误没有错误信息，所以必须自己找。
 通读代码，检查它实际写的内容是否和你的本意一致。
-在程序的不同位置用 `System.out.println()` 打印数值也会有帮助。
-第一个打印出你没预料到的值的位置，大致就是出错的地方。
+在程序的不同位置用 `System.out.println()` 输出数值也会有帮助。
+第一个输出你没预料到的值的位置，大致就是出错的地方。
 真实的逻辑错误通常比这个例子更难发现。
 
 ## 避免和修复错误的建议

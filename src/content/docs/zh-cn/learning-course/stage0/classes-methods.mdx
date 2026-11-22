@@ -7,7 +7,7 @@ codeRegionSources:
     usage: stage0/snippets/src/classes-methods/Usage.java
 ---
 
-在[上一课](/learning-course/stage0/classes-objects/)中，我们编写了带有成员变量（field）、constructor（构造函数）和 getter（获取器）的 `Point` 类。
+在[上一课](/learning-course/stage0/classes-objects/)中，我们编写了带有成员变量、构造函数和 getter 方法的 `Point` 类。
 它可以保存一对坐标，但不能对坐标进行任何计算。
 本节课我们将编写 <strong>methods（方法）</strong>，用来定义类的行为，然后再实现一个状态会随时间变化的类。
 
@@ -17,8 +17,8 @@ methods（方法）是定义在类内部的一段代码，用来定义这个类�
 我们已经见过两个方法示例：`String` 类中的 `length()`，以及我们在 `Point` 上编写的 getter 方法。
 方法可以有参数，也就是调用方法时传入的值。
 
-方法执行结束后，可以向调用者返回值，这称为返回值。
-想要返回值，需要在方法体需要使用 `return` 关键字，后面跟上要返回的数据。
+方法执行结束后，可以把结果交还给调用者，这称为**返回值**。
+要返回值，需要在方法体中使用 `return` 关键字，后面跟上要返回的数据。
 一旦 `return` 语句被执行，方法会立刻停止运行，并把该值返回给调用者。
 例如，`String` 类中的 `length()` 方法会返回字符串的长度，并且它没有参数。
 
@@ -36,7 +36,7 @@ public ReturnType methodName(ParameterType1 param1, ParameterType2 param2, ...) 
 `ReturnType` 代表方法返回值的类型，例如 `length()` 的返回类型是 `int`。
 方法不是必须返回数据；如果不需要返回任何内容，
 就使用返回类型 `void`。`void` 是一个关键字，表示方法不返回任何值。
-`void` 类型的方法也可以单独写 `return` 后面不带返回值，用来提前终止方法。
+返回类型为 `void` 的方法也可以单独写一条不带值的 `return`，用来提前终止方法。
 不过这种写法并不常用，大多数情况下直接省略即可 —— 方法执行到末尾就会自动结束。
 
 接下来我们给 `Point` 类添加一些行为，先从 `plus` 方法开始。

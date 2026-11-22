@@ -1,0 +1,71 @@
+---
+title: Git 使用
+description: Git 的最佳实践
+---
+
+## Commits（提交）
+
+commit（提交）是仓库的一份已保存状态。
+每完成一项任务，都应该提交一次（例如 `Add per-path auto choosers`、`Fix joystick inputs inversion`、`Tune chassis heading PID gains`）。
+这有助于记录新代码是什么时候加入的。
+通过更小、更聚焦的提交来添加修改，可以定位 bug 是在什么时候引入的，并轻松回退到可以正常工作的状态。
+编写描述清楚的提交信息，可以让人一眼看出具体改了什么。
+diff（差异）只能显示代码中改了什么，而提交信息还可以说明修改的背景，解释为什么要这样改。
+按照惯例，提交信息应该简洁，以大写字母开头，不使用标点，并使用祈使语气。
+
+对比下面这些好的和不好的提交信息示例：
+
+| 好的提交信息                                                              | 不好的提交信息                                               |
+| :------------------------------------------------------------------------ | :----------------------------------------------------------- |
+| 只完成一项任务                                                            | 在一次提交中同时包含逻辑修改、格式修正和重构                 |
+| 使用祈使语气："Refactor swerve drive logic"                               | 使用过去时、全小写或带标点："refactored swerve drive logic." |
+| 具体并提供背景："Fix swerve drive limiter bug for reliable drive control" | 含糊不清："Fix bug" 或 "WIP"                                 |
+
+要了解编写提交信息的标准约定，请查看 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) 规范。
+
+<Aside type="tip" title="Tip（提示）">
+尽早提交，经常提交。
+
+</Aside>
+
+对于进阶用户，命令行提供了更多功能。
+[GitHub Desktop](https://docs.github.com/en/desktop/managing-commits) 提供了一种更简单的提交管理方式：用复选框选择要提交的文件，用文本框填写提交信息，再点击按钮创建提交。
+
+## Branches（分支）
+
+在赛季制作期，`main` 分支存放的是可以正常工作、经过测试的代码版本。
+当多名程序员在进行不同的修改时，创建独立的开发分支可以帮助避免 merge conflict（合并冲突）。
+例如，为视觉代码单独创建一个分支，可以确保底盘驱动系统分支上的代码不受影响。
+为每场比赛创建分支，有助于把修复隔离开，并确保代码在合并到 `main` 之前仍然经过审查。
+
+要维护一个分支，必须让它与 `main` 保持同步。
+merge（合并）和 rebase（变基）都可以把一个分支的修改整合到另一个分支中，但方式不同。
+合并会创建一个新的合并提交，把两个分支的历史连接起来。
+这适用于多名开发者同时参与的共享分支，或者把某个分支合并到 `main`。
+变基会按顺序重写你所在分支的历史，得到一条干净的线性历史。
+这适用于只存在于本地的分支。
+绝不要对已经推送到远程仓库的提交进行变基，否则会导致提交历史出现分叉。
+
+- 合并：先 `git fetch`，再 `git merge origin/main`
+- 变基：先 `git fetch`，再 `git rebase origin/main`
+
+使用 `git push` 经常推送到自己的分支是一个好习惯，这样可以把工作备份到远程仓库，也能让其他程序员看到。
+
+## Repositories（仓库）
+
+为不同的大型项目或新赛季创建新的仓库，是管理项目的好方法。
+仓库的名称应该体现其中代码的用途，例如“2026-rebuilt”、“2026-kitbot”和“2026-offseason-turret”。
+
+## 补充信息
+
+详细的教程可以在官方 [Git 网站](https://git-scm.com/docs/gittutorial)上找到。
+
+纠正常见错误的指南可以在 [git flight rules 仓库](https://github.com/k88hudson/git-flight-rules/blob/master/README.md)中找到。
+
+[GitHub Desktop](https://docs.github.com/en/desktop) 可以替代命令行或网页浏览器与 GitHub 进行交互。
+使用 GitHub Desktop，可以通过图形用户界面执行 Git 命令。
+对于编程新手较多、队内可能缺少 Git 支持或经验的队伍，尤其是新队伍，它是一个很好的工具。
+虽然 GitHub Desktop 提供了自己简化的 Git 和 GitHub 使用方式，但本节介绍的内容仍然适用。
+
+[VS Code 中的 Source control（源代码管理）](https://code.visualstudio.com/docs/sourcecontrol/overview)也提供了集成源代码管理的图形界面。
+它可以让你从命令面板运行 Git 命令。

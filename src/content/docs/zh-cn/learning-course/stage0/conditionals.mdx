@@ -47,8 +47,8 @@ codeRegionSources:
 ```
 
 `distance` 是 60，所以条件 `distance > 10` 为 true。
-代码块会运行，打印 `Driving at full speed`，并把传动系统设置为全速。
-如果 `distance` 是 5，条件就为 false，不会打印任何内容。
+代码块会运行，输出 `Driving at full speed`，并把底盘驱动系统设置为全速。
+如果 `distance` 是 5，条件就为 false，不会输出任何内容。
 
 <Aside type="tip" title="Tip（提示）">
     这一课里的每个条件语句都遵循同一种形式：一个关键字，通常还有圆括号里的条件，以及花括号里的代码块。
@@ -78,7 +78,7 @@ codeRegionSources:
 不运行代码，判断它会输出什么？
 
 <Aside type="tip" title="Answer（答案）" collapse>
-    会打印 `Stopped`。`distance` 是 6，所以 `distance > 10` 为 false。`if` 代码块被跳过，改为运行 `else` 代码块，电机会停止。
+    会输出 `Stopped`。`distance` 是 6，所以 `distance > 10` 为 false。`if` 代码块被跳过，改为运行 `else` 代码块，电机会停止。
 </Aside>
 
 ## 加上 `else if`
@@ -120,7 +120,7 @@ Java 会**从上往下依次判断条件**，执行第一个结果为 true 所�
 注意，这一题有点容易踩坑。
 
 <Aside type="tip" title="Answer（答案）" collapse>
-    会打印 `Stopped`。`distance` 正好是 10。`distance > 50` 为 false，`distance > 10` 也为 false，因为 10 并不大于 10。两个条件都不为 true，所以运行 `else` 代码块，电机停止。
+    会输出 `Stopped`。`distance` 正好是 10。`distance > 50` 为 false，`distance > 10` 也为 false，因为 10 并不大于 10。两个条件都不为 true，所以运行 `else` 代码块，电机停止。
 </Aside>
 
 你可以在 `if` 和末尾的 `else` 之间按需串联任意多个 `else if`，并且最后的这个 `else` 也可以省略。

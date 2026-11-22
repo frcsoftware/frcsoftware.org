@@ -1,0 +1,55 @@
+---
+title: 命令体
+description: 如何编写命令的行为
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/CommandBody.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### 似曾相识……
+
+如果你用 Scratch 积木编过程序，或者上过编程入门课，很可能已经写过由一串语句组成的程序。
+像这样：
+
+```java #triangleLoop
+
+```
+
+（如果你好奇的话：这段代码会在控制台中输出一个三角形。）
+
+你可能还记得上一节提到过，基于命令的编程从整体上看，无法只用一串语句来表示。
+但是，单个命令（也就是机器人的单个动作）可以。
+
+例如，下面这个 command body（命令体）会让电机永远全速运行：
+
+```java #fullThrottleCmdBody
+
+```
+
+而下面这个命令体会让机器人旋转大约 90 度，然后停止：
+
+```java #rotate90CommandBody
+
+```
+
+从根本上说，命令（也就是机器人的动作）本身可以用熟悉的编程结构来表示：while 循环、变量、方法调用等。
+
+<Aside type="note" title="Note（备注）">
+    注意，我们说的是命令体，而不是命令！ 命令体定义了命令运行后要执行的动作。
+    但是，一个命令还必须定义占用的机构、优先级等内容。
+</Aside>
+
+### `coroutine.yield();` 的含义
+
+`coroutine.yield()` 是一条特殊语句，必须在 while 循环内部调用。
+它让多个命令可以并行运行，同时确保后台任务（例如电机安全检查）能够得到执行。
+打个比方，它就像你在写作业的间隙喝几口水。
+
+`coroutine` 对象还包含许多其他有用的方法，这些方法只能在命令内部调用。
+接下来的几节会介绍其中的一部分。
+
+<Aside type="note" title="Note（备注）">
+    因为 `coroutine.yield()` 不能在命令外部调用，所以非常不建议在命令外部使用
+    while 循环。
+</Aside>

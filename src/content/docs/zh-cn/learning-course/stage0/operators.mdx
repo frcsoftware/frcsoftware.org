@@ -8,7 +8,7 @@ codeRegionSources:
 在 [Java基础](/learning-course/stage0/java-fundamentals/) 这一课中，我们把值存在变量里。
 这一课学习 **运算符**，也就是像 `+` 和 `>` 这样的符号，用来根据已有的值计算出新的值。
 机器人代码里到处都是运算符。
-数储球仓里的球要用 `+`，检查射球机构是否达到速度要用 `>`。
+数料斗里的球要用 `+`，检查发射机构是否达到速度要用 `>`。
 
 我们会介绍四种运算符：
 
@@ -151,7 +151,7 @@ codeRegionSources:
 ```
 
 加 1 或减 1 非常常见，所以 Java 专门提供了运算符。
-`++` 通过加 1 来 <strong>increment（自增）</strong>一个变量，`--` 通过减 1 来 <strong>decrement（自减）</strong>一个变量。
+`++` 通过加 1 来 <strong>increments（自增）</strong>一个变量，`--` 通过减 1 来 <strong>decrements（自减）</strong>一个变量。
 在本阶段后面的[循环](/learning-course/stage0/loops/)里，你会经常看到 `++`。
 
 <table class="Increment/Decrement Operators">
@@ -176,7 +176,7 @@ codeRegionSources:
     </tbody>
 </table>
 
-机器人每射出一个球，就可以记下这一次，并从储球仓里去掉这个球：
+机器人每射出一个球，就可以记下这一次，并从料斗里去掉这个球：
 
 ```java #increments
 
@@ -260,7 +260,7 @@ codeRegionSources:
 
 把它们弄混是常见错误。
 下面这行代码无法通过编译。
-Java 会把它理解成试图把数字 6 改成 8，这在java中是做不到的。
+Java 会把它理解成试图把数字 6 改成 8，这在 Java 中是做不到的。
 错误信息会说，赋值的左边必须是一个变量：
 
 {/* rli:ignore */}
@@ -269,7 +269,7 @@ Java 会把它理解成试图把数字 6 改成 8，这在java中是做不到的
 System.out.println(6 = 8);
 ```
 
-换成 `==` 后，Java 比较的是两个值，并且会打印 `false`，因为 6 不等于 8：
+换成 `==` 后，Java 比较的是两个值，并且会输出 `false`，因为 6 不等于 8：
 
 {/* rli:ignore */}
 
@@ -318,7 +318,7 @@ System.out.println(6 == 8);
 </table>
 
 这里，机器人有球，但还没有对准目标。
-不运行代码的话，每一行会打印什么？
+不运行代码的话，每一行会输出什么？
 
 ```java #logical
 
@@ -348,9 +348,9 @@ System.out.println(6 == 8);
 
 ```
 
-这会打印 12，但之后 `gamePieces` 仍然是 6。
-`gamePieces * 2` 的结果只用于打印，从未赋回给 `gamePieces`。
-可以在下一行再打印一次 `gamePieces` 来确认。
+这会输出 12，但之后 `gamePieces` 仍然是 6。
+`gamePieces * 2` 的结果只用于输出，从未赋回给 `gamePieces`。
+可以在下一行再输出一次 `gamePieces` 来确认。
 
 ## 运算符练习
 

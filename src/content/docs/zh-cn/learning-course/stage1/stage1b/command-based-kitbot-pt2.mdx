@@ -1,0 +1,209 @@
+---
+title: 练习：Kitbot 代码重构（第二部分）
+description: 把阶段 1A 的 Kitbot 代码重写为基于命令的代码
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbotPt2.java
+    checkUpDrivetrainCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/Drivetrain.java
+    checkUpDrivetrainREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/Drivetrain.java
+---
+
+import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+### 你将完成的内容
+
+在 Kitbot 代码重构的第二部分，你将：
+
+1. 创建一个 `Drivetrain` 机构类，用来控制底盘驱动系统。
+2. 定义一个 `arcadeDrive` 命令，使用 `DoubleSupplier` 动态读取控制器输入。
+3. 在手动操控模式 OpMode 中绑定底盘驱动系统的默认命令，让机器人可以行驶。
+4. 定义一些基本的自动模式。
+
+### 任务 1：Drivetrain 机构
+
+在 `mechanisms` 包中创建一个名为 `Drivetrain.java` 的新 Java 类。
+这个类应该实现 `Mechanism`。
+
+然后，完成下面的步骤：
+
+1. 把四个电机初始化为类的私有成员变量：`leftLeader`、`leftFollower`、`rightLeader` 和 `rightFollower`，它们位于 CANBus 0，CAN ID 依次为 0 到 3。
+2. 用左右两侧的主电机初始化一个名为 `differentialDrive` 的 `DifferentialDrive` 对象。
+3. 初始化一个名为 `imu` 的 `OnboardIMU` 对象。
+4. 初始化一个名为 `drivetrainSim` 的 `DrivetrainSim` 对象，并编写一个名为 `periodic()` 的方法，在其中运行底盘驱动系统仿真的 `periodic()` 方法。
+
+<Aside type="hint" title="Hint（解题提示）">
+    这些步骤的做法可以回顾阶段 1A。
+</Aside>
+
+### 任务 2：控制底盘驱动系统
+
+现在已经有了 `Drivetrain` 类，就可以创建控制底盘驱动系统的 `Command` 了。
+
+为此，编写下面的内容：
+
+1. 底盘驱动电机的配置代码，可以在阶段 1A 的 `Robot.java` 中找到。
+2. 一个 `idle()` 命令，发出 `0.0` 的速度和 `0.0` 的旋转量，并在构造函数中把它设为默认命令。
+3. 一个 `arcadeDrive(DoubleSupplier forwardThrottle, DoubleSupplier rotationThrottle)` 命令，使用供给器提供的值持续更新底盘驱动电机的速度。
+
+<Aside type="hint" title="第 1 项，解题提示 1">
+    阶段 1A 中 `Robot` 类的构造函数包含配置底盘驱动电机的代码。
+</Aside>
+<Aside type="hint" title="第 1 项，解题提示 2">
+    我们希望在创建新的 `Drivetrain` 实例时配置电机。
+    哪种 Java 声明定义了类在实例化时要运行的代码？
+</Aside>
+<Aside type="hint" title="第 3 项解题提示">
+    由于摇杆的值会不断变化，必须在命令的循环中从供给器获取速度和旋转量。
+    你的命令体中应该包含下面的内容：
+    ```java #arcadeDriveBody
+
+    ```
+
+</Aside>
+
+### 任务 3：使用底盘驱动系统
+
+现在已经有了 `Drivetrain` 类，接下来需要在机器人代码中设置好它，以便使用。
+
+1. 在 `Robot.java` 中创建一个名为 `drivetrain` 的 `Drivetrain` 实例。
+   它应该是公有的，而不是私有的。
+2. 在 `robotPeriodic` 方法中调用 `drivetrain.periodic();`。
+3. 然后，打开 `MyTeleop.java`（你的手动操控模式 OpMode）。
+   在构造函数中，把底盘驱动系统的默认命令设为 `arcadeDrive`。
+   传入读取控制器摇杆轴的 Lambda 表达式。
+
+<Aside type="hint" title="解题提示 1">
+    可以像这样创建一个前进转向组合操控命令：
+    ```java #driveCommand
+    
+    ```
+    你能想出应该用什么表达式替换 `forwardThrottle` 和 `rotationThrottle` 吗？
+</Aside>
+<Aside type="hint" title="解题提示 2">
+    `forwardThrottle` 实参的表达式是 `() -> -xbox.getLeftY()`，因为我们希望在 `arcadeDrive` 命令运行期间不断重新计算 `-xbox.getLeftY()` 的值。 <br /> <br />
+    既然目标是重新计算 `xbox.getRightX()` 的值，你能想出 `rotationThrottle` 实参的表达式吗？
+</Aside>
+
+<Aside type="note" title="Note（备注）">
+    你可能会注意到，我们调用了两次 `setDefaultCommand`：一次在 `Drivetrain.java`
+    中，一次在 `MyTeleop.java` 中。 <br /> <br />
+    `MyTeleop.java` 中的 `setDefaultCommand()` 调用只会在选中 MyTeleop OpMode
+    时生效。
+    在其他所有情况下，生效的都是在构造函数中设置的默认命令（`idle()`）。
+</Aside>
+
+### 检查
+
+到这里，你的 Drivetrain 机构应该如下所示，并且 VS Code 不应该再提示任何错误。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+            ```java {checkUpDrivetrainCTRE}#CheckUpDrivetrain
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+            ```java {checkUpDrivetrainREV}#CheckUpDrivetrain
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+### 任务 4：创建自动模式文件
+
+我们需要创建两个新文件来定义自动模式 OpMode。
+
+在 `opmode` 包中创建 2 个 Java 文件，分别命名为 `DriveStraight.java` 和 `DriveBackThenShoot.java`，然后删除 `MyAuto.java` 文件。
+把下面的代码复制粘贴到每个文件中，并把 `MyOpModeName` 替换为每个 OpMode 对应的名称：
+
+```java #opModeSkeleton
+
+```
+
+### 任务 5：直线行驶自动程序
+
+这个自动程序会让机器人直线前进 4 秒。
+
+在 `DriveStraight.java` 的 `start()` 方法中，调度一个超时时间为 4 秒的 `arcadeDrive` 命令。
+然后，完成下面的步骤：
+
+1. 把 `DriveStraight.java` 中定义的类重命名为 `DriveStraight`。
+2. 在 `start()` 方法中，调度一个超时时间为 4 秒的 `arcadeDrive` 命令。
+   这个 `arcadeDrive` 命令的前进输出比例应保持为 `0.5`，旋转输出比例应保持为 `0`。
+
+<Aside type="hint" title="解题提示 1">
+    要在不使用触发器的情况下调度命令，可以使用 `Scheduler.getDefault().schedule(Command)`：
+    ```java #startMethod
+    
+    ```
+    你能想出 `myAutoCommand` 应该是什么吗？
+</Aside>
+<Aside type="hint" title="解题提示 2">
+    语法为 `() -> 0.5` 的 `DoubleSupplier`，在调用它的 `getAsDouble()` 方法时总是返回 0.5。 <br /> <br />
+    利用这一点，把 `forwardThrottle` 和 `rotationalThrottle` 替换为 `DoubleSupplier`，完成下面的 `Command`：
+    ```java #4SecDriveCommand
+    
+    ```
+
+</Aside>
+
+### 任务 6：后退再发射自动程序
+
+后退再发射是 2026 年赛题 REBUILT 中一种常见的自动程序。
+自动阶段开始时，操控团队会把 Kitbot 对准得分区域的墙壁摆好。
+然后，Kitbot 会向后行驶，最后把预装的球发射出去。
+
+创建一个返回 `Command` 的方法，命名为 `autoCommand()`，要求如下：
+
+1. 这个方法返回的命令不应该占用任何机构。
+2. 首先，它应该使用 `robot.drivetrain.arcadeDrive()` 命令，以 `-0.2` 的输出比例向后行驶 2 秒。
+3. 然后，它应该同时运行 `robot.shooter.shoot()` 和 `robot.feeder.feed()` 命令。
+
+接着，在 OpMode 的 `start()` 方法中，调度我们刚刚创建的 `autoCommand()`。
+
+<Aside type="hint" title="解题提示 1">
+    ```java #autoCmdDef
+    ```
+</Aside>
+<Aside type="hint" title="解题提示 2">
+    花括号里应该写什么？ <br />
+    `Command.noRequirements(coroutine -> {}).named("Drive Back Then Shoot")`
+</Aside>
+<Aside type="hint" title="解题提示 3">
+    `coroutine.await(Command)` 会在另一个命令中从头到尾运行一个命令。
+</Aside>
+<Aside type="hint" title="解题提示 4">
+    看看 `DriveStraight.java` 类。
+    在那里，你写了一个以 0.5 的输出比例前进 4 秒的命令。
+    试着把这个命令复制粘贴到 `coroutine.await()` 调用中，并修改其中的一些参数。
+</Aside>
+<Aside type="hint" title="解题提示 5">
+    要同时运行 2 个命令，可以在另一个命令中调用 `coroutine.awaitAll(command1, command2)`。
+</Aside>
+
+# 在仿真中运行全部代码
+
+和阶段 1A 一样，可以按 `W` 前进，按 `S` 后退，按 `A` 和 `D` 旋转，按 `E` 拾取，按 `R` 排出。
+
+发射仍然对应 `Q` 键；但是，现在需要按住这个键超过 2 秒，才会出现发射动画。
+Commands v3 让我们更容易编写“spinup（加速至目标转速）”流程：先让发射器用 2 秒加速到目标转速，再把球逐个输送进去。
+
+<Aside type="note" title="Note（备注）">
+    关于如何设置仿真，请查看[这里](/learning-course/stage1/stage1a/drivetrain-sim/#仿真代码)和[这里](/learning-course/stage1/stage1a/kitbot-additional-motors/#3d-仿真)。
+</Aside>
+
+# 参考答案
+
+本阶段的参考答案如下：
+[CTRE](https://github.com/frcsoftware/Stage1B-Solution-CTRE)
+[REV](https://github.com/frcsoftware/Stage1B-Solution-REV)
+
+<Aside type="tip" title="Tip（提示）">
+    进入下一步之前，先把修改 commit（提交）并 push（推送）到 GitHub！
+    如果需要回顾操作步骤，请查看 [Git - Uploading
+    code（上传代码）](/learning-course/stage0/git/)。
+</Aside>

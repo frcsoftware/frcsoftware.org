@@ -1,0 +1,301 @@
+---
+title: 练习：Kitbot 代码重构（第一部分）
+description: 把阶段 1A 的 Kitbot 代码重写为基于命令的代码
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/CommandBasedKitbot.java
+    checkUpFeederCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/Feeder.java
+    checkUpFeederREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/Feeder.java
+    checkUpIntakeCTRE: stage1/stage1b/solutions/ctre/src/main/java/first/robot/mechanisms/IntakeLauncher.java
+    checkUpIntakeREV: stage1/stage1b/solutions/rev/src/main/java/first/robot/mechanisms/IntakeLauncher.java
+---
+
+import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+### 你将完成的内容
+
+你将重写 Kitbot 的 IntakeLauncher 机构和 Feeder 机构的代码。
+在本练习的第二部分，你将用基于命令的方式重写底盘驱动系统的代码，并添加一些基本的自动模式。
+
+### 任务 1：准备工作
+
+使用 Git 派生并克隆阶段 1B 的模板代码。
+如果需要帮助，请阅读[派生仓库与克隆仓库指南](/learning-course/getting-started/forking-and-cloning/)。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        先 Fork（派生仓库），再 Clone（克隆）[CTRE Template](https://github.com/frcsoftware/Stage1B-Template-CTRE)。
+
+    </TabItem>
+    <TabItem label="REV">
+       先 Fork（派生仓库），再 Clone（克隆）[REV Template](https://github.com/frcsoftware/Stage1B-Template-REV)。
+
+    </TabItem>
+
+</Tabs>
+
+然后，打开 `src/main/java/first/robot` 下的 `Robot` 类。
+要让命令正常工作，必须在 Robot 类的 `robotPeriodic()` 方法中调用 `Scheduler.getDefault().run()`。
+
+```java {default}#robotDef
+
+```
+
+<Aside type="note" title="Scheduler.getDefault().run() 有什么作用？" collapse>
+    命令调度器负责运行所有处于活动状态的命令，并处理这些命令可能占用的机构。
+    调用这个方法会让调度器运行一次迭代，从而让所有处于活动状态的命令也运行一次。
+</Aside>
+
+### 任务 2：Feeder 机构
+
+在 `robot` 包下创建一个名为 `mechanisms` 的新包。
+记住，包就是存放 Java 文件的文件夹。
+`mechanisms` 包将包含 Feeder 机构和 IntakeLauncher 机构的代码。
+
+然后，在 `mechanisms` 包中创建一个名为 `Feeder.java` 的新 Java 类，用来控制送料机构。
+`Feeder` 类应该实现 `Mechanism`。
+
+<Aside type="hint" title="Hint（解题提示）">
+    机构的定义方式是：在类声明的末尾加上 `implements Mechanism` 关键字。
+    ```java {default}#feederDef
+
+    ```
+
+</Aside>
+
+然后，添加下面的内容：
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        1. 一个私有的 `TalonFX` 电机控制器对象，名为 `motor`，位于 Systemcore 的 CANBus 0，CAN ID 为 5。
+        2. 一个 `feed()` 命令，把电机的输出比例永远设为 0.75。
+        3. 一个 `intake()` 命令，把电机的输出比例永远设为 -1。
+        4. 一个 `outtake()` 命令，把电机的输出比例永远设为 1。
+        5. 一个 `idle()` 命令，把电机的输出比例永远设为 0。
+        把它设为默认命令。
+
+        `feed()`、`intake()`、`outtake()` 和 `idle()` 命令都应该由方法返回。
+
+        <Aside type="hint" title="第 1 项，解题提示 1">
+            对于 CTRE 设备，可以通过 `CANBus.systemcore(id)` 创建 `CANBus` 对象。
+        </Aside>
+        <Aside type="hint" title="第 1 项，解题提示 2">
+            记住，`TalonFX` 是一个类，而在另一个类中创建对象的方式如下： <br />
+            {/* rli:ignore */}
+            ```java
+            private TypeOfClass myMotor = new TypeOfClass();
+            ```
+            首先，想一想应该用什么替换 `TypeOfClass`。
+            然后，把鼠标悬停在红色波浪线上，添加合适的构造函数参数。
+        </Aside>
+    </TabItem>
+    <TabItem label="REV">
+        1. 一个私有的 `SparkMax` 电机控制器对象，名为 `motor`，位于 Systemcore 的 CANBus 0，CAN ID 为 5。
+        2. 一个 `feed()` 命令，把电机的输出比例永远设为 0.75。
+        3. 一个 `intake()` 命令，把电机的输出比例永远设为 -1。
+        4. 一个 `outtake()` 命令，把电机的输出比例永远设为 1。
+        5. 一个 `idle()` 命令，把电机的输出比例永远设为 0。
+        把它设为默认命令。
+
+        `feed()`、`intake()`、`outtake()` 和 `idle()` 命令都应该由方法返回。
+
+        <Aside type="hint" title="第 1 项解题提示">
+            记住，`SparkMax` 是一个类，而在另一个类中创建对象的方式如下： <br />
+            {/* rli:ignore */}
+            ```java
+            private TypeOfClass myMotor = new TypeOfClass();
+            ```
+            首先，想一想应该用什么替换 `TypeOfClass`。
+            然后，把鼠标悬停在红色波浪线上，添加合适的构造函数参数。
+        </Aside>
+    </TabItem>
+
+</Tabs>
+
+<Aside type="hint" title="第 2–4 项，解题提示 1">
+    重新阅读“命令与机构（第一部分）”一节中的“定义命令”和“将命令与机构结合”
+    两个小节（可以在左侧侧栏中找到）。
+</Aside>
+<Aside type="hint" title="第 5 项，解题提示 1">
+    要设置机构的默认命令，需要在构造函数中调用 `setDefaultCommand(Command)`。
+</Aside>
+
+完成以上所有内容后，把下面的代码复制粘贴到 `Feeder` 类中，让仿真能够工作：
+
+```java {default}#feederSim
+
+```
+
+这段代码会创建一个名为 `sim` 的 `SingleFlywheelSim` 对象，把送料机构当作一个转动的飞轮来仿真，然后在 `sim.periodic()` 中更新仿真。
+代码会在更新仿真之前检查当前是否处于仿真状态，这样在真实机器人上运行时就不会执行仿真代码。
+
+### 任务 3：IntakeLauncher 机构
+
+在 `mechanisms` 包中创建一个名为 `IntakeLauncher.java` 的文件。
+定义一个实现 `Mechanism` 的 `IntakeLauncher` 类，然后添加下面的内容：
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        <ol style={{ margin: '0.2em 0', paddingInlineStart: '2.5rem' }}>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个私有的 `TalonFX` 电机控制器对象，名为 `motor`，位于
+                    Systemcore 的总线 0，ID 为 4。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个 `shoot()` 命令，先等待 2
+                    秒，然后把电机的输出比例永远设为 0.9。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>一个 `intake()` 命令，把输出比例永远设为 0.8。</span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>一个 `outtake()` 命令，把输出比例永远设为 -0.8。</span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个 `idle()` 命令，把输出比例永远设为 0。
+                    把它设为默认命令。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    仿真 IntakeLauncher 机构所需的代码。
+                    你还没有正式学过怎么做，但任务 2 的最后一部分给出了提示。
+                    你能想出来吗？
+                </span>
+            </li>
+        </ol>
+    </TabItem>
+    <TabItem label="REV">
+        <ol style={{ margin: '0.2em 0', paddingInlineStart: '2.5rem' }}>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个私有的 `SparkMax` 电机控制器对象，名为 `motor`，位于
+                    Systemcore 的总线 0，ID 为 4。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个 `shoot()` 命令，先等待 2
+                    秒，然后把电机的输出比例永远设为 0.9。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>一个 `intake()` 命令，把输出比例永远设为 0.8。</span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>一个 `outtake()` 命令，把输出比例永远设为 -0.8。</span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    一个 `idle()` 命令，把输出比例永远设为 0。
+                    把它设为默认命令。
+                </span>
+            </li>
+            <li style={{ margin: '0.2em 0' }}>
+                <span>
+                    仿真 IntakeLauncher 机构所需的代码。
+                    你还没有正式学过怎么做，但任务 2 的最后一部分给出了提示。
+                    你能想出来吗？
+                </span>
+            </li>
+        </ol>
+    </TabItem>
+</Tabs>
+
+<Aside type="hint" title="第 2 项解题提示">
+    在 `Command` 中调用 `coroutine.wait(Seconds.of(2))` 可以等待 2 秒。
+    可以用 `import static org.wpilib.units.Units.Seconds;` 导入 `Seconds`。
+</Aside>
+<Aside type="hint" title="第 6 项解题提示">
+    在任务 2 中，你按照要求复制粘贴了下面的代码来仿真送料机构：
+    ```java #feederSim
+
+    ```
+    把这段代码复制粘贴到 `IntakeLauncher.java` 中，并修改一处地方。
+
+</Aside>
+
+### 任务 4：完成 `Robot` 类
+
+现在已经创建好了机构类，接下来需要在 `Robot` 类中实例化它们。
+
+打开 `Robot` 类，创建 `IntakeLauncher` 类和 `Feeder` 类的新实例。
+它们应该是 `Robot` 类的公有成员变量，这样 OpMode 才能访问它们。
+分别把它们命名为 `intakeLauncher` 和 `feeder`。
+
+你还需要在 `Robot` 类的某个方法中调用 `intakeLauncher.periodic();` 和 `feeder.periodic();`。
+应该是哪个方法呢？
+
+<Aside type="hint" title="Hint（解题提示）">
+    `Robot` 类中哪个方法的名字里有 `periodic` 这个词？
+</Aside>
+
+### 检查
+
+到这里，你的 Feeder 机构和 IntakeLauncher 机构应该如下所示，并且 VS Code 不应该再提示任何错误。
+
+<Aside type="answer" title="Solution（参考答案）：Feeder.java">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+        
+            ```java {checkUpFeederCTRE}#CheckupFeeder 
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {checkUpFeederREV}#CheckupFeeder
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+<Aside type="answer" title="Solution（参考答案）：IntakeLauncher.java">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {checkUpIntakeCTRE}#CheckupIntake
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {checkUpIntakeREV}#CheckupIntake
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+### 任务 5：完成手动操控模式 OpMode
+
+在手动操控模式 OpMode 的构造函数中（它应该在 `MyTeleop.java` 里），创建一个名为 `xbox` 的私有 `CommandXboxController` 实例。
+
+在 OpMode 的构造函数中，定义下面的行为：
+
+1. 当 `xbox.leftBumper()` 触发器激活时，运行 `robot.intakeLauncher.intake()` 和 `robot.feeder.intake()` 命令。
+2. 当 `xbox.rightBumper()` 触发器激活时，运行 `robot.intakeLauncher.shoot()` 和 `robot.feeder.feed()` 命令。
+3. 当 `xbox.a()` 触发器激活时，运行 `robot.intakeLauncher.outtake()` 和 `robot.feeder.outtake()` 命令。
+
+<Aside type="hint" title="Hint（解题提示）">
+    你能想到这里为什么应该使用 `whileTrue()` 而不是 `onTrue()` 吗？
+    ```java #triggerBindingDef
+
+    ```
+
+</Aside>
+
+<Aside type="tip" title="Tip（提示）">
+    进入下一步之前，先把修改 commit（提交）并 push（推送）到 GitHub！
+    如果需要回顾操作步骤，请查看 [Git - Uploading
+    code（上传代码）](/learning-course/stage0/git/)。
+</Aside>

@@ -1,0 +1,60 @@
+---
+title: GitHub 使用
+description: GitHub 项目管理和合并流程的最佳实践
+codeRegionSources:
+    prTemplate: best-practices/github-usage/pr-template.yml
+    task: best-practices/github-usage/task.yml
+---
+
+## Issues（议题）
+
+issue（议题）是规划任务和跟踪 bug 的一种方式。
+可以在仓库中创建议题，用来规划、讨论和分享任务。
+创建议题时，应该填写标题和描述，清楚地概括这项任务。
+Assignees（负责人）功能可以帮助把任务分配给队内的程序员。
+Milestones（里程碑）功能可以把有特定截止日期的议题归为一组，并跟踪进度。
+
+议题模板可以为创建议题提供指引，并鼓励学生写清楚议题的内容。
+要创建议题模板，请新建 `.github/ISSUE_TEMPLATE` 文件夹，并为不同类型的议题添加 Markdown 文件。
+
+下面是一个议题模板示例：
+
+```markdown {task}
+
+```
+
+关于使用议题模板的更详细指南，请查看 [Configuring issue templates for your repository](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)。
+
+## Pull Requests（合并请求）
+
+合并请求是把独立分支上的修改合并到仓库 `main` 分支的提议。
+它提供了一个提出并落实评论和建议的空间，并确保任何要放到机器人上的代码都事先经过审查。
+合并请求可以帮助程序员在合并之前审查修改，尽早发现 bug，并保持代码质量。
+
+合并请求模板鼓励学生说明修改的背景，并提供检查清单来落实编程规范。
+要创建模板，请新建 `.github/pull_request_template.md` 文件。
+模板可以要求填写：
+
+- 所做修改的描述
+- 这个合并请求要关闭的议题链接
+- 用来确认代码规范和构建成功的检查清单
+
+下面是一个合并请求模板示例：
+
+```markdown {prTemplate}
+
+```
+
+审查合并请求时，先阅读合并请求的标题和描述，确认所有 CI 检查都已通过，然后打开 <strong>Files changed（更改的文件）</strong>标签页查看 diff（差异）。
+你可以针对具体的代码行发表评论，并提出修改建议。
+
+Squash and merge（压缩合并）是把分支合并到 `main` 的一种干净的方式。
+它会把分支上的多个提交合并成一个，而不是把它们逐个加到 `main` 中，让版本历史变得杂乱。
+
+## GitHub Projects
+
+GitHub Projects 是一种项目管理工具，可以与议题和合并请求集成。
+你可以创建自定义的表格、看板和路线图，用来规划、跟踪和直观展示修改及其元数据。
+使用 Projects，可以按优先级给议题排序，并按完成状态整理议题。
+还可以借助预置的工作流实现自动化，自动更新你的 Projects。
+关于 Projects 的更多信息，请阅读 [GitHub 文档中的 About Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects)。

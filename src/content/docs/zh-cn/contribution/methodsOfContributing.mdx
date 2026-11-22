@@ -1,0 +1,100 @@
+---
+title: 贡献方式
+description: 公开为网站作出贡献的指南，包括为编辑工作设置 IDE 和本地预览。
+---
+
+import Aside from '@components/Aside.astro';
+
+## 贡献流程
+
+FRCSoftware.org 刚刚起步，所以提出工作建议最简单的方式，是在主仓库中[创建一个 GitHub issue（议题）](https://github.com/frcsoftware/frcsoftware.org/issues/new)。
+
+这有助于避免重复工作，并在项目发展过程中让贡献的优先级保持清晰。
+
+如果你的工作获得批准，请在该议题中继续讨论，让所有人都能了解进展。
+
+开始工作时，在 GitHub 上派生仓库，并提交合并请求，让你的工作接受审查。
+
+加入我们的开发 [Discord](https://discord.com/invite/uUugPrPZFs)，一起讨论工作。
+
+## 为参与贡献设置 GitHub 和 VS Code
+
+### 安装必备软件
+
+请确保下载与你的操作系统（Windows、Mac 或 Linux）对应的正确版本。
+
+如果安装程序分版本，Windows 几乎总是需要选择 64 位版本。
+
+- 最新版本的 [Git](https://git-scm.com/downloads)
+    - 按照适用于你的操作系统的说明操作
+    - 安装时全部使用默认选项
+- [Node.js LTS](https://nodejs.org/)
+    - 下载适用于你的操作系统的 LTS 版本
+    - 安装时全部使用默认选项
+- [pnpm](https://pnpm.io/installation)
+- [VS Code](https://code.visualstudio.com/) - 下载适用于你的操作系统的稳定版 - 安装时全部使用默认选项，是否创建桌面图标可以自行选择 - 使用 WPILib VS Code 也完全可以 - 建议：安装拼写检查扩展，尽早发现错误
+    <Aside type="note" title="Note（备注）">
+        如果在 NixOS 上使用 Vale 时出现错误，请手动安装 Vale，并改用 VALE_BIN
+        环境变量。
+    </Aside>
+
+### 开始编写贡献内容的步骤
+
+1. 打开仓库网站
+2. 点击右上角附近的“Fork”，然后在下一个页面点击“Create Fork”
+3. 把你派生的仓库克隆到电脑上
+
+**如何编写贡献内容并提交合并请求**
+
+1. 在你派生的仓库中新建一个分支，在这个分支上进行修改。
+   这样你就可以同时拥有仓库的多个版本，例如在同时处理两项不同的任务时。
+    - 一定要发布这个分支
+2. 点击“Open in Visual Studio Code”打开 VS Code。
+3. 如果弹出“Do you trust the authors of the files in this folder?”的提示，请勾选“Trust the authors of all files in the parent folder 'GitHub'”旁边的复选框（这样以后克隆仓库时就不会再弹出提示），然后点击“Yes, I trust the authors”。
+4. 进行修改
+5. 提交之前运行代码格式化器和代码检查工具
+    - 使用 `pnpm format` 运行代码格式化器
+    - 使用 `pnpm lint` 运行所有代码检查步骤
+    - 代码格式化器会对网站的文档部分进行代码格式化，以保持风格一致
+    - 代码检查步骤会对代码进行各种检查，确保遵循最佳实践
+6. 进行修改并提交
+
+<Aside type="tip" title="Tip（提示）">
+网站的所有文件和文件夹都位于 `src/content/docs` 文件夹中。
+
+</Aside>
+
+在 GitHub 上你派生的仓库中，可以使用“sync”按钮，轻松地把你的分支变基到 frcsoftware.org 主仓库上，以便同步你开始这个分支之后的所有修改。
+
+<Aside type="tip" title="Tip（提示）">
+    一定要经常从 main 更新你的分支！ 否则，你可能需要解决你的修改和其他人对 main
+    的修改之间的大量冲突。
+</Aside>
+
+5. 完成修改后，确认所有内容都已提交、你的分支已与 main 保持同步，并且所有内容都已推送。
+   然后，在 GitHub 上创建一个合并请求，从你的分支合并到 frcsoftware.org 仓库的 main 分支。
+
+回顾一下贡献步骤：创建并发布分支，进行修改并提交，从 main 更新，推送提交，最后创建合并请求。
+
+### 如何在本地运行网站预览
+
+你可以在本地运行网站，在编辑时实时预览网站。
+
+1. 在 VS Code 中打开仓库（在哪个分支上都可以）
+2. 如果没有底部面板，使用快捷键 `Ctrl + J` 打开底部面板
+3. 点击底部面板右上方 + 号旁边的下拉菜单，然后点击“Terminal”
+4. 运行 `pnpm install` 命令，安装所有需要的包（仅第一次需要）
+5. 运行 `pnpm dev` 命令，启动开发服务器
+6. 如果一切顺利，它会显示网站运行在类似 `http://localhost:4321` 的地址上
+
+每次打开 VS Code 进行编辑时，都要记得运行 `pnpm dev`。
+
+<Aside type="tip" title="Tip（提示）">
+点击底部面板中的终端后，可以按 Ctrl + C 停止本地网站服务。
+
+</Aside>
+
+<Aside type="note" title="Note（备注）">
+使用 GitHub Desktop 切换分支时，本地预览会自动跟着切换，不会出现问题。
+
+</Aside>

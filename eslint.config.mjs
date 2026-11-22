@@ -43,7 +43,7 @@ export default defineConfig([
     },
     {
         files: ['src/content/**/*.mdx'],
-        ignores: ['src/content/docs/resources/examples.mdx'],
+        ignores: ['src/content/docs/**/resources/examples.mdx'],
         plugins: { markdown, 'sentences-per-line': sentencesPerLine },
         language: 'markdown/gfm',
         languageOptions: { frontmatter: 'yaml' },

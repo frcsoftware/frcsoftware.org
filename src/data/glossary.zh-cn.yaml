@@ -19,7 +19,7 @@ Systemcore:
 
 CAN:
     definition: >-
-        控制器局域网（Controller Area Network）：通常使用黄绿线连接电机控制器和传感器；
+        控制器局域网（Controller Area Network）：通常是黄绿色线缆，用于与电机控制器和传感器通信；
         可以采用多种拓扑结构进行布线，而不必将每根线缆都单独接回 Systemcore
 
 PWM:
@@ -38,11 +38,11 @@ Limit Switch:
         也可用于检查机构的状态
 
 Throughbore Encoder:
-    term: 通孔编码器
+    term: 通孔式编码器
     definition: 一种允许轴穿过其中心，并记录角位置的编码器
 
 Magnetic Encoder:
-    term: 磁编码器
+    term: 磁性编码器
     definition: 一种使用接收器和磁体测量位置与运动状态的编码器
 
 # 软件
@@ -72,4 +72,4 @@ AprilTag:
 GitHub:
     definition: >-
         GitHub 类似于用于代码的 Google Drive。
-        它可以托管 Git 仓库，并通过拉取请求和议题等功能改善项目协作和版本跟踪
+        它可以托管 Git 仓库，并通过合并请求和议题等功能改善项目协作

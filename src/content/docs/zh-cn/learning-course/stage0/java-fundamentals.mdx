@@ -19,7 +19,7 @@ codeRegionSources:
 ## Variables（变量）
 
 <strong>Variable（变量）</strong>是程序中有名字的容器，用来保存一条信息。
-变量可以保存温度、电机速度，或储球仓里的球数。
+变量可以保存温度、电机速度，或料斗里的球数。
 
 **声明**一个变量，也就是创建它，需要五个部分：
 
@@ -67,7 +67,7 @@ Java 代码常用两种命名风格：
 - <strong>Upper snake case（大写下划线命名法）</strong>
   ：每个字母都大写，单词之间用下划线分隔，例如 `BACK_LEFT_DRIVE` 和
   `GEAR_RATIO`。 这种写法用于 <strong>constants（常量）</strong>
-  ，也就是整个程序共用的固定值，例如齿轮比。
+  ，也就是整个程序共用的固定值，例如传动比。
 
 <Aside type="note" title="Case sensitivity（区分大小写）">
     Java 是 <strong>case-sensitive（区分大小写）</strong>
@@ -145,17 +145,17 @@ Java 中的打印语句如下所示：
 
 ```
 
-这会把文本 `hello!` 打印到终端。
+这会把文本 `hello!` 输出到终端。
 `"hello!"` 两侧的引号告诉 Java 把它当作文本，按原样处理。
 如果没有引号，Java 会把 `hello!` 当作代码，并且报错，因为它不是一个有效的变量名或值。
 
 <Aside type="note" title="Did you know?（你知道吗？）">
-    打印 "Hello, World!" 是人们用一门新语言编写第一个程序时的传统。 它可以追溯到
+    输出 "Hello, World!" 是人们用一门新语言编写第一个程序时的传统。 它可以追溯到
     Bell Labs 的 Brian Kernighan 在 1972 年编写的一份教程，并在他与 Dennis
     Ritchie 于 1978 年出版的 C 语言著作中广为人知。 下面的示例里也会出现它。
 </Aside>
 
-要打印变量的值，去掉引号，使用变量名即可：
+要输出变量的值，去掉引号，使用变量名即可：
 
 ```java #printVariable
 
@@ -163,27 +163,27 @@ Java 中的打印语句如下所示：
 
 ### 组合文字和值
 
-当程序打印很多信息时，给每个值加上标签会更清楚。
+当程序输出很多信息时，给每个值加上标签会更清楚。
 可以用 `+` 运算符把一个 `String` 和一个值组合起来，这称为 **字符串拼接**：
 
 ```java #stringConcatenation1
 
 ```
 
-这会打印 `Left Motor Speed 1.0`。
-因为 `speed` 是 `double`，即使我们写成 `1`，打印出来也会带小数点。
+这会输出 `Left Motor Speed 1.0`。
+因为 `speed` 是 `double`，即使我们写成 `1`，输出时也会带小数点。
 注意 `"Left Motor Speed "` 末尾的空格。
-如果没有这个空格，打印结果会是 `Left Motor Speed1.0`。
+如果没有这个空格，输出结果会是 `Left Motor Speed1.0`。
 
 也可以在一条打印语句里组合多个值。
-不运行代码的话，下面这行会打印出什么？
+不运行代码的话，下面这行会输出什么？
 
 ```java #stringConcatenation2
 
 ```
 
 <Aside type="tip" title="Answer（答案）" collapse>
-    会打印 `6 12.5`。因为 `" "` 是一个 `String`，Java
+    会输出 `6 12.5`。因为 `" "` 是一个 `String`，Java
     会把它两侧的值都转成文本，再用一个空格把所有内容连在一起。
 </Aside>
 
@@ -259,14 +259,19 @@ Java 中的注释有两种：单行注释和多行注释。
 ## Java 基础练习
 
 <Aside type="caution" title="做练习前先阅读">
-    阶段 0 的练习必须在 WPILib VS Code 中打开才能运行。如果还没有安装 WPILib VS
-    Code，请按照[开发必备工具](/learning-course/getting-started/required-tools)中的说明操作。
+    阶段 0 的练习必须在 **2027 WPILib VS Code** 中打开才能运行。如果还没有安装
+    **2027 WPILib VS Code**，请按照[开发必备工具](/learning-course/getting-started/required-tools)中的说明操作。
+
+    在 macOS 上，VS Code 的图标没有改成 WPILib 图标，名称仍然显示为 Visual Studio Code。
+    [VS Code 概述](/learning-course/getting-started/vscode-overview/)中也提到了这一点。
+    因此，开始之前，请确认你使用的是 **2027 WPILib VS Code**。
+
 </Aside>
 
 <Aside type="exercise" title="Exercise（练习）">
   ### 任务 1：准备工作
 
-如果还没有做，请先 Fork（派生仓库），再 Clone（克隆）[Stage 0 Template](https://github.com/frcsoftware/Stage0-Template)。
+如果还没有做，请先 fork（派生仓库），再 clone（克隆）[Stage 0 Template](https://github.com/frcsoftware/Stage0-Template)。
 
 如果需要设置 repository（仓库）方面的帮助，请阅读[派生仓库与克隆仓库指南](/learning-course/getting-started/forking-and-cloning/)。
 

@@ -1,0 +1,58 @@
+---
+title: 硬件入门
+description: 面向程序员的硬件组件介绍
+---
+
+## Motor Controllers（电机控制器）
+
+电机是带动机器人机构转动的实体执行器，而电机控制器是控制电机速度和方向的电子接口。
+大多数电机控制器还提供一些智能功能，例如板载 PID 控制器和集成编码器。
+
+电机控制器在机器人的许多机构中都会用到：
+
+- 拾取机构：转动轮子来收集赛件
+- 发射机构：转动飞轮来发射赛件
+- 整理输送机构：在机器人内部移动赛件
+- 机械臂/升降机构：抬起和降下机构（通常使用位置控制）
+- 攀爬机构：伸出或收回攀爬机构
+
+CAN 电机控制器可以从 CTR Electronics（Talon FX）和 REV Robotics（SPARK MAX）等厂商购买。
+
+![TalonFX 电机控制器](../../../../../public/hardware-intro/talonfx-motor-controller.webp#w=30)
+![SPARK MAX 电机控制器](../../../../../public/hardware-intro/spark-max-motor-controller.webp#w=20)
+
+## Encoders（编码器）
+
+编码器用来测量旋转运动。
+因为编码器输出的是数字信号，所以与模拟设备（例如电位计）相比，它们更可靠，也更不容易受到噪声和干扰的影响。
+编码器可以返回机构的位置和速度。
+编码器有多种外形规格，可以安装在轴的末端，也可以让轴从中间穿过。
+许多电机控制器也带有集成编码器。
+相对式编码器记录位置的变化，并在机器人关闭时归零；而绝对式编码器在完整的一圈内记录精确、唯一的位置，即使断电也会保留这些数据。
+
+## Beam Break（对射光电传感器）
+
+对射光电传感器检测两点之间是否有物体，并返回一个二值结果。
+对射光电传感器通常是 [`DigitalInput`](https://github.wpilib.org/allwpilib/docs/beta/java/wpilib.core/org/wpilib/hardware/discrete/DigitalInput.html)，会返回一个 `boolean`。
+对射光电传感器可以用来检测赛件何时经过机器人上的某个特定位置。
+
+## Limit Switch（限位开关）
+
+限位开关检测某个物体是否处于特定位置或距离，并返回一个二值结果。
+限位开关常用于限制关节的运动范围，或者检测是否有赛件。
+虽然对射光电传感器和限位开关都能检测物体是否存在，但它们的检测方式不同。
+对射光电传感器检测光束是否被物体遮挡，而限位开关需要与物体发生物理接触才能检测到它。
+
+## Inertial Measurement Units (IMUs)（惯性测量单元）
+
+IMU 是一种结合了加速度计和陀螺仪的传感器。
+IMU 用来测量机器人的朝向、旋转速率和加速度，并以 [`Rotation2d`](https://github.wpilib.org/allwpilib/docs/beta/java/wpilib.math/org/wpilib/math/geometry/Rotation2d.html) 的形式返回这些信号。
+它们通常用度或弧度表示角位置（yaw/heading（偏航/航向）、pitch（俯仰）和 roll（横滚）），用度每秒或弧度每秒表示角速度。
+它们可以用于读取机器人的航向，以及进行 odometry（里程计）计算。
+FRC 中最常用的 IMU 是 navX2、Pigeon 2.0 和 Systemcore 的板载 IMU。
+请注意，Systemcore 的板载 IMU 是 2027 年新增的，还没有经过充分且成功的测试。
+
+需要特别注意的一点是，陀螺仪测量的是速率，而不是位置。
+位置是通过反复测量角速度，再把这些值乘以两次读数之间的时间间隔推算出来的。
+陀螺仪的角度测量值总是相对于某个任意的零角度，这个零角度由机器人开机时或调用归零方法时陀螺仪所处的角度决定。
+陀螺仪可能会有累积误差（称为“drift（漂移）”），使用时间越长，误差越大。

@@ -65,10 +65,12 @@ public class Drivetrain implements Mechanism {
   private final StatusSignal<AngularVelocity> rightVelocitySignal = rightLeader.getVelocity();
   // [/sensorsTwo]
 
+  // [/checkin]
   private final TelemetryTable table = Telemetry.getTable("Drive");
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
+    // [checkinHalf]
   public Drivetrain() {
     // [gearRatio2]
     var leftConfig = new TalonFXConfiguration();
@@ -94,8 +96,8 @@ public class Drivetrain implements Mechanism {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
     // [/pidController2]
   }
+    // [/checkinHalf]
 
-  // [/checkin]
   public Command idle() {
     return run(coroutine -> {
           while (true) {

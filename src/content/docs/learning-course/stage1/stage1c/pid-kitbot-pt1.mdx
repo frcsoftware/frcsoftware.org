@@ -77,7 +77,18 @@ The second piece of information that we need is the drivetrain's gear ratio.
 The kitbot's drivetrain uses gearboxes.
 Gearboxes are mechanisms that motors are attached to.
 They can help teams change the motor speed or torque.
-The kitbot has gearboxes with a 10.71:1 gear ratio.
+
+The kitbot has two gearboxes on the right and left side of the drivetrain
+The motors are attached to one side of the gearbox.
+The motor's shaft connects to the set of gears and, on the other side, the wheels are attached to the gear output shaft.
+
+<ContentFigure
+    width="650px"
+    alt="Drivetrain"
+    src="/learning-course/stage1/stage1c/gearboxes.webp"
+/>
+
+These gearboxes with a 10.71:1 gear ratio.
 This means that the motor has to spin 10.71 times for the wheel to rotate once.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
@@ -126,7 +137,8 @@ The Kitbot has motors on the left and right sides of the drivetrain.
     <TabItem label="CTRE">
         CTRE uses `StatusSignal` objects to read data from sensors.
         Therefore, we will create two `StatusSignal` objects to track their positions, one for `leftLeader`'s encoder and one for `rightLeader`'s encoder.
-        The two objects will be created under 
+        The two objects go under the `GEAR_RATIO` variable. 
+        
         The `leftLeader`'s signal will be called `leftDistanceSignal` and will be set equal to `leftLeader.getPosition()`. 
         This gets the position of the wheel in rotations.
         `<Angle>` is what sets the units to be an angular measurement, which are rotations or degrees.
@@ -141,6 +153,8 @@ The Kitbot has motors on the left and right sides of the drivetrain.
         The `leftLeader`'s signal will be called `leftVelocitySignal` and will be set equal to `leftLeader.getVelocity()`.
         `<AngularVelocity>` specifies that the unit is an angular velocity measurement.
         CTRE returns velocity as rotations per second.
+        The two objects go under the two `StatusSignal`s that were created above.
+
         ```java {ctreRobot}#sensorsTwo
 
         ```
@@ -153,6 +167,7 @@ The Kitbot has motors on the left and right sides of the drivetrain.
         ```java {revRobot}#sensors
 
         ```
+        The two objects will be created under the `GEAR_RATIO` variable.
     </TabItem>
 
 </Tabs>
@@ -162,14 +177,16 @@ The Kitbot has motors on the left and right sides of the drivetrain.
 Now that information about the wheels, gearboxes, and encoders has been added, it's time to add PID.
 
 To implement PID, the WPILib `PIDController` class is used.
-We'll implement PID using WPILib's `PIDController` class. The `PIDController` lets you set `kp`, `ki`, and `kd` to  calculate the corrections needed based on the sensor readings.
+We'll implement PID using WPILib's `PIDController` class.
+The `PIDController` lets you set `kp`, `ki`, and `kd` to calculate the corrections needed based on the sensor readings.
 We will be making two `PIDController` objects: `driveDistanceController` and `headingController`
 
 - `driveDistanceController` adjusts the robot's distance
 - `headingController` adjusts the robot's angle
-  Under `GEAR_RATIO`, add the two objects.
-  For now, the parameters can be all set to 0.
-  These will be tuned later.
+
+Under `GEAR_RATIO`, add the two objects.
+For now, the parameters can be all set to 0.
+These will be tuned later.
 
 <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
     <TabItem label="CTRE">
@@ -186,7 +203,7 @@ We will be making two `PIDController` objects: `driveDistanceController` and `he
 
 </Tabs>
 
-To make the `PIDControllers` work, we have to add tolerance and enable  continuous input.
+To make the `PIDControllers` work, we have to add tolerance and enable continuous input.
 
 First, we need to add tolerances for both `driveDistanceController` and `headingController`.
 Setting the tolerance is important because it defines the margin of error around the setpoint that is considered "close enough" to stop adjusting.
@@ -221,9 +238,15 @@ Your `Drivetrain.java` file should look like this:
         ```java {ctreRobot}#checkin
 
         ```
+        ```java {ctreRobot}#checkinHalf
+
+        ```
     </TabItem>
     <TabItem label="REV">
         ```java {revRobot}#checkin
+
+        ```
+        ```java {revRobot}#checkinHalf
 
         ```
     </TabItem>

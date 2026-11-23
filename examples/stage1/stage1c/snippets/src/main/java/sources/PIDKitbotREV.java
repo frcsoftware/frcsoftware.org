@@ -55,10 +55,12 @@ public class Drivetrain implements Mechanism {
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
   // [/sensors]
 
+  //[/checkin]
   private final TelemetryTable table = Telemetry.getTable("Drive");
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
+    // [checkinHalf]
   public Drivetrain() {
     var leftConfig = new SparkMaxConfig().inverted(true);
     leftLeader.configure(
@@ -85,7 +87,7 @@ public class Drivetrain implements Mechanism {
     // [/pidController2]
   }
 
-  // [/checkin]
+  // [/checkinHalf]
   public Command idle() {
     return run(coroutine -> {
           while (true) {

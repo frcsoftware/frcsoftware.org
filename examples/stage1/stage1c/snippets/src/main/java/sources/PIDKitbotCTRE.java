@@ -70,7 +70,7 @@ public class Drivetrain implements Mechanism {
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
-    // [checkinHalf]
+  // [checkinHalf]
   public Drivetrain() {
     // [gearRatio2]
     var leftConfig = new TalonFXConfiguration();
@@ -96,7 +96,8 @@ public class Drivetrain implements Mechanism {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
     // [/pidController2]
   }
-    // [/checkinHalf]
+
+  // [/checkinHalf]
 
   public Command idle() {
     return run(coroutine -> {

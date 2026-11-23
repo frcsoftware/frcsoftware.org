@@ -55,12 +55,12 @@ public class Drivetrain implements Mechanism {
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
   // [/sensors]
 
-  //[/checkin]
+  // [/checkin]
   private final TelemetryTable table = Telemetry.getTable("Drive");
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
-    // [checkinHalf]
+  // [checkinHalf]
   public Drivetrain() {
     var leftConfig = new SparkMaxConfig().inverted(true);
     leftLeader.configure(

@@ -229,6 +229,20 @@ const learningCourse: SidebarTopic = {
                     label: 'Stage 2 Overview',
                     slug: 'learning-course/stage2/stage-overview',
                 },
+                {
+                    label: 'Stage 2A: Feedforward Control',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 2A Overview',
+                            slug: 'learning-course/stage2/stage2a/stage-overview',
+                        },
+                        {
+                            label: 'Introduction to Feedforward Control',
+                            slug: 'learning-course/stage2/stage2a/feedforward',
+                        },
+                    ],
+                },
             ],
         },
     ],

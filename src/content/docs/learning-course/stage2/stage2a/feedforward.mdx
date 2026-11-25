@@ -1,0 +1,80 @@
+---
+title: Feedforward Control
+description: Introduction to feedforward control
+---
+
+You should be familiar with PID control from Stage 1C, where we used it to control the driving and turning of the kitbot drivetrain.
+PID is a form of feedback control, which is where the error between the current state and the target state is the sole metric used to drive the system towards its goal.
+This sort of control works well for many systems where there aren't external forces, such as gravity.
+These external forces will prevent the system from reaching and staying in the target state.
+
+## Elevator Force Balance
+
+Let's consider the case of an elevator, which will have a constant force of gravity pulling down on it.
+On the other hand, we have a force from the motor pulling up on the elevator.
+For this example, we'll neglect any sort of friction, air resistance, or other force.
+
+<ContentFigure
+    width="100px"
+    alt="Force Balance"
+    src="/learning-course/stage2/stage2a/force_balance.webp"
+/>
+
+This depicts the elevator holding position at some arbitrary setpoint, so there is no velocity and no acceleration.
+F<sub>M</sub> is the force from the motor on the elevator, and F<sub>G</sub> is the force of gravity on the elevator.
+Thus, to hold the elevator still at a given position, in this case our setpoint, the force of gravity must cancel the force applied by the motor, otherwise there would be some acceleration on the elevator per Newton's second law.
+
+Using the fact that the elevator is at its setpoint with no velocity or acceleration, let's work through what a PID controller would be doing.
+
+- The P term is proportional to the error.
+  - When the elevator is at the setpoint, the error is 0, which means the P terms is contributing 0 voltage to the motor.
+- We'll ignore the I term, as the integral behavior can be extremely problematic and is not recommended, so the I term is contributing 0.
+- The D term is proportional to the rate of change of the error (the velocity of the mechanism).
+  - When the elevator is stopped at the setpoint, the velocity of the mechanism is 0, and thus the D term is also contributing 0 voltage.
+
+Thus, with all 3 components of the PID controller contributing 0 voltage when the mechanism is stopped at its setpoint, with just a PID controller, the motor wouldn't be providing any force to hold the elevator up.
+However, we know that because the force of gravity F<sub>G</sub> is non-zero, the force from the motor F<sub>M</sub> must also be non-zero, which would mean that gravity is pulling the elevator away from its setpoint, preventing the elevator from holding its position at the setpoint.
+This is a contradiction with our scenario of an elevator stopped at its setpoint, so the elevator must either not be stopped at our setpoint, or we need to add some other form of control to the mechanism.
+In this case, having some level of residual error is undesirable for the mechanism, so adding another form of control is the correct option.
+
+<Aside type="note">
+What would happen if we only used PID?
+
+Either we would end up with some residual error in the position (manifesting in the form of the mechanism settling below its setpoint, so the P term of the PID controller is contributing voltage to counteract the force of gravity), or the mechanism would oscillate around the setpoint.
+
+In Stage 2D, we'll build the intake mechanism for the robot utilizing just a PID controller, despite the intake acting as an arm. 
+</Aside>
+
+## Introducing Feedforward
+
+Feedforward control can solve this issue.
+While feedback control relies solely on the error between the current state and the setpoint, feedforward control looks at the mechanism's setpoint to contribute to the output; there doesn't need to be any error or velocity in the mechanism for voltage to be applied to the motor.
+In the case of an elevator, this means that the feedforward controller can provide voltage to the motor to counteract the force of gravity while the mechanism is stopped.
+
+<Aside type="note">
+Motor dynamics are complex, and the voltage applied to a motor isn't proportional to the torque it outputs all of the time, as it will depend on the speed of the motor.
+However, when the motor is stopped or nearly stopped, the voltage is effectively proportional to the torque the motor outputs.
+As such, it's an appropriate model to use in this scenario.
+In this case, the feedforward term to counteract gravity is constant, and will be called k<sub>G</sub>, with units Volts.
+
+"All models are wrong, but some are useful" - George Box
+
+Engineering, and FRC controls in particular, is all about picking the appropriate assumptions to make and working towards a result that performs well enough, not necessarily one that is perfectly optimal.
+In this case, making the gravity feedforward of an elevator a constant voltage is an appropriate assumption and performs well, despite not being completely accurate.
+</Aside>
+
+## Additional Feedforward Terms
+
+If the force balance is extended to account for the full motor dynamics and acceleration of the elevator, two more useful feedfoward terms can be found.
+
+- k<sub>V</sub> is the velocity feedforward term, with units Volts/(meters/second).
+  - When multiplied by a velocity, will give the voltage required to keep the mechanism moving at that constant velocity specified.
+- k<sub>A</sub> is the acceleration feedforward term, with units Volts/(meters/second^2).
+  - When multiplied by an acceleration, will give the voltage required to accelerate the mechanism as specified.
+- k<sub>S</sub> is the static friction feedforward term, with units Volts.
+  - This term provides enough force to supply enough force to break the static friction of a mechanism, which will initially prevent it from moving.
+  This ensures that as the mechanism is near its setpoint and is making small, low-voltage adjustments, it will be able to continue moving.
+
+While none of these terms will be used in this course, they can be useful in other applications, such as with motion profiling or for controlling the velocity of a mechanism (like a flywheel).
+They can be used to effectively characterize and model the behavior of a mechanism.
+These terms will appear in the motor controller configuration we do later, so it's useful to know about them know, since if you were programming a real robot, these terms, especially k<sub>S</sub>, would likely come into play.

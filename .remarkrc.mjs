@@ -31,6 +31,7 @@ export default {
                           'https://vale.sh/',
                           'https://squoosh.app/',
                           'https://www.educational-animation.org/en/pid-controller/',
+                          'https://education.github.com/pack',
                       ], // Add known flaky URL patterns here
                   },
               ]

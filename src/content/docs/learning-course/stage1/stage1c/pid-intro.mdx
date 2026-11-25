@@ -4,8 +4,6 @@ description: An overview of Feedback Controllers and PID
 ---
 
 import ContentImage from '@components/ContentImage.astro';
-import ContentRow from '@components/ContentRow.astro';
-import ContentRowCaption from '@components/ContentRow.astro';
 
 FRC robots commonly have a mechanism that needs to be controlled to a precise setpoint, such as position or velocity.
 One example is aiming your robot at a scoring goal.
@@ -90,6 +88,13 @@ When oscillations and overshooting happen, the terms can be adjusted to smooth o
 
 P gets the output close to the setpoint, but it's not there yet.
 This type of behavior is called a **steady state error**.
+
+<ContentFigure
+    width="650px"
+    alt="a zoomed in part of the graph that shows overshoots, oscillations, and steady state"
+    src="/learning-course/stage1/stage1c/overshoot_oscillate.webp"
+/>
+
 To adjust for this, I is introduced.
 This helps eliminate the steady state error, bringing the output closer to the setpoint.
 However, as I increases, the oscillations get bigger, and the output still doesn't match the setpoint.

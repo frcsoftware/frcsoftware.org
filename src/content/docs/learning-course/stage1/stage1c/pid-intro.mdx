@@ -14,7 +14,7 @@ Scoring with auto alignment is faster and more efficient than your driver lining
 
 In this section, we will cover the basics of using measurements from sensors on the robot to help position mechanisms precisely.
 This type of control that incorporates feedback from sensors into the movement of the mechanisms is called a **feedback controller**.
-The most common feedback controller in FRC, and the one you will be learning about in this section, is a PID Controller.
+The most common feedback controller in FRC, and the one you will be learning about in this section, is a PID controller.
 
 ## Feedback Controller
 
@@ -54,7 +54,7 @@ The difference between the output to the setpoint is called the error.
   The longer the mechanism spends not at the setpoint, the stronger the effect of the integral gain.
   It is often unused in FRC due to a side effect called _integral windup_.
 - The Derivative (D) gain scales with the rate of change of the error.
-  The faster your mechanism approaches the setpoint, the stronger the derivative term tries to slow it down.
+  The faster your mechanism approaches the setpoint, the stronger the derivative term, the more it tries to slow it down.
   It is analogous to a dashpot,
 
 In code, the three terms are commonly noted as `kp`, `ki`, and `kd`.
@@ -68,7 +68,7 @@ k is a common prefix for constants and coefficients.
 
 ### How do P, I, and D work together?
 
-Now that we know what P,I, and D are, lets look at how the three terms work together to reach a setpoint.
+Now that we know what P, I, and D are, lets look at how the three terms work together to reach a setpoint.
 As PID are adjusted to reach the setpoint, the mechanism's output can act in different ways.
 Two things to look out for are **overshooting** and **oscillating**.
 When the output passes the setpoint, this is called overshoot.
@@ -114,7 +114,7 @@ As I increases, the oscillations get bigger.
 
 <Aside type="note">
     In FRC, using I is **not** recommended. Instead, it's recommended to use
-    another controller type called FeedForward. This will be covered in Stage 2
+    another controller type called feedforward control. This will be covered in Stage 2
     and is not needed for 1C. I is explained in this page for the purposes of
     understanding PID.
 </Aside>
@@ -166,7 +166,7 @@ If the output is close to the target but slightly misses it, I can be increased 
 In FRC, this part is commonly skipped.
 
 If there are any oscillations, D can be introduced.
-Increasing D, can help smooth out the oscillations.
+Increasing D helps smooth out any oscillations.
 However, make sure that it isn't increased so much that it causes jittering.
 
 Similar to the examples, graphs are used to tune PID.

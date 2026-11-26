@@ -23,6 +23,17 @@ export function remarkImageAttributes() {
 
             const children = node.children;
 
+            // A shared wrapper cannot carry separate alignments for multiple images.
+            // In that case, give each image its own block-level alignment instead.
+            const multipleImages =
+                children.filter((child) => child.type === 'image').length > 1;
+            if (multipleImages) {
+                node.data = node.data || {};
+                node.data.hName = 'div';
+                node.data.hProperties = node.data.hProperties || {};
+                node.data.hProperties.class = 'img-wrapper img-multiple';
+            }
+
             // Look for images with hash attributes in URL
             for (const child of children) {
                 if (child.type === 'image') {
@@ -54,6 +65,18 @@ export function remarkImageAttributes() {
                             imgStyle += ` border: ${border};`;
                         }
 
+                        if (multipleImages) {
+                            // Keep image styles isolated instead of aligning the entire
+                            // paragraph (which would also align sibling images).
+                            const margins =
+                                align === 'left'
+                                    ? ' margin-left: 0; margin-right: auto;'
+                                    : align === 'right'
+                                      ? ' margin-left: auto; margin-right: 0;'
+                                      : ' margin-left: auto; margin-right: auto;';
+                            imgStyle += ` display: block;${margins}`;
+                        }
+
                         // Set image properties
                         child.data = child.data || {};
                         child.data.hProperties = child.data.hProperties || {};
@@ -74,10 +97,18 @@ export function remarkImageAttributes() {
                         }
 
                         // Wrap the paragraph to act as a container
-                        node.data = node.data || {};
-                        node.data.hName = 'div';
-                        node.data.hProperties = node.data.hProperties || {};
-                        node.data.hProperties.class = `img-wrapper img-align-${align}`;
+                        if (!multipleImages) {
+                            node.data = node.data || {};
+                            node.data.hName = 'div';
+                            node.data.hProperties = node.data.hProperties || {};
+                            node.data.hProperties.class = `img-wrapper img-align-${align}`;
+                        }
+                    } else if (multipleImages) {
+                        // Unattributed images retain their own default left alignment.
+                        child.data = child.data || {};
+                        child.data.hProperties = child.data.hProperties || {};
+                        child.data.hProperties.style =
+                            'display: block; margin-left: 0; margin-right: auto;';
                     } else if (children.length === 1) {
                         // Standalone image without attributes - still wrap and left-align
                         node.data = node.data || {};

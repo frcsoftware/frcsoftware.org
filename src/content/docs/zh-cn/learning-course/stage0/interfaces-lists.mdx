@@ -20,7 +20,7 @@ import { FileTree } from '@astrojs/starlight/components';
 ## 为什么使用接口？
 
 假设机器人需要在 autonomous（自动模式）期间测量自己与墙壁的距离。
-某一年，队伍可能使用超声波传感器；下一年，可能换成激光测距传感器。
+某一年，队伍可能使用超声波传感器；下一年，可能换成 LiDAR（激光雷达）传感器。
 两者都测量距离，但它们是不同的硬件，由不同的代码控制。
 
 如果机器人的其余代码只能配合某一个具体的传感器类工作，更换硬件就意味着重写所有使用它的代码。
@@ -66,7 +66,7 @@ import { FileTree } from '@astrojs/starlight/components';
 
 ```
 
-如果队伍在下个赛季更换传感器，这个方法完全不需要修改，因为它只依赖 `DistanceSensor` 接口。
+如果队伍在下个赛季更换传感器，这个方法完全不需要修改。
 
 ## 泛型方法
 
@@ -105,7 +105,7 @@ import { FileTree } from '@astrojs/starlight/components';
 
 ## 包与导入
 
-到目前为止，我们编写的每个类都没有制定包，所以各个类之间可以直接使用，完全不需要 `import` 语句。
+到目前为止，我们编写的每个类都没有指定包，所以各个类之间可以直接使用，完全不需要 `import` 语句。
 不过，大多数真实项目会把许多类组织到不同目录中，
 因此我们需要一种方式，告诉 Java 去哪里找到这些类，以及它们依赖的类。
 Java Development Kit（Java 开发工具包，JDK）内置的类、WPILib 等第三方库中的类，
@@ -184,7 +184,7 @@ package first.robot.subsystems;
 
 `List.of` 返回一个 `List<Point>`，但不会告诉你是哪个类实现了它。
 它返回的对象并不是 `ArrayList`。
-这里它是 `ImmutableCollections$ListN`。这是 JDK 内部的一个类，类名不需要自己输入。
+这里它是 `ImmutableCollections$ListN`。这是深藏在 JDK 内部的一个类，名字长到没人想手动输入。
 这样是可以的，因为我们只通过 `List` 接口使用它，就像 `isTooClose` 只使用 `DistanceSensor` 接口一样。
 
 ### `List` 的可变性
@@ -207,12 +207,12 @@ package first.robot.subsystems;
 
 ```
 
-`editablePath` 是和 `autoPath` 两个相互独立的对象，往 `editablePath` 里新增路径点，不会改变 `autoPath`。
+`editablePath` 和 `autoPath` 是两个相互独立的对象，所以往 `editablePath` 里新增路径点不会改变 `autoPath`。
 
 ## 给 `RobotTracker` 增加历史记录功能
 
 [上一课](/learning-course/stage0/classes-methods/)中的 `RobotTracker` 会跟踪机器人的当前位置，但无法记录走过的轨迹。
-。现在我们借助 `List<Point>`，让它记录机器人到访过的每一个坐标，而不只是当前位置：
+现在我们借助 `List<Point>`，让它记录机器人到访过的每一个坐标，而不只是当前位置：
 
 ```java {tracker}#robotHistoryTrackerClass
 

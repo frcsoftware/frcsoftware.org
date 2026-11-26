@@ -1,0 +1,61 @@
+---
+title: 阶段 1B 概览
+description: 阶段 1B 概览
+---
+
+阶段 1A 使用了一种简单的顺序执行方式来控制 Kitbot。
+但真实的机器人需要同时响应许多输入，例如按键、传感器数据和视觉信息。
+Command-based programming（基于命令的编程）通过把机器人的行为建模为由 triggers（触发器，即事件）触发的 commands（命令，即动作）来解决这个问题。
+
+<Aside type="caution" title="Warning（警告）">
+    阶段 1B 的代码只能在 Systemcore 上运行。
+    请注意，这些代码只在仿真中测试过，尚未在真实的 Kitbot 上测试。
+    代码可能无法按预期运行。
+</Aside>
+
+<Aside type="caution" title="检查你的 VS Code！">
+    阶段 1B 使用 **2027 WPILib VS Code**。
+    如果还没有安装 **2027 WPILib VS Code**，请按照[开发必备工具](/learning-course/getting-started/required-tools)中的说明操作。
+
+    在 macOS 上，VS Code 的图标没有改成 WPILib 图标，名称仍然显示为 Visual Studio Code。
+    [VS Code 概述](/learning-course/getting-started/vscode-overview/)中也提到了这一点。
+    因此，开始之前，请确认你使用的是 **2027 WPILib VS Code**。
+
+</Aside>
+
+## 核心概念
+
+命令定义机器人的单个动作，例如展开拾取机构、输送一个赛件，或者根据摇杆输入行驶。
+触发器定义命令应该在什么时候运行，例如控制器输入、传感器数据达到某个阈值，或者自动模式、手动操控模式开始时。
+机构代表命令所占用和控制的机器人实体机构，例如拾取机构、整理输送机构和底盘驱动系统。
+
+## 阶段 1B 目标
+
+完成阶段 1B 后，你将把阶段 1A 的 Kitbot 代码重写为基于命令的架构，并添加控制器绑定、默认命令和简单的自动程序。
+
+本阶段涵盖以下主题：
+
+- [基于命令的编程的核心概念](/learning-course/stage1/stage1b/command-based-overview/)
+- [命令体](/learning-course/stage1/stage1b/the-command-body/)
+- [命令与机构（第一部分）](/learning-course/stage1/stage1b/commands-and-mechanisms/)
+- [触发器与调度](/learning-course/stage1/stage1b/triggers/)
+- [命令与机构（第二部分）](/learning-course/stage1/stage1b/commands-and-mechanisms-pt2/)
+- [附加练习：找出代码错误（第一部分）](/learning-course/stage1/stage1b/spot-the-error/)
+- [练习：Kitbot 代码重构（第一部分）](/learning-course/stage1/stage1b/command-based-kitbot/)
+- [基于命令的编程中的 Suppliers（供给器）](/learning-course/stage1/stage1b/suppliers-in-command-based/)
+- [练习：Kitbot 代码重构（第二部分）](/learning-course/stage1/stage1b/command-based-kitbot-pt2/)
+- [附加练习：找出代码错误（第二部分）](/learning-course/stage1/stage1b/spot-the-error-pt2/)
+
+<Aside type="note" title="Note（备注）">
+    为什么选择 Commands v3？ <br />
+    <br /> 如果你是有经验的程序员，很可能听说过或用过 Commands v2。 Commands v3
+    相比 Commands v2 有很大变化，它把命令调度器的内部实现改为基于 Java 的
+    continuations API 运行。 这一变化去掉了 Commands v2 所需的大量样板代码。
+    现在编写命令更接近于编写普通的 Java 代码。 <br />
+    <br /> Commands v3
+    还在命令占用机构方面带来了许多改进，允许把触发器的作用范围限定在某个 OpMode
+    或命令内，并提供了新的 state machine（状态机）API。
+    出于这些原因，本课程选择了 Commands v3，因为课程作者认为，与 Commands v2
+    相比，Commands v3
+    提供了明显更好、更简单的使用体验，让用户能够用简单得多、容易得多的方式实现相同的功能。
+</Aside>

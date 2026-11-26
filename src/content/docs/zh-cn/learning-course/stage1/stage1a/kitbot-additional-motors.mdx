@@ -1,0 +1,279 @@
+---
+title: Kitbot 额外电机
+description: 为 Kitbot 剩余的电机编程
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+    ctreTeleop: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyTeleop.java
+    revTeleop: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyTeleop.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# 剩余的电机
+
+Kitbot 还有两个电机，让它可以拾取和发射 fuel（燃料球）。
+
+IntakeLauncher 电机同时驱动拾取机构的滚轮和发射器的飞轮。
+
+<ContentFigure
+    width="650px"
+    alt="Kitbot 上的拾取-发射子系统"
+    src="/learning-course/stage1/stage1a/intakeLauncher.webp"
+/>
+
+Feeder 电机根据转动方向，把燃料球送入料斗、送入发射器，或者从拾取机构送出。
+
+<ContentFigure
+    width="650px"
+    alt="Kitbot 上的送料子系统"
+    src="/learning-course/stage1/stage1a/feederMotor.webp"
+/>
+
+IntakeLauncher 电机位于 CAN 总线 `CAN_S0`，CAN ID 为 4；Feeder 电机位于 CAN 总线 `CAN_S0`，CAN ID 为 5。
+
+在 `Robot.java` 文件中，为 IntakeLauncher 和 Feeder 电机创建电机控制器实例。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#AdditionalMotors
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#AdditionalMotors
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# 仿真额外的电机
+
+和底盘驱动系统一样，这里也提供了 `SingleFlywheelSim` 类，它封装了大部分仿真代码。
+`SingleFlywheelSim` 为 LauncherFeeder 和 Intake 电机提供了不同的静态方法，它们会返回针对这些电机设置好的 `SingleFlywheelSim` 实例。
+
+为 LauncherFeeder 电机创建 `SingleFlywheelSim` 实例的代码如下所示。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#IntakeLauncherSim
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#IntakeLauncherSim
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+现在，试着为 Feeder 电机创建 `SingleFlywheelSim` 实例。
+这次要改用 `forFeeder()` 方法。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#FeederSim
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#FeederSim
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+要让仿真的电机控制器更新，需要在 `simulationPeriodic()` 中调用各个 `SingleFlywheelSim` 实例的 `periodic()` 函数。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# 燃料球仿真
+
+如果此时仿真代码，就可以用键盘输入控制电机，并在 AdvantageScope 中用图表查看电机的转速。
+这个方案虽然可用，但利用 AdvantageScope 的 3D 标签页可以让它更有趣。
+AdvantageScope 的 3D 标签页会根据机器人代码发布的数据，在比赛场地中显示机器人和赛件。
+`FuelSim` 类提供燃料球赛件的仿真数据，用来直观显示燃料球进入和离开机器人的过程。
+创建 `SingleFlywheelSim` 实例时，IntakeLauncher 和 Feeder 电机的引用会被传给 `FuelSim` 类。
+
+要让 `FuelSim` 类工作，需要在 `simulationPeriodic()` 中调用它的 `periodic()` 函数。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#FuelSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#FuelSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# 检查
+
+`Robot` 类现在完成了！
+此时，你的 `Robot` 类应该如下所示。
+
+<Aside type="answer" title="Robot Solution（Robot 类参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#FullRobot
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#FullRobot
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+# 在手动操控模式中控制额外的电机
+
+要控制新的电机，需要在 `MyTeleop` OpMode 的 `periodic()` 函数中向这些电机发出指令。
+按下控制器的右肩键时，`IntakeLauncher` 电机的 throttle（输出比例）应为 0.9，`Feeder` 电机的输出比例应为 0.75。
+这样就会发射燃料球。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#launchFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#launchFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+按下控制器的左肩键时，IntakeLauncher 电机的输出比例应为 0.8，Feeder 电机的输出比例应为 -1.0。
+这样就会拾取燃料球。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#intakeFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#intakeFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+按下控制器的 A 键时，IntakeLauncher 电机的输出比例应为 -0.8，Feeder 电机的输出比例应为 1.0。
+这样就会排出燃料球。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#outakeFuel
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#outakeFuel
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+当以上按键都没有按下时，IntakeLauncher 和 Feeder 电机的输出比例都应为 0.0。
+这样就会让电机停止。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#stopMotors
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#stopMotors
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Line Graph（折线图）
+
+在手动操控模式中测试新电机的过程，与测试底盘驱动系统的过程非常相似。
+按住“E”键会让机器人拾取，按住“Q”键会让机器人发射，按住“R”键会让机器人排出。
+这次不看 AdvantageScope 中的 2D Field（2D 场地）标签页，而是使用 Line Graph 标签页查看电机数据。
+电机控制器施加给电机的电压显示在左侧坐标轴上，右侧坐标轴则显示电机的速度。
+
+此处将放置折线图运行的演示视频。
+
+<ContentFigure
+    width="650px"
+    alt="使用 Line Graph"
+    src="/learning-course/stage1/stage1a/LineGraph.webm"
+/>
+
+# 3D 仿真
+
+3D Field（3D 场地）标签页会显示 Kitbot、燃料球和比赛场地的 3D 渲染画面。
+机器人执行不同动作时，燃料球会出现或消失，以展示这些动作。
+你仍然可以使用 WASD 键移动机器人。
+
+<ContentFigure
+    width="650px"
+    alt="使用 3D Field"
+    src="/learning-course/stage1/stage1a/3dField.webm"
+/>
+
+# 拓展练习
+
+试着为之前创建的自动程序加入机器人动作，进一步改进它们。
+
+<Aside type="tip" title="Tip（提示）">
+    进入下一步之前，先把修改 commit（提交）并 push（推送）到 GitHub！
+    如果需要回顾操作步骤，请查看 [Git - Uploading
+    code（上传代码）](/learning-course/stage0/git/)。
+</Aside>

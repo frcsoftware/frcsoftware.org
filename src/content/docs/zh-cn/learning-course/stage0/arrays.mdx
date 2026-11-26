@@ -59,7 +59,7 @@ double motor4Speed = 0.5;
 因此，在 `motorSpeeds` 中，第一台电机的速度位于索引 `0`，最后一台电机的速度位于索引 `3`。
 
 在数组变量名后面使用方括号来读取和写入元素。
-下面更新第一台电机的速度，并把它打印输出：
+下面更新第一台电机的速度，并把它输出：
 
 ```java #setSpeed
 
@@ -103,7 +103,7 @@ double motor4Speed = 0.5;
     例如，需要等获取到联盟颜色之后，再给数组填充路径点数值。
 
     不过，因为 `null` 实际上不是一个 `Point` 对象，所以不能访问它的任何成员变量（field）或方法。
-    如果尝试访问，就会抛出名为 `NullPointerException` 的报错：
+    如果尝试访问，就会抛出名为 `NullPointerException` 的异常：
 
     ```java #pathArrayNull
 
@@ -146,7 +146,7 @@ for (ElementType element : array) {
 ```
 
 冒号左边整体是「类型 + 局部变量名」。类型必须与数组的元素类型一致；类型后面的名称是一个新的局部变量，每次循环保存一个元素。冒号右边是待遍历的数组或集合。
-我们使用 for-each 循环来打印 `path` 中的每个路径点：
+我们使用 for-each 循环来输出 `path` 中的每个路径点：
 
 ```java #forEachPath
 

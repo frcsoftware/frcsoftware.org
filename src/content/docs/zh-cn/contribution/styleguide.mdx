@@ -1,0 +1,211 @@
+---
+title: 贡献风格指南
+description: 根据网站目标制定的贡献风格指南。
+---
+
+import Aside from '@components/Aside.astro';
+
+<Aside type="note" title="Note（备注）">
+FRCSoftware.org 刚刚起步，借鉴了 FRCDesign.org 的很多内容。
+
+随着工作推进，本页需要补充与编程相关的示例；由于编程和设计之间存在差异，部分内容可能需要重写。
+
+</Aside>
+
+## 面向未来与实用性
+
+为了让你编写的内容对各种资源水平的队伍都有用，同时在未来依然有效，目标不是覆盖面广而内容浅，而是讲得足够深入，让学生理解概念背后的基本原理，从而能够把它们应用到自己的具体情况中。
+优缺点取决于具体情境，而基本原理是普遍适用的。
+
+同时，那些队伍不容易接触到和/或不常用的内容，例如状态空间控制或 MPC，不应该包含进来，以免造成困惑。
+
+### 为什么这很重要？
+
+1. 我们不需要替学生把所有东西的优缺点都分析清楚，再让他们做决定。
+   软件是一个变化非常快的领域，培养他们做决定的能力，比使用某种特定技术更重要。
+
+2. 这样能让学生理解一支队伍**为什么**会做出某个决定，并在我们不明确告诉他们的情况下自己权衡取舍。
+
+3. 这会大大降低面向未来更新和维护内容的工作量。
+   如果主流做法发生变化，为了保持竞争力而重写各个章节会非常耗时。
+   如果项目停止并不再维护，这些信息也能在更长的时间里保持有用。
+
+4. 细节往往就是最可靠、最成功的机器人与其他机器人之间的经验差距。
+   这对没有经验的队伍帮助极大，也能减轻有经验的软件导师的审查负担。
+
+## 参考 gm0 的风格指南
+
+不要把话说得太绝对。
+
+- 只有西斯才会把话说得那么绝对
+- 使用优缺点列表来比较各种选择
+- 解释某样东西**为什么**好或不好
+    - 例如，我们都知道把代码拆分成多个文件（但不要太多）比一个巨大的文件更好。
+      但不要只说它更好，而要说“把代码拆分成独立的文件会更容易阅读，并把机器人代码中相互独立的部分隔离开，让代码更容易维护。”
+    - 同样，本课程使用基于命令的架构，是因为课程作者认为它通常是队伍的最佳选择。
+      但是，许多队伍使用其他结构也取得了成功，例如不基于命令框架的状态机结构、ROS 方案，甚至只是在周期函数中巧妙地使用 if 语句和逻辑。
+      与其说“使用命令，因为它们让为机器人编程更容易”，不如说“命令库是为机器人编程的好选择，因为它只允许每个机构同时被一个动作/命令使用，从而确保任意两个动作都不会互相冲突，同时还提供了一个强大的框架，用来构建自动序列和集成自动化。”
+- 仍然要强调队伍可以自由探索和创新，但要帮助他们建立符合实际的预期（见下一条）
+
+FRCSoftware.org 是一份**从竞赛角度出发**的指南。
+
+- 尽量不要写那些效果不好，或者与本课程其他内容相比过于复杂的东西。
+  例如，MPC 或状态空间控制可以效果很好，但需要大量的控制理论和数学知识，远远超出本课程其他部分的要求
+- 尽可能不要加入个人观点。
+  尽量不要以权威口吻谈论你没有第一手经验的东西
+
+要记住，FRC 软件的潮流是暂时的、短暂的。
+
+- 某样东西在某个赛季流行，并不意味着它就是终极答案。
+  曾经有一段时间，commands v1 是最强大的框架，但现在我们已经用上了 commands v3。
+  目前，有很多队伍使用 RobotState.java 文件，但也有很多队伍不用。
+  想一想为什么会出现这样的分歧，以及 commands v3 这类不断变化和演进的框架是如何解决这个问题的。
+
+## 规范
+
+### 文件格式：
+
+- 使用 [squoosh](https://squoosh.app/) 把图片压缩为 .webp 格式
+- 较长的视频使用 YouTube 组件嵌入，较短的视频使用 webm 文件
+- 使用 Markdown 语法添加图片：`![Alt text](/path/to/image.webp)`
+
+### 品牌规范
+
+尽可能遵守品牌规范。
+
+- 遵守 _FIRST_ 的商标和品牌指南，可以在[这里](https://www.firstinspires.org/brand/logos-guidelines)查看
+- 页面中第一次出现 _FIRST_ 和 FRC 时，应该加上注册商标符号（即 _FIRST_）
+- _FIRST_ 这个名称始终要大写并使用斜体
+- 不要对 _FIRST_ 这个名称使用所有格（例如 FIRST's）
+- 这同样适用于队伍名称：按照官方拼写书写
+- 如果不知道某支队伍的名称怎么拼写，可以查看 [The Blue Alliance](https://www.thebluealliance.com/)
+
+写作时，如果能让行文不那么别扭，可以使用“you”。
+但是，尽量不要过度使用。
+
+### 链接：
+
+- 外部链接通常应该在新标签页中打开
+- 内部链接应该使用相对路径：`[Link Text](/path/to/page)`
+
+### 代码检查与格式化
+
+所有内容在合并之前都必须通过项目的代码检查和格式化检查。
+
+#### 每行一句
+
+`.mdx` 和 `.md` 文件中的每个句子都必须单独占一行。
+这样可以让 diff 更清晰，也更便于审查。
+这条规则由 `eslint-plugin-sentences-per-line` 强制执行，`pnpm lint` 会检查它，`pnpm format` 会修正它。
+
+#### 运行检查
+
+| 命令                | 作用                                                                 |
+| ------------------- | -------------------------------------------------------------------- |
+| `pnpm lint`         | 运行所有代码检查步骤（ESLint、remark、代码区域校验、vale、类型检查） |
+| `pnpm format`       | 自动修正所有格式问题和每行一句的问题                                 |
+| `pnpm format:check` | Oxfmt 检查，涵盖所有文件类型                                         |
+
+推送之前，在本地运行所有检查：
+
+{/* rli:ignore */}
+
+```bash
+pnpm lint && pnpm format:check
+```
+
+如果 `pnpm format:check` 失败，运行 `pnpm format` 自动修正。
+
+#### RLI（基于区域的代码块）
+
+代码块必须使用 RLI 系统：` ```language path/to/file#regionName `，代码块内容留空。
+被引用的文件位于 `examples/` 下，使用 `// [regionName]` / `// [/regionName]` 标记来界定代码片段。
+这样可以让示例代码保存在真实的源文件中，这些源文件会被编译和测试。
+
+如果需要一个直接写入代码、不引用示例文件的代码块，可以在它的前一行放上 `{/* rli:ignore */}` 来跳过这条规则。
+
+#### 代码区域来源别名
+
+另外，也可以在页面的 frontmatter 中定义代码区域来源文件的路径，以减少重复。
+没有指定来源的代码区域会使用默认来源；否则，可以使用 `{sourceName}` 语法指定来源。
+
+{/* rli:ignore */}
+
+````md
+---
+title: My Page
+codeRegionSources:
+    default: stage1/snippets-1b/src/main/java/sources/CommandBasedKitbot.java
+    other_region: stage1/snippets-1b/src/main/java/sources/CommandBasedKitbotPt2.java
+---
+
+This pulls from `CommandBasedKitbot.java`:
+
+```java #robotDef
+
+```
+
+This pulls from `CommandBasedKitbotPt2.java`:
+
+```java {other_region}#drivetrainDef
+
+```
+````
+
+#### 代码块标签页
+
+使用 Starlight 的 `Tabs` 和 `TabItem` 组件来展示同一个代码块的不同版本，例如同一段代码的 CTRE 版本和 REV 版本。
+从 `@astrojs/starlight/components` 导入它们，然后把每个版本的代码块分别放在各自的 `TabItem` 中：
+
+{/* rli:ignore */}
+
+````mdx
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+<Tabs>
+    <TabItem label="CTRE">
+        ```java #ctreDrivetrainDef
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java #revDrivetrainDef
+
+        ```
+    </TabItem>
+
+</Tabs>
+````
+
+如果同一页面（或不同页面）上的多个 `Tabs` 需要在读者切换 CTRE 和 REV 时保持同步，就给 `Tabs` 组件设置一个 `syncKey`。
+不要直接写字符串，而是在 `src/data/tabsSyncKeys.ts` 中定义一个共享常量并导入它：
+
+{/* rli:ignore */}
+
+```ts
+/** The sync key for REV/CTRE choosers */
+export const REV_CTRE_CHOOSER_KEY = 'rev-ctre-chooser';
+```
+
+{/* rli:ignore */}
+
+````mdx
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```
+
+        ```
+    </TabItem>
+
+</Tabs>
+````
+
+这样，读者在一组标签页中选择 CTRE 或 REV 后，网站上其他所有同步的 `Tabs` 都会默认使用同一个选择，而不需要在每个页面上重新选择。

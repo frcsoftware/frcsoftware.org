@@ -1,0 +1,77 @@
+---
+title: 找出代码错误（第二部分）
+description: 阶段 1B 的复习练习
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/SpotTheErrorPt2.java
+---
+
+### 练习 1
+
+按下 A 键时，控制台中没有出现“Hello World!”。
+你能找出错误吗？
+
+```java #robotPeriodicBug
+
+```
+
+<Aside type="answer" title="Answer（答案）">
+    命令调度器从来没有运行，所以已调度的命令永远不会执行。
+    在 `robotPeriodic()` 中调用 `Scheduler.getDefault().run()`：
+
+    ```java #robotPeriodicFix
+
+    ```
+
+</Aside>
+
+### 练习 2
+
+这个命令的目的是使用摇杆的前进轴和旋转轴来驾驶机器人。
+
+```java #arcadeDriveBug
+
+```
+
+你能找出错误吗？
+
+<Aside type="answer" title="Answer（答案）">
+    供给器的值只在命令开始运行之前读取了一次。
+    即使摇杆在动，机器人也会一直以相同的速度和旋转量行驶。
+    应该改为在循环中从供给器读取值：
+
+    ```java #arcadeDriveFix
+
+    ```
+
+</Aside>
+
+### 练习 3：加点难度
+
+下面是一个机械臂机构的代码：
+
+```java #triggerUpdatesBug
+
+```
+
+假设在你的手动操控模式 OpMode 或 Robot 类中，有这样一行调用：`xbox.a().whileTrue(arm.subOptimalSetAngle(0.5))`。
+再假设电机的起始位置是 0.1 圈。
+
+你按住 A 键，机械臂没有移动。
+松开按键再按住，机械臂就动了。
+为什么？
+
+<Aside type="answer" title="Answer（答案）">
+    触发器只在每个机器人循环周期开始时更新。
+    在调用 `subOptimalSetAngle` 之前，触发器 `hasNotHitTarget` 的结果为 `false`，因为电机的位置 `0.1` 并不大于 `target`（此时它的值为 0）。
+
+    命令运行时，它把 `target` 设为 `0.5`，并立即计算 `hasNotHitTarget.getAsBoolean()`，没有等待 1 个循环。
+    因为触发器内部的值还没有更新，所以触发器的结果仍然是 `false`。
+    于是，while 循环被跳过，电机的输出比例立即被设回 0。
+
+    第二次按下时，同样的问题仍然存在；但这一次，触发器已经有时间更新，所以 `hasNotHitTarget` 为 `true`。
+    因此，命令会正常运行。
+
+    要避免这个问题，只需在 while 循环之前加上 `coroutine.yield()`。
+    这相当于在开始 while 循环之前等待 1 个循环周期。
+
+</Aside>

@@ -1,0 +1,452 @@
+---
+title: Kitbot 底盘驱动系统
+description: 为 Kitbot 底盘驱动系统编程
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+    ctreTeleop: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyTeleop.java
+    revTeleop: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyTeleop.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import ContentImage from '@components/ContentImage.astro';
+import ContentRow from '@components/ContentRow.astro';
+import ContentRowCaption from '@components/ContentRow.astro';
+
+# Drivetrain（底盘驱动系统）
+
+<ContentFigure
+    width="650px"
+    alt="底盘驱动系统"
+    src="/learning-course/stage1/stage1a/kitbotDrivetrain.webp"
+/>
+
+Kitbot 使用四电机的 tank drive（坦克式底盘）。
+坦克式底盘是一种底盘驱动系统，左右两侧分别由各自一侧的电机独立驱动。
+这让机器人可以像坦克一样行驶：通过让左右两侧以不同速度转动，实现前进、后退、左转和右转。
+和坦克一样，它不能横向移动。
+在本阶段中，四个底盘驱动电机分别称为 `leftLeader`、`leftFollower`、`rightLeader` 和 `rightFollower`。
+
+# Systemcore
+
+Systemcore 是运行机器人代码的主处理器。
+可以把它看作机器人的“大脑”。
+电机控制器通过 CAN 端口连接到 Systemcore，而 Smart IO 支持 PWM 控制。
+
+<ContentFigure
+    width="300px"
+    alt="底盘驱动系统"
+    src="/learning-course/stage1/stage1a/systemcore.webp"
+>
+    图片来源：FIRST/Limelight
+</ContentFigure>
+
+# Motor Controllers（电机控制器）
+
+电机不能被直接控制。
+Systemcore 会与电机控制器通信，再由电机控制器驱动电机。
+本阶段使用两种电机控制器：REV 的 SparkMAX 和 CTRE 的 TalonFX。
+
+<ContentRow>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/sparkmax.webp"
+        alt="SparkMAX 的照片"
+        width="30%"
+    >
+        图片来源：REV
+    </ContentFigure>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/kraken.webp"
+        alt="内置 TalonFX 电机控制器的照片"
+        width="30%"
+    >
+        图片来源：CTRE
+    </ContentFigure>
+</ContentRow>
+
+# 开始编程！
+
+你已经派生了模板，现在可以开始为 Kitbot 编程了。
+打开 WPILib VS Code 2027，然后打开你在[入门页面](/learning-course/stage1/stage1a/getting-started/)中派生的代码。
+之后，就可以跟着教程为 Kitbot 的行驶和得分机构编程。
+
+---
+
+REV、CTRE 等厂商会提供一些类，既可以用来控制电机控制器，也可以从电机控制器获取位置、速度和温度等传感器数据。
+虽然每种电机控制器都有自己的类，但同一厂商的电机控制器使用方式大体相同，因此本阶段在 REV 代码中只使用 `SparkMax`，在 CTRE 代码中只使用 `TalonFX`。
+
+<Aside type="note" title="Note（备注）">
+    `TalonFX` 和 `SparkMax` 类与之后会用到的许多其他类一样，来自各厂商提供的外部库。
+    因此，需要在使用这些类的文件中导入它们，编译器才能知道它们是什么。
+    如果使用了尚未导入的类，VS Code 会把它标记为错误，并提供一个快速修复按钮，帮助你快速导入这个类。
+    `TalonFX` 和 `SparkMax` 的导入语句分别是 `import com.ctre.phoenix6.hardware.TalonFX;` 和 `import com.revrobotics.spark.SparkMax;`。
+
+    <ContentFigure
+        width="500px"
+        alt="打开 AdvantageScope"
+        src="/learning-course/stage1/stage1a/import.webm"
+    />
+
+</Aside>
+
+创建电机控制器对象时，需要提供实体电机控制器的 CAN Bus（CAN 总线）ID 和 CAN ID（CAN 设备 ID）。
+CAN 总线指的是设备连接在 Systemcore 5 个 CAN 端口中的哪一个，或者连接在哪个 CANivore 上。
+CAN ID 是为每个 CAN 设备配置的整数。
+同一条 CAN 总线上的所有设备必须使用不同的 ID。
+通过 CAN 总线和 CAN ID 的组合，Systemcore 就能把指令发给正确的电机控制器。
+WPILib 提供了一个 `CANPort` 枚举。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label = "CTRE">
+        CTRE 使用 `CANBus` 对象，它通过一个 `CANPort` 值来构造，用来指定设备连接在 Systemcore 的哪条 CAN 总线上。
+
+    </TabItem>
+    <TabItem label = "REV">
+        REV 使用 `CANPort` 指定设备连接在 Systemcore 的哪条 CAN 总线上。
+
+ </TabItem>
+
+</Tabs>
+由于 Systemcore 只有五条 CAN 总线，所以只会用到 `CAN_S0` 到 `CAN_S4`。
+
+在这个练习中，电机控制器的 ID 如下：
+
+- `leftLeader`：CAN 总线 `CAN_S0`，CAN ID `0`
+- `leftFollower`：CAN 总线 `CAN_S0`，CAN ID `1`
+- `rightLeader`：CAN 总线 `CAN_S0`，CAN ID `2`
+- `rightFollower`：CAN 总线 `CAN_S0`，CAN ID `3`
+
+电机控制器对象应该在 `Robot.java` 中、类的顶部创建。
+左侧电机的电机控制器对象如下所示。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label = "CTRE">
+        ```java {ctreRobot}#DriveMotorsLeft
+        ```
+    </TabItem>
+    <TabItem label = "REV">
+        ```java {revRobot}#DriveMotorsLeft
+        ```
+    由于 Spark Max 既可以控制有刷电机，也可以控制无刷电机，所以需要指定电机类型：NEO 这类电机使用 `MotorType.kBrushless`，CIM 这类电机使用 `MotorType.kBrushed`。
+
+    为真实机器人编写代码时，一定要确认电机类型设置正确！
+    把 NEO 设置为 `MotorType.kBrushed` 会损坏 NEO。
+
+ </TabItem>
+
+</Tabs>
+
+现在，试着自己创建右侧的电机控制器。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#DriveMotorsRight
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#DriveMotorsRight
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+# Motor Controller Configuration（电机控制器配置）
+
+电机控制器有许多可以修改的设置，例如 ID、电机类型和限制值。
+厂商会提供软件，例如 REV 的 [REV Hardware Client 2](https://docs.revrobotics.com/rev-hardware-client-2) 和 CTRE 的 [Phoenix Tuner X](https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/index.html)，用于在电脑上运行和配置他们的设备。
+不过，建议通过代码来配置设备，以确保所有电机控制器都配置正确。
+这一点尤其有用，因为很容易忘记需要添加哪些配置以及它们的正确数值。
+
+<Aside type="note" title="Note（备注）">
+    电机控制器通常只需要配置一次，而且绝不应该在机器人主循环中周期性地配置。
+    这是因为配置电机控制器通常是一个阻塞操作：机器人代码会暂停，等待电机控制器确认已经正确配置后才继续运行。
+    如果在机器人启用时这样做，电机控制器将无法接收新的指令，机器人可能会以意想不到的危险方式做出反应。
+</Aside>
+
+本节只配置电机控制器的 invert（反向设置）。
+这项设置决定了电机控制器收到正值指令时，电机朝哪个方向转动。
+底盘驱动系统每一侧各有两个电机，因此必须确保同一侧的电机彼此同步转动。
+可以让其中一个电机控制器跟随另一个来实现这一点。
+这就是为什么一个电机叫 Leader（主电机），另一个叫 Follower（跟随电机）。
+代码会让 Follower 听从发给 Leader 的指令。
+
+电机控制器的配置将在 Robot 类的构造函数中完成。
+配置电机控制器时，首先要创建一个电机控制器配置对象。
+这个对象保存配置，因此可以修改，也可以在不同的电机控制器之间共享。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorConfigCreationLeft
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorConfigCreationLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+接下来，可以在配置对象上调用各种函数并传入新值，把设置从默认值改掉。
+对于左侧电机，REV 代码中的反向设置为 `true`，CTRE 代码中为 `InvertedValue.Clockwise_Positive`。
+这样，在输入为正值时，电机会朝着让机器人前进的方向转动。
+由于底盘右侧的电机朝向相反，如果按同样的方式配置，在输入为正值时，它们会让车轮驱动机器人后退。
+因此，右侧电机应配置为 `false` 或 `InvertedValue.CounterClockwise_Positive`，这样在输入为正值时，它们也会让机器人前进。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#MotorConfigSetLeft
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#MotorConfigSetLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+最后，把配置对象交给电机控制器对象。
+需要记住，只有把配置交给电机控制器时，设置才会真正改变。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label = "CTRE">
+        对于 CTRE 电机控制器，跟随另一个电机控制器是通过 `ControlRequest` 实现的，而不是通过配置。
+        使用 `leaderMotor.getDeviceID()` 获取要跟随的 CAN ID，这样就只有一个可信的数据来源。
+        这有助于避免错误：如果主电机的 CAN ID 改变了，代码只需要在一个地方修改。
+
+        ```java {ctreRobot}#MotorConfigLeft
+        ```
+
+    </TabItem>
+    <TabItem label = "REV">
+        对于 REV 电机控制器，成为跟随电机属于一项配置，因此在把配置应用到跟随电机之前，要先修改跟随设置，并把主电机作为函数参数传入。
+        这一步必须在配置应用到主电机之后进行，这样主电机控制器就不会去跟随它自己。
+        `ResetMode.kResetSafeParameters` 用来让电机控制器把所有未修改的配置重置为默认值。
+        这样可以避免控制器上残留旧的配置。
+        使用 `PersistMode.kPersistParameters` 是为了把配置保存在电机控制器上，即使断电后也能保留。
+
+        ```java {revRobot}#MotorConfigLeft
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+现在，试着自己配置右侧的电机控制器。
+记住，有些配置可能不一样。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#MotorConfig
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#MotorConfig
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+# Arcade Drive（前进转向组合操控）
+
+<ContentFigure
+    width="564px"
+    alt="前进转向组合操控"
+    src="/learning-course/stage1/stage1a/arcadeDriveJoystick.webp"
+/>
+
+控制坦克式底盘的方式有好几种，本阶段使用前进转向组合操控。
+前进转向组合操控使用摇杆的 y 轴控制机器人前进或后退的速度，用 x 轴控制机器人顺时针或逆时针旋转的速度。
+WPILib 提供了一个名为 `DifferentialDrive` 的类，用来把摇杆输入转换为电机要执行的指令。
+
+`DifferentialDrive` 的实例应该创建在最初构造电机控制器的代码下方。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DrivetrainInstance
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DrivetrainInstance
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+注意，`DifferentialDrive` 构造函数的形式是 `DifferentialDrive(DoubleConsumer leftMotor, DoubleConsumer rightMotor)`。
+创建时，`DifferentialDrive` 需要一个 `DoubleConsumer`，用来驱动左右两侧的电机。
+`Consumer` 就是接收一个输入的函数，所以 `DoubleConsumer` 就是在调用时接收一个 double 作为输入的函数。
+`motorController::setThrottle` 语法用于把电机控制器的 `setThrottle()` 函数提供给 `DifferentialDrive` 实例。
+这个函数接收 -1.0 到 1.0 之间的输入，让电机以最大速度的某个百分比运行，这也称为 duty cycle（占空比）。
+这样，当 `DifferentialDrive` 实例收到摇杆输入时，就可以用正确的占空比调用所提供电机控制器的 `setThrottle()` 函数。
+
+<Aside type="note" title="Note（备注）">
+    `DifferentialDrive` 实例只需要拿到 Leader 电机控制器的 `setThrottle()`
+    函数，因为 Follower 电机会自动跟随。
+</Aside>
+
+# IMU
+
+IMU（Inertial Measurement Unit，惯性测量单元）是一种传感器，能让机器人在场地上移动时准确跟踪自己的三维旋转，即 roll（横滚）、pitch（俯仰）和 yaw（偏航）。
+虽然有多家厂商出售非常精确的 IMU，但本阶段使用 Systemcore 内置的 IMU。
+Systemcore 的 IMU 实例应该创建在 `differentialDrive` 的下方。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#IMU
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#IMU
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note" title="Note（备注）">
+    IMU 虽然精确，但只能测量相对于机器人通电时初始朝向的旋转。 因此，要充分利用
+    IMU，机器人要么从已知朝向开始，要么通过视觉系统获取初始朝向。
+</Aside>
+
+# 检查
+
+到这里，`Robot.java` 中的 `Robot` 类应该如下所示，并且 VS Code 不应该再提示任何错误。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#RobotTop
+            ```
+            ```java {ctreRobot}#AllConfigs
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#RobotTop
+            ```
+            ```java {revRobot}#AllConfigs
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+# OpModes（运行模式程序）
+
+`OpMode` 是一种类，它会向 Driver Station（操控站）注册自己，并提供名称和机器人模式（自动模式、手动操控模式或工具模式）。
+这样，机器人就可以根据 Driver Station 上的选择运行不同的代码。
+本阶段使用继承 `PeriodicOpMode` 的类。
+继承 `PeriodicOpMode` 后，这些类会获得几个有用的函数，只有在 Driver Station 上选中该 OpMode 时才会被调用。
+
+- `start()`：机器人从未启用切换到已启用时调用一次。
+- `periodic()`：机器人启用期间反复调用。
+- `end()`：机器人从已启用切换到未启用时调用一次。
+- `disabledPeriodic()`：机器人未启用期间反复调用。
+
+如果想进一步了解，可以在 [WPILib 文档](https://docs.wpilib.org/en/latest/docs/software/basic-programming/opmodes.html)中找到更多关于 OpMode 的信息。
+
+`opmode` 文件夹下提供了两个空白的 `PeriodicOpMode`：`MyTeleop.java` 和 `MyAuto.java`。
+
+要用摇杆控制机器人，需要创建一个 Teleop（手动操控模式）OpMode，周期性地把控制器的新数值交给 `DifferentialDrive` 实例。
+在 `MyTeleop.java` 中，需要创建一个 `XboxController` 实例。
+这个类提供了一些函数，用来获取控制器上不同按键的状态。
+可以同时使用多个控制器，所以 Driver Station 会为每个控制器分配一个槽位。
+构造函数中提供的索引会告诉 `XboxController` 监听哪个槽位。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#Controller
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#Controller
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note" title="Note（备注）">
+    不同类型的控制器应该使用不同的类。 也可以使用通用的 `Gamepad`
+    类，按索引获取按键或摇杆轴的值。
+</Aside>
+
+接下来，将使用 `MyTeleop.java` 中的 `periodic()` 方法，通过 `arcadeDrive` 函数持续更新 `DifferentialDrive`。
+`MyTeleop` 类的构造函数以 `Robot` 类作为参数。
+这样，OpMode 就可以访问 `Robot` 类的方法和成员变量。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreTeleop}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revTeleop}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+此时，`MyTeleop.java` 应该如下所示。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreTeleop}#FullDrivetrain
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revTeleop}#FullDrivetrain
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+<Aside type="tip" title="Tip（提示）">
+    进入下一步之前，先把修改 commit（提交）并 push（推送）到 GitHub！
+    如果需要回顾操作步骤，请查看 [Git - Uploading
+    code（上传代码）](/learning-course/stage0/git/)。
+</Aside>

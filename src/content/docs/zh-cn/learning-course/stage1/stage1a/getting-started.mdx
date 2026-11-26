@@ -1,0 +1,149 @@
+---
+title: 入门
+description: 阶段 1A 概览
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import ContentRow from '@components/ContentRow.astro';
+import ContentRowCaption from '@components/ContentRow.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+在开始编程之前，需要先把代码准备好。
+FRCSoftware 主要介绍两家厂商：REV 和 CTRE。
+REV 和 CTRE 都提供多种电机和电机控制器。
+如果使用 REV，本课程将使用 NEO 电机和 SPARK MAX 电机控制器。
+如果使用 CTRE，本课程将使用 Kraken 电机，它内置了 TalonFX 电机控制器。
+
+<ContentRow>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/ctre.webp"
+        alt="Kraken X60 电机"
+        width="30%"
+    >
+        图片来源：CTRE
+    </ContentFigure>
+    <ContentFigure
+        src="/learning-course/stage1/stage1a/rev.webp"
+        alt="Spark MAX 与 NEO 电机"
+        width="30%"
+    >
+        图片来源：REV
+    </ContentFigure>
+</ContentRow>
+
+---
+
+如果不确定你的队伍使用哪一套方案，可以问问队友！
+选定产品体系后，就可以克隆对应的仓库了。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        先 Fork（派生仓库），再 Clone（克隆）[CTRE Template](https://github.com/frcsoftware/Stage1A-Template-CTRE)。
+
+    </TabItem>
+    <TabItem label="REV">
+       先 Fork（派生仓库），再 Clone（克隆）[REV Template](https://github.com/frcsoftware/Stage1A-Template-REV)。
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="tip" title="Tip（提示）">
+    如果需要设置仓库方面的更多帮助，请阅读[派生仓库与克隆仓库指南](/learning-course/getting-started/forking-and-cloning/)。
+</Aside>
+---
+
+在深入了解机器人代码之前，先从整体上看看一个典型的 WPILib 项目包含哪些内容，会很有帮助。
+随着代码越来越复杂，你会看到更多文件夹和文件，但它们都由同样的基本组成部分控制。
+
+### 阶段 1A 模板结构
+
+<FileTree>
+
+- src
+    - main
+        - java
+            - first
+                - robot
+                    - opmode
+                        - MyAuto.java
+                        - MyTeleop.java
+                    - simulation
+                        - DrivetrainSim.java
+                        - SingleFlywheelSim.java
+                    - Robot.java
+                - Main.java
+
+</FileTree>
+
+你会注意到这里略去了很多文件，因为这些文件不需要你修改。
+使用 WPILib 这样的框架有一个好处：创建新项目时，它会自动生成这些文件，让你更快开始编写代码。
+其他文件夹，例如 `src/main/deploy/`，会在机器人代码变得更复杂时派上用场。
+因此，结构树中只列出了直接负责控制 Kitbot 行为的文件。
+
+<Aside type="note" title="Note（备注）">
+    如果你以前编写过 FRC 程序，需要注意：WPILib 正在为 2027
+    版本进行大规模重写，尤其是 OpModes（运行模式程序）和 Commands
+    v3（命令框架v3），所以有些文件和组成部分可能是全新的！
+</Aside>
+
+### `Main.java`
+
+首先要关注的是 `Main.java` 文件；在实际开发中，它是任何 Java 项目的入口点。
+它的内容非常简短。
+为了简洁，这里删去了注释和包声明，所以你的 `Main.java` 看起来会有所不同。
+
+```java stage1/snippets/Main.java#main
+
+```
+
+可以看到，`Main.java` 文件所做的事情，确实就是启动机器人，所以没有必要修改这个文件。
+
+<Aside type="note" title="Note（备注）">
+    请注意，项目中所有 Java 文件的名称都遵循
+    PascalCase（帕斯卡命名法），即每个单词的首字母都大写。
+    这是你在整个代码中都应该遵守的约定。
+</Aside>
+
+### `Robot.java`
+
+那么，`Main.java` 中的那一行代码在做什么呢？
+{/* rli:ignore */}
+
+```java
+RobotBase.startRobot(first.robot.Robot::new);
+```
+
+它看起来是在“启动”一个 `first.robot.Robot` 类的实例，如果打开这个类的文件，就会来到 `Robot.java`。
+这是机器人代码的核心，在这里：
+
+- 定义你的机构
+- 定义共享的行为
+- 通过 telemetry（遥测）记录调试数据
+
+<Aside type="note" title="Note（备注）">
+    以前编写过 FRC 程序的同学可能会注意到，这里少了 `RobotContainer.java` 文件。
+    Commands v3 框架不使用这个文件。
+</Aside>
+
+后面我们会更详细地介绍这个文件及其所有功能。
+
+### `opmode/`
+
+这个文件夹包含机器人将运行的所有 OpMode。
+OpMode 是一个类，用来控制机器人在特定机器人模式（自动模式、手动操控模式和工具模式）下的行为。
+每种机器人模式可以有多个 OpMode，在 Driver Station（操控站）上选择，告诉机器人要运行哪一个。
+这样，你就可以针对不同情况准备不同的自动程序，也可以为不同的驾驶员准备多个手动操控程序。
+OpMode 通过 `Robot` 类访问机器人的机构和其他共享行为。
+
+<Aside type="note" title="Note（备注）">
+    以前编写过 FRC 程序的同学可能用过 `SendableChooser` 来注册不同的自动程序。
+    OpMode 取代了 `SendableChooser`，因为它们集成在 Driver Station
+    中，并且会自动注册。
+</Aside>
+
+### `simulation/`
+
+这些文件负责机器人仿真，让你在面前没有实体机器人的情况下也能测试代码。
+我们已经为你准备好了这些文件；你只需要自己设置仿真软件，这部分会在阶段 1A 的最后介绍。

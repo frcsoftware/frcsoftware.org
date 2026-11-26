@@ -1,0 +1,133 @@
+---
+title: 简单自动程序
+description: 编写基于时间的自动程序
+codeRegionSources:
+    ctreAuto: stage1/stage1a/solutions/ctre/src/main/java/first/robot/opmode/MyAuto.java
+    revAuto: stage1/stage1a/solutions/rev/src/main/java/first/robot/opmode/MyAuto.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# Autonomous OpMode（自动模式 OpMode）
+
+现在 Kitbot 已经可以在手动操控模式下移动了，接下来要让它在自动模式下移动。
+自动模式通常是比赛开始后的前 15 秒，但具体时长每年可能有所不同。
+出于多种原因，一个有效的自动程序可以为机器人带来很大价值。
+自动阶段的分值通常更高，有时完成自动阶段的任务还能获得排名分。
+此外，赛件和你的机器人都处在已知位置，因此可以稳定得分。
+你还需要和联盟队友协调各自的自动程序，所以准备多个自动程序并能够调整它们非常重要。
+
+自动程序就是在比赛自动阶段运行的 OpMode。
+编写要在自动模式下运行的 OpMode 时，需要在类定义的正前方加上 `@Autonomous` 注解。
+这个注解会告诉 Driver Station（操控站）把该 OpMode 放到自动模式的选择列表中。
+这个 OpMode 会使用一个 `Timer`，根据自动阶段开始后经过的时间来决定行为。
+基于时间的自动程序以可靠性换取简单性，因为起始状态的细微差别可能会让机器人完成各个动作所需的时间变长或变短。
+自动程序的代码将添加到 opmode 文件夹中的 `MyAuto.java` 文件里。
+
+要编写基于时间的自动程序，必须创建一个 `Timer` 来记录自动程序已经运行了多长时间。
+在 `MyAuto` 类中构造一个 `Timer` 实例。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#TimerInit
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#TimerInit
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note" title="Note（备注）">
+    添加 `Timer` 后会出现一个错误。 这是一个导入错误，可以通过 Quick
+    Fix（快速修复）解决。 使用快速修复时通常会有很多选项。 对于 `Timer`，请选择
+    `import org.wpilib.system.Timer;`。
+</Aside>
+
+按照现在的代码，这个计时器记录的是从在 Driver Station 中选中自动程序开始经过的时间。
+但是，计时器需要记录从机器人启用开始经过的时间。
+可以在 OpMode 的 `start()` 函数中调用计时器的 `restart()` 函数来实现，它会把计时器重置为零。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#TimerRestart
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#TimerRestart
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+这个自动程序的目标是以一半速度前进四秒，然后停止。
+`Timer` 类有一个 `hasElapsed(double seconds)` 函数，如果已经经过指定的时间，它会返回 true。
+可以把这个函数作为 if 语句的条件，周期性地进行判断，在四秒后让机器人停止。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#SimpleAutoStart
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#SimpleAutoStart
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+如果 `hasElapsed(4)` 返回 false，说明经过的时间还不到四秒，所以应该让底盘驱动系统以一半速度前进。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreAuto}#SimpleAutoEnd
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revAuto}#SimpleAutoEnd
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# 运行自动程序
+
+要测试自动程序，先启动仿真，并连接 AdvantageScope。
+然后，在 Sim GUI（仿真图形界面）中选择自动模式和 `MyAuto` OpMode。
+现在启用机器人后，自动程序就会运行。
+
+<ContentFigure
+    width="650px"
+    alt="测试自动程序"
+    src="/learning-course/stage1/stage1a/RunningMyAuto.webm"
+/>
+
+# 练习
+
+试着自己扩展这个自动程序。
+例如，机器人可以先以一半速度前进四秒，再逆时针旋转两秒，然后全速前进三秒。
+你也可以尝试创建更多自动模式 OpMode，这样就能在自己编写的不同自动程序之间进行选择。
+
+<Aside type="tip" title="Tip（提示）">
+    进入下一步之前，先把修改 commit（提交）并 push（推送）到 GitHub！
+    如果需要回顾操作步骤，请查看 [Git - Uploading
+    code（上传代码）](/learning-course/stage0/git/)。
+</Aside>

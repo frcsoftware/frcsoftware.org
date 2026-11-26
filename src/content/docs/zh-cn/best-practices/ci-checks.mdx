@@ -1,0 +1,55 @@
+---
+title: CI 检查
+description: CI 检查的最佳实践
+codeRegionSources:
+    build: best-practices/ci-checks/build.yml
+    staticAnalysis: best-practices/ci-checks/static-analysis.gradle
+    codeQuality: best-practices/ci-checks/code-quality.yml
+    format: best-practices/ci-checks/format.yml
+---
+
+Continuous Integration (CI)（持续集成）是一种软件开发实践：开发者频繁地把代码修改合并到共享仓库中，并由此触发自动构建和测试，以确保代码库保持稳定。
+CI 检查是在推送代码或创建合并请求时运行的自动化测试。
+它们可以帮助确保代码在合并之前能够构建、符合编程规范，并且格式正确。
+可以使用 [GitHub Actions](https://docs.github.com/en/actions/get-started/continuous-integration) 创建 CI 检查。
+
+<Aside type="note" title="Note（备注）">
+CI 检查只能检查代码的某些特性，无法确保代码功能正确或写得好。
+CI 检查不能代替合并请求审查。
+
+</Aside>
+
+## Build（构建）
+
+要确认机器人代码能够构建，请创建 GitHub Actions 工作流文件 `.github/workflows/build.yml`，内容如下：
+
+```yaml {build}
+
+```
+
+## 代码质量
+
+Static analysis（静态分析）是在不执行代码的情况下分析代码的过程。
+静态分析工具可以帮助发现 bug、保持编程规范，并提高代码质量。
+使用静态分析工具被认为是一种好习惯，因为它们能自动标记出不好的编程习惯，例如未使用的代码。
+
+要进行配置，请在 `build.gradle` 文件的 `plugins {}` 代码块中添加 [PMD](https://docs.gradle.org/current/userguide/pmd_plugin.html) 和 [Spotbugs](https://plugins.gradle.org/plugin/com.github.spotbugs) 插件。
+
+```groovy {staticAnalysis}
+
+```
+
+要运行代码质量检查，请创建 GitHub Actions 工作流文件 `.github/workflows/code-quality.yml`，内容如下：
+
+```yaml {codeQuality}
+
+```
+
+## 代码格式化
+
+[Spotless](https://github.com/diffplug/spotless) 也可以作为 CI 检查运行，用来确认代码格式是否正确。
+要添加代码格式化 CI 检查，请创建 GitHub Actions 工作流文件 `.github/workflows/format.yml`，内容如下：
+
+```yaml {format}
+
+```

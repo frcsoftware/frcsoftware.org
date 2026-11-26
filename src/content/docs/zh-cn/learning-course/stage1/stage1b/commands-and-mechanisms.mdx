@@ -1,0 +1,127 @@
+---
+title: 命令与机构（第一部分）
+description: 定义机构和编写命令的基础知识
+codeRegionSources:
+    default: stage1/stage1b/snippets/src/main/java/sources/CommandsAndMechsPt1.java
+---
+
+import Aside from '@components/Aside.astro';
+
+### 定义机构
+
+机构就是带有 `implements Mechanism` 关键字的类：
+
+```java #mechanismDef
+
+```
+
+一般来说，每种机构只应该创建一个实例，并且这个实例应该保存在 Robot 类中：
+
+```java #mechanismInRobotDef
+
+```
+
+<Aside type="note" title="Note（备注）">
+    **如果你没有用过 Commands v2，可以跳过这一段！** Commands v3 中的机构与
+    Commands v2 中的 Subsystems（子系统）完全相同。 区别在于，你需要自己定义
+    `periodic()` 方法，并在 `robotPeriodic()` 中手动调用它，而不是重写
+    `SubsystemBase` 中的方法。
+</Aside>
+
+### 定义命令
+
+大多数命令都定义在包含机构类的文件中（例如 Intake.java 或 Shooter.java）。
+下面的代码定义了一个新的 `Command`：
+
+```java #commandDef
+
+```
+
+注意：
+
+- 命令运行时，`coroutine -> {` 和 `}` 之间的每一行代码都会执行，就像方法体一样。
+- 这个命令会先输出一次“Full Speed Baby!”，然后让电机以最大速度转动。
+- 创建 `Command` 时必须调用 `named("Set to Full Throttle")`。[^1]
+  这样，在调试代码时，就可以把这个命令和其他命令区分开。
+
+要修改命令的优先级，只需在调用 `named()` 之前加上 `withPriority(int)` 调用：
+
+```java #commandWithPriorityDef
+
+```
+
+<Aside type="note" title="Note（备注）">
+    **如果你没有用过 Commands v2，可以跳过这一段！** 与 Commands v2
+    不同，`run()` 方法中的代码不会重复运行！ 要重复运行代码，需要在 `run()`
+    方法中使用 while 循环。
+</Aside>
+
+### 将命令与机构结合
+
+下面是一个定义在机构类内部的命令示例：
+
+```java #fullThrottleIntake
+
+```
+
+用 `run()` 创建的命令会自动占用定义它的那个机构。
+这里，全速运行命令占用的是 `Intake`。
+
+另外，注意 `fullThrottle` 方法会创建并返回一个命令。
+所有机构专用的命令都应该这样定义，原因有两个：
+
+1. 命令可以像方法一样定义参数。
+2. `Robot` 类可以方便地使用这些命令。
+
+```java #runAtThrottleCommand
+
+```
+
+不过，使用这种方式时需要小心。
+看看下面这段代码：
+
+{/* rli:ignore */}
+
+```java
+public Command printHiThenFullThrottle() {
+  return run(coroutine -> {
+      System.out.println("Hi!");
+      runAtThrottle(1.0); // Error: Commands must be used! Did you mean to fork it or bind it to a trigger?
+    })
+    .named("Set to Full Throttle");
+}
+```
+
+像这样调用 `fullThrottle()` 方法，并不会让电机转动，而是会创建一个必须单独运行的 `Command` 对象。
+Java 编译器会发现这个问题，并报出编译时错误。
+
+<Aside type="note" title="Note（备注）">
+    你能想明白为什么错误信息里写着“bind it to a trigger”吗？
+    这个问题留给读者作为练习。
+
+    <Aside type="answer" title="开个玩笑，答案在这里">
+        还记得在基于命令的编程概述中，我们提到过 `Trigger` 是让动作（也就是命令）运行的刺激。
+    </Aside>
+
+</Aside>
+
+<Aside type="note" title="Note（备注）">
+    注意，这条错误信息中的“forking”指的是调度一个命令。 对于熟悉 Git
+    命令行的同学来说，它和 `gh repo fork` 命令不是一回事。
+</Aside>
+
+### Command Sequences（命令序列）
+
+如果想在另一个命令中运行 `fullThrottle` 命令，必须调用 `coroutine.await(Command)`，像这样：
+
+```java #commandAwait
+
+```
+
+这意味着你可以按顺序运行多个命令：
+
+```java #commandSequence
+
+```
+
+[^1]: [`NeedsNameBuilderStage.named()`](<https://github.wpilib.org/allwpilib/docs/beta/java/wpilib.command3/org/wpilib/command3/NeedsNameBuilderStage.html#named(java.lang.String)>) 的 WPILib JavaDocs

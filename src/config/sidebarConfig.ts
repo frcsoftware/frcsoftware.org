@@ -173,12 +173,12 @@ const learningCourse: SidebarTopic = {
                         },
                         {
                             label: 'Kitbot Drivetrain',
-                            translations: { 'zh-CN': 'Kitbot 传动系统' },
+                            translations: { 'zh-CN': 'Kitbot 底盘驱动系统' },
                             slug: 'learning-course/stage1/stage1a/kitbot-drivetrain',
                         },
                         {
                             label: 'Drivetrain Simulation',
-                            translations: { 'zh-CN': '传动系统仿真' },
+                            translations: { 'zh-CN': '底盘驱动系统仿真' },
                             slug: 'learning-course/stage1/stage1a/drivetrain-sim',
                         },
                         {
@@ -215,7 +215,7 @@ const learningCourse: SidebarTopic = {
                         },
                         {
                             label: 'The Body of a Command',
-                            translations: { 'zh-CN': '命令的主体' },
+                            translations: { 'zh-CN': '命令体' },
                             slug: 'learning-course/stage1/stage1b/the-command-body',
                         },
                         {
@@ -236,7 +236,7 @@ const learningCourse: SidebarTopic = {
                         {
                             label: 'Bonus: Spot the Error',
                             translations: {
-                                'zh-CN': '拓展练习：找出代码错误（第一部分）',
+                                'zh-CN': '附加练习：找出代码错误（第一部分）',
                             },
                             slug: 'learning-course/stage1/stage1b/spot-the-error',
                         },
@@ -251,7 +251,7 @@ const learningCourse: SidebarTopic = {
                             label: 'Suppliers in Command-Based',
                             translations: {
                                 'zh-CN':
-                                    '基于命令的编程中的 Supplier（供给器）',
+                                    '基于命令的编程中的 Suppliers（供给器）',
                             },
                             slug: 'learning-course/stage1/stage1b/suppliers-in-command-based',
                         },
@@ -265,7 +265,7 @@ const learningCourse: SidebarTopic = {
                         {
                             label: 'Bonus: Spot the Error, Pt 2',
                             translations: {
-                                'zh-CN': '附加：找出错误（第二部分）',
+                                'zh-CN': '附加练习：找出代码错误（第二部分）',
                             },
                             slug: 'learning-course/stage1/stage1b/spot-the-error-pt2',
                         },
@@ -391,7 +391,7 @@ const bestPractices: SidebarTopic = {
         },
         {
             label: 'Code Formatter',
-            translations: { 'zh-CN': '代码格式化' },
+            translations: { 'zh-CN': '代码格式化器' },
             slug: 'best-practices/code-formatter',
         },
         {

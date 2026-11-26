@@ -1,0 +1,144 @@
+---
+title: Kitbot 底盘驱动系统仿真
+description: 编写 Kitbot 底盘驱动系统的仿真代码
+codeRegionSources:
+    ctreRobot: stage1/stage1a/solutions/ctre/src/main/java/first/robot/Robot.java
+    revRobot: stage1/stage1a/solutions/rev/src/main/java/first/robot/Robot.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+# Simulation（仿真）
+
+在无法立即使用实体机器人测试修改的情况下编写代码，是很常见的事。
+好在你的电脑也能运行机器人代码，这样不用机器人也能进行测试。
+虽然有些内容可以只靠仿真纯机器人代码来测试，但这时并没有真实的电机去转动并反馈新的位置。
+因此，我们会使用仿真类：它们根据期望输入给电机的电压，利用物理规律模拟真实电机会如何响应。
+本阶段已经提供了自定义的类，把这部分逻辑的大部分细节都封装好了。
+如果想阅读具体实现，可以在 `simulation` 文件夹中找到这些文件。
+如果想进一步了解仿真，也可以阅读 [WPILib 仿真文档](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/index.html)。
+
+# 底盘驱动系统仿真
+
+要仿真底盘驱动系统，需要在 `Robot.java` 中再实例化一个类。
+在 `DifferentialDrive` 实例下方创建一个 `DrivetrainSim` 类的实例，并把左右两侧的 Leader（主电机）作为输入。
+这个类会读取发给电机的电压指令，并通过它的物理仿真用新的位置更新电机控制器。
+
+之后，这个类会发布新的底盘位置和其他电机数据，以便在 AdvantageScope 中查看。
+AdvantageScope 是 WPILib 工具附带的一个程序，因此不需要另外安装。
+它通过图表以及 3D 和 2D 场地可视化等多种工具，帮助我们直观地查看机器人发送的数据。
+AdvantageScope 还可以把机器人在比赛中生成的日志可视化，从而帮助调试。
+关于使用 AdvantageScope 的更多信息，请查看 [AdvantageScope 文档](https://docs.advantagescope.org/)。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DrivetrainSim
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DrivetrainSim
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+# Periodic Methods（周期执行方法）
+
+机器人代码需要循环运行，这样才能根据新的控制器输入和传感器输入，不断向电机控制器发出新的指令。
+为此，`Robot` 类和 `OpMode` 类中提供了周期执行方法。
+周期执行方法默认每 20ms 调用一次，因此放在其中的代码每秒会运行 50 次。
+OpModeRobot 还有一些额外的周期执行方法，只在特定的机器人状态下运行。
+例如，只有在 Driver Station（操控站）上选择手动操控模式时，才会调用 `teleopPeriodic()` 函数。
+
+目前，`DrivetrainSim` 实际上不会做任何事情，因为还没有让它周期性地更新。
+要解决这个问题，需要在 `Robot` 类的 `simulationPeriodic()` 函数中调用 `DrivetrainSim` 的 `periodic()` 函数。
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#DriveSimPeriodic
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+<Aside type="note" title="Note（备注）">
+    仿真类在 `simulationPeriodic()` 中更新，因此只有在仿真机器人代码时才会更新。
+    这样可以确保在真实机器人上运行代码时，它不会干扰电机控制器。
+</Aside>
+
+# 检查
+
+添加仿真代码后，`Robot.java` 文件应该如下所示。
+
+<Aside type="answer" title="Solution（参考答案）">
+    <Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+        <TabItem label="CTRE">
+
+            ```java {ctreRobot}#RobotWithSimPart1
+            ```
+            ```java {ctreRobot}#RobotWithSimPart2
+            ```
+
+        </TabItem>
+        <TabItem label="REV">
+
+            ```java {revRobot}#RobotWithSimPart1
+            ```
+            ```java {revRobot}#RobotWithSimPart2
+            ```
+
+        </TabItem>
+    </Tabs>
+
+</Aside>
+
+# 仿真代码
+
+仿真代码时，主要有两个窗口，用来控制和直观查看代码在做什么。
+
+第一个重要的窗口是 Sim GUI（仿真图形界面）。
+仿真代码时，Sim GUI 会自动打开。
+它相当于 Driver Station，并显示仿真设备的位置、速度等信息。
+关于 Sim GUI 的更多信息，请查看 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/simulation-gui.html)。
+
+另一个重要的窗口是 AdvantageScope。
+AdvantageScope 中主要使用的标签页是 <strong>Line Graph（折线图）</strong>和 <strong>2D Field（2D 场地）</strong>：前者用于绘制电机当前位置等数值数据，后者用于直观显示机器人在场地上的位置。
+
+仿真代码的第一步是打开 AdvantageScope，并加载保存在机器人项目顶层的布局文件 `AdvantageScopeLayout.json`。
+
+<ContentFigure
+    width="650px"
+    alt="打开 AdvantageScope"
+    src="/learning-course/stage1/stage1a/OpenAscope.webm"
+/>
+
+接下来，使用 VS Code 右上角的 WPILib 图标打开命令面板，并选择 `WPILib: Simulate Robot Code`。
+这会启动仿真并打开 Sim GUI。
+
+<ContentFigure
+    width="650px"
+    alt="打开 AdvantageScope"
+    src="/learning-course/stage1/stage1a/StartSim.webm"
+/>
+
+最后，把 AdvantageScope 连接到仿真，并选择 `MyTeleop` 作为当前的 `OpMode`。
+现在，通过 Sim GUI 启用机器人后，就可以使用 WASD 键控制机器人了。
+
+<ContentFigure
+    width="650px"
+    alt="打开 AdvantageScope"
+    src="/learning-course/stage1/stage1a/ConnectRunSim.webm"
+/>

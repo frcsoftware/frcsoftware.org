@@ -10,7 +10,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_25
 }
 
-def ROBOT_MAIN_CLASS = ""
+def ROBOT_MAIN_CLASS = "first.Main"
 
 // Define my targets (SystemCore) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -110,29 +110,40 @@ tasks.withType(JavaCompile) {
 project.compileJava.dependsOn(spotlessApply)
 spotless {
     java {
-        target fileTree(".") {
-            include "**/*.java"
-            exclude "**/build/**", "**/build-*/**"
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**'
         }
         toggleOffOn()
         googleJavaFormat()
+        removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
     }
     groovyGradle {
-        target fileTree(".") {
-            include "**/*.gradle"
-            exclude "**/build/**", "**/build-*/**"
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
         }
         greclipse()
         leadingTabsToSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
-    format "misc", {
-        target fileTree(".") {
-            include "**/*.md", "**/.gitignore"
-            exclude "**/build/**", "**/build-*/**"
+    format 'xml', {
+        target fileTree('.') {
+            include '**/*.xml'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        eclipseWtp('xml')
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
         }
         trimTrailingWhitespace()
         leadingTabsToSpaces(2)

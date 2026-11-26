@@ -36,30 +36,30 @@ public class SinglePositionCoralTeleop extends PeriodicOpMode {
         .a()
         .whileTrue(
             Command.noRequirements(
-                    (coro) -> {
-                      coro.fork(
+                    (coroutine) -> {
+                      coroutine.fork(
                           new AutoAlignCommand(
                                   drive,
                                   Poses.BLUE_REEF_A.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                               .withRunContinuously(true));
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
-                      coro.waitUntil(superstructure::atSetpoint);
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                      coroutine.waitUntil(superstructure::atSetpoint);
 
                       AutoAlignCommand finalAlign =
                           new AutoAlignCommand(drive, Poses.BLUE_REEF_A).withRunContinuously(true);
-                      coro.fork(finalAlign);
-                      coro.waitUntil(finalAlign::atPosition);
+                      coroutine.fork(finalAlign);
+                      coroutine.waitUntil(finalAlign::atPosition);
 
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
-                      coro.waitUntil(superstructure::atSetpoint);
-                      coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
+                      coroutine.waitUntil(superstructure::atSetpoint);
+                      coroutine.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
                     })
                 .named("AutoAlign and Score"));
 
     controller
         .x()
         .onTrue(
-            Command.noRequirements(coro -> robot.coralSim.setState(CoralSim.CoralState.CLAW))
+            Command.noRequirements(coroutine -> robot.coralSim.setState(CoralSim.CoralState.CLAW))
                 .named("Put coral in claw"));
   }
 }

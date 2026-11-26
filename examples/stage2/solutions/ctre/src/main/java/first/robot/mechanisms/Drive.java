@@ -188,7 +188,7 @@ public class Drive implements Mechanism {
   }
 
   public Command stop() {
-    return run((coro) -> swerve.setControl(new SwerveRequest.ApplyRobotVelocity()))
+    return run((coroutine) -> swerve.setControl(new SwerveRequest.ApplyRobotVelocity()))
         .named("Stop Drive");
   }
 
@@ -233,7 +233,7 @@ public class Drive implements Mechanism {
     }
 
     @Override
-    public void run(Coroutine coroutine) {
+    public void run(coroutineutine coroutineutine) {
       targetPose = poseSupplier.get();
 
       headingController.reset(drive.getHeading().getRadians(), drive.getVelocity().omega);
@@ -308,7 +308,7 @@ public class Drive implements Mechanism {
         swerveRequest.withVelocity(chassisVelocities);
         drive.swerve.setControl(swerveRequest);
 
-        coroutine.yield();
+        coroutineutine.yield();
       }
 
       // If command ends naturally, have the robot stop

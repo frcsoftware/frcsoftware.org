@@ -89,9 +89,9 @@ public class Indexer implements Mechanism {
    * @return a command
    */
   public Command setVoltage(Voltage voltage) {
-    return run((coro) -> {
+    return run((coroutine) -> {
           motor.setControl(voltageRequest.withOutput(voltage));
-          coro.park();
+          coroutine.park();
         })
         .named("Set Voltage: " + voltage.in(Volts) + "V");
   }

@@ -51,15 +51,15 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
         .a()
         .onTrue(
             Command.noRequirements(
-                    (coro) -> {
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.waitUntil(superstructure::atSetpoint);
-                      coro.fork(
+                    (coroutine) -> {
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.waitUntil(superstructure::atSetpoint);
+                      coroutine.fork(
                           superstructure.setPosition(Superstructure.Positions.HANDOFF),
                           claw.setVoltage(Claw.Voltages.HOLD_CORAL));
-                      coro.waitUntil(superstructure::atSetpoint);
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.waitUntil(superstructure::atSetpoint);
+                      coroutine.waitUntil(superstructure::atSetpoint);
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.waitUntil(superstructure::atSetpoint);
                     })
                 .named("Handoff Coral"));
 
@@ -75,26 +75,26 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
 
   private NeedsNameBuilderStage createScoreCommand(List<Pose2d> poses) {
     return Command.noRequirements(
-        (coro) -> {
-          coro.fork(
+        (coroutine) -> {
+          coroutine.fork(
               new Drive.AutoAlignCommand(
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                   .withRunContinuously(true));
-          coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
-          coro.waitUntil(superstructure::atSetpoint);
+          coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
+          coroutine.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(drive, () -> drive.getPose().nearest(poses))
                   .withRunContinuously(true);
-          coro.fork(finalAlign);
-          coro.waitUntil(finalAlign::atPosition);
+          coroutine.fork(finalAlign);
+          coroutine.waitUntil(finalAlign::atPosition);
 
-          coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
-          coro.waitUntil(superstructure::atSetpoint);
-          coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
-          coro.park();
+          coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
+          coroutine.waitUntil(superstructure::atSetpoint);
+          coroutine.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
+          coroutine.park();
         });
   }
 }

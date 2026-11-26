@@ -206,10 +206,10 @@ public class Intake implements Mechanism {
   }
 
   public Command setState(Voltage rollerVoltage, Angle pivotPosition) {
-    return run(coro -> {
+    return run(coroutine -> {
           rollers.setControl(rollersVoltageRequest.withOutput(rollerVoltage));
           pivot.setControl(pivotPositionRequest.withPosition(pivotPosition));
-          coro.park();
+          coroutine.park();
         })
         .named("Set Intake State");
   }

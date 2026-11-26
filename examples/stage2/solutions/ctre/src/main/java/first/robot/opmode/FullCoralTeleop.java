@@ -46,9 +46,9 @@ public class FullCoralTeleop extends PeriodicOpMode {
     Trigger rightAlignButton = controller.rightBumper();
     Trigger intakeButton = controller.leftTrigger();
 
-    l2Button.onTrue(Command.noRequirements((coro) -> selectedLevel = 2).named("Select L2"));
-    l3Button.onTrue(Command.noRequirements((coro) -> selectedLevel = 3).named("Select L3"));
-    l4Button.onTrue(Command.noRequirements((coro) -> selectedLevel = 4).named("Select L4"));
+    l2Button.onTrue(Command.noRequirements((coroutine) -> selectedLevel = 2).named("Select L2"));
+    l3Button.onTrue(Command.noRequirements((coroutine) -> selectedLevel = 3).named("Select L3"));
+    l4Button.onTrue(Command.noRequirements((coroutine) -> selectedLevel = 4).named("Select L4"));
 
     drive.setDefaultCommand(drive.getDriveCommand(controller));
 
@@ -57,37 +57,37 @@ public class FullCoralTeleop extends PeriodicOpMode {
     StateMachine.State intaking =
         stateMachine.addState(
             Command.noRequirements(
-                    coro -> {
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.fork(intake.setState(Intake.State.INTAKING));
-                      coro.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
-                      coro.park();
+                    coroutine -> {
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(intake.setState(Intake.State.INTAKING));
+                      coroutine.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
+                      coroutine.park();
                     })
                 .named("Intaking"));
     StateMachine.State stow =
         stateMachine.addState(
             Command.noRequirements(
-                    (coro) -> {
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.STOW));
-                      coro.fork(intake.setState(Intake.State.RETRACTED));
-                      coro.park();
+                    (coroutine) -> {
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.STOW));
+                      coroutine.fork(intake.setState(Intake.State.RETRACTED));
+                      coroutine.park();
                     })
                 .named("Stow"));
     StateMachine.State handoff =
         stateMachine.addState(
             Command.noRequirements(
-                    (coro) -> {
-                      coro.fork(indexer.setVoltage(Indexer.Voltages.HOLD));
-                      coro.fork(intake.setState(Intake.State.RETRACTED));
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.waitUntil(superstructure::atSetpoint);
+                    (coroutine) -> {
+                      coroutine.fork(indexer.setVoltage(Indexer.Voltages.HOLD));
+                      coroutine.fork(intake.setState(Intake.State.RETRACTED));
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.waitUntil(superstructure::atSetpoint);
 
-                      coro.waitUntil(indexer::hasCoral);
-                      coro.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF));
-                      coro.waitUntil(claw::hasCoral);
-                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
-                      coro.park();
+                      coroutine.waitUntil(indexer::hasCoral);
+                      coroutine.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF));
+                      coroutine.waitUntil(claw::hasCoral);
+                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.park();
                     })
                 .named("Handoff"));
     StateMachine.State scoreL2Left =
@@ -181,26 +181,26 @@ public class FullCoralTeleop extends PeriodicOpMode {
       Superstructure.Positions prepPosition,
       Superstructure.Positions scorePosition) {
     return Command.noRequirements(
-        (coro) -> {
-          coro.fork(
+        (coroutine) -> {
+          coroutine.fork(
               new Drive.AutoAlignCommand(
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                   .withRunContinuously(true),
               superstructure.setPosition(prepPosition));
-          coro.waitUntil(superstructure::atSetpoint);
+          coroutine.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(drive, () -> drive.getPose().nearest(poses))
                   .withRunContinuously(true);
-          coro.fork(finalAlign);
-          coro.waitUntil(finalAlign::atPosition);
+          coroutine.fork(finalAlign);
+          coroutine.waitUntil(finalAlign::atPosition);
 
-          coro.fork(superstructure.setPosition(scorePosition));
-          coro.waitUntil(superstructure::atSetpoint);
-          coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
-          coro.wait(Seconds.of(0.25));
+          coroutine.fork(superstructure.setPosition(scorePosition));
+          coroutine.waitUntil(superstructure::atSetpoint);
+          coroutine.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
+          coroutine.wait(Seconds.of(0.25));
         });
   }
 }

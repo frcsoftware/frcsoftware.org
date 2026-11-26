@@ -37,46 +37,46 @@ public class Superstructure implements Mechanism {
   }
 
   public Command setArmVoltage(Voltage voltage) {
-    return run(coro -> {
+    return run(coroutine -> {
           arm.setVoltage(voltage);
-          coro.park();
+          coroutine.park();
         })
         .named("Set Arm Voltage: " + voltage.in(Volts) + "V");
   }
 
   public Command setArmPosition(Angle armPosition) {
-    return run(coro -> {
+    return run(coroutine -> {
           arm.setPosition(armPosition);
-          coro.park();
+          coroutine.park();
         })
         .named("Set Arm Position: " + armPosition.in(Rotations) + "rot");
   }
 
   public Command setElevatorVoltage(Voltage voltage) {
-    return run(coro -> {
+    return run(coroutine -> {
           elevator.setVoltage(voltage);
-          coro.park();
+          coroutine.park();
         })
         .named("Set Elevator Voltage: " + voltage.in(Volts) + "V");
   }
 
   public Command setElevatorPosition(Distance position) {
-    return run(coro -> {
+    return run(coroutine -> {
           elevator.setPosition(position);
-          coro.park();
+          coroutine.park();
         })
         .named("Set Elevator Position: " + position.in(Meters) + "m");
   }
 
   //  public Command setPosition(Distance elevatorPosition, Angle armPosition) {
-  //    return run((coro) -> {
-  //          coro.fork(elevator.setPosition(elevatorPosition), arm.setPosition(armPosition));
+  //    return run((coroutine) -> {
+  //          coroutine.fork(elevator.setPosition(elevatorPosition), arm.setPosition(armPosition));
   //        })
   //        .named("Set Position");
   //  }
 
   public Command setPosition(Distance elevatorPosition, Angle armPosition) {
-    return run((coro) -> {
+    return run((coroutine) -> {
           elevatorSetpoint = elevatorPosition;
           armSetpoint = armPosition;
 
@@ -110,7 +110,7 @@ public class Superstructure implements Mechanism {
             elevator.setPosition(Meters.of(maxHeightOfRange).plus(HEIGHT_MARGIN));
             arm.setPosition(armPosition);
 
-            coro.waitUntil(arm::isAtSetpoint);
+            coroutine.waitUntil(arm::isAtSetpoint);
 
             elevator.setPosition(elevatorPosition);
           } else if (elevatorStartsLow && !elevatorEndsLow) {
@@ -120,7 +120,7 @@ public class Superstructure implements Mechanism {
 
             elevator.setPosition(elevatorPosition);
 
-            coro.waitUntil(() -> elevator.getPosition().in(Meters) >= maxHeightOfRange);
+            coroutine.waitUntil(() -> elevator.getPosition().in(Meters) >= maxHeightOfRange);
 
             arm.setPosition(armPosition);
           } else {
@@ -130,14 +130,14 @@ public class Superstructure implements Mechanism {
             // Part 3: drop elevator to final position
 
             elevator.setPosition(Meters.of(maxHeightOfRange).plus(HEIGHT_MARGIN));
-            coro.waitUntil(elevator::isAtSetpoint);
+            coroutine.waitUntil(elevator::isAtSetpoint);
 
             arm.setPosition(armPosition);
-            coro.waitUntil(arm::isAtSetpoint);
+            coroutine.waitUntil(arm::isAtSetpoint);
 
             elevator.setPosition(elevatorPosition);
           }
-          coro.park();
+          coroutine.park();
         })
         .named("Set Position");
   }

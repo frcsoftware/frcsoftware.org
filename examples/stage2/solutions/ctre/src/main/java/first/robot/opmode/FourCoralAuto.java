@@ -46,32 +46,32 @@ public class FourCoralAuto extends PeriodicOpMode {
     RobotModeTriggers.autonomous()
         .onTrue(
             Command.noRequirements(
-                    coro -> {
+                    coroutine -> {
                       for (var pose :
                           List.of(
                               FieldConstants.handleFlip(Poses.BLUE_REEF_J),
                               FieldConstants.handleFlip(Poses.BLUE_REEF_K),
                               FieldConstants.handleFlip(Poses.BLUE_REEF_L),
                               FieldConstants.handleFlip(Poses.BLUE_REEF_I))) {
-                        coro.fork(
+                        coroutine.fork(
                             new Drive.AutoAlignCommand(
                                     drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                                 .withRunContinuously(true));
-                        coro.waitUntil(claw::hasCoral);
-                        coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
-                        coro.waitUntil(superstructure::atSetpoint);
+                        coroutine.waitUntil(claw::hasCoral);
+                        coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                        coroutine.waitUntil(superstructure::atSetpoint);
 
                         Drive.AutoAlignCommand finalAlign =
                             new Drive.AutoAlignCommand(drive, pose).withRunContinuously(true);
-                        coro.fork(finalAlign);
-                        coro.waitUntil(finalAlign::atPosition);
+                        coroutine.fork(finalAlign);
+                        coroutine.waitUntil(finalAlign::atPosition);
 
-                        coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
-                        coro.wait(Seconds.of(0.25));
+                        coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
+                        coroutine.wait(Seconds.of(0.25));
                         var clawCommand = claw.setVoltage(Claw.Voltages.SCORE_CORAL);
-                        coro.fork(clawCommand);
+                        coroutine.fork(clawCommand);
 
-                        coro.fork(
+                        coroutine.fork(
                             new Drive.AutoAlignCommand(
                                 drive,
                                 () ->
@@ -85,24 +85,24 @@ public class FourCoralAuto extends PeriodicOpMode {
                                             .getAngle()
                                             .get()
                                             .plus(Rotation2d.k180deg))));
-                        coro.fork(intake.setState(Intake.State.INTAKING));
-                        coro.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
+                        coroutine.fork(intake.setState(Intake.State.INTAKING));
+                        coroutine.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
 
                         var superstructureCommand =
                             superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP);
-                        coro.fork(superstructureCommand);
-                        coro.waitUntil(indexer::hasCoral);
-                        coro.fork(
+                        coroutine.fork(superstructureCommand);
+                        coroutine.waitUntil(indexer::hasCoral);
+                        coroutine.fork(
                             Command.noRequirements(
-                                    coro2 -> {
-                                      coro2.waitUntil(indexer::hasCoral);
+                                    coroutine2 -> {
+                                      coroutine2.waitUntil(indexer::hasCoral);
                                       Scheduler.getDefault().cancel(clawCommand);
-                                      coro2.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
+                                      coroutine2.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                                       Scheduler.getDefault().cancel(superstructureCommand);
-                                      coro2.fork(
+                                      coroutine2.fork(
                                           superstructure.setPosition(
                                               Superstructure.Positions.HANDOFF));
-                                      coro2.waitUntil(claw::hasCoral);
+                                      coroutine2.waitUntil(claw::hasCoral);
                                     })
                                 .named("Handoff"));
                       }

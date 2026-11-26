@@ -46,8 +46,8 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
             robot
                 .superstructure
                 .run(
-                    (coro) -> {
-                      coro.fork(
+                    (coroutine) -> {
+                      coroutine.fork(
                           superstructure.setPosition(
                               Meters.of(Math.clamp(elevatorPositionTunable.get(), -0, 1.347)),
                               Rotations.of(Math.clamp(armPositionTunable.get(), -1.5, 0))));

@@ -1,0 +1,30 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java
+{
+	"name": "Java",
+	"image": "mcr.microsoft.com/devcontainers/java:3-25-trixie",
+
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "none",
+			"installMaven": "false",
+			"installGradle": "true"
+		}
+	},
+
+	"customizations": {
+		"vscode": {
+			"settings": {
+				// Turns off built-in chat, inline suggestions, and other AI features
+				"chat.disableAIFeatures": true,
+				"github.copilot.enable": { "*": false },
+				"github.copilot.nextEditSuggestions.enabled": false
+			},
+			// A leading "-" keeps these extensions from being installed in the container
+			"extensions": [
+				"-GitHub.copilot",
+				"-GitHub.copilot-chat"
+			]
+		}
+	}
+}

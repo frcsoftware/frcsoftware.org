@@ -1,0 +1,167 @@
+---
+title: Debugging（调试）
+description: 介绍语法错误、运行时错误和逻辑错误，以及如何找到并修复它们
+codeRegionSources:
+    default: stage0/snippets/src/Debugging.java
+---
+
+在[上一课](/learning-course/stage0/java-fundamentals/)中，你写出了第一段 Java 代码，过程中可能也遇到了一些错误。
+如果第一次就全部成功，那要么是你非常幸运，要么是还没有充分测试。
+找出并修复这些错误称为 <strong>debugging（调试）</strong>，以后你会经常做这件事。
+这一课介绍你会遇到的三种错误，以及如何分别追查它们。
+
+<Aside type="note" title="Did you know?（你知道吗？）">
+    用 “bug” 表示程序中的错误，这一用法因美国计算机科学家 Grace Hopper
+    而广为人知。 她和团队在研制 Mark II
+    计算机时，把一个错误追溯到一只卡在计算机里的飞蛾。
+    他们把这只飞蛾夹进笔记本，并写下 “First actual case of bug being
+    found.”（发现 bug 的第一个真实案例）。
+</Aside>
+
+## 错误类型
+
+错误主要有三种，每种出现的时间不同：
+
+<table>
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>发生节点</th>
+            <th>现象</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Syntax error（语法错误）</td>
+            <td>编译时</td>
+            <td>编译器会显示错误信息，代码也无法完成构建</td>
+        </tr>
+        <tr>
+            <td>Runtime error（运行时错误）</td>
+            <td>运行时</td>
+            <td>程序会崩溃并显示错误信息。在机器人上，代码随后会重新启动</td>
+        </tr>
+        <tr>
+            <td>Logic error（逻辑错误）</td>
+            <td>运行时</td>
+            <td>代码能够运行，但不会按你的意图工作</td>
+        </tr>
+    </tbody>
+</table>
+
+## Syntax Errors（语法错误）
+
+代码运行之前，一个称为 <strong>compiler（编译器）</strong>的程序会把它翻译成计算机能够理解的指令。
+就像英语有语法规则一样，Java 也有 <strong>syntax（语法）</strong>规则，用来确保编译器能理解你写的代码。
+如果代码违反了其中一条规则，编译器不会构建代码，而是给出一个 <strong>syntax error（语法错误）</strong>。
+这发生在编译器翻译代码的时候，代码实际上还没有运行，所以我们说它发生在 <strong>compile time（编译时）</strong>。
+
+VS Code 会在它认为写错的代码下方显示红线，就像 Google Docs 标出拼写错误一样。
+例如，把 `System` 拼错就是语法错误：
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError1.webp"
+    alt=" int number = 4; Systme.out.println(number); // <- System 拼写错误！"
+    width="600px"
+    height="800px"
+/>
+
+漏掉语句的一部分也是语法错误，例如变量声明里缺少等号：
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError2.webp"
+    alt=" int number 4; // <- 缺少等号！ System.out.println(number); "
+    width="600px"
+    height="800px"
+/>
+
+把鼠标悬停在红线上，VS Code 会告诉你更多关于这个错误的信息。
+例如，如果变量名拼错了，悬停时会显示 `numer cannot be resolved to a variable`。
+这表示编译器正在寻找名为 `numer` 的变量，但找不到。
+严格来说，这不是语法错误，因为代码符合 Java 的语法规则，但编译器仍会在编译时发现它，并用同样的方式显示出来。
+
+<ContentFigure
+    src="/learning-course/stage0/debugging/syntaxError3.webp"
+    alt=" int number = 4; System.out.println(numer); // <- number 拼写错误！上方显示 numer cannot be resolved to a variable"
+    width="600px"
+    height="800px"
+/>
+
+<Aside type="note" title="Yellow Lines（黄线）">
+    代码下方的黄线是 <strong>warning（警告）</strong>
+    ，不是错误。代码仍然可以构建，但警告通常指向一个真实的问题，例如你创建了一个变量却从未使用。
+</Aside>
+
+构建代码时，同样的错误信息也会出现在终端中。
+真正的错误不一定就在编译器指出的那一行。
+某一行缺少分号或花括号，可能会让后面几行才报错，所以在动手修改之前，也要看一看错误附近的几行。
+
+## Runtime Errors（运行时错误）
+
+编译器抓不住所有错误。
+有些代码符合 Java 的全部规则，问题只有在代码运行时才会出现。
+这些称为 <strong>runtime errors（运行时错误）</strong>。
+一种常见的运行时错误是除以零：
+
+{/* rli:ignore */}
+
+```java
+int answer = 10 / 0;
+System.out.println(answer);
+```
+
+这段代码能够通过编译，但运行时会崩溃，并出现类似这样的错误：
+
+{/* rli:ignore */}
+
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+    at Main.main(Main.java:5)
+```
+
+这条信息称为 <strong>stack trace（堆栈跟踪）</strong>，因为它会把错误追溯到程序中发生问题的位置。
+第一行说明出了什么问题。
+`ArithmeticException` 是数学错误，`/ by zero` 说明具体是哪一种。
+第二行说明发生在哪里，`(Main.java:5)` 表示 `Main.java` 的第 5 行。
+要修复它，就修改代码，让它永远不会除以零。
+
+## Logic Errors（逻辑错误）
+
+有时代码能够通过编译，运行时也不会崩溃，但没有做出你想要的结果。
+这是 <strong>logic error（逻辑错误）</strong>。
+计算机不知道你的本意，它只按代码所说的去做，即使那是错的。
+
+下面这段代码本应计算一个宽为 2、高为 5 的矩形面积。
+不运行它的话，你能找出错误吗？
+
+```java #logicError1
+
+```
+
+<Aside type="tip" title="Answer（答案）" collapse>
+    矩形面积是宽度乘以高度，但代码把它们相加了。它会打印 `Area of the rectangle
+    is 7`，而不是 `10`。把 `+` 改成 `*` 就能修好。
+</Aside>
+
+逻辑错误没有错误信息，所以必须自己找。
+通读代码，检查它实际写的内容是否和你的本意一致。
+在程序的不同位置用 `System.out.println()` 打印数值也会有帮助。
+第一个打印出你没预料到的值的位置，大致就是出错的地方。
+真实的逻辑错误通常比这个例子更难发现。
+
+## 避免和修复错误的建议
+
+你不可能写出完全没有错误的代码，但可以让错误更少出现，也更容易找到：
+
+- 使用能说明变量保存内容的变量名。
+- 把复杂的代码拆成更小、更简单的部分。
+- 让代码易于阅读。
+- 每写完一小段代码就测试一次。
+  不要等全部写完再一次测试。
+
+遇到错误时，要仔细阅读错误信息。
+如果卡住了，就在网上搜索这条错误信息。
+很可能已经有人遇到过同样的问题。
+
+VS Code 也有一些无障碍功能，可以让代码更容易阅读和调试。
+例如，有些人觉得换一种字体（比如 Comic Sans）更容易发现错误。

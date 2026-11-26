@@ -58,7 +58,8 @@ public class FullCoralTeleop extends PeriodicOpMode {
         stateMachine.addState(
             Command.noRequirements(
                     coroutine -> {
-                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(
+                          superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coroutine.fork(intake.setState(Intake.State.INTAKING));
                       coroutine.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
                       coroutine.park();
@@ -79,14 +80,16 @@ public class FullCoralTeleop extends PeriodicOpMode {
                     (coroutine) -> {
                       coroutine.fork(indexer.setVoltage(Indexer.Voltages.HOLD));
                       coroutine.fork(intake.setState(Intake.State.RETRACTED));
-                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(
+                          superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coroutine.waitUntil(superstructure::atSetpoint);
 
                       coroutine.waitUntil(indexer::hasCoral);
                       coroutine.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                       coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF));
                       coroutine.waitUntil(claw::hasCoral);
-                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(
+                          superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coroutine.park();
                     })
                 .named("Handoff"));

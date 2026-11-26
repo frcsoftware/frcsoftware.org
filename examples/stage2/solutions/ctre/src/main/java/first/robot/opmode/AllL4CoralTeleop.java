@@ -52,13 +52,15 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
         .onTrue(
             Command.noRequirements(
                     (coroutine) -> {
-                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(
+                          superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coroutine.waitUntil(superstructure::atSetpoint);
                       coroutine.fork(
                           superstructure.setPosition(Superstructure.Positions.HANDOFF),
                           claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                       coroutine.waitUntil(superstructure::atSetpoint);
-                      coroutine.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coroutine.fork(
+                          superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coroutine.waitUntil(superstructure::atSetpoint);
                     })
                 .named("Handoff Coral"));

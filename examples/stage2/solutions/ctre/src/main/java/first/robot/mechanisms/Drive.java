@@ -130,7 +130,7 @@ public class Drive implements Mechanism {
    * @return the current pose of the drivetrain
    */
   public Pose2d getPose() {
-            return swerve.getState().Pose;
+    return swerve.getState().Pose;
   }
 
   /**

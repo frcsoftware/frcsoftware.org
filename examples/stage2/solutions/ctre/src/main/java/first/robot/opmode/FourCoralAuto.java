@@ -58,7 +58,8 @@ public class FourCoralAuto extends PeriodicOpMode {
                                     drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
                                 .withRunContinuously(true));
                         coroutine.waitUntil(claw::hasCoral);
-                        coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
+                        coroutine.fork(
+                            superstructure.setPosition(Superstructure.Positions.L4_PREP));
                         coroutine.waitUntil(superstructure::atSetpoint);
 
                         Drive.AutoAlignCommand finalAlign =
@@ -66,7 +67,8 @@ public class FourCoralAuto extends PeriodicOpMode {
                         coroutine.fork(finalAlign);
                         coroutine.waitUntil(finalAlign::atPosition);
 
-                        coroutine.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
+                        coroutine.fork(
+                            superstructure.setPosition(Superstructure.Positions.L4_SCORE));
                         coroutine.wait(Seconds.of(0.25));
                         var clawCommand = claw.setVoltage(Claw.Voltages.SCORE_CORAL);
                         coroutine.fork(clawCommand);

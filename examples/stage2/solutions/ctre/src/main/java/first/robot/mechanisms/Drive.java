@@ -233,7 +233,7 @@ public class Drive implements Mechanism {
     }
 
     @Override
-    public void run(coroutineutine coroutineutine) {
+    public void run(Coroutine coroutine) {
       targetPose = poseSupplier.get();
 
       headingController.reset(drive.getHeading().getRadians(), drive.getVelocity().omega);
@@ -308,7 +308,7 @@ public class Drive implements Mechanism {
         swerveRequest.withVelocity(chassisVelocities);
         drive.swerve.setControl(swerveRequest);
 
-        coroutineutine.yield();
+        coroutine.yield();
       }
 
       // If command ends naturally, have the robot stop

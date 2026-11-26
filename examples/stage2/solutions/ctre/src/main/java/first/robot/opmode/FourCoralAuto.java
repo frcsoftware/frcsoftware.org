@@ -56,19 +56,19 @@ public class FourCoralAuto extends PeriodicOpMode {
                         coro.fork(
                             new Drive.AutoAlignCommand(
                                     drive, pose.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                                .withRunningContinuously(true));
+                                .withRunContinuously(true));
                         coro.waitUntil(claw::hasCoral);
                         coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
                         coro.waitUntil(superstructure::atSetpoint);
 
                         Drive.AutoAlignCommand finalAlign =
-                            new Drive.AutoAlignCommand(drive, pose).withRunningContinuously(true);
+                            new Drive.AutoAlignCommand(drive, pose).withRunContinuously(true);
                         coro.fork(finalAlign);
                         coro.waitUntil(finalAlign::atPosition);
 
                         coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
                         coro.wait(Seconds.of(0.25));
-                        var clawCommand = claw.setVoltage(-6);
+                        var clawCommand = claw.setVoltage(Claw.Voltages.SCORE_CORAL);
                         coro.fork(clawCommand);
 
                         coro.fork(
@@ -86,7 +86,7 @@ public class FourCoralAuto extends PeriodicOpMode {
                                             .get()
                                             .plus(Rotation2d.k180deg))));
                         coro.fork(intake.setState(Intake.State.INTAKING));
-                        coro.fork(indexer.setVoltage(12));
+                        coro.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
 
                         var superstructureCommand =
                             superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP);
@@ -97,7 +97,7 @@ public class FourCoralAuto extends PeriodicOpMode {
                                     coro2 -> {
                                       coro2.waitUntil(indexer::hasCoral);
                                       Scheduler.getDefault().cancel(clawCommand);
-                                      coro2.fork(claw.setVoltage(6));
+                                      coro2.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                                       Scheduler.getDefault().cancel(superstructureCommand);
                                       coro2.fork(
                                           superstructure.setPosition(

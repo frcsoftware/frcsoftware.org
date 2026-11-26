@@ -56,9 +56,9 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
                       coro.waitUntil(superstructure::atSetpoint);
                       coro.fork(
                           superstructure.setPosition(Superstructure.Positions.HANDOFF),
-                          claw.setVoltage(6));
+                          claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                       coro.waitUntil(superstructure::atSetpoint);
-                      coro.await(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
+                      coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.waitUntil(superstructure::atSetpoint);
                     })
                 .named("Handoff Coral"));
@@ -68,7 +68,7 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
         .onTrue(
             Command.parallel(
                     intake.setState(Intake.State.INTAKING),
-                    indexer.setVoltage(12),
+                    indexer.setVoltage(Indexer.Voltages.INTAKE),
                     superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP))
                 .named("Intake"));
   }
@@ -81,19 +81,19 @@ public class AllL4CoralTeleop extends PeriodicOpMode {
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                  .withRunningContinuously(true));
+                  .withRunContinuously(true));
           coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
           coro.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(drive, () -> drive.getPose().nearest(poses))
-                  .withRunningContinuously(true);
+                  .withRunContinuously(true);
           coro.fork(finalAlign);
           coro.waitUntil(finalAlign::atPosition);
 
           coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
           coro.waitUntil(superstructure::atSetpoint);
-          coro.fork(claw.setVoltage(-6));
+          coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
           coro.park();
         });
   }

@@ -51,8 +51,8 @@ public class Drive implements Mechanism {
 
   private Pose2d currentPose = new Pose2d();
 
-  private TelemetryTable table = Telemetry.getTable("Drive");
-  private TelemetryTable autoAlignTable = table.getTable("AutoAlign");
+  private static final TelemetryTable table = Telemetry.getTable("Drive");
+  private static final TelemetryTable autoAlignTable = table.getTable("AutoAlign");
 
   public Drive() {
     constants =
@@ -64,11 +64,6 @@ public class Drive implements Mechanism {
             .withSteerMotorGearRatio(287.0 / 11.0)
             .withCouplingGearRatio(3.857142857142857)
             .withWheelRadius(Units.inchesToMeters(2))
-            //                .withSteerMotorGains(new Slot0Configs()
-            //                        .withKP(0.05).withKD(0)
-            //                        .withKS(0.2).withKV(0.72972)
-            //
-            // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
             .withSteerMotorGains(
                 new Slot0Configs()
                     .withKP(100)
@@ -78,14 +73,8 @@ public class Drive implements Mechanism {
                     .withKV(2.49)
                     .withKA(0)
                     .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
-            //                .withDriveMotorGains(new Slot0Configs()
-            //                        .withKP(8).withKD(0)
-            //                        .withKS(0.2))
             .withDriveMotorGains(
                 new Slot0Configs().withKP(0.3).withKI(0).withKD(0).withKS(0.2).withKV(0.125))
-            //                .withDriveMotorGains(new Slot0Configs()
-            //                        .withKP(0.3).withKI(0).withKD(0)
-            //                        .withKS(0.1498).withKV(3.16356))
             .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withSlipCurrent(Amps.of(45))
@@ -126,9 +115,7 @@ public class Drive implements Mechanism {
     swerve.updateSimState(1.0 / 50.0 / 5.0, 12);
     swerve.updateSimState(1.0 / 50.0 / 5.0, 12);
 
-    currentPose = swerve.getState().Pose;
-
-    table.log("Pose", currentPose);
+    table.log("Pose", getPose());
     table.log("ModulesReal", swerve.getState().ModuleVelocities);
     table.log("ModulesTargets", swerve.getState().ModuleTargets);
     table.log("Velocity", swerve.getState().Velocity);
@@ -143,8 +130,7 @@ public class Drive implements Mechanism {
    * @return the current pose of the drivetrain
    */
   public Pose2d getPose() {
-    //        return swerve.getState().Pose;
-    return currentPose;
+            return swerve.getState().Pose;
   }
 
   /**
@@ -190,7 +176,7 @@ public class Drive implements Mechanism {
               }
 
               request.withRotationalRate(rotation);
-              request.withDeadband(0.1 * 4.54);
+              request.withDeadband(0.1 * MAX_VELOCITY);
 
               swerve.setControl(request);
 
@@ -215,11 +201,7 @@ public class Drive implements Mechanism {
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
 
     private Pose2d targetPose = new Pose2d();
-    private Supplier<Pose2d> poseSupplier =
-        () -> {
-          return new Pose2d();
-        };
-    private boolean usePoseSupplier = false;
+    private Supplier<Pose2d> poseSupplier;
 
     private double accelerationLimit = MAX_ACCELERATION;
     private double velocityLimit = MAX_VELOCITY;
@@ -232,41 +214,27 @@ public class Drive implements Mechanism {
     private double angularVelocityLimit = 5;
     private double angularAccelerationLimit = 45;
 
-    private ProfiledPIDController headingController;
+    private final ProfiledPIDController headingController =
+        new ProfiledPIDController(
+            6,
+            0,
+            0.2,
+            new TrapezoidProfile.Constraints(angularVelocityLimit, angularAccelerationLimit));
 
     public AutoAlignCommand(Drive drive, Pose2d target) {
-      this.drive = drive;
-      this.targetPose = target;
-      this.usePoseSupplier = false;
-
-      headingController =
-          new ProfiledPIDController(
-              6,
-              0,
-              0.2,
-              new TrapezoidProfile.Constraints(angularVelocityLimit, angularAccelerationLimit));
-      headingController.enableContinuousInput(-Math.PI, Math.PI);
+      this(drive, () -> target);
     }
 
     public AutoAlignCommand(Drive drive, Supplier<Pose2d> poseSupplier) {
       this.drive = drive;
       this.poseSupplier = poseSupplier;
-      this.usePoseSupplier = true;
 
-      headingController =
-          new ProfiledPIDController(
-              6,
-              0,
-              0.2,
-              new TrapezoidProfile.Constraints(angularVelocityLimit, angularAccelerationLimit));
       headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
     public void run(Coroutine coroutine) {
-      if (usePoseSupplier) {
-        targetPose = poseSupplier.get();
-      }
+      targetPose = poseSupplier.get();
 
       headingController.reset(drive.getHeading().getRadians(), drive.getVelocity().omega);
 
@@ -278,29 +246,27 @@ public class Drive implements Mechanism {
       while (runContinuously || !atPosition()) {
         var currentPose = drive.getPose();
 
-        if (usePoseSupplier) {
-          targetPose = poseSupplier.get();
-        }
+        targetPose = poseSupplier.get();
 
-        drive.autoAlignTable.log("At Target", atPosition());
-        drive.autoAlignTable.log(
+        autoAlignTable.log("At Target", atPosition());
+        autoAlignTable.log(
             "Position in Tolerance",
             targetPose.getTranslation().getDistance(drive.getPose().getTranslation())
                 <= positionTolerance);
-        drive.autoAlignTable.log(
+        autoAlignTable.log(
             "Angle in Tolerance",
             (ignoreRotation
                 || Math.abs(
                         targetPose.getRotation().minus(drive.getPose().getRotation()).getRadians())
                     <= angleTolerance));
 
-        drive.autoAlignTable.log("Target Pose", targetPose);
+        autoAlignTable.log("Target Pose", targetPose);
 
         Translation2d vectorToTarget =
             targetPose.getTranslation().minus(currentPose.getTranslation());
         double distanceToEnd = vectorToTarget.getNorm();
 
-        drive.autoAlignTable.log("Distance", Meters.of(distanceToEnd));
+        autoAlignTable.log("Distance", Meters.of(distanceToEnd));
 
         //                ChassisVelocities currentVelocity = drive.getVelocity();
         //                Translation2d currentVelocityAsTranslation = new
@@ -315,11 +281,11 @@ public class Drive implements Mechanism {
         double velocityForDistance =
             Math.sqrt(Math.pow(targetVelocity, 2) - 2 * -accelerationLimit * distanceToEnd);
 
-        drive.autoAlignTable.log("Velocity for Distance", MetersPerSecond.of(velocityForDistance));
+        autoAlignTable.log("Velocity for Distance", MetersPerSecond.of(velocityForDistance));
 
         double velocityToTarget = Math.min(velocityForDistance * 0.85, velocityLimit);
 
-        drive.autoAlignTable.log("Targeted Velocity", MetersPerSecond.of(velocityToTarget));
+        autoAlignTable.log("Targeted Velocity", MetersPerSecond.of(velocityToTarget));
 
         Translation2d velocities = vectorToTarget.div(distanceToEnd).times(velocityToTarget);
 
@@ -337,7 +303,7 @@ public class Drive implements Mechanism {
         ChassisVelocities chassisVelocities =
             new ChassisVelocities(lastVelocityVector.getX(), lastVelocityVector.getY(), omega);
 
-        drive.table.log("DesiredVelocity", chassisVelocities);
+        table.log("DesiredVelocity", chassisVelocities);
 
         swerveRequest.withVelocity(chassisVelocities);
         drive.swerve.setControl(swerveRequest);
@@ -368,7 +334,6 @@ public class Drive implements Mechanism {
      */
     public AutoAlignCommand withTargetPose(Pose2d pose) {
       this.targetPose = pose;
-      this.usePoseSupplier = false;
       return this;
     }
 
@@ -380,7 +345,6 @@ public class Drive implements Mechanism {
      */
     public AutoAlignCommand withTargetPoseSupplier(Supplier<Pose2d> supplier) {
       this.poseSupplier = supplier;
-      this.usePoseSupplier = true;
       return this;
     }
 
@@ -407,46 +371,94 @@ public class Drive implements Mechanism {
     }
 
     /**
-     * Sets the tolerance for the final position of the robot. Used to determine whether
+     * Sets the tolerance for the final position of the robot. Used to determine whether the command
+     * is at its target position or not
      *
-     * @param tolerance
-     * @return
+     * @param tolerance The desired position tolerance, in meters
+     * @return this command
      */
     public AutoAlignCommand withPositionTolerance(double tolerance) {
       this.positionTolerance = tolerance;
       return this;
     }
 
+    /**
+     * Sets the angle tolerance for the final angle of the robot. User to determine whether the
+     * command is at its target position or not
+     *
+     * @param tolerance The desired angle tolerance, in radians
+     * @return this command
+     */
     public AutoAlignCommand withAngleTolerance(double tolerance) {
       this.angleTolerance = tolerance;
       return this;
     }
 
-    public AutoAlignCommand withRunningContinuously(boolean runContinuously) {
+    /**
+     * Sets whether the command will run continuously and never end. If true, the command will never
+     * end, and must be ended by other means. If false, the command will end when the drivetrain is
+     * within the specified position and angle tolerances
+     *
+     * @param runContinuously whether the command should run continuously
+     * @return this command
+     */
+    public AutoAlignCommand withRunContinuously(boolean runContinuously) {
       this.runContinuously = runContinuously;
       return this;
     }
 
-    public AutoAlignCommand withIgnoringRotation(boolean ignoringRotation) {
+    /**
+     * Sets whether the command will ignore the rotation of the pose or pose supplier. If true, the
+     * robot will not command a turn, and the angle tolerance will be ignored
+     *
+     * @param ignoringRotation whether to ignore rotation
+     * @return this command
+     */
+    public AutoAlignCommand withIgnoreRotation(boolean ignoringRotation) {
       this.ignoreRotation = ignoringRotation;
       return this;
     }
 
+    /**
+     * Sets the targeted final velocity of the command. The robot will move in such a way that it
+     * tries to meet this final velocity at the final setpoint
+     *
+     * @param targetVelocity the desired final velocity
+     * @return this command
+     */
     public AutoAlignCommand withTargetVelocity(double targetVelocity) {
       this.targetVelocity = targetVelocity;
       return this;
     }
 
+    /**
+     * Sets the limit on the angular acceleration of the robot during the move
+     *
+     * @param angularAccelerationLimit the desired limit
+     * @return this command
+     */
     public AutoAlignCommand withAngularAccelerationLimit(double angularAccelerationLimit) {
       this.angularAccelerationLimit = angularAccelerationLimit;
       return this;
     }
 
+    /**
+     * Sets the limit on the angular velocity during the move
+     *
+     * @param angularVelocityLimit the desired limit
+     * @return this command
+     */
     public AutoAlignCommand withAngularVelocityLimit(double angularVelocityLimit) {
       this.angularVelocityLimit = angularVelocityLimit;
       return this;
     }
 
+    /**
+     * Getter for whether the robot is at the targeted position and within the specified tolerance.
+     * Ignores the runContinuously flag
+     *
+     * @return whether the robot is at the targeted position
+     */
     public boolean atPosition() {
       return targetPose.getTranslation().getDistance(drive.getPose().getTranslation())
               <= positionTolerance
@@ -454,10 +466,6 @@ public class Drive implements Mechanism {
               || Math.abs(
                       targetPose.getRotation().minus(drive.getPose().getRotation()).getRadians())
                   <= angleTolerance);
-    }
-
-    public Command waitUntilAtPosition() {
-      return Command.waitUntil(this::atPosition).named("Wait Until At Position");
     }
   }
 }

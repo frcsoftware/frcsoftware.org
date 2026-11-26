@@ -5,22 +5,27 @@
  */
 package first.robot.mechanisms;
 
+import static org.wpilib.units.Units.*;
+
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.math.util.MathUtil;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.Voltage;
 
 public class Superstructure implements Mechanism {
 
   private final Elevator elevator = new Elevator();
   private final Arm arm = new Arm();
 
-  private static final double HEIGHT_MARGIN = 0.05;
-  private static final double ANGLE_MARGIN = 0.005;
+  private static final Distance HEIGHT_MARGIN = Meters.of(0.05);
+  private static final Angle ANGLE_MARGIN = Rotations.of(0.005);
 
-  private double elevatorSetpoint = 0;
-  private double armSetpoint = 0;
+  private Distance elevatorSetpoint = Meters.zero();
+  private Angle armSetpoint = Rotations.zero();
 
   private final TelemetryTable table = Telemetry.getTable("Superstructure");
 
@@ -31,58 +36,68 @@ public class Superstructure implements Mechanism {
     table.log("Active Commands", getRunningCommands().toString());
   }
 
-  public Command setArmVoltage(double voltage) {
+  public Command setArmVoltage(Voltage voltage) {
     return run(coro -> {
           arm.setVoltage(voltage);
           coro.park();
         })
-        .named("Set Arm Voltage: " + voltage + "V");
+        .named("Set Arm Voltage: " + voltage.in(Volts) + "V");
   }
 
-  public Command setArmPosition(double armPosition) {
+  public Command setArmPosition(Angle armPosition) {
     return run(coro -> {
           arm.setPosition(armPosition);
           coro.park();
         })
-        .named("Set Arm Position: " + armPosition + "rot");
+        .named("Set Arm Position: " + armPosition.in(Rotations) + "rot");
   }
 
-  public Command setElevatorVoltage(double voltage) {
+  public Command setElevatorVoltage(Voltage voltage) {
     return run(coro -> {
           elevator.setVoltage(voltage);
           coro.park();
         })
-        .named("Set Elevator Voltage: " + voltage + "V");
+        .named("Set Elevator Voltage: " + voltage.in(Volts) + "V");
   }
 
-  public Command setElevatorPosition(double position) {
+  public Command setElevatorPosition(Distance position) {
     return run(coro -> {
           elevator.setPosition(position);
           coro.park();
         })
-        .named("Set Elevator Position: " + position + "m");
+        .named("Set Elevator Position: " + position.in(Meters) + "m");
   }
 
-  //  public Command setPosition(double elevatorPosition, double armPosition) {
+  //  public Command setPosition(Distance elevatorPosition, Angle armPosition) {
   //    return run((coro) -> {
-  //          coro.awaitAll(elevator.setPosition(elevatorPosition), arm.setPosition(armPosition));
+  //          coro.fork(elevator.setPosition(elevatorPosition), arm.setPosition(armPosition));
   //        })
   //        .named("Set Position");
   //  }
 
-  public Command setPosition(double elevatorPosition, double armPosition) {
+  public Command setPosition(Distance elevatorPosition, Angle armPosition) {
     return run((coro) -> {
           elevatorSetpoint = elevatorPosition;
           armSetpoint = armPosition;
 
           double maxHeightOfRange =
-              CollisionProfile.minHeightBetween(arm.getPosition(), armPosition, ANGLE_MARGIN);
+              CollisionProfile.minHeightBetween(
+                  arm.getPosition().in(Rotations),
+                  armPosition.in(Rotations),
+                  ANGLE_MARGIN.in(Rotations));
 
-          boolean elevatorStartsLow = elevator.getPosition() < maxHeightOfRange;
-          boolean elevatorEndsLow = elevatorPosition < maxHeightOfRange;
-          boolean armMoves = MathUtil.isNear(arm.getPosition(), armPosition, 0.01);
+          boolean elevatorStartsLow = elevator.getPosition().in(Meters) < maxHeightOfRange;
+          boolean elevatorEndsLow = elevatorPosition.in(Meters) < maxHeightOfRange;
+          boolean armMoves =
+              MathUtil.isNear(arm.getPosition().in(Rotations), armPosition.in(Rotations), 0.01);
 
-          if (!elevatorStartsLow && !elevatorEndsLow) {
+          if (!armMoves) {
+            // If the arm doesn't move, we can just move the elevator, as if both positions are
+            // valid end positions, it won't pass through the collision zone to the geometry of the
+            // zone
+            elevator.setPosition(elevatorPosition);
+            arm.setPosition(armPosition); // Set the arm position as insurance
+          } else if (!elevatorStartsLow && !elevatorEndsLow) {
             // If the elevator starts and ends above the collision zone, just move the
             // arm+elevator at once
             elevator.setPosition(elevatorPosition);
@@ -92,7 +107,7 @@ public class Superstructure implements Mechanism {
             // Part 1: arm+elevator to top of safe zone
             // Part 2: move elevator down
 
-            elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN);
+            elevator.setPosition(Meters.of(maxHeightOfRange).plus(HEIGHT_MARGIN));
             arm.setPosition(armPosition);
 
             coro.waitUntil(arm::isAtSetpoint);
@@ -105,7 +120,7 @@ public class Superstructure implements Mechanism {
 
             elevator.setPosition(elevatorPosition);
 
-            coro.waitUntil(() -> elevator.getPosition() >= maxHeightOfRange);
+            coro.waitUntil(() -> elevator.getPosition().in(Meters) >= maxHeightOfRange);
 
             arm.setPosition(armPosition);
           } else {
@@ -114,7 +129,7 @@ public class Superstructure implements Mechanism {
             // Part 2: swing arm over
             // Part 3: drop elevator to final position
 
-            elevator.setPosition(maxHeightOfRange + HEIGHT_MARGIN);
+            elevator.setPosition(Meters.of(maxHeightOfRange).plus(HEIGHT_MARGIN));
             coro.waitUntil(elevator::isAtSetpoint);
 
             arm.setPosition(armPosition);
@@ -135,30 +150,30 @@ public class Superstructure implements Mechanism {
     return setPosition(position.elevatorSetpoint, position.armSetpoint);
   }
 
-  public double getElevatorPosition() {
+  public Distance getElevatorPosition() {
     return elevator.getPosition();
   }
 
-  public double getArmPosition() {
+  public Angle getArmPosition() {
     return arm.getPosition();
   }
 
   public enum Positions {
-    STOW(0, -0.75),
-    HANDOFF_PREP(0.5, -0.25),
-    HANDOFF(0.38, -0.25),
-    L4_PREP(1.2, -0.6),
-    L4_SCORE(1.2, -0.525),
-    L3_PREP(0.5, -0.6),
-    L3_SCORE(0.5, -0.55),
-    L2_PREP(0.1, -0.6),
-    L2_SCORE(0.1, -0.55),
+    STOW(Meters.of(0), Rotations.of(-0.75)),
+    HANDOFF_PREP(Meters.of(0.5), Rotations.of(-0.25)),
+    HANDOFF(Meters.of(0.38), Rotations.of(-0.25)),
+    L4_PREP(Meters.of(1.2), Rotations.of(-0.6)),
+    L4_SCORE(Meters.of(1.2), Rotations.of(-0.525)),
+    L3_PREP(Meters.of(0.5), Rotations.of(-0.6)),
+    L3_SCORE(Meters.of(0.5), Rotations.of(-0.55)),
+    L2_PREP(Meters.of(0.1), Rotations.of(-0.6)),
+    L2_SCORE(Meters.of(0.1), Rotations.of(-0.55)),
     ;
 
-    private double elevatorSetpoint;
-    private double armSetpoint;
+    private final Distance elevatorSetpoint;
+    private final Angle armSetpoint;
 
-    Positions(double elevatorSetpoint, double armSetpoint) {
+    Positions(Distance elevatorSetpoint, Angle armSetpoint) {
       this.elevatorSetpoint = elevatorSetpoint;
       this.armSetpoint = armSetpoint;
     }

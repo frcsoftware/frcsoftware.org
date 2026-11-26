@@ -41,19 +41,18 @@ public class SinglePositionCoralTeleop extends PeriodicOpMode {
                           new AutoAlignCommand(
                                   drive,
                                   Poses.BLUE_REEF_A.transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                              .withRunningContinuously(true));
+                              .withRunContinuously(true));
                       coro.fork(superstructure.setPosition(Superstructure.Positions.L4_PREP));
                       coro.waitUntil(superstructure::atSetpoint);
 
                       AutoAlignCommand finalAlign =
-                          new AutoAlignCommand(drive, Poses.BLUE_REEF_A)
-                              .withRunningContinuously(true);
+                          new AutoAlignCommand(drive, Poses.BLUE_REEF_A).withRunContinuously(true);
                       coro.fork(finalAlign);
                       coro.waitUntil(finalAlign::atPosition);
 
                       coro.fork(superstructure.setPosition(Superstructure.Positions.L4_SCORE));
                       coro.waitUntil(superstructure::atSetpoint);
-                      coro.fork(claw.setVoltage(-6));
+                      coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
                     })
                 .named("AutoAlign and Score"));
 

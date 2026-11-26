@@ -24,7 +24,6 @@ import first.robot.Robot;
 import first.robot.simulation.ElevatorSim;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.*;
@@ -41,8 +40,8 @@ public class Elevator {
 
     static final double GEAR_RATIO =
         (44.0 / 14.0) * (42.0 / 22.0); // Two stage, 14:44, 22:44 reductions
-    static final double PULLEY_CIRCUMFERENCE =
-        24 * 0.005; // Convert 24t pulley to circumference, in m
+    static final Distance PULLEY_CIRCUMFERENCE =
+        Meters.of(24 * 0.005); // Convert 24t pulley to circumference, in m
 
     static final double kS = 0;
     static final double kG = 0.294;
@@ -53,7 +52,7 @@ public class Elevator {
     static final double kD = 3.2;
     ;
 
-    static final double POSITION_TOLERANCE = Units.inchesToMeters(0.5);
+    static final Distance POSITION_TOLERANCE = Meters.of(0.5);
   }
 
   private final TalonFX leader = new TalonFX(Constants.LEADER_ID, Constants.BUS);
@@ -72,9 +71,7 @@ public class Elevator {
   private final StatusSignal<Current> leaderSupplyCurrentSignal = leader.getSupplyCurrent();
   private final StatusSignal<Current> followerSupplyCurrentSignal = follower.getSupplyCurrent();
 
-  private double setpoint = 0;
-
-  private TelemetryTable table = Telemetry.getTable("Elevator");
+  private final TelemetryTable table = Telemetry.getTable("Elevator");
 
   public Elevator() {
     TalonFXConfiguration leaderConfiguration = new TalonFXConfiguration();
@@ -125,61 +122,71 @@ public class Elevator {
         leaderSupplyCurrentSignal,
         followerSupplyCurrentSignal);
 
-    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
-    table.log("Position", Meters.of(getPosition()));
-    table.log("Velocity", MetersPerSecond.of(getVelocity()));
+    table.log("Applied Voltage", getAppliedVoltage());
+    table.log("Position", getPosition());
+    table.log("Velocity", getVelocity());
     table.log("At Setpoint", isAtSetpoint());
+    table.log("Setpoint", getSetpoint());
   }
 
   /**
    * @param voltage the voltage to apply to the motors
    */
-  public void setVoltage(double voltage) {
+  public void setVoltage(Voltage voltage) {
     leader.setControl(voltageRequest.withOutput(voltage));
   }
 
   /**
    * @param position the position for the elevator to target, in meters
    */
-  public void setPosition(double position) {
-    setpoint = position;
-    leader.setControl(positionRequest.withPosition(position / Constants.PULLEY_CIRCUMFERENCE));
-    table.log("Setpoint", Meters.of(position));
+  public void setPosition(Distance position) {
+    leader.setControl(
+        positionRequest.withPosition(position.div(Constants.PULLEY_CIRCUMFERENCE).in(Value)));
   }
 
   /**
    * @return the position of the elevator, in meters
    */
-  public double getPosition() {
-    return positionSignal.getValueAsDouble() * Constants.PULLEY_CIRCUMFERENCE;
+  public Distance getPosition() {
+    return positionSignal.getValue().per(Rotations).times(Constants.PULLEY_CIRCUMFERENCE);
   }
 
   /**
    * @return the velocity of the elevator, in meters per second
    */
-  public double getVelocity() {
-    return velocitySignal.getValueAsDouble() * Constants.PULLEY_CIRCUMFERENCE;
+  public LinearVelocity getVelocity() {
+    return MetersPerSecond.of(
+        velocitySignal.getValue().in(RotationsPerSecond)
+            * Constants.PULLEY_CIRCUMFERENCE.in(Meters));
   }
 
   /**
    * @return the current voltage being applied to the arm motor
    */
-  public double getAppliedVoltage() {
-    return appliedVoltageSignal.getValueAsDouble();
+  public Voltage getAppliedVoltage() {
+    return appliedVoltageSignal.getValue();
+  }
+
+  public Distance getSetpoint() {
+    return positionRequest
+        .getPositionMeasure()
+        .per(Rotations)
+        .times(Constants.PULLEY_CIRCUMFERENCE);
   }
 
   /**
    * @param position the position to compare against, in meters
    * @return whether the elevator is at that position
    */
-  public boolean isAtPosition(double position) {
-    return MathUtil.isNear(getPosition(), position, Constants.POSITION_TOLERANCE);
+  public boolean isAtPosition(Distance position) {
+    return MathUtil.isNear(
+        getPosition().in(Meters), position.in(Meters), Constants.POSITION_TOLERANCE.in(Meters));
   }
 
   /**
    * @return whether the elevator is at its current setpoint
    */
   public boolean isAtSetpoint() {
-    return isAtPosition(setpoint);
+    return isAtPosition(getPosition());
   }
 }

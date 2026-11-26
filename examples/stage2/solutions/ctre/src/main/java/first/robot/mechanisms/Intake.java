@@ -25,15 +25,13 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.system.DCMotor;
 import org.wpilib.math.system.Models;
+import org.wpilib.math.util.MathUtil;
 import org.wpilib.math.util.Units;
 import org.wpilib.simulation.FlywheelSim;
 import org.wpilib.simulation.SingleJointedArmSim;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
-import org.wpilib.units.measure.Angle;
-import org.wpilib.units.measure.AngularVelocity;
-import org.wpilib.units.measure.Current;
-import org.wpilib.units.measure.Voltage;
+import org.wpilib.units.measure.*;
 
 public class Intake implements Mechanism {
   private static class Constants {
@@ -56,12 +54,12 @@ public class Intake implements Mechanism {
     static final double PIVOT_kI = 0;
     static final double PIVOT_kD = 3;
 
-    static final double PIVOT_POSITION_TOLERANCE = Units.degreesToRotations(5);
+    static final Angle PIVOT_POSITION_TOLERANCE = Degrees.of(5);
 
-    static final double PIVOT_ARM_LENGTH = Units.inchesToMeters(5.2692);
-    static final double PIVOT_ARM_MASS = Units.lbsToKilograms(12.296);
-    static final double PIVOT_ARM_MIN_ANGLE = Units.degreesToRotations(-3.206);
-    static final double PIVOT_ARM_MAX_ANGLE = Units.degreesToRotations(138.469);
+    static final Distance PIVOT_ARM_LENGTH = Inches.of(5.2692);
+    static final Mass PIVOT_ARM_MASS = Pounds.of(12.296);
+    static final Angle PIVOT_ARM_MIN_ANGLE = Degrees.of(-3.206);
+    static final Angle PIVOT_ARM_MAX_ANGLE = Degrees.of(138.469);
 
     static final InvertedValue ROLLERS_INVERSION = InvertedValue.Clockwise_Positive;
 
@@ -81,19 +79,18 @@ public class Intake implements Mechanism {
       new SingleJointedArmSim(
           DCMotor.getKrakenX44(1),
           Constants.PIVOT_RATIO,
-          SingleJointedArmSim.estimateMOI(Constants.PIVOT_ARM_LENGTH, Constants.PIVOT_ARM_MASS),
-          Constants.PIVOT_ARM_LENGTH,
-          Units.rotationsToRadians(Constants.PIVOT_ARM_MIN_ANGLE),
-          Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE),
+          SingleJointedArmSim.estimateMOI(
+              Constants.PIVOT_ARM_LENGTH.in(Meters), Constants.PIVOT_ARM_MASS.in(Kilogram)),
+          Constants.PIVOT_ARM_LENGTH.in(Meters),
+          Constants.PIVOT_ARM_MIN_ANGLE.in(Radians),
+          Constants.PIVOT_ARM_MAX_ANGLE.in(Radians),
           true,
-          Units.rotationsToRadians(Constants.PIVOT_ARM_MAX_ANGLE));
+          Constants.PIVOT_ARM_MAX_ANGLE.in(Radians));
   private final FlywheelSim rollersSim =
       new FlywheelSim(
           Models.flywheelFromPhysicalConstants(
               DCMotor.getKrakenX60(1), Constants.ROLLERS_J, Constants.ROLLERS_RATIO),
           DCMotor.getKrakenX60(1));
-
-  private double pivotTargetPosition = 0;
 
   private final StatusSignal<Voltage> pivotAppliedVoltageSignal = pivot.getMotorVoltage();
   private final StatusSignal<Current> pivotStatorCurrentSignal = pivot.getStatorCurrent();
@@ -175,19 +172,19 @@ public class Intake implements Mechanism {
         rollersSupplyCurrentSignal,
         rollersVelocitySignal);
 
-    pivotTable.log("Applied Voltage", Volts.of(getPivotAppliedVoltage()));
-    pivotTable.log("Stator Current", Amps.of(pivotStatorCurrentSignal.getValueAsDouble()));
-    pivotTable.log("Supply Current", Amps.of(pivotSupplyCurrentSignal.getValueAsDouble()));
-    pivotTable.log("Target Position", Rotations.of(pivotTargetPosition));
-    pivotTable.log("Position", Rotations.of(getPivotPosition()));
-    pivotTable.log("Velocity", RotationsPerSecond.of(getPivotVelocity()));
+    pivotTable.log("Applied Voltage", getPivotAppliedVoltage());
+    pivotTable.log("Stator Current", pivotStatorCurrentSignal.getValue());
+    pivotTable.log("Supply Current", pivotSupplyCurrentSignal.getValue());
+    pivotTable.log("Target Position", pivotPositionRequest.getPositionMeasure());
+    pivotTable.log("Position", getPivotPosition());
+    pivotTable.log("Velocity", getPivotVelocity());
     pivotTable.log("At Setpoint", isPivotAtSetpoint());
-    pivotTable.log("Error", Rotations.of(pivot.getClosedLoopError().getValueAsDouble()));
+    pivotTable.log("Error", pivot.getClosedLoopError().getValue());
 
-    rollersTable.log("Applied Voltage", Volts.of(getRollersAppliedVoltage()));
-    rollersTable.log("Stator Current", Amps.of(rollersStatorCurrentSignal.getValueAsDouble()));
-    rollersTable.log("Supply Current", Amps.of(rollersSupplyCurrentSignal.getValueAsDouble()));
-    rollersTable.log("Velocity", RotationsPerSecond.of(getRollersVelocity()));
+    rollersTable.log("Applied Voltage", getRollersAppliedVoltage());
+    rollersTable.log("Stator Current", rollersStatorCurrentSignal.getValue());
+    rollersTable.log("Supply Current", rollersSupplyCurrentSignal.getValue());
+    rollersTable.log("Velocity", getRollersVelocity());
 
     table.log("Active Commands", getRunningCommands().toString());
   }
@@ -208,110 +205,81 @@ public class Intake implements Mechanism {
         Units.radiansToRotations(rollersSim.getAngularVelocity()) * Constants.ROLLERS_RATIO);
   }
 
-  /**
-   * @param voltage voltage to set
-   * @return a command
-   */
-  public Command setRollerVoltage(double voltage) {
+  public Command setState(Voltage rollerVoltage, Angle pivotPosition) {
     return run(coro -> {
-          rollers.setControl(rollersVoltageRequest.withOutput(voltage));
+          rollers.setControl(rollersVoltageRequest.withOutput(rollerVoltage));
+          pivot.setControl(pivotPositionRequest.withPosition(pivotPosition));
           coro.park();
         })
-        .named("Set Roller Voltage " + voltage + "V");
-  }
-
-  /**
-   * @param voltage voltage to set
-   * @return a command
-   */
-  public Command setPivotVoltage(double voltage) {
-    return run(coro -> {
-          pivot.setControl(pivotVoltageRequest.withOutput(voltage));
-          coro.park();
-        })
-        .named("Set Pivot Voltage " + voltage + "V");
-  }
-
-  /**
-   * @param position position to target, in rotations
-   * @return a command
-   */
-  public Command setPivotPosition(double position) {
-    return run(coro -> {
-          pivotTargetPosition = position;
-          pivot.setControl(pivotPositionRequest.withPosition(position));
-          coro.park();
-        })
-        .named("Set Pivot Position " + position + "rot");
+        .named("Set Intake State");
   }
 
   public Command setState(State state) {
-    return run(coro -> {
-          coro.fork(setRollerVoltage(state.rollerVoltage));
-          coro.fork(setPivotPosition(state.pivotPosition));
-        })
-        .named("Set Intake State to " + state.name());
+    return setState(state.rollerVoltage, state.pivotPosition);
   }
 
   /**
    * @return the current position of the pivot, in rotations
    */
-  public double getPivotPosition() {
-    return pivotPositionSignal.getValueAsDouble();
+  public Angle getPivotPosition() {
+    return pivotPositionSignal.getValue();
   }
 
   /**
    * @return the current velocity of the pivot, in rotations per second
    */
-  public double getPivotVelocity() {
-    return pivotVelocitySignal.getValueAsDouble();
+  public AngularVelocity getPivotVelocity() {
+    return pivotVelocitySignal.getValue();
   }
 
   /**
    * @return the current voltage being applied to the pivot motor
    */
-  public double getPivotAppliedVoltage() {
-    return pivotAppliedVoltageSignal.getValueAsDouble();
+  public Voltage getPivotAppliedVoltage() {
+    return pivotAppliedVoltageSignal.getValue();
   }
 
   /**
    * @return the current velocity of the pivot, in rotations per second
    */
-  public double getRollersVelocity() {
-    return rollersVelocitySignal.getValueAsDouble();
+  public AngularVelocity getRollersVelocity() {
+    return rollersVelocitySignal.getValue();
   }
 
   /**
    * @return the current voltage being applied to the pivot motor
    */
-  public double getRollersAppliedVoltage() {
-    return rollersAppliedVoltageSignal.getValueAsDouble();
+  public Voltage getRollersAppliedVoltage() {
+    return rollersAppliedVoltageSignal.getValue();
   }
 
   /**
    * @param position the position to compare against, in rotations
    * @return whether the arm is at that positoin
    */
-  public boolean isPivotAtPosition(double position) {
-    return Math.abs(getPivotPosition() - position) < Constants.PIVOT_POSITION_TOLERANCE;
+  public boolean isPivotAtPosition(Angle position) {
+    return MathUtil.isNear(
+        getPivotPosition().in(Rotations),
+        position.in(Rotations),
+        Constants.PIVOT_POSITION_TOLERANCE.in(Rotations));
   }
 
   /**
    * @return whether the arm is at its current setpoint
    */
   public boolean isPivotAtSetpoint() {
-    return isPivotAtPosition(pivotTargetPosition);
+    return isPivotAtPosition(pivotPositionRequest.getPositionMeasure());
   }
 
   public enum State {
-    RETRACTED(0, Constants.PIVOT_ARM_MAX_ANGLE),
-    INTAKING(12, Constants.PIVOT_ARM_MIN_ANGLE),
-    OUTTAKING(-12, Constants.PIVOT_ARM_MIN_ANGLE);
+    RETRACTED(Volts.of(0), Constants.PIVOT_ARM_MAX_ANGLE),
+    INTAKING(Volts.of(12), Constants.PIVOT_ARM_MIN_ANGLE),
+    OUTTAKING(Volts.of(-12), Constants.PIVOT_ARM_MIN_ANGLE);
 
-    double rollerVoltage;
-    double pivotPosition;
+    private final Voltage rollerVoltage;
+    private final Angle pivotPosition;
 
-    State(double rollerVoltage, double pivotPosition) {
+    State(Voltage rollerVoltage, Angle pivotPosition) {
       this.rollerVoltage = rollerVoltage;
       this.pivotPosition = pivotPosition;
     }

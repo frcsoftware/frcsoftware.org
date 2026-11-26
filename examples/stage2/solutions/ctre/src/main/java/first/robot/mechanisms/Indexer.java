@@ -68,9 +68,9 @@ public class Indexer implements Mechanism {
 
     BaseStatusSignal.refreshAll(appliedVoltageSignal, statorCurrentSignal, supplyCurrentSignal);
 
-    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
-    table.log("Stator Current", Amps.of(statorCurrentSignal.getValueAsDouble()));
-    table.log("Supply Current", Amps.of(supplyCurrentSignal.getValueAsDouble()));
+    table.log("Applied Voltage", getAppliedVoltage());
+    table.log("Stator Current", statorCurrentSignal.getValue());
+    table.log("Supply Current", supplyCurrentSignal.getValue());
     table.log("Active Commands", getRunningCommands().toString());
 
     table.log("Has Coral", sensor.get());
@@ -85,22 +85,43 @@ public class Indexer implements Mechanism {
   }
 
   /**
-   * @param voltage the voltage to apply to the motors
+   * @param voltage the voltage to apply to the motor
    * @return a command
    */
-  public Command setVoltage(double voltage) {
+  public Command setVoltage(Voltage voltage) {
     return run((coro) -> {
           motor.setControl(voltageRequest.withOutput(voltage));
           coro.park();
         })
-        .named("Set Voltage: " + voltage + "V");
+        .named("Set Voltage: " + voltage.in(Volts) + "V");
+  }
+
+  /**
+   * @param voltage the voltage to apply to the motor
+   * @return a command
+   */
+  public Command setVoltage(Voltages voltage) {
+    return setVoltage(voltage.voltage);
   }
 
   public boolean hasCoral() {
     return sensor.get();
   }
 
-  public double getAppliedVoltage() {
-    return appliedVoltageSignal.getValueAsDouble();
+  public Voltage getAppliedVoltage() {
+    return appliedVoltageSignal.getValue();
+  }
+
+  public enum Voltages {
+    OFF(Volts.of(0)),
+    INTAKE(Volts.of(12)),
+    HOLD(Volts.of(3)),
+    ;
+
+    private final Voltage voltage;
+
+    Voltages(Voltage voltage) {
+      this.voltage = voltage;
+    }
   }
 }

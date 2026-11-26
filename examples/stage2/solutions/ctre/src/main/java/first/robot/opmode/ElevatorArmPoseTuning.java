@@ -5,6 +5,9 @@
  */
 package first.robot.opmode;
 
+import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.Rotations;
+
 import first.robot.Poses;
 import first.robot.Robot;
 import first.robot.mechanisms.*;
@@ -44,10 +47,10 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
                 .superstructure
                 .run(
                     (coro) -> {
-                      coro.await(
+                      coro.fork(
                           superstructure.setPosition(
-                              Math.clamp(elevatorPositionTunable.get(), -0, 1.347),
-                              Math.clamp(armPositionTunable.get(), -1.5, 0)));
+                              Meters.of(Math.clamp(elevatorPositionTunable.get(), -0, 1.347)),
+                              Rotations.of(Math.clamp(armPositionTunable.get(), -1.5, 0))));
                     })
                 .named("Set Superstructure Position from Tunables"));
 
@@ -56,13 +59,13 @@ public class ElevatorArmPoseTuning extends PeriodicOpMode {
         .whileTrue(
             new Drive.AutoAlignCommand(
                     drive, () -> drive.getPose().nearest(Poses.RED_REEF_LEFT_POSES))
-                .withRunningContinuously(true));
+                .withRunContinuously(true));
     controller
         .rightBumper()
         .whileTrue(
             new Drive.AutoAlignCommand(
                     drive, () -> drive.getPose().nearest(Poses.RED_REEF_RIGHT_POSES))
-                .withRunningContinuously(true));
+                .withRunContinuously(true));
 
     RobotModeTriggers.utility().onTrue(intake.setState(Intake.State.INTAKING));
     robot.coralSim.setState(CoralSim.CoralState.CLAW);

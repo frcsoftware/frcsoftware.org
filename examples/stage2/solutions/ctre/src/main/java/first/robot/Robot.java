@@ -59,10 +59,9 @@ public class Robot extends OpModeRobot {
     Scheduler.getDefault().run();
 
     Telemetry.log("Scheduler", Scheduler.getDefault());
-  }
 
-  @Override
-  public void simulationPeriodic() {
-    coralSim.periodic();
+    if (isSimulation()) {
+      coralSim.periodic();
+    }
   }
 }

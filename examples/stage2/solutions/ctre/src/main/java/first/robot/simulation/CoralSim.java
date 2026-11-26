@@ -5,11 +5,12 @@
  */
 package first.robot.simulation;
 
+import static org.wpilib.units.Units.*;
+
 import first.robot.FieldConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.wpilib.math.geometry.*;
 import org.wpilib.math.shape.Rectangle2d;
@@ -17,16 +18,19 @@ import org.wpilib.math.util.Units;
 import org.wpilib.simulation.DIOSim;
 import org.wpilib.system.Timer;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Distance;
+import org.wpilib.units.measure.Voltage;
 
 public class CoralSim {
 
   private final Supplier<Pose2d> drivePoseSupplier;
-  private final DoubleSupplier elevatorHeightSupplier;
-  private final DoubleSupplier armAngleSupplier;
-  private final DoubleSupplier clawVoltageSupplier;
-  private final DoubleSupplier intakeAngleSupplier;
-  private final DoubleSupplier intakeVoltageSupplier;
-  private final DoubleSupplier indexerVoltageSupplier;
+  private final Supplier<Distance> elevatorHeightSupplier;
+  private final Supplier<Angle> armAngleSupplier;
+  private final Supplier<Voltage> clawVoltageSupplier;
+  private final Supplier<Angle> intakeAngleSupplier;
+  private final Supplier<Voltage> intakeVoltageSupplier;
+  private final Supplier<Voltage> indexerVoltageSupplier;
 
   private final DIOSim clawSensor;
   private final DIOSim indexerSensor;
@@ -60,12 +64,12 @@ public class CoralSim {
 
   public CoralSim(
       Supplier<Pose2d> drivePoseSupplier,
-      DoubleSupplier elevatorHeightSupplier,
-      DoubleSupplier armAngleSupplier,
-      DoubleSupplier clawVoltageSupplier,
-      DoubleSupplier intakeAngleSupplier,
-      DoubleSupplier intakeVoltageSupplier,
-      DoubleSupplier indexerVoltageSupplier) {
+      Supplier<Distance> elevatorHeightSupplier,
+      Supplier<Angle> armAngleSupplier,
+      Supplier<Voltage> clawVoltageSupplier,
+      Supplier<Angle> intakeAngleSupplier,
+      Supplier<Voltage> intakeVoltageSupplier,
+      Supplier<Voltage> indexerVoltageSupplier) {
     this.drivePoseSupplier = drivePoseSupplier;
     this.elevatorHeightSupplier = elevatorHeightSupplier;
     this.armAngleSupplier = armAngleSupplier;
@@ -100,7 +104,8 @@ public class CoralSim {
             new Rectangle2d(
                 drivePoseSupplier.get().transformBy(INTAKE_DETECTION_TRANSFORM), 0.3, 0.7);
 
-        if (intakeAngleSupplier.getAsDouble() < 0 && intakeVoltageSupplier.getAsDouble() > 6) {
+        if (intakeAngleSupplier.get().in(Rotations) < 0
+            && intakeVoltageSupplier.get().in(Volts) > 6) {
           for (var pose : groundCoralPoses) {
             if (intakeRect.contains(pose.getTranslation().toTranslation2d())) {
               coralState = CoralState.INTAKE;
@@ -113,7 +118,7 @@ public class CoralSim {
         var intakePose = new Pose3d(drivePoseSupplier.get()).transformBy(INTAKE_CORAL_TRANSFORM);
         var indexerPose = new Pose3d(drivePoseSupplier.get()).transformBy(INDEXER_CORAL_TRANSFORM);
         double coralIntakePercent = coralIntakeTimer.get() / INTAKE_TIME_THRESHOLD;
-        if (indexerVoltageSupplier.getAsDouble() < 6) {
+        if (indexerVoltageSupplier.get().in(Volts) < 6) {
           coralIntakePercent = Math.min(coralIntakePercent, 0.4);
         }
 
@@ -123,8 +128,8 @@ public class CoralSim {
         clawSensor.setValue(false);
 
         if (coralIntakeTimer.hasElapsed(INTAKE_TIME_THRESHOLD)
-            && intakeVoltageSupplier.getAsDouble() > 6
-            && indexerVoltageSupplier.getAsDouble() > 6) {
+            && intakeVoltageSupplier.get().in(Volts) > 6
+            && indexerVoltageSupplier.get().in(Volts) > 6) {
           coralState = CoralState.INDEXER;
         }
         break;
@@ -134,7 +139,7 @@ public class CoralSim {
         indexerSensor.setValue(true);
         clawSensor.setValue(false);
 
-        if (clawVoltageSupplier.getAsDouble() > 0.5
+        if (clawVoltageSupplier.get().in(Volts) > 0.5
             && new Pose3d(drivePoseSupplier.get())
                     .transformBy(HANDOFF_DETECTION_TRANSFORM)
                     .getTranslation()
@@ -150,7 +155,7 @@ public class CoralSim {
         indexerSensor.setValue(false);
         clawSensor.setValue(true);
 
-        if (clawVoltageSupplier.getAsDouble() < -0.5) {
+        if (clawVoltageSupplier.get().in(Volts) < -0.5) {
           boolean red = drivePoseSupplier.get().getX() < 0;
           double mindist = 100;
 
@@ -239,13 +244,9 @@ public class CoralSim {
 
   private Pose3d getClawCoralPose() {
     var elevatorTransform =
-        new Transform3d(0, 0, elevatorHeightSupplier.getAsDouble() + 0.514671, new Rotation3d());
+        new Transform3d(0, 0, elevatorHeightSupplier.get().in(Meters) + 0.514671, new Rotation3d());
     var armTransform =
-        new Transform3d(
-            0,
-            0,
-            0,
-            new Rotation3d(0, -Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
+        new Transform3d(0, 0, 0, new Rotation3d(0, -armAngleSupplier.get().in(Radians), 0));
     var clawCoralTransform =
         new Transform3d(0.68036 - 0.02, 0, 0, new Rotation3d(0, Math.PI / 2, 0));
 

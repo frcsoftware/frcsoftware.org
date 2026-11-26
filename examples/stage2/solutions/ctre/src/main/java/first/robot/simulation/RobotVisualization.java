@@ -5,18 +5,22 @@
  */
 package first.robot.simulation;
 
-import java.util.function.DoubleSupplier;
+import static org.wpilib.units.Units.*;
+
+import java.util.function.Supplier;
 import org.wpilib.math.geometry.Pose3d;
 import org.wpilib.math.geometry.Rotation3d;
 import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Distance;
 
 public class RobotVisualization {
 
-  private final DoubleSupplier elevatorHeightSupplier;
-  private final DoubleSupplier armAngleSupplier;
-  private final DoubleSupplier intakeAngleSupplier;
+  private final Supplier<Distance> elevatorHeightSupplier;
+  private final Supplier<Angle> armAngleSupplier;
+  private final Supplier<Angle> intakeAngleSupplier;
 
   private final Pose3d ELEVATOR_STARTING_POSE = new Pose3d();
   private final double ELEVATOR_CARRIAGE_TRAVEL = 0.651510;
@@ -27,21 +31,18 @@ public class RobotVisualization {
   private final Pose3d INTAKE_BASE_POSE = new Pose3d(0.3210, 0, 0.29837, new Rotation3d());
 
   public RobotVisualization(
-      DoubleSupplier elevatorHeightSupplier,
-      DoubleSupplier armAngleSupplier,
-      DoubleSupplier intakeAngleSupplier) {
+      Supplier<Distance> elevatorHeightSupplier,
+      Supplier<Angle> armAngleSupplier,
+      Supplier<Angle> intakeAngleSupplier) {
     this.elevatorHeightSupplier = elevatorHeightSupplier;
     this.armAngleSupplier = armAngleSupplier;
     this.intakeAngleSupplier = intakeAngleSupplier;
   }
 
   public void periodic() {
-    double elevatorHeight = Math.clamp(elevatorHeightSupplier.getAsDouble(), 0, 1.347);
+    double elevatorHeight = Math.clamp(elevatorHeightSupplier.get().in(Meters), 0, 1.347);
     double intakeAngle =
-        Math.clamp(
-            Units.rotationsToRadians(intakeAngleSupplier.getAsDouble()),
-            0,
-            Units.degreesToRadians(138.469));
+        Math.clamp(intakeAngleSupplier.get().in(Radians), 0, Units.degreesToRadians(138.469));
 
     double firstStageHeight =
         elevatorHeight < ELEVATOR_CARRIAGE_TRAVEL ? 0 : elevatorHeight - ELEVATOR_CARRIAGE_TRAVEL;
@@ -52,11 +53,7 @@ public class RobotVisualization {
     Pose3d carriagePose = ELEVATOR_STARTING_POSE.transformBy(carriageTransform);
 
     Transform3d armTransform =
-        new Transform3d(
-            0,
-            0,
-            0,
-            new Rotation3d(0, -Units.rotationsToRadians(armAngleSupplier.getAsDouble()), 0));
+        new Transform3d(0, 0, 0, new Rotation3d(0, -armAngleSupplier.get().in(Radians), 0));
     Pose3d armPose = carriagePose.transformBy(ARM_BASE_TRANSFORM).transformBy(armTransform);
 
     Transform3d intakeTransform = new Transform3d(0, 0, 0, new Rotation3d(0, -intakeAngle, 0));

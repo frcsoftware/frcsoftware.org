@@ -60,7 +60,7 @@ public class FullCoralTeleop extends PeriodicOpMode {
                     coro -> {
                       coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.fork(intake.setState(Intake.State.INTAKING));
-                      coro.fork(indexer.setVoltage(12));
+                      coro.fork(indexer.setVoltage(Indexer.Voltages.INTAKE));
                       coro.park();
                     })
                 .named("Intaking"));
@@ -77,13 +77,13 @@ public class FullCoralTeleop extends PeriodicOpMode {
         stateMachine.addState(
             Command.noRequirements(
                     (coro) -> {
-                      coro.fork(indexer.setVoltage(1));
+                      coro.fork(indexer.setVoltage(Indexer.Voltages.HOLD));
                       coro.fork(intake.setState(Intake.State.RETRACTED));
                       coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
                       coro.waitUntil(superstructure::atSetpoint);
 
                       coro.waitUntil(indexer::hasCoral);
-                      coro.fork(claw.setVoltage(6));
+                      coro.fork(claw.setVoltage(Claw.Voltages.HOLD_CORAL));
                       coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF));
                       coro.waitUntil(claw::hasCoral);
                       coro.fork(superstructure.setPosition(Superstructure.Positions.HANDOFF_PREP));
@@ -187,19 +187,19 @@ public class FullCoralTeleop extends PeriodicOpMode {
                       drive,
                       () ->
                           drive.getPose().nearest(poses).transformBy(Poses.REEF_PREALIGN_TRANSFORM))
-                  .withRunningContinuously(true),
+                  .withRunContinuously(true),
               superstructure.setPosition(prepPosition));
           coro.waitUntil(superstructure::atSetpoint);
 
           Drive.AutoAlignCommand finalAlign =
               new Drive.AutoAlignCommand(drive, () -> drive.getPose().nearest(poses))
-                  .withRunningContinuously(true);
+                  .withRunContinuously(true);
           coro.fork(finalAlign);
           coro.waitUntil(finalAlign::atPosition);
 
           coro.fork(superstructure.setPosition(scorePosition));
           coro.waitUntil(superstructure::atSetpoint);
-          coro.fork(claw.setVoltage(-6));
+          coro.fork(claw.setVoltage(Claw.Voltages.SCORE_CORAL));
           coro.wait(Seconds.of(0.25));
         });
   }

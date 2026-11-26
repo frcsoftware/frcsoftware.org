@@ -10,7 +10,6 @@ import static org.wpilib.units.Units.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -22,7 +21,6 @@ import first.robot.Robot;
 import first.robot.simulation.ArmSim;
 import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.util.Units;
 import org.wpilib.telemetry.Telemetry;
 import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.units.measure.Angle;
@@ -38,6 +36,8 @@ public class Arm {
 
     static final InvertedValue MOTOR_INVERSION = InvertedValue.Clockwise_Positive;
 
+    static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+
     static final double GEAR_RATIO =
         (56.0 / 16.0) * (84.0 / 10.0); // Two stage, 56:16, 84:10 reductions
 
@@ -49,11 +49,10 @@ public class Arm {
     static final double kI = 0;
     static final double kD = 6;
 
-    static final double POSITION_TOLERANCE = Units.degreesToRotations(3);
+    static final Angle POSITION_TOLERANCE = Degrees.of(3);
   }
 
   private final TalonFX motor = new TalonFX(Constants.MOTOR_ID, Constants.BUS);
-  ;
   private final ArmSim sim = new ArmSim(motor);
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
@@ -65,13 +64,11 @@ public class Arm {
   private final StatusSignal<Current> statorCurrentSignal = motor.getStatorCurrent();
   private final StatusSignal<Current> supplyCurrentSignal = motor.getSupplyCurrent();
 
-  private double setpoint = 0;
-
   private final TelemetryTable table = Telemetry.getTable("Arm");
 
   public Arm() {
     TalonFXConfiguration configuration = new TalonFXConfiguration();
-    configuration.MotorOutput.withNeutralMode(NeutralModeValue.Brake)
+    configuration.MotorOutput.withNeutralMode(Constants.NEUTRAL_MODE)
         .withInverted(Constants.MOTOR_INVERSION);
     configuration.Feedback.withSensorToMechanismRatio(Constants.GEAR_RATIO);
     configuration.Slot0.withKS(Constants.kS)
@@ -83,14 +80,10 @@ public class Arm {
         .withKD(Constants.kD)
         .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    currentLimitsConfigs
-        .withStatorCurrentLimit(60)
+    configuration.CurrentLimits.withStatorCurrentLimit(60)
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimit(60)
         .withSupplyCurrentLimitEnable(true);
-
-    configuration.withCurrentLimits(currentLimitsConfigs);
 
     motor.getConfigurator().apply(configuration);
   }
@@ -108,61 +101,70 @@ public class Arm {
         statorCurrentSignal,
         supplyCurrentSignal);
 
-    table.log("Applied Voltage", Volts.of(getAppliedVoltage()));
-    table.log("Position", Rotations.of(getPosition()));
-    table.log("Velocity", RotationsPerSecond.of(getVelocity()));
+    table.log("Applied Voltage", getAppliedVoltage());
+    table.log("Position", getPosition());
+    table.log("Velocity", getVelocity());
+    table.log("Setpoint", getSetpoint());
     table.log("At Setpoint", isAtSetpoint());
   }
 
   /**
    * @param voltage the voltage to apply to the motor
    */
-  public void setVoltage(double voltage) {
+  public void setVoltage(Voltage voltage) {
     motor.setControl(voltageRequest.withOutput(voltage));
   }
 
   /**
-   * @param position the position for the arm to target, in rotations
+   * @param position the position for the arm to target
    */
-  public void setPosition(double position) {
-    setpoint = position;
+  public void setPosition(Angle position) {
     motor.setControl(positionRequest.withPosition(position));
-    table.log("Setpoint", Rotations.of(position));
   }
 
   /**
-   * @return the current position of the arm, in rotations
+   * @return the current position of the arm
    */
-  public double getPosition() {
-    return positionSignal.getValueAsDouble();
+  public Angle getPosition() {
+    return positionSignal.getValue();
   }
 
   /**
-   * @return the current velocity, in rotations per second
+   * @return the current velocity
    */
-  public double getVelocity() {
-    return velocitySignal.getValueAsDouble();
+  public AngularVelocity getVelocity() {
+    return velocitySignal.getValue();
   }
 
   /**
    * @return the current voltage being applied to the arm motor
    */
-  public double getAppliedVoltage() {
-    return appliedVoltageSignal.getValueAsDouble();
+  public Voltage getAppliedVoltage() {
+    return appliedVoltageSignal.getValue();
   }
 
   /**
-   * @param position the position to compare against, in rotations
+   * @param position the position to compare against
    * @return whether the arm is at that positoin
    */
-  public boolean isAtPosition(double position) {
-    return MathUtil.isNear(getPosition(), position, Constants.POSITION_TOLERANCE);
+  public boolean isAtPosition(Angle position) {
+    return MathUtil.isNear(
+        getPosition().in(Rotations),
+        position.in(Rotations),
+        Constants.POSITION_TOLERANCE.in(Rotations));
+  }
+
+  /**
+   * @return the mechanism's position setpoint
+   */
+  public Angle getSetpoint() {
+    return positionRequest.getPositionMeasure();
   }
 
   /**
    * @return whether the arm is at its current setpoint
    */
   public boolean isAtSetpoint() {
-    return isAtPosition(setpoint);
+    return isAtPosition(getSetpoint());
   }
 }

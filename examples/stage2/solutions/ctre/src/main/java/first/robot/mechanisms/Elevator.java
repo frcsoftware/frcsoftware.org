@@ -50,7 +50,6 @@ public class Elevator {
     static final double kP = 25;
     static final double kI = 0;
     static final double kD = 3.2;
-    ;
 
     static final Distance POSITION_TOLERANCE = Meters.of(0.5);
   }

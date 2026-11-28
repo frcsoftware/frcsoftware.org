@@ -1,0 +1,72 @@
+{
+  "name": "Midtide",
+  "rotations": [
+    {"axis":  "x",
+    "degrees":  90},
+    {"axis":  "z",
+    "degrees":  90}
+  ],
+  "position": [
+    0,
+    0,
+    0
+  ],
+  "components": [
+    {
+      "name": "elevator",
+      "zeroedRotations": [
+        {"axis":  "x",
+          "degrees":  90},
+        {"axis":  "z",
+          "degrees":  90}
+      ],
+      "zeroedPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "carriage",
+      "zeroedRotations": [
+        {"axis":  "x",
+          "degrees":  90},
+        {"axis":  "z",
+          "degrees":  90}
+      ],
+      "zeroedPosition": [
+        0,
+        0,
+        -0.5627090346
+      ]
+    },
+	{
+      "name": "arm",
+      "zeroedRotations": [
+        {"axis":  "x",
+          "degrees":  90},
+        {"axis":  "z",
+          "degrees":  90}
+      ],
+      "zeroedPosition": [
+        0,
+        0,
+        -1.06854
+      ]
+    },
+    {
+      "name": "intake",
+      "zeroedRotations": [
+        {"axis":  "x",
+          "degrees":  90},
+        {"axis":  "z",
+          "degrees":  90}
+      ],
+      "zeroedPosition": [
+        -0.324690,
+        0,
+        -0.298374
+      ]
+    }
+  ]
+}

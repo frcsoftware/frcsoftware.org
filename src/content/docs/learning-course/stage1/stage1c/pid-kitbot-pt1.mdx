@@ -1,0 +1,98 @@
+---
+title: PID Kitbot
+description: An overview of Feedback Controllers and PID
+codeRegionSources:
+    ctreRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotCTRE.java
+    revRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotREV.java
+---
+
+import Aside from '@components/Aside.astro';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
+## What You'll Accomplish
+
+You will add code that steps up PID in Kitbot's drivetrain.
+Then you will add a driveDistance command that makes kitbot drive forward a desired distance.
+
+## Task 2: Setting Up PID
+
+Now that information about the wheels, gearboxes, and encoders has been added, it's time to add PID.
+
+To implement PID, the WPILib `PIDController` class is used.
+We'll implement PID using WPILib's `PIDController` class.
+The `PIDController` lets you set `kp`, `ki`, and `kd` to calculate the corrections needed based on the sensor readings.
+We will be making two `PIDController` objects: `driveDistanceController` and `headingController`
+
+- `driveDistanceController` adjusts the robot's distance
+- `headingController` adjusts the robot's angle
+
+Under `GEAR_RATIO`, add the two objects.
+For now, the parameters can be all set to 0.
+These will be tuned later.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#pidController
+
+        ```
+    </TabItem>
+
+    <TabItem label="REV">
+        ```java {revRobot}#pidController
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+To make the `PIDControllers` work, we have to add tolerance and enable continuous input.
+
+First, we need to add tolerances for both `driveDistanceController` and `headingController`.
+Setting the tolerance is important because it defines the margin of error around the setpoint that is considered "close enough" to stop adjusting.
+
+Now we have to enable continuous input on `headingController`.
+Enabling continuous input helps the `PIDController` to figure out the shortest turn to the target angle.
+This prevents the robot from taking the longer way around to turn towards the target angle.
+
+In the `Drivetrain()` constructor, under `setDefaultCommand(idle())` add the tolerance and continuous input settings.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#pidController2
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java {revRobot}#pidController2
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+## Check Up
+
+Your `Drivetrain.java` file should look like this:
+
+<Aside type="answer">
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        ```java {ctreRobot}#checkin
+
+        ```
+        ```java {ctreRobot}#checkinHalf
+
+        ```
+    </TabItem>
+    <TabItem label="REV">
+        ```java {revRobot}#checkin
+
+        ```
+        ```java {revRobot}#checkinHalf
+
+        ```
+    </TabItem>
+
+</Tabs>
+</Aside>

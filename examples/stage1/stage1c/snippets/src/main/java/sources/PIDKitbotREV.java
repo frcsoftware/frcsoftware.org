@@ -46,10 +46,8 @@ public class Drivetrain implements Mechanism {
   // [gearRatio]
   private static final double GEAR_RATIO = 10.71;
   // [/gearRatio]
-  // [pidController]
   private final PIDController driveDistanceController = new PIDController(0, 0, 0);
   private final PIDController headingController = new PIDController(0, 0, 0);
-  // [/pidController]
   // [sensors]
   private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
@@ -60,7 +58,6 @@ public class Drivetrain implements Mechanism {
   private final TelemetryTable driveDistanceTable = table.getTable("Drive Distance");
   private final TelemetryTable turnTable = table.getTable("Turn in Place");
 
-  // [checkinHalf]
   public Drivetrain() {
     var leftConfig = new SparkMaxConfig().inverted(true);
     leftLeader.configure(
@@ -80,14 +77,11 @@ public class Drivetrain implements Mechanism {
 
     setDefaultCommand(idle());
 
-    // [pidController2]
     driveDistanceController.setTolerance(0.05, 0.05);
     headingController.setTolerance(0.05, 0.2);
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-    // [/pidController2]
   }
 
-  // [/checkinHalf]
   public Command idle() {
     return run(coroutine -> {
           while (true) {
@@ -168,43 +162,48 @@ public class Drivetrain implements Mechanism {
     table.log("Active Commands", getRunningCommands().stream().map(Command::name).toArray());
   }
 
-  //[checkinEncoders]
-  //[getDistance]
-  //[getLeftDistance]
+  // [checkinEncoders]
+  // [getDistance]
+  // [getLeftDistance]
   public double getLeftDistance() {
     return Units.rotationsToRadians(leftEncoder.getPosition().get()) / GEAR_RATIO * WHEEL_RADIUS;
   }
-  //[/getLeftDistance]
+
+  // [/getLeftDistance]
 
   public double getRightDistance() {
     return Units.rotationsToRadians(rightEncoder.getPosition().get()) / GEAR_RATIO * WHEEL_RADIUS;
   }
-  //[/getDistance]
 
-   //[getVelocity]
-  //[getLeftVelocity]
+  // [/getDistance]
+
+  // [getVelocity]
+  // [getLeftVelocity]
   public double getLeftVelocity() {
     return Units.rotationsPerMinuteToRadiansPerSecond(leftEncoder.getVelocity().get())
         / GEAR_RATIO
         * WHEEL_RADIUS;
   }
-  //[/getLeftVelocity]
+
+  // [/getLeftVelocity]
   public double getRightVelocity() {
     return Units.rotationsPerMinuteToRadiansPerSecond(rightEncoder.getVelocity().get())
         / GEAR_RATIO
         * WHEEL_RADIUS;
   }
-   //[/getVelocity]
-   
-   // [getHeading]
+
+  // [/getVelocity]
+
+  // [getHeading]
   public Rotation2d getHeading() {
     return imu.getRotation2d();
   }
- // [/getHeading]
+
+  // [/getHeading]
   // [setPose]
   public void setPose(Pose2d pose) {
     drivetrainSim.setPose(pose);
   }
-  //[/setPose]
+  // [/setPose]
 }
-  //[/checkinEncoders]
+  // [/checkinEncoders]

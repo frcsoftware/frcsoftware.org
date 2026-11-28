@@ -300,6 +300,20 @@ const learningCourse: SidebarTopic = {
                     translations: { 'zh-CN': '阶段 2 概览' },
                     slug: 'learning-course/stage2/stage-overview',
                 },
+                {
+                    label: 'Stage 2A: Feedforward Control',
+                    collapsed: true,
+                    items: [
+                        {
+                            label: 'Stage 2A Overview',
+                            slug: 'learning-course/stage2/stage2a/stage-overview',
+                        },
+                        {
+                            label: 'Introduction to Feedforward Control',
+                            slug: 'learning-course/stage2/stage2a/feedforward',
+                        },
+                    ],
+                },
             ],
         },
     ],

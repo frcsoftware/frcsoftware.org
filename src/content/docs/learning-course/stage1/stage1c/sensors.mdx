@@ -1,0 +1,461 @@
+---
+title: Sensors
+description: An overview of sensors and how to program them
+codeRegionSources:
+    ctreRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotCTRE.java
+    revRobot: stage1/stage1c/snippets/src/main/java/sources/PIDKitbotREV.java
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { REV_CTRE_CHOOSER_KEY } from '@data/tabsSyncKeys.ts';
+
+## What You’ll Accomplish
+
+Before PID is added to the Kitbot, code has to be added to use the drive train's encoders and IMU.
+In this page, you will add the encoders, and use both the encoders IMU `Drivetrain.java`.
+
+## Step up
+
+Use git to fork and clone the stage 1C template code.
+If you need help, read over [the Forking and Cloning guide](/learning-course/getting-started/forking-and-cloning/).
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        Fork then clone the [CTRE
+        Template](https://github.com/frcsoftware/Stage1C-Template-CTRE)
+    </TabItem>
+    <TabItem label="REV">
+        Fork, then clone the [REV
+        Template](https://github.com/frcsoftware/Stage1C-Template-REV)
+    </TabItem>
+</Tabs>
+
+## Sensors
+
+Sensors are used to get information about the robot, such as how far it has driven or how many degrees it turned.
+This is important when adding PID to the kitbot because PID uses sensor data to gather information about the mechanism.
+The sensors that this stage uses are encoders and an IMU.
+Before the code for encoders can be added in, there has to be some prep work.
+`Drivetrain.java` needs to know the robot's wheel radius, drive gear ratio, and have access to its encoders.
+
+### Wheels
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        The first piece of information needed for the encoders is the wheel circumference.
+        By knowing the wheel circumference, we can figure out how much the robot moves per wheel rotation.
+        Under the `drivetrainSim` object, a double named `WHEEL_CIRCUMFERENCE` can be created to hold the wheel circumference. 
+        The diameter of the kitbot wheel is 6.0 inches. To find the circumference of the wheel, multiply the diameter by `Math.PI`.
+         
+        Since WPILib uses metric units, the units have to be converted to meters using `Units.inchesToMeters()`.
+        Putting this all together, `WHEEL_CIRCUMFERENCE` should be set to `Units.inchesToMeters(6.0) * Math.PI`.
+        The following can be added underneath the `drivetrainSim` object.
+
+        ```java {ctreRobot}#wheel
+
+        ```
+
+    </TabItem>
+        <TabItem label="REV">
+        The first piece of information needed for the encoders is the wheel radius.
+        By knowing the wheel radius, we can figure out how much the robot moves per wheel rotation.
+        Under the `drivetrainSim` object, a double named `WHEEL_RADIUS` can be created to hold the wheel radius.
+        The radius of a kitbot wheel is 3.0 inches.
+
+        Since WPILib uses metric units, the units have to be converted to meters using `Units.inchesToMeters()`.
+        Therefore, together `WHEEL_RADIUS` is set to `Units.inchesToMeters(3.0)`
+        The following can be added underneath the `drivetrainSim` object.
+
+        ```java {revRobot}#wheel
+
+        ```
+
+    </TabItem>
+
+</Tabs>
+
+### Gearboxes
+
+The second piece of information that we need is the drivetrain's gear ratio.
+The kitbot's drivetrain uses gearboxes.
+Gearboxes are mechanisms that motors are attached to.
+They can help teams change the motor speed or torque.
+
+The kitbot has two gearboxes on the right and left sides of the drivetrain.
+The motors are attached to one side of the gearbox.
+The motor's shaft connects to the set of gears and, on the other side, the wheels are attached to the gear output shaft.
+
+<ContentFigure
+    width="650px"
+    alt="Drivetrain"
+    src="/learning-course/stage1/stage1c/gearboxes.webp"
+/>
+
+These gearboxes have a 10.71:1 gear ratio.
+This means that the motor has to spin 10.71 times for the wheel to rotate once.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+    The `GEAR_RATIO` double can be added under the `WHEEL_CIRCUMFERENCE` variable.
+
+         ```java {ctreRobot}#gearRatio
+
+        ```
+        We want to measure how many rotations the wheel has completed in order to determine how far the robot has moved.
+        The motors have built-in encoders, which measure the rotation of the motor's shaft.
+        However, the wheel is connected to the gearbox's output shaft, which spins at a different speed than the motor's shaft.
+        Therefore, we need to account for this reduction in the motor configs.
+        This can be done using `Feedback.withSensorToMechanismRatio(GEAR_RATIO)`.
+        In this context, `GEAR_RATIO` is the ratio between the shaft the encoder is connected to (the motor shaft) and the shaft you want to measure (the wheel shaft).
+
+        Later in the `Drivetrain.java` file, the motor configurations are set up through the `leftConfig` and `rightConfig` objects.
+        Add `.Feedback.withSensorToMechanismRatio(GEAR_RATIO);` to both `leftConfig` and `rightConfig` as shown below:
+
+        ```java {ctreRobot}#gearRatio2
+
+        ```
+    </TabItem>
+        <TabItem label="REV">
+        The `GEAR_RATIO` double can be added under the `WHEEL_RADIUS` variable.
+
+        ```java {revRobot}#gearRatio
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+### Encoders
+
+Now that the wheel size and gearboxes are known in the code, encoders can be added.
+Encoders are sensors that measure how far the motor has traveled by keeping track of
+the motor's rotations.
+Then they report back the position.
+We want to know what the wheels' current state is so we can figure out if the Kitbot drivetrain has reached the set point.
+To get this information, we're going to use the drivetrain encoders.
+The Kitbot's drive motors have built-in encoders.
+This means that the encoders are built into the motor, which makes using the encoders in code much easier.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+        CTRE uses `StatusSignal` objects to read data from sensors such as encoders.
+        Therefore, two `StatusSignal` objects will be made to track the left and right motors' positions, one for `leftLeader`'s encoder and one for `rightLeader`'s encoder.
+        The two objects go under the `GEAR_RATIO` variable. 
+        
+        The `leftLeader`'s signal will be called `leftDistanceSignal` and will be set equal to `leftLeader.getPosition()`. 
+        This gets the position of the wheel in rotations.
+        `<Angle>` is what sets the units to be an angular measurement, which are rotations or degrees.
+        Next, the same will be added for the right side.
+        Similarly, `rightLeader`'s signal will be called `rightDistanceSignal`, and it will be set equal to `rightLeader.getPosition()`
+        
+        ```java {ctreRobot}#sensors
+
+        ```
+        The encoders are also helpful for tracking the drive motors' velocity.
+        Similar to creating the position signals, two `StatusSignal` objects can be made to track `leftLeader` and `rightLeader`'s velocity.
+        The `leftLeader`'s signal will be called `leftVelocitySignal` and will be set equal to `leftLeader.getVelocity()`.
+        `<AngularVelocity>` specifies that the unit is an angular velocity measurement.
+        CTRE returns velocity as rotations per second.
+        The two objects go under the two `StatusSignal`s that were created above.
+
+        ```java {ctreRobot}#sensorsTwo
+
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+        REV uses `RelativeEncoder` objects to interact with and read data from built-in motor encoders.
+        Therefore, we will create two `RelativeEncoder` objects to track the motors positions, one for `leftLeader`'s encoder and one for `rightLeader`'s encoder.
+
+        ```java {revRobot}#sensors
+
+        ```
+
+        The two objects will be created under the `GEAR_RATIO` variable.
+    </TabItem>
+
+</Tabs>
+
+## Methods
+
+The encoders are now set up!
+Now methods can be added that will help us get information which will be used when creating an auto align.
+The methods that will be created are:
+
+- getLeftDistance
+- getRightDistance
+- getLeftVelocity
+- getRightVelocity
+
+### Getting Distance
+
+The first two methods are `getLeftDistance` and `getRightDistance`.
+These methods will get the distance that the left and right motor traveled.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE"> 
+        Create a public method named `getLeftDistance` that returns a double.
+        Inside the method, add a `return` statement that will be used to calculate the total distance that the left wheels traveled.
+
+        <Aside type="hint">
+
+            {/* rli:ignore */}
+
+            ```java
+            public double getLeftDistance(){
+                // return statement goes here
+            }
+
+            ```
+
+        </Aside>
+
+        `leftDistanceSignal.getValue()` reads the encoder's current angular position.
+        `leftDistanceSignal` uses angular units, but we need rotations to make the math easier. Therefore, `in(Rotation)` is used to convert the angle into wheel rotations.
+        Together, this is `leftDistanceSignal.getValue().in(Rotation)`
+
+        Now, that value is multiplied by the wheel's circumference so that wheel rotations can be converted into distance traveled.
+        This is done by multiplying `leftDistanceSignal. getValue().in(Rotation)` by `WHEEL_CIRCUMFERENCE`.
+
+        ```java {ctreRobot}#getLeftDistance
+
+        ```
+
+        Now `getRightDistance` can be added to calculate the total distance that the right wheels traveled.
+        The same can be done for `getRightDistance` by using the `rightDistanceSignal`.
+
+        <Aside type="answer">
+
+        ```java {ctreRobot}#getDistance
+
+        ```
+
+        </Aside>
+
+    </TabItem>
+    <TabItem label="REV">
+        Create a public method named `getLeftDistance` that returns a double.
+        Inside the method, add a `return` statement that will be used to calculate the total distance that the left wheels traveled.
+
+        <Aside type="hint">
+
+            {/* rli:ignore */}
+
+            ```java
+            public double getLeftDistance(){
+                // return statement goes here
+            }
+
+            ```
+        </Aside>
+
+        `leftEncoder` measures in rotations.
+        To convert the rotations into radians, `Units.rotationsToRadians()` is used.
+
+        Instead of starting the return statement with `leftEncoder`, we'll use Units.rotationsToRadians().
+        `leftEncoder` is placed inside the parentheses.
+        To get the recent position of the left encoder, `.getPosition.get()` is used.
+        - `.getPosition()` gets the position of the left encoder.
+        - `.get()` gets the recent data.
+        Together, it's `Units.rotationsToRadians(leftEncoder.getPosition().get())`
+
+        Next, we need to convert radians into distance traveled.
+        First, we divide everything by `GEAR_RATIO` to calculate how many radians the wheel has turned.
+        Then, that is multiplied by `WHEEL_RADIUS` so that wheel radians can be converted into distance traveled.
+        ```java {revRobot}#getLeftDistance
+
+        ```
+
+        Now `getRightDistance` can be added to calculate the total distance that the right wheels traveled.
+        The same can be done for `getRightDistance` by using the `rightEncoder`.
+
+        <Aside type="answer">
+        ```java {revRobot}#getDistance
+
+        ```
+        </Aside>
+    </TabItem>
+
+</Tabs>
+
+### Getting Velocity
+
+The next two methods are `getLeftVelocity` and `getRightVelocity`.
+These methods will get the velocity that the left and right motor traveled.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">  
+        Create a public method named `getLeftVelocity` that returns a `double`. 
+        Inside the method, add a `return` statement that will be used to calculate the linear velocity of the left wheels.      
+    
+        <Aside type="hint">
+
+        {/* rli:ignore */}
+
+        ```java
+            public double getLeftVelocity() {
+              // return statement goes here
+            }
+        ```
+
+        </Aside>
+
+        `leftVelocitySignal.getValue()` reads the encoder's current angular velocity.
+        `leftVelocitySignal` uses angular velocity units, but we need rotations per second to make the math easier.
+        Therefore, `.in(RotationsPerSecond)` is used to convert the angular velocity into rotations per second.
+        Together, this is `leftVelocitySignal.getValue().in(RotationsPerSecond)`.
+
+        Now, that value is multiplied by the wheel's circumference to convert rotational speed into linear velocity.
+        This is done by multiplying `leftVelocitySignal.getValue().in(RotationsPerSecond)` by `WHEEL_CIRCUMFERENCE`.
+
+        ```java {ctreRobot}#getLeftVelocity
+
+        ```
+
+        Now `getRightVelocity` can be added to calculate the linear velocity of the right wheels.
+        The same can be done for `getRightVelocity` by using `rightVelocitySignal`.
+
+        <Aside type="answer">
+
+        ```java {ctreRobot}#getVelocity
+
+        ```
+
+    </Aside>
+    </TabItem>
+     Create a public method named `getLeftVelocity` that returns a double.
+     Inside the method, add a `return` statement that will be used to calculate the linear velocity of the left wheels.
+
+        <Aside type="hint">
+
+            {/* rli:ignore */}
+
+            ```java
+            public double getLeftVelocity(){
+                // return statement goes here
+            }
+
+            ```
+        </Aside>
+
+       `leftEncoder` measures velocity in rotations per minute (RPM).
+        To convert RPM into radians per second, `Units.rotationsPerMinuteToRadiansPerSecond()` is used.
+
+        Instead of starting the return statement with `leftEncoder`, we'll use `Units.rotationsPerMinuteToRadiansPerSecond()`.
+        `leftEncoder` is placed inside the parentheses.
+        To get the latest velocity of the left encoder, `.getVelocity().get()` is used.
+            - `.getVelocity()` gets the velocity of the left encoder.
+            - `.get()` gets the recent data.
+
+        Together, it's `Units.rotationsPerMinuteToRadiansPerSecond(leftEncoder.getVelocity().get())`.
+        Next, we need to convert motor radians per second into linear velocity.
+        First, we divide by `GEAR_RATIO` to calculate how many radians per second the wheel is spinning.
+        Then, that value is multiplied by `WHEEL_RADIUS` so that the wheel's angular velocity is converted into linear velocity.
+
+        ```java {revRobot}#getLeftVelocity
+
+        ```
+
+        Now `getRightVelocity` can be added to calculate the linear velocity of the right wheels.
+        The same can be done for `getRightVelocity` by using `rightEncoder`.
+
+        <Aside type="answer">
+        ```java {revRobot}#getVelocity
+
+        ```
+        </Aside>
+
+</Tabs>
+
+## IMU
+
+An IMU (Inertial Measurement Unit) is a sensor that allows the robot to accurately track its 3D rotation (roll, pitch, and yaw) as it moves around the field.
+In Stage 1B, the Systemcore’s built-in IMU was declared but it was unused.
+In this stage, the IMU will be used to allow the kitbot to auto-align to the hub.
+
+### Heading and Pose
+
+The last two methods are `getHeading` and `setPose`.
+`getHeading` gets the robot's current facing angle and sets the robot's position on the field in the simulation.
+
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">        
+        Under the `getRightVelocity` method, create a public method named `getHeading` that returns a `Rotation2d`. 
+        A `Rotation2d` is an angle that represents the robot's rotation on a 2-dimensional coordinate system.
+
+        Inside the method, add a `return` statement that gets the Kitbot's current rotation from the IMU.
+        In Stage 1B, the IMU object was named `imu`.
+        `.getRotation2d()` gets the Kitbot's yaw as a `Rotation2d`.
+
+
+        ```java {ctreRobot}#getHeading
+
+        ```
+
+        Under the `getHeading` method, create an another public method named `setPose` that is `void`.
+        This method takes in a `Pose2D` parameter called `pose`.
+        A `Pose2D` is a combination of translational (the x and y position) and rotation of a robot on the 2 dimensional coordinate system.
+
+        Inside the method, call `drivetrainSim.setPose(pose);` to update the drivetrain simulation so it knows the kitbot's position on the field.
+
+       ```java {ctreRobot}#setPose
+
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+        Under the `getRightVelocity` method, create a public method named `getHeading` that returns a `Rotation2d`.
+        A `Rotation2d` is an angle that represents the robot's rotation on a 2-dimensional coordinate system.
+
+        Inside the method, add a `return` statement that gets the Kitbot's current rotation from the IMU.
+        In Stage 1B, the IMU object was named `imu`.
+        `.getRotation2d()` gets the Kitbot's yaw as a `Rotation2d`.
+
+        ```java {revRobot}#getHeading
+
+        ```
+        Under the `getHeading` method, create an another public method named `setPose` that is `void`.
+        This method takes in a `Pose2D` parameter called `pose`.
+        A `Pose2D` is a combination of translational (the x and y position) and rotation of a robot on the 2 dimensional coordinate system.
+
+        Inside the method, call `drivetrainSim.setPose(pose);` to update the drivetrain simulation so it knows the kitbot's position on the field.
+
+        ```java {revRobot}#setPose
+
+        ```
+    </TabItem>
+
+</Tabs>
+
+## Check up
+
+The code that was added to `DriveTrain.java` should look like the following:
+
+<Aside type="answer">
+<Tabs syncKey={REV_CTRE_CHOOSER_KEY}>
+    <TabItem label="CTRE">
+
+        ```java {ctreRobot}#checkin
+
+        ```
+
+        ```java {ctreRobot}#checkinEncoders
+
+        ```
+
+    </TabItem>
+    <TabItem label="REV">
+
+        ```java {revRobot}#checkin
+
+        ```
+
+
+        ```java {revRobot}#checkinEncoders
+
+        ```
+
+    </TabItem>
+
+</Tabs>
+</Aside>

@@ -217,6 +217,10 @@ const learningCourse: SidebarTopic = {
                             label: 'Stage 1C Introduction',
                             slug: 'learning-course/stage1/stage1c/stage-overview',
                         },
+                        {
+                            label: 'Sensors',
+                            slug: 'learning-course/stage1/stage1c/sensors',
+                        },
                     ],
                 },
             ],

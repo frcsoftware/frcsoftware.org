@@ -168,31 +168,43 @@ public class Drivetrain implements Mechanism {
     table.log("Active Commands", getRunningCommands().stream().map(Command::name).toArray());
   }
 
+  //[checkinEncoders]
+  //[getDistance]
+  //[getLeftDistance]
   public double getLeftDistance() {
     return Units.rotationsToRadians(leftEncoder.getPosition().get()) / GEAR_RATIO * WHEEL_RADIUS;
   }
+  //[/getLeftDistance]
 
   public double getRightDistance() {
     return Units.rotationsToRadians(rightEncoder.getPosition().get()) / GEAR_RATIO * WHEEL_RADIUS;
   }
+  //[/getDistance]
 
+   //[getVelocity]
+  //[getLeftVelocity]
   public double getLeftVelocity() {
     return Units.rotationsPerMinuteToRadiansPerSecond(leftEncoder.getVelocity().get())
         / GEAR_RATIO
         * WHEEL_RADIUS;
   }
-
+  //[/getLeftVelocity]
   public double getRightVelocity() {
     return Units.rotationsPerMinuteToRadiansPerSecond(rightEncoder.getVelocity().get())
         / GEAR_RATIO
         * WHEEL_RADIUS;
   }
-
+   //[/getVelocity]
+   
+   // [getHeading]
   public Rotation2d getHeading() {
     return imu.getRotation2d();
   }
-
+ // [/getHeading]
+  // [setPose]
   public void setPose(Pose2d pose) {
     drivetrainSim.setPose(pose);
   }
+  //[/setPose]
 }
+  //[/checkinEncoders]

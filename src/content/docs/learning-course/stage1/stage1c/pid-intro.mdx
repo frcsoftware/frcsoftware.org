@@ -62,6 +62,15 @@ k is a common prefix for constants and coefficients.
     and what the gains do, understanding the equation isn't required.
 </Aside>
 
+**Voltage vs. Throttle**
+
+Earlier, it was stated that PID changes the voltage that is commanded to the motor.
+This is because the precision of voltage control is preferred over throttle-based control.
+Throttle ranges from 0 (stopped) to 1 (max speed), but max speed drops as the battery runs out of juice.
+So, setting a motor's throttle to 0.5 will cause it to spin slower as the battery runs out of juice, since "50% of max speed" changes over time.
+When you set an FRC motor's voltage, you give it a value from 0 to 12, with 12 being max speed on a fully charged battery.
+So a given voltage spins the motor at the same speed every time, as long as the battery can supply it.
+
 ### How do P, I, and D work together?
 
 Now that we know what P, I, and D are, let's look at how the three terms work together to reach a setpoint.
